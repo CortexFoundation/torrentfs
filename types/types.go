@@ -25,7 +25,7 @@ import (
 	"github.com/CortexFoundation/CortexTheseus/core/types"
 	"github.com/CortexFoundation/CortexTheseus/rlp"
 	"github.com/anacrolix/torrent/metainfo"
-	"github.com/CortexFoundation/CortexTheseus/params"
+	"github.com/CortexFoundation/torrentfs/params"
 )
 
 const (

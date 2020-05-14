@@ -15,10 +15,6 @@
 // along with the CortexTheseus library. If not, see <http://www.gnu.org/licenses/>.
 package torrentfs
 
-import (
-	"github.com/CortexFoundation/CortexTheseus/params"
-)
-
 const (
 	ProtocolName         = "nas"
 	ProtocolVersion      = uint64(1)
@@ -33,9 +29,6 @@ const (
 	//Scope     = 4
 	TIER  = 3
 	LEAFS = 32768
-
-	PER_UPLOAD_BYTES = params.PER_UPLOAD_BYTES
-	UploadGas        = params.UploadGas
 )
 
 var (
@@ -48,7 +41,4 @@ var (
 	TorrentBoostNodes = []string{
 		"http://storage.cortexlabs.ai:7881",
 	}
-
-	MainnetGenesisHash = params.MainnetGenesisHash
-	TrustedCheckpoints = params.TrustedCheckpoints
 )

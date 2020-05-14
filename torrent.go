@@ -22,6 +22,7 @@ import (
 	"fmt"
 	"github.com/CortexFoundation/CortexTheseus/common/compress"
 	"github.com/CortexFoundation/CortexTheseus/common/mclock"
+	"github.com/CortexFoundation/torrentfs/params"
 	"github.com/CortexFoundation/torrentfs/types"
 	lru "github.com/hashicorp/golang-lru"
 	"golang.org/x/time/rate"
@@ -85,7 +86,7 @@ type Torrent struct {
 	start               mclock.AbsTime
 }
 
-const block = int64(PER_UPLOAD_BYTES)
+const block = int64(params.PER_UPLOAD_BYTES)
 
 func (tm *TorrentManager) GetLimitation(value int64) int64 {
 	return ((value + block - 1) / block) * block

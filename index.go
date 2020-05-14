@@ -20,6 +20,7 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/CortexFoundation/CortexTheseus/common/hexutil"
+	"github.com/CortexFoundation/torrentfs/params"
 	"github.com/CortexFoundation/torrentfs/types"
 	"github.com/pborman/uuid"
 	"os"
@@ -197,7 +198,7 @@ func (fs *ChainIndex) NewFileInfo(Meta *types.FileMeta) *types.FileInfo {
 
 func (fs *ChainIndex) initMerkleTree() error {
 	fs.leaves = nil
-	fs.leaves = append(fs.leaves, BlockContent{x: MainnetGenesisHash.String()}) //"0x21d6ce908e2d1464bd74bbdbf7249845493cc1ba10460758169b978e187762c1"})
+	fs.leaves = append(fs.leaves, BlockContent{x: params.MainnetGenesisHash.String()}) //"0x21d6ce908e2d1464bd74bbdbf7249845493cc1ba10460758169b978e187762c1"})
 	//fs.leaves = append(fs.leaves, BlockContent{x: "0x21d6ce908e2d1464bd74bbdbf7249845493cc1ba10460758169b978e187762c1"})
 	tr, err := types.NewTree(fs.leaves)
 	if err != nil {

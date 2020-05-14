@@ -22,9 +22,8 @@ import (
 	"github.com/CortexFoundation/CortexTheseus/common/hexutil"
 	"github.com/CortexFoundation/CortexTheseus/common/mclock"
 	"github.com/CortexFoundation/CortexTheseus/log"
-	"github.com/CortexFoundation/CortexTheseus/params"
-	//"github.com/CortexFoundation/CortexTheseus/p2p"
 	"github.com/CortexFoundation/CortexTheseus/rpc"
+	"github.com/CortexFoundation/torrentfs/params"
 	"github.com/CortexFoundation/torrentfs/types"
 	"github.com/anacrolix/torrent/metainfo"
 	lru "github.com/hashicorp/golang-lru"
@@ -205,7 +204,7 @@ func (m *Monitor) indexInit() error {
 		return err
 	}
 
-	if checkpoint, ok := TrustedCheckpoints[genesis.Hash]; ok {
+	if checkpoint, ok := params.TrustedCheckpoints[genesis.Hash]; ok {
 		//if uint64(len(m.fs.Blocks())) < checkpoint.TfsBlocks || uint64(len(m.fs.Files())) < checkpoint.TfsFiles {
 		//	log.Warn("Fs storage version upgrade", "version", m.fs.Version(), "blocks", len(m.fs.Blocks()), "files", len(m.fs.Files()))
 		//	m.lastNumber = 0
@@ -654,7 +653,7 @@ func (m *Monitor) parseBlockTorrentInfo(b *types.Block) (bool, error) {
 					continue
 				}
 
-				if receipt.GasUsed != UploadGas {
+				if receipt.GasUsed != params.UploadGas {
 					//log.Warn("Receipt", "gas", receipt.GasUsed, "expected", params.UploadGas)
 					continue
 				}
