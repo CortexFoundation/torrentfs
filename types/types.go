@@ -25,6 +25,7 @@ import (
 	"github.com/CortexFoundation/CortexTheseus/core/types"
 	"github.com/CortexFoundation/CortexTheseus/rlp"
 	"github.com/anacrolix/torrent/metainfo"
+	"github.com/CortexFoundation/CortexTheseus/params"
 )
 
 const (
@@ -88,7 +89,7 @@ func (t *Transaction) Data() []byte {
 
 // IsFlowControl ...
 func (t *Transaction) IsFlowControl() bool {
-	return t.Amount.Sign() == 0 && t.GasLimit >= UploadGas
+	return t.Amount.Sign() == 0 && t.GasLimit >= params.UploadGas
 }
 
 func (t *Transaction) Parse() *FileMeta {
