@@ -42,7 +42,6 @@ import (
 
 	"github.com/CortexFoundation/CortexTheseus/common"
 	"github.com/CortexFoundation/CortexTheseus/log"
-	"github.com/CortexFoundation/CortexTheseus/params"
 	"github.com/anacrolix/torrent"
 	//	"net"
 	xlog "github.com/anacrolix/log"
@@ -86,7 +85,7 @@ type Torrent struct {
 	start               mclock.AbsTime
 }
 
-const block = int64(params.PER_UPLOAD_BYTES)
+const block = int64(PER_UPLOAD_BYTES)
 
 func (tm *TorrentManager) GetLimitation(value int64) int64 {
 	return ((value + block - 1) / block) * block
@@ -831,7 +830,6 @@ func NewTorrentManager(config *Config, fsid uint64, cache, compress bool) (*Torr
 		cfg.DownloadRateLimiter = rate.NewLimiter(rate.Limit(config.DownloadRate), 1<<20)
 	}
 	//cfg.DisableEncryption = true
-	//cfg.ExtendedHandshakeClientVersion = params.VersionWithMeta
 	//listenAddr := &net.TCPAddr{}
 	//log.Info("Torrent client listening on", "addr", listenAddr)
 	//cfg.SetListenAddr(listenAddr.String())
