@@ -13,20 +13,16 @@
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with the CortexTheseus library. If not, see <http://www.gnu.org/licenses/>.
-package torrentfs
+package params
 
-const (
-	ProtocolName         = "nas"
-	ProtocolVersion      = uint64(1)
-	NumberOfMessageCodes = uint64(0)
-	ProtocolVersionStr   = "1.0"
-	statusCode           = 0
+var (
+	MainnetTrackers = []string{
+		"://tracker.cortexlabs.ai:5008",
+	}
 
-	Bucket    = 1024
-	Group     = 32
-	SyncBatch = 4096
-	Delay     = 12
-	//Scope     = 4
-	TIER  = 3
-	LEAFS = 32768
+	//BernardTrackers = MainnetTrackers
+
+	TorrentBoostNodes = []string{
+		"http://storage.cortexlabs.ai:7881",
+	}
 )
