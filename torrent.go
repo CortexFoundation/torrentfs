@@ -1450,7 +1450,7 @@ func (fs *TorrentManager) Available(infohash string, rawSize int64) (bool, error
 	}
 	ih := metainfo.NewHashFromHex(infohash)
 	if torrent := fs.GetTorrent(ih); torrent == nil {
-		return false, errors.New("download not completed")
+		return false, errors.New("file not exist")
 	} else {
 		if !torrent.IsAvailable() {
 			return false, errors.New("download not completed")
@@ -1467,7 +1467,7 @@ func (fs *TorrentManager) GetFile(infohash, subpath string) ([]byte, error) {
 	//tm := fs.monitor.dl
 	if torrent := fs.GetTorrent(ih); torrent == nil {
 		log.Debug("Torrent not found", "hash", infohash)
-		return nil, errors.New("download not completed")
+		return nil, errors.New("file not exist")
 	} else {
 		if !torrent.IsAvailable() {
 			log.Error("Read unavailable file", "hash", infohash, "subpath", subpath)
