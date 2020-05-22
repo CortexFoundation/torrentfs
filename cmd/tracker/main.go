@@ -94,7 +94,3 @@ func run(conf *Config) error {
 	//log.crit("cmd.Start", "err", err)
 	return nil
 }
-
-func stop(conf *Config) {
-	conf.wg.Wait()
-}
