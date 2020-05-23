@@ -15,7 +15,7 @@
 // along with the CortexTheseus library. If not, see <http://www.gnu.org/licenses/>.
 package torrentfs
 
-type CVMStorage interface {
+type CortexStorage interface {
 	Available(infohash string, rawSize int64) (bool, error)
 	GetFile(infohash, path string) ([]byte, error)
 	Stop() error
