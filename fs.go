@@ -56,7 +56,7 @@ var torrentInstance *TorrentFS = nil
 //	return torrentInstance
 //}
 
-func GetStorage() CVMStorage {
+func GetStorage() CortexStorage {
 	return torrentInstance //GetTorrentInstance()
 }
 
