@@ -63,13 +63,10 @@ const (
 	torrentRunning
 	torrentSeeding
 	torrentSeedingInQueue
+
+	block = int64(params.PER_UPLOAD_BYTES)
+	loops = 30
 )
-
-const block = int64(params.PER_UPLOAD_BYTES)
-
-func (tm *TorrentManager) GetLimitation(value int64) int64 {
-	return ((value + block - 1) / block) * block
-}
 
 type TorrentManager struct {
 	client              *torrent.Client
@@ -111,6 +108,10 @@ type TorrentManager struct {
 	Updates time.Duration
 
 	hotCache *lru.Cache
+}
+
+func (tm *TorrentManager) GetLimitation(value int64) int64 {
+        return ((value + block - 1) / block) * block
 }
 
 func (tm *TorrentManager) CreateTorrent(t *torrent.Torrent, requested int64, status int, ih metainfo.Hash) *Torrent {
@@ -663,10 +664,6 @@ func (tm *TorrentManager) mainLoop() {
 		}
 	}
 }
-
-const (
-	loops = 30
-)
 
 //type ActiveTorrentList []*Torrent
 

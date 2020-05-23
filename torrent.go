@@ -148,29 +148,15 @@ func (t *Torrent) ReloadTorrent(data []byte, tm *TorrentManager) error {
 	return nil
 }
 
-var maxCited int64 = 1
-
 func (t *Torrent) IsAvailable() bool {
 	if _, ok := BadFiles[t.InfoHash()]; ok {
 		return false
 	}
 	t.cited += 1
-	if t.cited > maxCited {
-		maxCited = t.cited
-	}
-	if t.Seeding() {
-		return true
-	}
-	//log.Warn("Not seeding", "hash", t.InfoHash(), "missing", t.bytesMissing, "complete", t.bytesCompleted, "status", t.status)
-	return false
+	return t.Seeding()
 }
 
-//func (t *Torrent) HasTorrent() bool {
-//	return t.status != torrentPending
-//}
-
 func (t *Torrent) WriteTorrent() error {
-	//log.Info("Write seed", "hash", t.infohash)
 	if _, err := os.Stat(path.Join(t.filepath, "torrent")); err == nil {
 		t.Pause()
 		return nil
@@ -197,14 +183,9 @@ func (t *Torrent) SeedInQueue() {
 		return
 	}
 	t.status = torrentSeedingInQueue
-	//if t.currentConns != 0 {
 	t.currentConns = t.minEstablishedConns
 	t.Torrent.SetMaxEstablishedConns(t.minEstablishedConns)
 	log.Info("Mute seeding", "ih", t.InfoHash(), "weight", t.weight, "peers", t.currentConns)
-	//}
-	//t.Torrent.close()
-	//t.Torrent.CancelPieces(0, t.Torrent.NumPieces())
-	//t.Torrent.Drop()
 }
 
 func (t *Torrent) BoostOff() {
