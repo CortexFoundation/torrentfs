@@ -62,7 +62,6 @@ const (
 	torrentPaused
 	torrentRunning
 	torrentSeeding
-	torrentSeedingInQueue
 
 	block = int64(params.PER_UPLOAD_BYTES)
 	loops = 30
@@ -194,23 +193,6 @@ func (tm *TorrentManager) UpdateTorrent(input interface{}) error {
 //func GetMagnetURI(infohash metainfo.Hash) string {
 //	return "magnet:?xt=urn:btih:" + infohash.String()
 //}
-
-func (tm *TorrentManager) UpdateDynamicTrackers(trackers []string) {
-	tm.lock.Lock()
-	defer tm.lock.Unlock()
-	if len(tm.trackers) == 0 {
-		tm.trackers = append(tm.trackers, trackers)
-	} else if len(tm.trackers) == 1 {
-		tm.trackers = append(tm.trackers, trackers)
-	} else {
-		tm.trackers[1] = trackers
-	}
-
-	var newTrackers [][]string = [][]string{trackers}
-	for _, t := range tm.pendingTorrents {
-		t.AddTrackers(newTrackers)
-	}
-}
 
 func (tm *TorrentManager) buildUdpTrackers(trackers []string) (array [][]string) {
 	array = make([][]string, tier)
