@@ -52,9 +52,9 @@ import (
 )
 
 const (
-	bucket                  = params.Bucket //it is best size is 1/3 full nodes
-	group                   = params.Group
-	tier                    = params.TIER
+	bucket = params.Bucket //it is best size is 1/3 full nodes
+	group  = params.Group
+	//tier                    = params.TIER
 	updateTorrentChanBuffer = params.SyncBatch
 	torrentChanSize         = 64
 
@@ -195,14 +195,19 @@ func (tm *TorrentManager) UpdateTorrent(input interface{}) error {
 //}
 
 func (tm *TorrentManager) buildUdpTrackers(trackers []string) (array [][]string) {
-	array = make([][]string, tier)
+	/*if len(trackers) > tier {
+		array = make([][]string, tier)
+	} else {
+		array = make([][]string, 1)
+	}
+
 	for i, tracker := range trackers {
 		array[i%tier] = append(array[i%tier], "udp"+tracker)
-	}
-	/*array = make([][]string, 1)
+	}*/
+	array = make([][]string, 1)
 	for _, tracker := range trackers {
 		array[0] = append(array[0], "udp"+tracker)
-	}*/
+	}
 	return array
 }
 
