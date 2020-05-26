@@ -329,9 +329,6 @@ func (m *Monitor) taskLoop() {
 
 // SetConnection method builds connection to remote or local communicator.
 func (m *Monitor) buildConnection(clientURI string) (*rpc.Client, error) {
-	if atomic.LoadInt32(&(m.terminated)) == 1 {
-		return nil, errors.New("ipc connected failed")
-	}
 
 	log.Info("Building connection", "terminated", m.terminated)
 
