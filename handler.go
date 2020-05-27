@@ -152,11 +152,7 @@ func (tm *TorrentManager) dropAll() {
 }
 
 func (tm *TorrentManager) UpdateTorrent(input interface{}) error {
-	select {
-	case tm.updateTorrent <- input:
-	case <-tm.closeAll:
-		log.Info("Updating channel closed")
-	}
+	tm.updateTorrent <- input
 	return nil
 }
 
