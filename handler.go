@@ -113,7 +113,7 @@ func (tm *TorrentManager) getLimitation(value int64) int64 {
 	return ((value + block - 1) / block) * block
 }
 
-func (tm *TorrentManager) registerTorrent(t *torrent.Torrent, requested int64, status int, ih metainfo.Hash) *Torrent {
+func (tm *TorrentManager) register(t *torrent.Torrent, requested int64, status int, ih metainfo.Hash) *Torrent {
 	tt := &Torrent{
 		t,
 		tm.maxEstablishedConns, 5, tm.maxEstablishedConns,
@@ -278,7 +278,7 @@ func (tm *TorrentManager) verifyTorrent(info *metainfo.Info, root string) error 
 	return nil
 }
 
-func (tm *TorrentManager) loadTorrentSpec(ih metainfo.Hash, filePath string, BytesRequested int64) *torrent.TorrentSpec {
+func (tm *TorrentManager) loadSpec(ih metainfo.Hash, filePath string, BytesRequested int64) *torrent.TorrentSpec {
 	if _, err := os.Stat(filePath); err != nil {
 		return nil
 	}
@@ -328,18 +328,19 @@ func (tm *TorrentManager) addInfoHash(ih metainfo.Hash, BytesRequested int64) *T
 		return t
 	}
 
-	tmpDataPath := path.Join(tm.TmpDataDir, ih.HexString())
 	tmpTorrentPath := path.Join(tm.TmpDataDir, ih.HexString(), "torrent")
 	seedTorrentPath := path.Join(tm.DataDir, ih.HexString(), "torrent")
 
 	var spec *torrent.TorrentSpec
 
 	if _, err := os.Stat(seedTorrentPath); err == nil {
-		spec = tm.loadTorrentSpec(ih, seedTorrentPath, BytesRequested)
+		spec = tm.loadSpec(ih, seedTorrentPath, BytesRequested)
 	} else if _, err := os.Stat(tmpTorrentPath); err == nil {
-		spec = tm.loadTorrentSpec(ih, tmpTorrentPath, BytesRequested)
+		spec = tm.loadSpec(ih, tmpTorrentPath, BytesRequested)
 	}
+
 	if spec == nil {
+		tmpDataPath := path.Join(tm.TmpDataDir, ih.HexString())
 		spec = &torrent.TorrentSpec{
 			Trackers: [][]string{}, //tm.trackers, //[][]string{},
 			InfoHash: ih,
@@ -348,7 +349,7 @@ func (tm *TorrentManager) addInfoHash(ih metainfo.Hash, BytesRequested int64) *T
 	}
 
 	if t, _, err := tm.client.AddTorrentSpec(spec); err == nil {
-		return tm.registerTorrent(t, BytesRequested, torrentPending, ih)
+		return tm.register(t, BytesRequested, torrentPending, ih)
 	}
 
 	return nil
