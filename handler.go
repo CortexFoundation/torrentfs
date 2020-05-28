@@ -371,7 +371,7 @@ func NewTorrentManager(config *Config, fsid uint64, cache, compress bool) (*Torr
 		slot:                int(fsid % bucket),
 	}
 
-	TorrentManager.fileCache, _ = bigcache.NewBigCache(bigcache.DefaultConfig(600 * time.Second)) //lru.New(8)
+	TorrentManager.fileCache, _ = bigcache.NewBigCache(bigcache.DefaultConfig(60 * time.Second)) //lru.New(8)
 	TorrentManager.compress = compress
 	TorrentManager.cache = cache
 
