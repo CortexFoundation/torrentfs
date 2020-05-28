@@ -122,7 +122,7 @@ func (t *Torrent) Ready() bool {
 		return false
 	}
 	t.cited += 1
-	return t.Seeding()
+	return t.IsSeeding()
 }
 
 func (t *Torrent) WriteTorrent() error {
@@ -171,8 +171,8 @@ func (t *Torrent) Seed() bool {
 	return false
 }
 
-func (t *Torrent) Seeding() bool {
-	return t.Torrent.Info() != nil && t.status == torrentSeeding && t.BytesMissing() == 0
+func (t *Torrent) IsSeeding() bool {
+	return t.status == torrentSeeding && t.Torrent.Seeding()
 }
 
 func (t *Torrent) Pause() {
