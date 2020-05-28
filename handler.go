@@ -371,7 +371,17 @@ func NewTorrentManager(config *Config, fsid uint64, cache, compress bool) (*Torr
 		slot:                int(fsid % bucket),
 	}
 
-	TorrentManager.fileCache, _ = bigcache.NewBigCache(bigcache.DefaultConfig(60 * time.Second)) //lru.New(8)
+	conf := bigcache.Config{
+		Shards:             1024,
+		LifeWindow:         180 * time.Second,
+		CleanWindow:        1 * time.Second,
+		MaxEntriesInWindow: 1000 * 10 * 60,
+		MaxEntrySize:       512,
+		StatsEnabled:       true,
+		Verbose:            true,
+		HardMaxCacheSize:   2048, //MB
+	}
+	TorrentManager.fileCache, _ = bigcache.NewBigCache(conf)
 	TorrentManager.compress = compress
 	TorrentManager.cache = cache
 
@@ -410,11 +420,12 @@ func (tm *TorrentManager) seedingTorrentLoop() {
 		case t := <-tm.seedingChan:
 			tm.seedingTorrents[t.Torrent.InfoHash()] = t
 			t.Seed()
-
-			//for _, file := range t.Files() {
-			//	log.Trace("Precache", "ih", t.InfoHash(), "path", "/"+file.Path())
-			//	go tm.GetFile(t.InfoHash(), file.Path())
-			//}
+			if tm.fullSeed {
+				for _, file := range t.Files() {
+					log.Trace("Precache", "ih", t.InfoHash(), "path", "/"+file.Path())
+					go tm.GetFile(t.InfoHash(), file.Path())
+				}
+			}
 
 			if len(tm.seedingTorrents) > params.LimitSeeding {
 				tm.dropSeeding(tm.slot)
