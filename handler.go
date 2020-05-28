@@ -419,19 +419,21 @@ func (tm *TorrentManager) seedingTorrentLoop() {
 		select {
 		case t := <-tm.seedingChan:
 			tm.seedingTorrents[t.Torrent.InfoHash()] = t
-			t.Seed()
-			if tm.fullSeed {
-				for _, file := range t.Files() {
-					log.Trace("Precache", "ih", t.InfoHash(), "path", "/"+file.Path())
-					go tm.GetFile(t.InfoHash(), file.Path())
-				}
-			}
+			if t.Seed() {
 
-			if len(tm.seedingTorrents) > params.LimitSeeding {
-				tm.dropSeeding(tm.slot)
-			} else if len(tm.seedingTorrents) > tm.maxSeedTask {
-				tm.maxSeedTask++
-				tm.graceSeeding(tm.slot)
+				if _, ok := GoodFiles[t.InfoHash()]; ok || tm.fullSeed {
+					for _, file := range t.Files() {
+						log.Trace("Precache", "ih", t.InfoHash(), "path", "/"+file.Path())
+						go tm.GetFile(t.InfoHash(), file.Path())
+					}
+				}
+
+				if len(tm.seedingTorrents) > params.LimitSeeding {
+					tm.dropSeeding(tm.slot)
+				} else if len(tm.seedingTorrents) > tm.maxSeedTask {
+					tm.maxSeedTask++
+					tm.graceSeeding(tm.slot)
+				}
 			}
 		case <-tm.closeAll:
 			log.Info("Seeding loop closed")
