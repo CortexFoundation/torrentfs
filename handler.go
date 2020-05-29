@@ -374,7 +374,7 @@ func NewTorrentManager(config *Config, fsid uint64, cache, compress bool) (*Torr
 	if cache {
 		conf := bigcache.Config{
 			Shards:             1024,
-			LifeWindow:         180 * time.Second,
+			LifeWindow:         600 * time.Second,
 			CleanWindow:        1 * time.Second,
 			MaxEntriesInWindow: 1000 * 10 * 60,
 			MaxEntrySize:       512,
@@ -796,9 +796,9 @@ func (tm *TorrentManager) graceSeeding(slot int) error {
 }
 
 func (fs *TorrentManager) Available(infohash string, rawSize int64) (bool, error) {
-	if fs.metrics {
-		defer func(start time.Time) { fs.Updates += time.Since(start) }(time.Now())
-	}
+	//if fs.metrics {
+	//	defer func(start time.Time) { fs.Updates += time.Since(start) }(time.Now())
+	//}
 
 	if rawSize <= 0 {
 		return false, errors.New("raw size is zero or negative")
