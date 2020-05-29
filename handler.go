@@ -444,10 +444,8 @@ func (tm *TorrentManager) seedingTorrentLoop() {
 }
 
 func (tm *TorrentManager) init() {
-	for k, ok := range GoodFiles {
-		if ok {
-			tm.searchAndDownload(k, 0)
-		}
+	for k, _ := range GoodFiles {
+		tm.searchAndDownload(k, 0)
 	}
 }
 
