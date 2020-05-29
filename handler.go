@@ -449,9 +449,13 @@ func (tm *TorrentManager) seedingTorrentLoop() {
 }
 
 func (tm *TorrentManager) init() {
+	log.Info("Chain files init", "files", len(GoodFiles))
+
 	for k, _ := range GoodFiles {
 		tm.searchAndDownload(k, 0)
 	}
+
+	log.Info("Chain files OK !!!")
 }
 
 func (tm *TorrentManager) searchAndDownload(hex string, request int64) {
