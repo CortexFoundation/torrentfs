@@ -382,9 +382,14 @@ func NewTorrentManager(config *Config, fsid uint64, cache, compress bool) (*Torr
 			Verbose:            true,
 			HardMaxCacheSize:   2048, //MB
 		}
-		TorrentManager.fileCache, _ = bigcache.NewBigCache(conf)
-		TorrentManager.cache = cache
-		TorrentManager.compress = compress
+
+		TorrentManager.fileCache, err = bigcache.NewBigCache(conf)
+		if err != nil {
+			log.Error("File system cache initialized failed", "err", err)
+		} else {
+			TorrentManager.cache = cache
+			TorrentManager.compress = compress
+		}
 	}
 
 	TorrentManager.metrics = config.Metrics
