@@ -371,19 +371,21 @@ func NewTorrentManager(config *Config, fsid uint64, cache, compress bool) (*Torr
 		slot:                int(fsid % bucket),
 	}
 
-	conf := bigcache.Config{
-		Shards:             1024,
-		LifeWindow:         180 * time.Second,
-		CleanWindow:        1 * time.Second,
-		MaxEntriesInWindow: 1000 * 10 * 60,
-		MaxEntrySize:       512,
-		StatsEnabled:       true,
-		Verbose:            true,
-		HardMaxCacheSize:   2048, //MB
+	if cache {
+		conf := bigcache.Config{
+			Shards:             1024,
+			LifeWindow:         180 * time.Second,
+			CleanWindow:        1 * time.Second,
+			MaxEntriesInWindow: 1000 * 10 * 60,
+			MaxEntrySize:       512,
+			StatsEnabled:       true,
+			Verbose:            true,
+			HardMaxCacheSize:   2048, //MB
+		}
+		TorrentManager.fileCache, _ = bigcache.NewBigCache(conf)
+		TorrentManager.cache = cache
+		TorrentManager.compress = compress
 	}
-	TorrentManager.fileCache, _ = bigcache.NewBigCache(conf)
-	TorrentManager.compress = compress
-	TorrentManager.cache = cache
 
 	TorrentManager.metrics = config.Metrics
 
@@ -733,7 +735,10 @@ func (tm *TorrentManager) activeTorrentLoop() {
 			}
 
 			if counter >= 5*loops {
-				log.Info("Fs status", "pending", len(tm.pendingTorrents), "waiting", active_wait, "downloading", active_running, "paused", active_paused, "seeding", len(tm.seedingTorrents), "size", common.StorageSize(total_size), "speed_a", common.StorageSize(total_size/log_counter*queryTimeInterval).String()+"/s", "speed_b", common.StorageSize(current_size/counter*queryTimeInterval).String()+"/s", "slot", tm.slot, "metrics", common.PrettyDuration(tm.Updates), "hot", tm.hotCache.Len(), "stats", tm.fileCache.Stats(), "len", tm.fileCache.Len(), "capacity", common.StorageSize(tm.fileCache.Capacity()).String())
+				log.Info("Fs status", "pending", len(tm.pendingTorrents), "waiting", active_wait, "downloading", active_running, "paused", active_paused, "seeding", len(tm.seedingTorrents), "size", common.StorageSize(total_size), "speed_a", common.StorageSize(total_size/log_counter*queryTimeInterval).String()+"/s", "speed_b", common.StorageSize(current_size/counter*queryTimeInterval).String()+"/s", "slot", tm.slot, "metrics", common.PrettyDuration(tm.Updates), "hot", tm.hotCache.Len())
+				if tm.cache {
+					log.Info("Fs cache", "stats", tm.fileCache.Stats(), "len", tm.fileCache.Len(), "capacity", common.StorageSize(tm.fileCache.Capacity()).String())
+				}
 				counter = 0
 				current_size = 0
 			}
