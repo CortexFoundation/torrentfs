@@ -422,8 +422,9 @@ func (tm *TorrentManager) seedingTorrentLoop() {
 		case t := <-tm.seedingChan:
 			tm.seedingTorrents[t.Torrent.InfoHash()] = t
 			if t.Seed() {
-				if _, ok := GoodFiles[t.InfoHash()]; (ok || tm.fullSeed) && tm.cache {
+				if active, ok := GoodFiles[t.InfoHash()]; tm.cache && ok && active {
 					for _, file := range t.Files() {
+						log.Trace("Precache file", "ih", t.InfoHash(), "ok", ok, "active", active)
 						go tm.GetFile(t.InfoHash(), file.Path())
 					}
 				}
