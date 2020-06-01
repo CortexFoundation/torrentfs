@@ -37,5 +37,5 @@ jobs:
       run: |
         go test -v ./... -race -coverprofile=coverage.txt -covermode=atomic
         if [ -f coverage.txt ]; then
-            curl -s https://codecov.io/bash | bash
+            bash <(curl -s https://codecov.io/bash)
         fi
