@@ -33,8 +33,9 @@ jobs:
     - name: Build
       run: go build -v .
 
-    - name: Test
-      run: go test -v ./... -race -coverprofile=coverage.txt -covermode=atomic
-      if [ -f coverage.txt ]; then
+    - name: Codecov
+      run: |
+        go test -v ./... -race -coverprofile=coverage.txt -covermode=atomic
+        if [ -f coverage.txt ]; then
             curl -s https://codecov.io/bash | bash
-      fi
+        fi
