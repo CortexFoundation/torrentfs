@@ -848,7 +848,7 @@ func (fs *TorrentManager) GetFile(infohash, subpath string) ([]byte, error) {
 			log.Info("Torrent active", "ih", ih, "peers", torrent.currentConns)
 		}
 
-		var key = infohash + "/" + subpath
+		var key = path.Join(infohash, subpath)
 		if fs.cache {
 			if cache, err := fs.fileCache.Get(key); err == nil {
 				if c, err := fs.unzip(cache); err != nil {
@@ -865,7 +865,7 @@ func (fs *TorrentManager) GetFile(infohash, subpath string) ([]byte, error) {
 		fs.fileLock.Lock()
 		defer fs.fileLock.Unlock()
 
-		data, err := ioutil.ReadFile(path.Join(fs.DataDir, infohash, subpath))
+		data, err := ioutil.ReadFile(path.Join(fs.DataDir, key))
 
 		//data final verification
 		for _, file := range torrent.Files() {
