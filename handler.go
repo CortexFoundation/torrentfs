@@ -448,13 +448,15 @@ func (tm *TorrentManager) seedingLoop() {
 }
 
 func (tm *TorrentManager) init() {
-	log.Info("Chain files init", "files", len(GoodFiles))
+	if tm.cache {
+		log.Info("Chain files init", "files", len(GoodFiles))
 
-	for k, _ := range GoodFiles {
-		tm.search(k, 0)
+		for k, _ := range GoodFiles {
+			tm.search(k, 0)
+		}
+
+		log.Info("Chain files OK !!!")
 	}
-
-	log.Info("Chain files OK !!!")
 }
 
 func (tm *TorrentManager) search(hex string, request int64) {
