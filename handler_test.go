@@ -8,15 +8,17 @@ import (
 )
 
 func TestGetFile(t *testing.T) {
-	DefaultConfig.DataDir = "/root/.cortex/storage"
+	DefaultConfig.DataDir = "data"
+	ih := "aea5584d0cd3865e90c80eace3bfcb062473d966"
 	fmt.Println(DefaultConfig)
-	tm, _ := NewTorrentManager(&DefaultConfig, 1, true, false)
+	tm, _ := NewTorrentManager(&DefaultConfig, 1, false, false)
+	tm.search(ih, 0)
 	tm.Start()
 	defer tm.Close()
-	time.Sleep(10 * time.Second)
-	a, _ := tm.Available("3f1f6c007e8da3e16f7c3378a20a746e70f1c2b0", 100000000)
+	time.Sleep(3 * time.Second)
+	a, _ := tm.Available(ih, 100000000)
 	fmt.Println("available", a)
-	file, _ := tm.GetFile("3f1f6c007e8da3e16f7c3378a20a746e70f1c2b0", "data")
+	file, _ := tm.GetFile(ih, "data")
 	if file == nil {
 		log.Fatal("failed to get file")
 	}
