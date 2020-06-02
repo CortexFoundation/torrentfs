@@ -150,7 +150,7 @@ func (m *Monitor) indexInit() error {
 		}
 		capcity += bytesRequested
 		log.Debug("File storage info", "addr", file.ContractAddr, "ih", file.Meta.InfoHash, "remain", common.StorageSize(file.LeftSize), "raw", common.StorageSize(file.Meta.RawSize), "request", common.StorageSize(bytesRequested))
-		m.dl.UpdateTorrent(types.FlowControlMeta{
+		m.dl.update(types.FlowControlMeta{
 			InfoHash:       file.Meta.InfoHash,
 			BytesRequested: bytesRequested,
 			IsCreate:       true,
@@ -299,7 +299,7 @@ func (m *Monitor) parseFileMeta(tx *types.Transaction, meta *types.FileMeta, b *
 	} else {
 		if update && op == 1 {
 			log.Debug("Create new file", "ih", meta.InfoHash, "op", op)
-			m.dl.UpdateTorrent(types.FlowControlMeta{
+			m.dl.update(types.FlowControlMeta{
 				InfoHash:       meta.InfoHash,
 				BytesRequested: 0,
 				IsCreate:       true,
@@ -368,7 +368,7 @@ func (m *Monitor) parseBlockTorrentInfo(b *types.Block) (bool, error) {
 							log.Debug("Data processing ...", "ih", file.Meta.InfoHash, "addr", addr.String(), "remain", common.StorageSize(remainingSize), "request", common.StorageSize(bytesRequested), "raw", common.StorageSize(file.Meta.RawSize), "number", b.Number)
 						}
 
-						m.dl.UpdateTorrent(types.FlowControlMeta{
+						m.dl.update(types.FlowControlMeta{
 							InfoHash:       file.Meta.InfoHash,
 							BytesRequested: bytesRequested,
 							IsCreate:       false,

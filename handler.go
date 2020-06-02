@@ -152,7 +152,7 @@ func (tm *TorrentManager) dropAll() {
 	tm.client.Close()
 }
 
-func (tm *TorrentManager) UpdateTorrent(input interface{}) error {
+func (tm *TorrentManager) update(input interface{}) error {
 	tm.updateTorrent <- input
 	return nil
 }
