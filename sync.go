@@ -103,7 +103,7 @@ func NewMonitor(flag *Config, cache, compress bool) (m *Monitor, e error) {
 	return m, e
 }
 
-func (m *Monitor) indexInit() error {
+func (m *Monitor) IndexCheck() error {
 	log.Info("Loading storage data ... ...", "latest", m.fs.LastListenBlockNumber, "checkpoint", m.fs.CheckPoint, "root", m.fs.Root(), "version", m.fs.Version(), "current", m.currentNumber)
 	genesis, err := m.rpcBlockByNumber(0)
 	if err != nil {
@@ -128,6 +128,10 @@ func (m *Monitor) indexInit() error {
 		}
 	}
 
+	return nil
+}
+
+func (m *Monitor) IndexInit() error {
 	fileMap := make(map[metainfo.Hash]*types.FileInfo)
 	for _, file := range m.fs.Files() {
 		if f, ok := fileMap[file.Meta.InfoHash]; ok {
@@ -428,10 +432,13 @@ func (m *Monitor) Stop() {
 
 // Start ... start ListenOn on the rpc port of a blockchain full node
 func (m *Monitor) Start() error {
+	m.IndexInit()
+
 	if err := m.dl.Start(); err != nil {
 		log.Warn("Fs start error")
 		return err
 	}
+
 	m.wg.Add(1)
 	go func() {
 		defer m.wg.Done()
@@ -460,10 +467,12 @@ func (m *Monitor) startWork() error {
 		return rpcErr
 	}
 	m.cl = rpcClient
+
 	m.lastNumber = m.fs.LastListenBlockNumber
 	m.currentBlock()
 	m.startNumber = uint64(math.Min(float64(m.fs.LastListenBlockNumber), float64(m.currentNumber))) // ? m.currentNumber:m.fs.LastListenBlockNumber
-	if err := m.indexInit(); err != nil {
+
+	if err := m.IndexCheck(); err != nil {
 		return err
 	}
 	m.wg.Add(1)
