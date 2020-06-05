@@ -432,12 +432,12 @@ func (m *Monitor) Stop() {
 
 // Start ... start ListenOn on the rpc port of a blockchain full node
 func (m *Monitor) Start() error {
-	m.IndexInit()
-
 	if err := m.dl.Start(); err != nil {
 		log.Warn("Fs start error")
 		return err
 	}
+
+	m.IndexInit()
 
 	m.wg.Add(1)
 	go func() {
