@@ -10,7 +10,6 @@ import (
 	"os"
 	"os/signal"
 	"os/user"
-	"path"
 	"path/filepath"
 	"syscall"
 	"time"
@@ -127,7 +126,7 @@ func scanDir(dirName string) (ee map[metainfo.Hash]entity) {
 	for _, n := range names {
 		fullName := filepath.Join(dirName, n)
 		if isInfoHash(n) {
-			torrentName := path.Join(fullName, "torrent")
+			torrentName := filepath.Join(fullName, "torrent")
 			ih, ok := torrentFileInfoHash(torrentName)
 			if !ok {
 				continue
@@ -262,7 +261,7 @@ func mainExitCode() int {
 			case Added:
 				if ev.FilePath != "" {
 					filePath := ev.FilePath
-					torrentPath := path.Join(filePath, "torrent")
+					torrentPath := filepath.Join(filePath, "torrent")
 					if _, err := os.Stat(torrentPath); err == nil {
 						mi, err := metainfo.LoadFromFile(torrentPath)
 						if err != nil {
