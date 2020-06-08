@@ -44,7 +44,7 @@ const (
 type Monitor struct {
 	config *Config
 	cl     *rpc.Client
-	fs     *ChainIndex
+	fs     *ChainDB
 	dl     *TorrentManager
 
 	exitCh        chan struct{}
@@ -69,7 +69,7 @@ type Monitor struct {
 // get higher communicating performance.
 // IpcPath is unavailable on windows.
 func NewMonitor(flag *Config, cache, compress bool) (m *Monitor, e error) {
-	fs, fsErr := NewChainIndex(flag)
+	fs, fsErr := NewChainDB(flag)
 	if fsErr != nil {
 		log.Error("file storage failed", "err", fsErr)
 		return nil, fsErr
@@ -292,7 +292,7 @@ func (m *Monitor) parseFileMeta(tx *types.Transaction, meta *types.FileMeta, b *
 	info.LeftSize = meta.RawSize
 	info.ContractAddr = receipt.ContractAddr
 	info.Relate = append(info.Relate, *info.ContractAddr)
-	op, update, err := m.fs.UpdateFile(info)
+	op, update, err := m.fs.AddFile(info)
 	if err != nil {
 		log.Warn("Create file failed", "err", err)
 		return err
@@ -354,7 +354,7 @@ func (m *Monitor) parseBlockTorrentInfo(b *types.Block) (bool, error) {
 				}
 				if file.LeftSize > remainingSize {
 					file.LeftSize = remainingSize
-					if _, progress, err := m.fs.UpdateFile(file); err != nil {
+					if _, progress, err := m.fs.AddFile(file); err != nil {
 						return false, err
 					} else if progress { // && progress {
 						log.Debug("Update storage success", "ih", file.Meta.InfoHash, "left", file.LeftSize)
