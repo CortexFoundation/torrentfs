@@ -169,6 +169,10 @@ func (fs *ChainDB) addLeaf(block *types.Block, init bool) error {
 
 	fs.leaves = append(fs.leaves, leaf)
 
+	//sort.SliceStable(fs.leaves, func(i, j int) bool {
+	//	return fs.leaves[i].num < fs.leaves[j].num
+	//})
+
 	if err := fs.tree.RebuildTreeWith(fs.leaves); err == nil {
 		if err := fs.writeRoot(number, fs.tree.MerkleRoot()); err != nil {
 			return err
@@ -339,6 +343,16 @@ func (fs *ChainDB) progress(f *types.FileInfo, init bool) (bool, error) {
 	return update, err
 }
 
+func (fs *ChainDB) find(b *types.Block) (bool, error) {
+	index := sort.Search(len(fs.blocks), func(i int) bool { return fs.blocks[i].Number >= b.Number })
+	if index == len(fs.blocks) {
+		log.Warn("Find AN Ancient block", "number", b.Number)
+		return false, nil
+	} else {
+		return true, nil
+	}
+}
+
 //func (fs *ChainDB) addBlock(b *Block, record bool) error {
 func (fs *ChainDB) AddBlock(b *types.Block) error {
 	if b.Number < fs.LastListenBlockNumber {
@@ -348,8 +362,17 @@ func (fs *ChainDB) AddBlock(b *types.Block) error {
 	if fs.metrics {
 		defer func(start time.Time) { fs.treeUpdates += time.Since(start) }(time.Now())
 	}
+	u := false
 	if b.Number > fs.CheckPoint {
+		u = true
+	} else {
 
+		if exist, _ := fs.find(b); exist {
+			u = true
+		}
+	}
+
+	if u {
 		if err := fs.db.Update(func(tx *bolt.Tx) error {
 			buk, err := tx.CreateBucketIfNotExists([]byte("blocks_" + fs.version))
 			if err != nil {
