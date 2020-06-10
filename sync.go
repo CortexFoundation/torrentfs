@@ -270,7 +270,7 @@ func (m *Monitor) getRemainingSize(address string) (uint64, error) {
 	return remain, nil
 }
 
-func (m *Monitor) getReceipt(tx string) (receipt types.TxReceipt, err error) {
+func (m *Monitor) getReceipt(tx string) (receipt types.Receipt, err error) {
 	if err = m.cl.Call(&receipt, "ctxc_getTransactionReceipt", tx); err != nil {
 		log.Warn("R is nil", "R", tx, "err", err)
 		return receipt, err
