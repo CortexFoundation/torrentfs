@@ -174,7 +174,6 @@ func (fs *ChainDB) Metrics() time.Duration {
 //Make sure the block group is increasing by number
 func (fs *ChainDB) addLeaf(block *types.Block, mes bool, dup bool) error {
 	number := block.Number
-	//if !dup {
 	leaf := BlockContent{x: block.Hash.String(), n: number}
 
 	l, e := fs.tree.VerifyContent(leaf)
@@ -183,16 +182,15 @@ func (fs *ChainDB) addLeaf(block *types.Block, mes bool, dup bool) error {
 			fs.leaves = append(fs.leaves, leaf)
 		}
 	} else {
-		log.Warn("Node is already in the tree", "num", number, "len", len(fs.blocks), "leaf", len(fs.leaves), "ckp", fs.CheckPoint, "mes", mes, "dup", dup, "err", e)
+		log.Debug("Node is already in the tree", "num", number, "len", len(fs.blocks), "leaf", len(fs.leaves), "ckp", fs.CheckPoint, "mes", mes, "dup", dup, "err", e)
 		if !mes {
 			return nil
 		}
 	}
-	//}
 
 	i := len(fs.leaves)
 	if mes {
-		log.Warn("Messing", "num", number, "len", len(fs.blocks), "leaf", len(fs.leaves), "ckp", fs.CheckPoint, "mes", mes, "dup", dup)
+		log.Debug("Messing", "num", number, "len", len(fs.blocks), "leaf", len(fs.leaves), "ckp", fs.CheckPoint, "mes", mes, "dup", dup)
 		sort.Slice(fs.leaves, func(i, j int) bool {
 			return fs.leaves[i].(BlockContent).n < fs.leaves[j].(BlockContent).n
 		})
@@ -202,7 +200,7 @@ func (fs *ChainDB) addLeaf(block *types.Block, mes bool, dup bool) error {
 		if i > len(fs.leaves) {
 			i = len(fs.leaves)
 		}
-		log.Warn("Messing recover", "num", number, "len", len(fs.blocks), "leaf", len(fs.leaves), "ckp", fs.CheckPoint, "mes", mes, "dup", dup, "i", i)
+		log.Debug("Messing recover", "num", number, "len", len(fs.blocks), "leaf", len(fs.leaves), "ckp", fs.CheckPoint, "mes", mes, "dup", dup, "i", i)
 
 	}
 
@@ -211,7 +209,7 @@ func (fs *ChainDB) addLeaf(block *types.Block, mes bool, dup bool) error {
 		//if bytes.Equal(tmp, fs.tree.MerkleRoot()){
 		//	log.Warn("Root is not changed", "num", number, "len", len(fs.blocks), "leaf", len(fs.leaves), "ckp", fs.CheckPoint, "mes", mes, "dup", dup, "i", i)
 		//}
-		log.Warn("Merkle root", "num", number, "root", common.BytesToHash(fs.tree.MerkleRoot()), "i", i, "len", len(fs.blocks), "leaf", len(fs.leaves), "ckp", fs.CheckPoint, "mes", mes, "dup", dup)
+		log.Debug("Merkle root", "num", number, "root", common.BytesToHash(fs.tree.MerkleRoot()), "i", i, "len", len(fs.blocks), "leaf", len(fs.leaves), "ckp", fs.CheckPoint, "mes", mes, "dup", dup)
 		if err := fs.writeRoot(number, fs.tree.MerkleRoot()); err != nil {
 			return err
 		}
