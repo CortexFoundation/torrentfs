@@ -128,12 +128,11 @@ func (m *Monitor) IndexCheck() error {
 			log.Warn("Fs storage is reloading ...", "name", m.ckp.Name, "number", checkpoint.TfsCheckPoint, "version", common.BytesToHash(version), "checkpoint", checkpoint.TfsRoot, "blocks", len(m.fs.Blocks()), "files", len(m.fs.Files()), "txs", m.fs.Txs())
 			m.fs.LastListenBlockNumber = 0
 			m.lastNumber = 0
-			//if m.lastNumber > checkpoint.TfsCheckPoint {
-			//	m.lastNumber = 0
-			//	if err := m.fs.Reset(); err != nil {
-			//		return err
-			//	}
-			//}
+			if m.lastNumber > checkpoint.TfsCheckPoint {
+				if err := m.fs.Reset(); err != nil {
+					return err
+				}
+			}
 		} else {
 			log.Info("Fs storage version check passed", "name", m.ckp.Name, "number", checkpoint.TfsCheckPoint, "version", common.BytesToHash(version), "blocks", len(m.fs.Blocks()), "files", len(m.fs.Files()), "txs", m.fs.Txs())
 		}

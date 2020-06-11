@@ -344,12 +344,11 @@ func (fs *ChainDB) progress(f *types.FileInfo, init bool) (bool, error) {
 }
 
 func (fs *ChainDB) find(b *types.Block) (bool, error) {
-	index := sort.Search(len(fs.blocks), func(i int) bool { return fs.blocks[i].Number >= b.Number })
-	if index == len(fs.blocks) {
-		log.Warn("Find AN Ancient block", "number", b.Number)
-		return false, nil
-	} else {
+	i := sort.Search(len(fs.blocks), func(i int) bool { return fs.blocks[i].Number >= b.Number })
+	if i < len(fs.blocks) && fs.blocks[i].Number == b.Number {
 		return true, nil
+	} else {
+		return false, nil
 	}
 }
 
@@ -366,9 +365,12 @@ func (fs *ChainDB) AddBlock(b *types.Block) error {
 	if b.Number > fs.CheckPoint {
 		u = true
 	} else {
-
-		if exist, _ := fs.find(b); exist {
+		//log.Warn("Find an ancient block", "number", b.Number)
+		if exist, _ := fs.find(b); !exist {
+			log.Warn("Find a missing ancient block", "number", b.Number)
 			u = true
+		} else {
+			//log.Warn("Ancient block already exist", "number", b.Number, "exist", exist)
 		}
 	}
 
@@ -389,14 +391,15 @@ func (fs *ChainDB) AddBlock(b *types.Block) error {
 
 			return buk.Put(k, v)
 		}); err == nil {
-			if err := fs.appendBlock(b); err == nil {
+//			if err := fs.appendBlock(b); err == nil {
+				fs.blocks = append(fs.blocks, b)
 				fs.txs += uint64(len(b.Txs))
 				if err := fs.addLeaf(b, false); err == nil {
 					if err := fs.writeCheckPoint(); err == nil {
 						fs.CheckPoint = b.Number
 					}
 				}
-			}
+//			}
 		} else {
 			return err
 		}
@@ -407,12 +410,13 @@ func (fs *ChainDB) AddBlock(b *types.Block) error {
 }
 
 func (fs *ChainDB) appendBlock(b *types.Block) error {
-	if len(fs.blocks) == 0 || fs.blocks[len(fs.blocks)-1].Number < b.Number {
-		log.Debug("Append block", "number", b.Number)
-		fs.blocks = append(fs.blocks, b)
-	} else {
-		return errors.New("err block duplicated")
-	}
+	fs.blocks = append(fs.blocks, b)
+	//if len(fs.blocks) == 0 || fs.blocks[len(fs.blocks)-1].Number < b.Number {
+	//	log.Debug("Append block", "number", b.Number)
+	//	fs.blocks = append(fs.blocks, b)
+	//} else {
+	//	return errors.New("err block duplicated")
+	//}
 	return nil
 }
 
