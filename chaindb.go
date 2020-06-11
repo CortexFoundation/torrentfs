@@ -187,13 +187,12 @@ func (fs *ChainDB) addLeaf(block *types.Block, mess bool) error {
 			return err
 		}
 
+		if i >= params.LEAFS {
+			fs.leaves = nil
+			fs.leaves = append(fs.leaves, BlockContent{x: hexutil.Encode(fs.tree.MerkleRoot())})
+			log.Debug("Next tree level", "leaf", len(fs.leaves), "root", hexutil.Encode(fs.tree.MerkleRoot()))
+		}
 		if !mess {
-			if len(fs.leaves) >= params.LEAFS {
-				fs.leaves = nil
-				fs.leaves = append(fs.leaves, BlockContent{x: hexutil.Encode(fs.tree.MerkleRoot())})
-				log.Debug("Next tree level", "leaf", len(fs.leaves), "root", hexutil.Encode(fs.tree.MerkleRoot()))
-			}
-
 			fs.CheckPoint = number
 		}
 
