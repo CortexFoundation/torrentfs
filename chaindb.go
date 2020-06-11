@@ -146,7 +146,7 @@ func (fs *ChainDB) initMerkleTree() error {
 	}
 	fs.tree = tr
 	for _, block := range fs.blocks {
-		if err := fs.addLeaf(block, false); err != nil {
+		if err := fs.addLeaf(block, false, false); err != nil {
 			panic("Storage merkletree construct failed")
 		}
 	}
@@ -161,11 +161,12 @@ func (fs *ChainDB) Metrics() time.Duration {
 }
 
 //Make sure the block group is increasing by number
-func (fs *ChainDB) addLeaf(block *types.Block, mess bool) error {
+func (fs *ChainDB) addLeaf(block *types.Block, mess bool, dup bool) error {
 	number := block.Number
-	leaf := BlockContent{x: block.Hash.String(), n: number}
-
-	fs.leaves = append(fs.leaves, leaf)
+	if !dup {
+		leaf := BlockContent{x: block.Hash.String(), n: number}
+		fs.leaves = append(fs.leaves, leaf)
+	}
 
 	i := len(fs.leaves)
 	if mess {
@@ -192,6 +193,7 @@ func (fs *ChainDB) addLeaf(block *types.Block, mess bool) error {
 			fs.leaves = append(fs.leaves, BlockContent{x: hexutil.Encode(fs.tree.MerkleRoot())})
 			log.Debug("Next tree level", "leaf", len(fs.leaves), "root", hexutil.Encode(fs.tree.MerkleRoot()))
 		}
+
 		if !mess {
 			fs.CheckPoint = number
 		}
@@ -374,6 +376,7 @@ func (fs *ChainDB) AddBlock(b *types.Block) error {
 	//	return nil
 	//}
 	if fs.GetBlockByNumber(b.Number) != nil {
+		fs.addLeaf(b, true, true)
 		return nil
 	}
 
@@ -398,15 +401,9 @@ func (fs *ChainDB) AddBlock(b *types.Block) error {
 		mes := false
 		if b.Number <= fs.CheckPoint {
 			mes = true
-			//log.Warn("Encounter messing block", "cur", b.Number, "len", len(fs.blocks), "ckp", fs.CheckPoint, "mes", mes)
 		}
-		if err := fs.addLeaf(b, mes); err == nil {
-			//if !mes {
-			//if err := fs.writeCheckPoint(); err == nil {
-			//fs.CheckPoint = b.Number
-			//}
-			//}
-		}
+
+		fs.addLeaf(b, mes, false)
 	} else {
 		return err
 	}
