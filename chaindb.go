@@ -435,9 +435,13 @@ func (fs *ChainDB) AddBlock(b *types.Block) error {
 	} else {
 		return err
 	}
-
-	fs.LastListenBlockNumber = b.Number
-	return fs.Flush()
+	if b.Number > fs.LastListenBlockNumber {
+		fs.LastListenBlockNumber = b.Number
+		if err := fs.Flush(); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (fs *ChainDB) Version() string {
