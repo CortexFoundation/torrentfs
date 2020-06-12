@@ -214,11 +214,11 @@ func (fs *ChainDB) addLeaf(block *types.Block, mes bool, dup bool) error {
 			return err
 		}
 
-		if i >= params.LEAFS {
-			fs.leaves = nil
-			fs.leaves = append(fs.leaves, BlockContent{x: hexutil.Encode(fs.tree.MerkleRoot())})
-			log.Debug("Next tree level", "leaf", len(fs.leaves), "root", hexutil.Encode(fs.tree.MerkleRoot()))
-		}
+		//if i >= params.LEAFS {
+		//	fs.leaves = nil
+		//	fs.leaves = append(fs.leaves, BlockContent{x: hexutil.Encode(fs.tree.MerkleRoot())})
+		//	log.Warn("Next tree level", "leaf", len(fs.leaves), "root", hexutil.Encode(fs.tree.MerkleRoot()), "num", number, "root", common.BytesToHash(fs.tree.MerkleRoot()), "i", i, "len", len(fs.blocks), "leaf", len(fs.leaves), "ckp", fs.CheckPoint, "mes", mes, "dup", dup)
+		//}
 
 		if !mes && number > fs.CheckPoint {
 			fs.CheckPoint = number
