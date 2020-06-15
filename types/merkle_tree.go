@@ -212,14 +212,14 @@ func (m *MerkleTree) AddNodeWithDup(c Content) error {
 			Hash: hash,
 			C:    c,
 			leaf: true,
-			dup: false,
+			dup:  false,
 			Tree: m,
 		}
 		dupLeaf := &Node{
 			Hash: hash,
 			C:    c,
 			leaf: true,
-			dup: true,
+			dup:  true,
 			Tree: m,
 		}
 		h := m.hashStrategy()
@@ -227,11 +227,11 @@ func (m *MerkleTree) AddNodeWithDup(c Content) error {
 			return err
 		}
 		root := &Node{
-			Tree:   m,
-			Left:   newLeaf,
-			Right:  dupLeaf,
-			Hash:   h.Sum(nil),
-			C:      nil,
+			Tree:  m,
+			Left:  newLeaf,
+			Right: dupLeaf,
+			Hash:  h.Sum(nil),
+			C:     nil,
 		}
 		newLeaf.Parent = root
 		dupLeaf.Parent = root
@@ -243,11 +243,11 @@ func (m *MerkleTree) AddNodeWithDup(c Content) error {
 	// Otherwise, the new leaf is replicated and a new path is created to the root.
 	if m.Leafs[n-1].dup {
 		newLeaf := &Node{
-			Hash: hash,
-			C:    c,
-			leaf: true,
-			dup: false,
-			Tree: m,
+			Hash:   hash,
+			C:      c,
+			leaf:   true,
+			dup:    false,
+			Tree:   m,
 			Parent: m.Leafs[n-1].Parent,
 		}
 		newLeaf.Parent.Right = newLeaf
@@ -264,14 +264,14 @@ func (m *MerkleTree) AddNodeWithDup(c Content) error {
 			Hash: hash,
 			C:    c,
 			leaf: true,
-			dup: false,
+			dup:  false,
 			Tree: m,
 		}
 		dupLeaf := &Node{
 			Hash: hash,
 			C:    c,
 			leaf: true,
-			dup: true,
+			dup:  true,
 			Tree: m,
 		}
 		m.Leafs = append(m.Leafs, newLeaf)
@@ -282,24 +282,24 @@ func (m *MerkleTree) AddNodeWithDup(c Content) error {
 			return err
 		}
 		node := &Node{
-			Tree:   m,
-			Left:   newLeaf,
-			Right:  dupLeaf,
-			Hash:   h.Sum(nil),
+			Tree:  m,
+			Left:  newLeaf,
+			Right: dupLeaf,
+			Hash:  h.Sum(nil),
 		}
 		newLeaf.Parent = node
 		dupLeaf.Parent = node
 		lastNode := m.Leafs[n-1].Parent
-		for n /= 2; n % 2 == 0; n /= 2 {
+		for n /= 2; n%2 == 0; n /= 2 {
 			h = m.hashStrategy()
 			if _, err := h.Write(append(node.Hash, node.Hash...)); err != nil {
 				return err
 			}
 			parentNode := &Node{
-				Tree:   m,
-				Left:   node,
-				Right:  node,
-				Hash:   h.Sum(nil),
+				Tree:  m,
+				Left:  node,
+				Right: node,
+				Hash:  h.Sum(nil),
 			}
 			node.Parent = parentNode
 			node = parentNode
@@ -311,11 +311,11 @@ func (m *MerkleTree) AddNodeWithDup(c Content) error {
 				return err
 			}
 			root := &Node{
-				Tree:   m,
-				Left:   lastNode,
-				Right:  node,
-				Hash:   h.Sum(nil),
-				C:      nil,
+				Tree:  m,
+				Left:  lastNode,
+				Right: node,
+				Hash:  h.Sum(nil),
+				C:     nil,
 			}
 			node.Parent = root
 			lastNode.Parent = root

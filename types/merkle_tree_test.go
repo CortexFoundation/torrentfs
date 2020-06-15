@@ -74,7 +74,7 @@ func TestMerkleTree_AddNodeWithDup(t *testing.T) {
 	for i := 1; i < 10; i += 1 {
 		c := testContents[i]
 		root_rebuild.Leafs = append(root_rebuild.Leafs, &Node{
-			C:      c,
+			C: c,
 		})
 		root_add.AddNodeWithDup(c)
 		add_hash := common.BytesToHash(root_add.merkleRoot)
