@@ -53,11 +53,11 @@ func TestNewTree(t *testing.T) {
 	}
 }
 
-func TestMerkleTree_AddNode(t *testing.T) {
-	//root_rebuild, err := NewTree([]Content{testContents[0]})
-	//if err != nil {
-	//	t.Fatal("new tree error: ", err)
-	//}
+func TestMerkleTree_AddNodeWithDup(t *testing.T) {
+	root_rebuild, err := NewTree([]Content{testContents[0]})
+	if err != nil {
+		t.Fatal("new tree error: ", err)
+	}
 
 	root_add, err := NewTree([]Content{testContents[0]})
 	if err != nil {
@@ -71,24 +71,27 @@ func TestMerkleTree_AddNode(t *testing.T) {
 	//t.Log(root_rebuild.String())
 	//t.Log(root_add.String())
 
-	for i := 1; i < 2; i += 1 {
+	for i := 1; i < 10; i += 1 {
 		c := testContents[i]
-		//root_rebuild.Leafs = append(root_rebuild.Leafs, &Node{
-		//	C:      c,
-		//})
-		//root_rebuild.RebuildTree()
-
-		root_add.AddNode(c)
-
+		root_rebuild.Leafs = append(root_rebuild.Leafs, &Node{
+			C:      c,
+		})
+		root_add.AddNodeWithDup(c)
+		add_hash := common.BytesToHash(root_add.merkleRoot)
+		root_add.RebuildTree()
+		rebuild_hash := common.BytesToHash(root_add.merkleRoot)
+		//t.Log(root_add.String())
 		if v, err := root_add.VerifyTree(); !v || err != nil {
-			t.Errorf("root add not verified, at %d", i)
+			t.Fatalf("root add not verified, at %d", i)
 		}
+
 		//rebuildHash := common.BytesToHash(root_rebuild.Root.Hash).Hex()
 		//addHash := common.BytesToHash(root_add.Root.Hash).Hex()
-		//if rebuildHash != addHash {
-		//t.Log(root_rebuild.String())
-		//t.Log(root_add.String())
-		//t.Fatalf("root unmatched at %d. rebuild hash is %s, add hash is %s", i, rebuildHash, addHash)
-		//}
+		//fmt.Println(rebuildHash, addHash)
+		if add_hash != rebuild_hash {
+			t.Log(root_rebuild.String())
+			t.Log(root_add.String())
+			t.Fatalf("root unmatched at %d. rebuild hash is %s, add hash is %s", i, rebuild_hash, add_hash)
+		}
 	}
 }
