@@ -484,5 +484,7 @@ func print2DUtil(root *Node, space int) {
 
 func prettyPrint(root *Node, space int) {
 	print2DUtil(root, space)
-	fmt.Println(".........................................")
+	for i := 0; i < 4; i++ {
+		fmt.Println("")
+	}
 }
