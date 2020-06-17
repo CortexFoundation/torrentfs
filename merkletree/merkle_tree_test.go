@@ -89,6 +89,10 @@ func TestMerkleTree_AddNode(t *testing.T) {
 			t.Log("AddNode:" + t_add.String())
 			t.Fatalf("root unmatched at %d. rebuild hash is %s, add hash is %s", i, rebuild_hash, add_hash)
 		}
-		t.Log(t_add.String())
+		//t.Log(t_add.String())
+		prettyPrint(t_rebuild.Root, 0)
 	}
+	//	t.Log(t_add.String())
+	//print2DUtil(t_add.Root, 0)
+	//	print2DUtil(t_rebuild.Root, 0)
 }

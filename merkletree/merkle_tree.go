@@ -454,3 +454,27 @@ func (m *MerkleTree) String() string {
 	}
 	return s
 }
+
+func print2DUtil(root *Node, space int) {
+	if root == nil {
+		return
+	}
+	// Increase distance between levels
+	space += 9
+	// Process right child first
+	print2DUtil(root.Right, space)
+	// Print current node after space
+	// count
+	//fmt.Println()
+	for i := 5; i < space; i++ {
+		fmt.Print(" ")
+	}
+	fmt.Println(root.Hash[31])
+	// Process left child
+	print2DUtil(root.Left, space)
+}
+
+func prettyPrint(root *Node, space int) {
+	print2DUtil(root, space)
+	fmt.Println(".........................................")
+}
