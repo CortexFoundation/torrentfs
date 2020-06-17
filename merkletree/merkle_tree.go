@@ -467,8 +467,16 @@ func print2DUtil(root *Node, space int) {
 	// count
 	//fmt.Println()
 	for i := 5; i < space; i++ {
-		fmt.Print(" ")
+		if i == space-6 {
+			fmt.Print("|")
+		}
+		if i > space-6 && space > 9 {
+			fmt.Print(".")
+		} else {
+			fmt.Print(" ")
+		}
 	}
+	fmt.Print(" ")
 	fmt.Println(root.Hash[31])
 	// Process left child
 	print2DUtil(root.Left, space)
