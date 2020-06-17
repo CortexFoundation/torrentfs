@@ -467,14 +467,25 @@ func print2DUtil(root *Node, space int) {
 	// count
 	//fmt.Println()
 	for i := 5; i < space; i++ {
-		fmt.Print(" ")
+		if i == space-6 {
+			fmt.Print("|")
+		}
+		if i > space-7 && space > 9 {
+			fmt.Print("-")
+		} else {
+			fmt.Print(" ")
+		}
 	}
-	fmt.Println(root.Hash[31])
+	fmt.Print("[")
+	fmt.Print(root.Hash[31])
+	fmt.Println("]")
 	// Process left child
 	print2DUtil(root.Left, space)
 }
 
 func prettyPrint(root *Node, space int) {
 	print2DUtil(root, space)
-	fmt.Println(".........................................")
+	for i := 0; i < 4; i++ {
+		fmt.Println("")
+	}
 }
