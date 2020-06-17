@@ -9,6 +9,7 @@ import (
 
 func TestGetFile(t *testing.T) {
 	DefaultConfig.DataDir = "data"
+	DefaultConfig.Port = 0
 	ih := "aea5584d0cd3865e90c80eace3bfcb062473d966"
 	fmt.Println(DefaultConfig)
 	tm, _ := NewTorrentManager(&DefaultConfig, 1, false, false)
