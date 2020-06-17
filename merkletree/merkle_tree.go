@@ -476,7 +476,7 @@ func print2DUtil(root *Node, space int) {
 			fmt.Print(" ")
 		}
 	}
-	fmt.Print("-")
+	fmt.Print("")
 	fmt.Println(root.Hash[31])
 	// Process left child
 	print2DUtil(root.Left, space)
