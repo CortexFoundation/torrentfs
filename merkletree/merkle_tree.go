@@ -471,7 +471,7 @@ func print2DUtil(root *Node, space int) {
 			fmt.Print("|")
 		}
 		if i > space-6 && space > 9 {
-			fmt.Print(".")
+			fmt.Print("-")
 		} else {
 			fmt.Print(" ")
 		}
