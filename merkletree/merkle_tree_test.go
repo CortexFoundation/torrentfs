@@ -51,47 +51,48 @@ func TestNewTree(t *testing.T) {
 	if rootHash != want {
 		t.Errorf("root unmatched. should be %s, got %s", want, rootHash)
 	}
+	//t.Log(root.String())
 }
 
 func TestMerkleTree_AddNode(t *testing.T) {
-	root_rebuild, err := NewTree([]Content{testContents[0]})
+	t_rebuild, err := NewTree([]Content{testContents[0]})
 	if err != nil {
 		t.Fatal("new tree error: ", err)
 	}
 
-	root_add, err := NewTree([]Content{testContents[0]})
+	t_add, err := NewTree([]Content{testContents[0]})
 	if err != nil {
 		t.Fatal("new tree error: ", err)
 	}
-	//rebuildHash := common.BytesToHash(root_rebuild.Root.Hash).Hex()
-	//addHash := common.BytesToHash(root_add.Root.Hash).Hex()
-	//if rebuildHash != addHash {
-	//	t.Fatalf("root unmatched at %d. rebuild hash is %s, add hash is %s", 0, rebuildHash, addHash)
-	//}
-	//t.Log(root_rebuild.String())
-	//t.Log(root_add.String())
-
+	var tmp []Content
 	for i := 1; i < 10; i += 1 {
-		c := testContents[i]
-		root_rebuild.Leafs = append(root_rebuild.Leafs, &Node{
-			C: c,
-		})
-		root_add.AddNode(c)
-		add_hash := common.BytesToHash(root_add.merkleRoot)
-		root_add.RebuildTree()
-		rebuild_hash := common.BytesToHash(root_add.merkleRoot)
-		//t.Log(root_add.String())
-		if v, err := root_add.VerifyTree(); !v || err != nil {
+		tmp = nil
+		for j := 0; j <= i; j++ {
+			tmp = append(tmp, testContents[j])
+		}
+		t_rebuild.RebuildTreeWith(tmp)
+		rebuild_hash := common.BytesToHash(t_rebuild.merkleRoot)
+
+		t_add.AddNode(testContents[i])
+		add_hash := common.BytesToHash(t_add.merkleRoot)
+
+		if v, err := t_add.VerifyTree(); !v || err != nil {
 			t.Fatalf("root add not verified, at %d", i)
 		}
 
-		//rebuildHash := common.BytesToHash(root_rebuild.Root.Hash).Hex()
-		//addHash := common.BytesToHash(root_add.Root.Hash).Hex()
-		//fmt.Println(rebuildHash, addHash)
-		if add_hash != rebuild_hash {
-			t.Log(root_rebuild.String())
-			t.Log(root_add.String())
+		if v, err := t_rebuild.VerifyTree(); !v || err != nil {
+			t.Fatalf("root add not verified, at %d", i)
+		}
+
+		if add_hash != rebuild_hash || len(t_add.Leafs) != len(t_rebuild.Leafs) {
+			t.Log("Rebuild:" + t_rebuild.String())
+			t.Log("AddNode:" + t_add.String())
 			t.Fatalf("root unmatched at %d. rebuild hash is %s, add hash is %s", i, rebuild_hash, add_hash)
 		}
+		//t.Log(t_add.String())
+		prettyPrint(t_rebuild.Root, 0)
 	}
+	//	t.Log(t_add.String())
+	//print2DUtil(t_add.Root, 0)
+	//	print2DUtil(t_rebuild.Root, 0)
 }
