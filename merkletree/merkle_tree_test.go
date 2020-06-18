@@ -90,9 +90,52 @@ func TestMerkleTree_AddNode(t *testing.T) {
 			t.Fatalf("root unmatched at %d. rebuild hash is %s, add hash is %s", i, rebuild_hash, add_hash)
 		}
 		//t.Log(t_add.String())
-		prettyPrint(t_rebuild.Root, 0)
+		//prettyPrint(t_rebuild.Root, 0)
 	}
 	//	t.Log(t_add.String())
 	//print2DUtil(t_add.Root, 0)
 	//	print2DUtil(t_rebuild.Root, 0)
+}
+
+func TestMerkleTree_VerifyTree(t *testing.T) {
+	root, err := NewTree([]Content{testContents[0]})
+	if err != nil {
+		t.Fatal("new tree error: ", err)
+	}
+	verify0, err := root.VerifyTree()
+	if err != nil {
+		t.Fatal("verify content error: ", err)
+	}
+	if verify0 != true {
+		t.Fatal("the tree should be verified true")
+	}
+	root.Root.Hash[0] = root.Root.Hash[0] + 1
+	verify1, err := root.VerifyTree()
+	if err != nil {
+		t.Fatal("verify content error: ", err)
+	}
+	if verify1 != false {
+		t.Fatal("the tree should be verified false")
+	}
+}
+
+func TestMerkleTree_VerifyContent(t *testing.T) {
+	root, err := NewTree([]Content{testContents[0]})
+	if err != nil {
+		t.Fatal("new tree error: ", err)
+	}
+	verify0, err := root.VerifyContent(testContents[0])
+	if err != nil {
+		t.Fatal("verify content error: ", err)
+	}
+	if verify0 != true {
+		t.Fatal("the content 0 should be in the tree")
+	}
+	verify1, err := root.VerifyContent(testContents[1])
+	if err != nil {
+		t.Fatal("verify content error: ", err)
+	}
+	if verify1 != false {
+		t.Fatal("the content 1 should not be in the tree")
+	}
 }
