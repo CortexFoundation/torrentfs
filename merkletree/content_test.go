@@ -7,8 +7,7 @@ import (
 
 func TestBlockContent_CalculateHash(t *testing.T)  {
 	bc := BlockContent{
-		X: "blockContent test",
-		N: 0,
+		x: "blockContent test",
 	}
 	hash, err := bc.CalculateHash()
 	if err != nil {
@@ -24,16 +23,13 @@ func TestBlockContent_CalculateHash(t *testing.T)  {
 
 func TestBlockContent_Equals(t *testing.T) {
 	bc1 := BlockContent{
-		X: "blockContent1",
-		N: 0,
+		x: "blockContent1",
 	}
 	bc2 := BlockContent{
-		X: "blockContent2",
-		N: 0,
+		x: "blockContent2",
 	}
 	bc3 := BlockContent{
-		X: "blockContent2",
-		N: 0,
+		x: "blockContent2",
 	}
 	equal12, err := bc1.Equals(bc2)
 	if err != nil {
