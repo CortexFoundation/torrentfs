@@ -28,4 +28,18 @@ func TestCountValues(t *testing.T) {
 	}
 	fmt.Println("uncompressed data:", uncompressedData)
 	fmt.Println("uncompressed data len:", len(uncompressedData))
+
+	compressedData, compressedDataErr = SnappyEncode(data)
+	if compressedDataErr != nil {
+		log.Fatal(compressedDataErr)
+	}
+	fmt.Println("compressed data:", compressedData)
+	fmt.Println("compressed data len:", len(compressedData))
+
+	uncompressedData, uncompressedDataErr = SnappyDecode(compressedData)
+	if uncompressedDataErr != nil {
+		log.Fatal(uncompressedDataErr)
+	}
+	fmt.Println("uncompressed data:", uncompressedData)
+	fmt.Println("uncompressed data len:", len(uncompressedData))
 }

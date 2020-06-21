@@ -3,6 +3,7 @@ package compress
 import (
 	"bytes"
 	"compress/gzip"
+	"github.com/golang/snappy"
 	"io"
 )
 
@@ -45,4 +46,16 @@ func ZipData(data []byte) (compressedData []byte, err error) {
 	compressedData = b.Bytes()
 
 	return
+}
+
+func SnappyEncode(data []byte) ([]byte, error) {
+	return snappy.Encode(nil, data), nil
+}
+
+func SnappyDecode(data []byte) ([]byte, error) {
+	res, err := snappy.Decode(nil, data)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
 }
