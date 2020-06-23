@@ -228,9 +228,8 @@ func (m *Monitor) buildConnection(clientURI string) (*rpc.Client, error) {
 
 func (m *Monitor) rpcBlockByNumber(blockNumber uint64) (*types.Block, error) {
 	block := &types.Block{}
-	blockNumberHex := "0x" + strconv.FormatUint(blockNumber, 16)
 
-	err := m.cl.Call(block, "ctxc_getBlockByNumber", blockNumberHex, true)
+	err := m.cl.Call(block, "ctxc_getBlockByNumber", "0x"+strconv.FormatUint(blockNumber, 16), true)
 	if err == nil {
 		return block, nil
 	}
