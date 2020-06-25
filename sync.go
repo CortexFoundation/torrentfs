@@ -21,6 +21,7 @@ import (
 	"github.com/CortexFoundation/CortexTheseus/common/hexutil"
 	"github.com/CortexFoundation/CortexTheseus/common/mclock"
 	"github.com/CortexFoundation/CortexTheseus/log"
+	"github.com/CortexFoundation/CortexTheseus/metrics"
 	"github.com/CortexFoundation/CortexTheseus/rpc"
 	"github.com/CortexFoundation/torrentfs/params"
 	"github.com/CortexFoundation/torrentfs/types"
@@ -37,6 +38,13 @@ import (
 const (
 	batch = params.SyncBatch
 	delay = params.Delay
+)
+
+var (
+	rpcBlockMeter   = metrics.NewRegisteredMeter("torrent/block/call", nil)
+	rpcCurrentMeter = metrics.NewRegisteredMeter("torrent/current/call", nil)
+	rpcUploadMeter  = metrics.NewRegisteredMeter("torrent/upload/call", nil)
+	rpcReceiptMeter = metrics.NewRegisteredMeter("torrent/receipt/call", nil)
 )
 
 // Monitor observes the data changes on the blockchain and synchronizes.
@@ -244,6 +252,7 @@ func (m *Monitor) buildConnection(ipcpath string, rpcuri string) (*rpc.Client, e
 func (m *Monitor) rpcBlockByNumber(blockNumber uint64) (*types.Block, error) {
 	block := &types.Block{}
 
+	rpcBlockMeter.Mark(1)
 	err := m.cl.Call(block, "ctxc_getBlockByNumber", "0x"+strconv.FormatUint(blockNumber, 16), true)
 	if err == nil {
 		return block, nil
@@ -277,6 +286,7 @@ func (m *Monitor) getRemainingSize(address string) (uint64, error) {
 		return size.(uint64), nil
 	}
 	var remainingSize hexutil.Uint64
+	rpcUploadMeter.Mark(1)
 	if err := m.cl.Call(&remainingSize, "ctxc_getUpload", address, "latest"); err != nil {
 		return 0, err
 	}
@@ -288,6 +298,7 @@ func (m *Monitor) getRemainingSize(address string) (uint64, error) {
 }
 
 func (m *Monitor) getReceipt(tx string) (receipt types.Receipt, err error) {
+	rpcReceiptMeter.Mark(1)
 	if err = m.cl.Call(&receipt, "ctxc_getTransactionReceipt", tx); err != nil {
 		log.Warn("R is nil", "R", tx, "err", err)
 		return receipt, err
@@ -367,7 +378,7 @@ func (m *Monitor) parseBlockTorrentInfo(b *types.Block) (bool, error) {
 					return false, err
 				}
 				//todo
-				if receipt.Status != 1 || receipt.GasUsed != params.UploadGas{
+				if receipt.Status != 1 || receipt.GasUsed != params.UploadGas {
 					continue
 				}
 
@@ -550,6 +561,7 @@ func (m *Monitor) syncLatestBlock() {
 func (m *Monitor) currentBlock() (uint64, error) {
 	var currentNumber hexutil.Uint64
 
+	rpcCurrentMeter.Mark(1)
 	if err := m.cl.Call(&currentNumber, "ctxc_blockNumber"); err != nil {
 		log.Error("Call ipc method ctxc_blockNumber failed", "error", err)
 		return 0, err
