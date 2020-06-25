@@ -623,21 +623,12 @@ func (m *Monitor) syncLastBlock() uint64 {
 			break
 		}
 		if m.ckp != nil {
-			/*if i < m.ckp.TfsCheckPoint {
-				log.Info("hits in")
-				if _, ok := m.ckp.Hits[i]; !ok {
-					m.lastNumber = i - 1
-					continue
-				}
-				log.Info("hits")
-			} else {*/
 			if m.Skip(i) {
 				m.lastNumber = i - 1
 				i++
 				continue
 
 			}
-			//}
 		}
 		if maxNumber-i >= m.scope {
 			blocks, rpcErr := m.rpcBatchBlockByNumber(i, i+m.scope)
@@ -697,7 +688,7 @@ func (m *Monitor) solve(block *types.Block) error {
 		defer func() {
 			elapsed_a := time.Duration(mclock.Now()) - time.Duration(m.start)
 			log.Info(ProgressBar(int64(i), int64(m.currentNumber), ""), "start", m.startNumber, "max", uint64(m.currentNumber), "last", m.lastNumber, "cur", i, "bps", math.Abs(float64(i)-float64(m.startNumber))*1000*1000*1000/float64(elapsed_a), "elapsed", common.PrettyDuration(elapsed_a), "scope", m.scope, "db", common.PrettyDuration(m.fs.Metrics()), "blocks", len(m.fs.Blocks()), "txs", m.fs.Txs(), "files", len(m.fs.Files()), "root", m.fs.Root())
-			//m.fs.SkipPrint()
+			m.fs.SkipPrint()
 		}()
 	}
 	if hash, suc := m.blockCache.Get(i); !suc || hash != block.Hash.Hex() {
