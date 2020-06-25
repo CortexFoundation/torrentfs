@@ -622,14 +622,13 @@ func (m *Monitor) syncLastBlock() uint64 {
 			maxNumber = i - 1
 			break
 		}
-		if m.ckp != nil {
-			if m.Skip(i) {
-				m.lastNumber = i - 1
-				i++
-				continue
 
-			}
+		if m.ckp != nil && m.Skip(i) {
+			m.lastNumber = i - 1
+			i++
+			continue
 		}
+
 		if maxNumber-i >= m.scope {
 			blocks, rpcErr := m.rpcBatchBlockByNumber(i, i+m.scope)
 			if rpcErr != nil {
