@@ -63,6 +63,8 @@ type Monitor struct {
 	ckp         *params.TrustedCheckpoint
 	start       mclock.AbsTime
 
+	local bool
+
 	closeOnce sync.Once
 }
 
@@ -214,7 +216,8 @@ func (m *Monitor) buildConnection(ipcpath string, rpcuri string) (*rpc.Client, e
 			if err != nil {
 				log.Warn("Building internal ipc connection ... ", "ipc", ipcpath, "rpc", rpcuri, "error", err, "terminated", m.terminated)
 			} else {
-				log.Info("Internal ipc connection established", "ipc", ipcpath, "rpc", rpcuri)
+				m.local = true
+				log.Info("Internal ipc connection established", "ipc", ipcpath, "rpc", rpcuri, "local", m.local)
 				return cl, nil
 			}
 
@@ -231,7 +234,7 @@ func (m *Monitor) buildConnection(ipcpath string, rpcuri string) (*rpc.Client, e
 	if err != nil {
 		log.Warn("Building internal rpc connection ... ", "ipc", ipcpath, "rpc", rpcuri, "error", err, "terminated", m.terminated)
 	} else {
-		log.Info("Internal rpc connection established", "ipc", ipcpath, "rpc", rpcuri)
+		log.Info("Internal rpc connection established", "ipc", ipcpath, "rpc", rpcuri, "local", m.local)
 		return cl, nil
 	}
 
@@ -512,7 +515,11 @@ func (m *Monitor) listenLatestBlock() {
 		select {
 		case <-timer.C:
 			m.currentBlock()
-			timer.Reset(time.Second * queryTimeInterval)
+			if m.local {
+				timer.Reset(time.Second * queryTimeInterval)
+			} else {
+				timer.Reset(time.Second * queryTimeInterval * 10)
+			}
 		case <-m.exitCh:
 			log.Info("Block listener stopped")
 			return
