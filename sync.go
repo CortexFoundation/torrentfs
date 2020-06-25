@@ -357,8 +357,7 @@ func (m *Monitor) parseBlockTorrentInfo(b *types.Block) (bool, error) {
 				if tx.Recipient == nil {
 					continue
 				}
-				addr := *tx.Recipient
-				file := m.fs.GetFileByAddr(addr)
+				file := m.fs.GetFileByAddr(*tx.Recipient)
 				if file == nil {
 					continue
 				}
@@ -368,17 +367,13 @@ func (m *Monitor) parseBlockTorrentInfo(b *types.Block) (bool, error) {
 					return false, err
 				}
 				//todo
-				if receipt.Status != 1 {
+				if receipt.Status != 1 || receipt.GasUsed != params.UploadGas{
 					continue
 				}
 
-				if receipt.GasUsed != params.UploadGas {
-					continue
-				}
-
-				remainingSize, err := m.getRemainingSize(addr.String())
+				remainingSize, err := m.getRemainingSize((*tx.Recipient).String())
 				if err != nil {
-					log.Error("Get remain failed", "err", err, "addr", addr.String())
+					log.Error("Get remain failed", "err", err, "addr", (*tx.Recipient).String())
 					return false, err
 				}
 				if file.LeftSize > remainingSize {
@@ -392,9 +387,9 @@ func (m *Monitor) parseBlockTorrentInfo(b *types.Block) (bool, error) {
 							bytesRequested = file.Meta.RawSize - file.LeftSize
 						}
 						if file.LeftSize == 0 {
-							log.Debug("Data processing completed !!!", "ih", file.Meta.InfoHash, "addr", addr.String(), "remain", common.StorageSize(remainingSize), "request", common.StorageSize(bytesRequested), "raw", common.StorageSize(file.Meta.RawSize), "number", b.Number)
+							log.Debug("Data processing completed !!!", "ih", file.Meta.InfoHash, "addr", (*tx.Recipient).String(), "remain", common.StorageSize(remainingSize), "request", common.StorageSize(bytesRequested), "raw", common.StorageSize(file.Meta.RawSize), "number", b.Number)
 						} else {
-							log.Debug("Data processing ...", "ih", file.Meta.InfoHash, "addr", addr.String(), "remain", common.StorageSize(remainingSize), "request", common.StorageSize(bytesRequested), "raw", common.StorageSize(file.Meta.RawSize), "number", b.Number)
+							log.Debug("Data processing ...", "ih", file.Meta.InfoHash, "addr", (*tx.Recipient).String(), "remain", common.StorageSize(remainingSize), "request", common.StorageSize(bytesRequested), "raw", common.StorageSize(file.Meta.RawSize), "number", b.Number)
 						}
 
 						m.dl.UpdateTorrent(types.FlowControlMeta{
