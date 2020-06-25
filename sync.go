@@ -21,6 +21,7 @@ import (
 	"github.com/CortexFoundation/CortexTheseus/common/hexutil"
 	"github.com/CortexFoundation/CortexTheseus/common/mclock"
 	"github.com/CortexFoundation/CortexTheseus/log"
+	"github.com/CortexFoundation/CortexTheseus/metrics"
 	"github.com/CortexFoundation/CortexTheseus/rpc"
 	"github.com/CortexFoundation/torrentfs/params"
 	"github.com/CortexFoundation/torrentfs/types"
@@ -37,6 +38,13 @@ import (
 const (
 	batch = params.SyncBatch
 	delay = params.Delay
+)
+
+var (
+	rpcBlockMeter   = metrics.NewRegisteredMeter("torrent/block/call", nil)
+	rpcCurrentMeter = metrics.NewRegisteredMeter("torrent/current/call", nil)
+	rpcUploadMeter  = metrics.NewRegisteredMeter("torrent/upload/call", nil)
+	rpcReceiptMeter = metrics.NewRegisteredMeter("torrent/receipt/call", nil)
 )
 
 // Monitor observes the data changes on the blockchain and synchronizes.
@@ -62,6 +70,8 @@ type Monitor struct {
 	sizeCache   *lru.Cache
 	ckp         *params.TrustedCheckpoint
 	start       mclock.AbsTime
+
+	local bool
 
 	closeOnce sync.Once
 }
@@ -214,7 +224,8 @@ func (m *Monitor) buildConnection(ipcpath string, rpcuri string) (*rpc.Client, e
 			if err != nil {
 				log.Warn("Building internal ipc connection ... ", "ipc", ipcpath, "rpc", rpcuri, "error", err, "terminated", m.terminated)
 			} else {
-				log.Info("Internal ipc connection established", "ipc", ipcpath, "rpc", rpcuri)
+				m.local = true
+				log.Info("Internal ipc connection established", "ipc", ipcpath, "rpc", rpcuri, "local", m.local)
 				return cl, nil
 			}
 
@@ -231,7 +242,7 @@ func (m *Monitor) buildConnection(ipcpath string, rpcuri string) (*rpc.Client, e
 	if err != nil {
 		log.Warn("Building internal rpc connection ... ", "ipc", ipcpath, "rpc", rpcuri, "error", err, "terminated", m.terminated)
 	} else {
-		log.Info("Internal rpc connection established", "ipc", ipcpath, "rpc", rpcuri)
+		log.Info("Internal rpc connection established", "ipc", ipcpath, "rpc", rpcuri, "local", m.local)
 		return cl, nil
 	}
 
@@ -241,6 +252,7 @@ func (m *Monitor) buildConnection(ipcpath string, rpcuri string) (*rpc.Client, e
 func (m *Monitor) rpcBlockByNumber(blockNumber uint64) (*types.Block, error) {
 	block := &types.Block{}
 
+	rpcBlockMeter.Mark(1)
 	err := m.cl.Call(block, "ctxc_getBlockByNumber", "0x"+strconv.FormatUint(blockNumber, 16), true)
 	if err == nil {
 		return block, nil
@@ -274,6 +286,7 @@ func (m *Monitor) getRemainingSize(address string) (uint64, error) {
 		return size.(uint64), nil
 	}
 	var remainingSize hexutil.Uint64
+	rpcUploadMeter.Mark(1)
 	if err := m.cl.Call(&remainingSize, "ctxc_getUpload", address, "latest"); err != nil {
 		return 0, err
 	}
@@ -285,6 +298,7 @@ func (m *Monitor) getRemainingSize(address string) (uint64, error) {
 }
 
 func (m *Monitor) getReceipt(tx string) (receipt types.Receipt, err error) {
+	rpcReceiptMeter.Mark(1)
 	if err = m.cl.Call(&receipt, "ctxc_getTransactionReceipt", tx); err != nil {
 		log.Warn("R is nil", "R", tx, "err", err)
 		return receipt, err
@@ -354,8 +368,7 @@ func (m *Monitor) parseBlockTorrentInfo(b *types.Block) (bool, error) {
 				if tx.Recipient == nil {
 					continue
 				}
-				addr := *tx.Recipient
-				file := m.fs.GetFileByAddr(addr)
+				file := m.fs.GetFileByAddr(*tx.Recipient)
 				if file == nil {
 					continue
 				}
@@ -365,17 +378,13 @@ func (m *Monitor) parseBlockTorrentInfo(b *types.Block) (bool, error) {
 					return false, err
 				}
 				//todo
-				if receipt.Status != 1 {
+				if receipt.Status != 1 || receipt.GasUsed != params.UploadGas {
 					continue
 				}
 
-				if receipt.GasUsed != params.UploadGas {
-					continue
-				}
-
-				remainingSize, err := m.getRemainingSize(addr.String())
+				remainingSize, err := m.getRemainingSize((*tx.Recipient).String())
 				if err != nil {
-					log.Error("Get remain failed", "err", err, "addr", addr.String())
+					log.Error("Get remain failed", "err", err, "addr", (*tx.Recipient).String())
 					return false, err
 				}
 				if file.LeftSize > remainingSize {
@@ -389,9 +398,9 @@ func (m *Monitor) parseBlockTorrentInfo(b *types.Block) (bool, error) {
 							bytesRequested = file.Meta.RawSize - file.LeftSize
 						}
 						if file.LeftSize == 0 {
-							log.Debug("Data processing completed !!!", "ih", file.Meta.InfoHash, "addr", addr.String(), "remain", common.StorageSize(remainingSize), "request", common.StorageSize(bytesRequested), "raw", common.StorageSize(file.Meta.RawSize), "number", b.Number)
+							log.Debug("Data processing completed !!!", "ih", file.Meta.InfoHash, "addr", (*tx.Recipient).String(), "remain", common.StorageSize(remainingSize), "request", common.StorageSize(bytesRequested), "raw", common.StorageSize(file.Meta.RawSize), "number", b.Number)
 						} else {
-							log.Debug("Data processing ...", "ih", file.Meta.InfoHash, "addr", addr.String(), "remain", common.StorageSize(remainingSize), "request", common.StorageSize(bytesRequested), "raw", common.StorageSize(file.Meta.RawSize), "number", b.Number)
+							log.Debug("Data processing ...", "ih", file.Meta.InfoHash, "addr", (*tx.Recipient).String(), "remain", common.StorageSize(remainingSize), "request", common.StorageSize(bytesRequested), "raw", common.StorageSize(file.Meta.RawSize), "number", b.Number)
 						}
 
 						m.dl.UpdateTorrent(types.FlowControlMeta{
@@ -512,7 +521,11 @@ func (m *Monitor) listenLatestBlock() {
 		select {
 		case <-timer.C:
 			m.currentBlock()
-			timer.Reset(time.Second * queryTimeInterval)
+			if m.local {
+				timer.Reset(time.Second * queryTimeInterval)
+			} else {
+				timer.Reset(time.Second * queryTimeInterval * 10)
+			}
 		case <-m.exitCh:
 			log.Info("Block listener stopped")
 			return
@@ -548,6 +561,7 @@ func (m *Monitor) syncLatestBlock() {
 func (m *Monitor) currentBlock() (uint64, error) {
 	var currentNumber hexutil.Uint64
 
+	rpcCurrentMeter.Mark(1)
 	if err := m.cl.Call(&currentNumber, "ctxc_blockNumber"); err != nil {
 		log.Error("Call ipc method ctxc_blockNumber failed", "error", err)
 		return 0, err
