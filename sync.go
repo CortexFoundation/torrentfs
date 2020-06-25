@@ -203,24 +203,36 @@ func (m *Monitor) taskLoop() {
 }
 
 // SetConnection method builds connection to remote or local communicator.
-func (m *Monitor) buildConnection(clientURI string) (*rpc.Client, error) {
+func (m *Monitor) buildConnection(ipcpath string, rpcuri string) (*rpc.Client, error) {
 
 	log.Debug("Building connection", "terminated", m.terminated)
 
-	for {
-		time.Sleep(time.Second * queryTimeInterval)
-		cl, err := rpc.Dial(clientURI)
-		if err != nil {
-			log.Warn("Building internal ipc connection ... ", "uri", clientURI, "error", err, "terminated", m.terminated)
-		} else {
-			log.Info("Internal ipc connection established", "uri", clientURI)
-			return cl, nil
-		}
+	if len(ipcpath) > 0 {
+		for i := 0; i < 30; i++ {
+			time.Sleep(time.Second * queryTimeInterval * 2)
+			cl, err := rpc.Dial(ipcpath)
+			if err != nil {
+				log.Warn("Building internal ipc connection ... ", "ipc", ipcpath, "rpc", rpcuri, "error", err, "terminated", m.terminated)
+			} else {
+				log.Info("Internal ipc connection established", "ipc", ipcpath, "rpc", rpcuri)
+				return cl, nil
+			}
 
-		if atomic.LoadInt32(&(m.terminated)) == 1 {
-			log.Info("Connection builder break")
-			break
+			if atomic.LoadInt32(&(m.terminated)) == 1 {
+				log.Info("Connection builder break")
+				return nil, errors.New("ipc connection terminated")
+			}
 		}
+	} else {
+		log.Warn("IPC is emptyl")
+	}
+
+	cl, err := rpc.Dial(rpcuri)
+	if err != nil {
+		log.Warn("Building internal rpc connection ... ", "ipc", ipcpath, "rpc", rpcuri, "error", err, "terminated", m.terminated)
+	} else {
+		log.Info("Internal rpc connection established", "ipc", ipcpath, "rpc", rpcuri)
+		return cl, nil
 	}
 
 	return nil, errors.New("building internal ipc connection failed")
@@ -457,20 +469,20 @@ func (m *Monitor) Start() error {
 }
 
 func (m *Monitor) startWork() error {
-	var clientURI string
+	var ipcpath string
 	if runtime.GOOS != "windows" && m.config.IpcPath != "" {
-		clientURI = m.config.IpcPath
-	} else {
-		if m.config.RpcURI == "" {
-			log.Warn("Fs rpc uri is empty")
-			return errors.New("fs RpcURI is empty")
-		}
-		clientURI = m.config.RpcURI
+		ipcpath = m.config.IpcPath
+		//} else {
+		//	if m.config.RpcURI == "" {
+		//		log.Warn("Fs rpc uri is empty")
+		//		return errors.New("fs RpcURI is empty")
+		//	}
+		//	clientURI = m.config.RpcURI
 	}
 
-	rpcClient, rpcErr := m.buildConnection(clientURI)
+	rpcClient, rpcErr := m.buildConnection(ipcpath, m.config.RpcURI)
 	if rpcErr != nil {
-		log.Error("Fs rpc client is wrong", "uri", clientURI, "error", rpcErr, "config", m.config)
+		log.Error("Fs rpc client is wrong", "uri", ipcpath, "error", rpcErr, "config", m.config)
 		return rpcErr
 	}
 	m.cl = rpcClient
