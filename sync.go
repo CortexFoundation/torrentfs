@@ -574,6 +574,16 @@ func (m *Monitor) currentBlock() (uint64, error) {
 	return uint64(currentNumber), nil
 }
 
+func (m *Monitor) Skip(i uint64) bool {
+	for _, skip := range m.ckp.Skips {
+		if i > skip.From && i < skip.To {
+			m.lastNumber = i - 1
+			return true
+		}
+	}
+	return false
+}
+
 func (m *Monitor) syncLastBlock() uint64 {
 	currentNumber := atomic.LoadUint64(&(m.currentNumber)) //m.currentNumber
 
@@ -612,6 +622,13 @@ func (m *Monitor) syncLastBlock() uint64 {
 			maxNumber = i - 1
 			break
 		}
+
+		if m.ckp != nil && m.Skip(i) {
+			m.lastNumber = i - 1
+			i++
+			continue
+		}
+
 		if maxNumber-i >= m.scope {
 			blocks, rpcErr := m.rpcBatchBlockByNumber(i, i+m.scope)
 			if rpcErr != nil {
@@ -670,6 +687,7 @@ func (m *Monitor) solve(block *types.Block) error {
 		defer func() {
 			elapsed_a := time.Duration(mclock.Now()) - time.Duration(m.start)
 			log.Info(ProgressBar(int64(i), int64(m.currentNumber), ""), "start", m.startNumber, "max", uint64(m.currentNumber), "last", m.lastNumber, "cur", i, "bps", math.Abs(float64(i)-float64(m.startNumber))*1000*1000*1000/float64(elapsed_a), "elapsed", common.PrettyDuration(elapsed_a), "scope", m.scope, "db", common.PrettyDuration(m.fs.Metrics()), "blocks", len(m.fs.Blocks()), "txs", m.fs.Txs(), "files", len(m.fs.Files()), "root", m.fs.Root())
+			m.fs.SkipPrint()
 		}()
 	}
 	if hash, suc := m.blockCache.Get(i); !suc || hash != block.Hash.Hex() {
