@@ -624,7 +624,7 @@ func (m *Monitor) syncLastBlock() uint64 {
 		}
 
 		if m.ckp != nil && m.Skip(i) {
-			m.lastNumber = i - 1
+			//m.lastNumber = i - 1
 			i++
 			continue
 		}
