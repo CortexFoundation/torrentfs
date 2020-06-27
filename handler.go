@@ -67,6 +67,9 @@ var (
 	getfileMeter   = metrics.NewRegisteredMeter("torrent/getfile/call", nil)
 	availableMeter = metrics.NewRegisteredMeter("torrent/available/call", nil)
 	diskReadMeter  = metrics.NewRegisteredMeter("torrent/disk/read", nil)
+
+	memcacheCleanHitMeter  = metrics.NewRegisteredMeter("torrent/memcache/clean/hit", nil)
+	memcacheCleanReadMeter = metrics.NewRegisteredMeter("torrent/memcache/clean/read", nil)
 )
 
 type TorrentManager struct {
@@ -861,6 +864,8 @@ func (fs *TorrentManager) GetFile(infohash, subpath string) ([]byte, error) {
 		var key = filepath.Join(infohash, subpath)
 		if fs.cache {
 			if cache, err := fs.fileCache.Get(key); err == nil {
+				memcacheCleanHitMeter.Mark(1)
+				memcacheCleanReadMeter.Mark(int64(len(cache)))
 				if c, err := fs.unzip(cache); err != nil {
 					return nil, err
 				} else {
