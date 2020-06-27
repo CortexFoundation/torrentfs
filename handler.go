@@ -24,7 +24,8 @@ import (
 	"github.com/CortexFoundation/torrentfs/compress"
 	"github.com/CortexFoundation/torrentfs/params"
 	"github.com/CortexFoundation/torrentfs/types"
-	"github.com/allegro/bigcache/v2"
+	//"github.com/allegro/bigcache/v2"
+	"github.com/VictoriaMetrics/fastcache"
 	"github.com/bradfitz/iter"
 	"github.com/edsrzf/mmap-go"
 	lru "github.com/hashicorp/golang-lru"
@@ -67,6 +68,9 @@ var (
 	getfileMeter   = metrics.NewRegisteredMeter("torrent/getfile/call", nil)
 	availableMeter = metrics.NewRegisteredMeter("torrent/available/call", nil)
 	diskReadMeter  = metrics.NewRegisteredMeter("torrent/disk/read", nil)
+
+	memcacheCleanHitMeter  = metrics.NewRegisteredMeter("torrent/memcache/clean/hit", nil)
+	memcacheCleanReadMeter = metrics.NewRegisteredMeter("torrent/memcache/clean/read", nil)
 )
 
 type TorrentManager struct {
@@ -94,8 +98,9 @@ type TorrentManager struct {
 	id                  uint64
 	slot                int
 
-	fileLock  sync.Mutex
-	fileCache *bigcache.BigCache
+	fileLock sync.Mutex
+	//fileCache *bigcache.BigCache
+	fileCache *fastcache.Cache
 	cache     bool
 	compress  bool
 
@@ -142,7 +147,7 @@ func (tm *TorrentManager) Close() error {
 	close(tm.closeAll)
 	tm.wg.Wait()
 	tm.dropAll()
-	if tm.cache {
+	if tm.fileCache != nil {
 		tm.fileCache.Reset()
 	}
 
@@ -378,7 +383,7 @@ func NewTorrentManager(config *Config, fsid uint64, cache, compress bool) (*Torr
 	}
 
 	if cache {
-		conf := bigcache.Config{
+		/*conf := bigcache.Config{
 			Shards:             1024,
 			LifeWindow:         600 * time.Second,
 			CleanWindow:        1 * time.Second,
@@ -389,8 +394,9 @@ func NewTorrentManager(config *Config, fsid uint64, cache, compress bool) (*Torr
 			HardMaxCacheSize:   2048, //MB
 		}
 
-		torrentManager.fileCache, err = bigcache.NewBigCache(conf)
-		if err != nil {
+		torrentManager.fileCache, err = bigcache.NewBigCache(conf)*/
+		torrentManager.fileCache = fastcache.New(2 * 1024 * 1024 * 1024)
+		if torrentManager.fileCache == nil {
 			log.Error("File system cache initialized failed", "err", err)
 		} else {
 			torrentManager.cache = cache
@@ -752,7 +758,7 @@ func (tm *TorrentManager) activeLoop() {
 
 			if counter >= 5*loops {
 				if tm.cache {
-					log.Info("Fs status", "pending", len(tm.pendingTorrents), "waiting", active_wait, "downloading", active_running, "paused", active_paused, "seeding", len(tm.seedingTorrents), "size", common.StorageSize(total_size), "speed_a", common.StorageSize(total_size/log_counter*queryTimeInterval).String()+"/s", "speed_b", common.StorageSize(current_size/counter*queryTimeInterval).String()+"/s", "slot", tm.slot, "metrics", common.PrettyDuration(tm.Updates), "hot", tm.hotCache.Len(), "stats", tm.fileCache.Stats(), "len", tm.fileCache.Len(), "capacity", common.StorageSize(tm.fileCache.Capacity()).String())
+					log.Info("Fs status", "pending", len(tm.pendingTorrents), "waiting", active_wait, "downloading", active_running, "paused", active_paused, "seeding", len(tm.seedingTorrents), "size", common.StorageSize(total_size), "speed_a", common.StorageSize(total_size/log_counter*queryTimeInterval).String()+"/s", "speed_b", common.StorageSize(current_size/counter*queryTimeInterval).String()+"/s", "slot", tm.slot, "metrics", common.PrettyDuration(tm.Updates), "hot", tm.hotCache.Len()) //, "stats", tm.fileCache.Stats(), "len", tm.fileCache.Len(), "capacity", common.StorageSize(tm.fileCache.Capacity()).String())
 				} else {
 					log.Info("Fs status", "pending", len(tm.pendingTorrents), "waiting", active_wait, "downloading", active_running, "paused", active_paused, "seeding", len(tm.seedingTorrents), "size", common.StorageSize(total_size), "speed_a", common.StorageSize(total_size/log_counter*queryTimeInterval).String()+"/s", "speed_b", common.StorageSize(current_size/counter*queryTimeInterval).String()+"/s", "slot", tm.slot, "metrics", common.PrettyDuration(tm.Updates), "hot", tm.hotCache.Len())
 				}
@@ -859,13 +865,16 @@ func (fs *TorrentManager) GetFile(infohash, subpath string) ([]byte, error) {
 		}
 
 		var key = filepath.Join(infohash, subpath)
-		if fs.cache {
-			if cache, err := fs.fileCache.Get(key); err == nil {
+		if fs.fileCache != nil {
+			//			if cache, err := fs.fileCache.Get(key); err == nil {
+			if cache := fs.fileCache.Get(nil, []byte(key)); cache != nil {
+				memcacheCleanHitMeter.Mark(1)
+				memcacheCleanReadMeter.Mark(int64(len(cache)))
 				if c, err := fs.unzip(cache); err != nil {
 					return nil, err
 				} else {
 					if fs.compress {
-						log.Info("File cache", "hash", infohash, "path", subpath, "size", fs.fileCache.Len(), "compress", len(cache), "origin", len(c), "compress", fs.compress)
+						//						log.Info("File cache", "hash", infohash, "path", subpath, "size", fs.fileCache.Len(), "compress", len(cache), "origin", len(c), "compress", fs.compress)
 					}
 					return c, nil
 				}
@@ -874,6 +883,23 @@ func (fs *TorrentManager) GetFile(infohash, subpath string) ([]byte, error) {
 
 		fs.fileLock.Lock()
 		defer fs.fileLock.Unlock()
+
+		if fs.fileCache != nil {
+			//                      if cache, err := fs.fileCache.Get(key); err == nil {
+			if cache := fs.fileCache.Get(nil, []byte(key)); cache != nil {
+				memcacheCleanHitMeter.Mark(1)
+				memcacheCleanReadMeter.Mark(int64(len(cache)))
+				if c, err := fs.unzip(cache); err != nil {
+					return nil, err
+				} else {
+					if fs.compress {
+						//                                              log.Info("File cache", "hash", infohash, "path", subpath, "size", fs.fileCache.Len(), "compress", len(cache), "origin", len(c), "compress", fs.compress)
+					}
+					return c, nil
+				}
+			}
+		}
+
 		diskReadMeter.Mark(1)
 		data, err := ioutil.ReadFile(filepath.Join(fs.DataDir, key))
 
@@ -889,8 +915,9 @@ func (fs *TorrentManager) GetFile(infohash, subpath string) ([]byte, error) {
 					if c, err := fs.zip(data); err != nil {
 						log.Warn("Compress data failed", "hash", infohash, "err", err)
 					} else {
-						if fs.cache {
-							fs.fileCache.Set(key, c)
+						if fs.fileCache != nil {
+							//fs.fileCache.Set(key, c)
+							fs.fileCache.Set([]byte(key), c)
 						}
 					}
 				}
