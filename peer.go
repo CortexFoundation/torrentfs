@@ -17,11 +17,13 @@ package torrentfs
 
 import (
 	"fmt"
+	"github.com/CortexFoundation/CortexTheseus/common"
 	"github.com/CortexFoundation/CortexTheseus/log"
 	"github.com/CortexFoundation/CortexTheseus/p2p"
 	"github.com/CortexFoundation/CortexTheseus/rlp"
 	mapset "github.com/ucwong/golang-set"
 	"sync"
+	"time"
 )
 
 type Peer struct {
@@ -48,8 +50,54 @@ func newPeer(host *TorrentFS, remote *p2p.Peer, rw p2p.MsgReadWriter) *Peer {
 	}
 }
 
-func (p *Peer) Start() error {
+func (peer *Peer) start() error {
+	peer.wg.Add(1)
+	go peer.update()
 	return nil
+}
+
+func (peer *Peer) update() {
+	defer peer.wg.Done()
+	// Start the tickers for the updates
+	expire := time.NewTicker(expirationCycle)
+	defer expire.Stop()
+	transmit := time.NewTicker(transmissionCycle)
+	defer transmit.Stop()
+
+	// Loop and transmit until termination is requested
+	for {
+		select {
+		case <-expire.C:
+			peer.expire()
+
+		case <-transmit.C:
+			if err := peer.broadcast(); err != nil {
+				log.Trace("broadcast failed", "reason", err, "peer", peer.ID())
+				return
+			}
+
+		case <-peer.quit:
+			return
+		}
+	}
+}
+
+func (peer *Peer) broadcast() error {
+	// if err := p2p.Send(peer.ws, messagesCode, bundle); err != nil {
+	//                return err
+	//      }
+	return nil
+}
+
+func (peer *Peer) expire() {
+	unmark := make(map[common.Hash]struct{})
+	peer.known.Each(func(v interface{}) bool {
+		return true
+	})
+	// Dump all known but no longer cached
+	for hash := range unmark {
+		peer.known.Remove(hash)
+	}
 }
 
 func (peer *Peer) handshake() error {
@@ -89,9 +137,10 @@ func (peer *Peer) handshake() error {
 	return nil
 }
 
-func (p *Peer) Stop() error {
-	close(p.quit)
-	p.wg.Wait()
+func (peer *Peer) stop() error {
+	close(peer.quit)
+	peer.wg.Wait()
+	log.Info("Nas peer stopped")
 	return nil
 }
 func (peer *Peer) ID() []byte {

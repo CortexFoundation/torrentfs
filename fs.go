@@ -60,7 +60,7 @@ func New(config *Config, commit string, cache, compress bool) (*TorrentFS, error
 				"tcp":            !config.DisableTCP,
 				"dht":            !config.DisableDHT,
 				"listen":         config.Port,
-				"maxMessageSize": torrentInstance.MaxMessageSize(),
+				//"maxMessageSize": torrentInstance.MaxMessageSize(),
 			}
 		},
 	}
@@ -89,9 +89,9 @@ func (tfs *TorrentFS) HandlePeer(peer *p2p.Peer, rw p2p.MsgReadWriter) error {
 		return err
 	}
 
-	tfsPeer.Start()
+	tfsPeer.start()
 	defer func() {
-		tfsPeer.Stop()
+		tfsPeer.stop()
 	}()
 
 	return tfs.runMessageLoop(tfsPeer, rw)
@@ -114,6 +114,8 @@ func (tfs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 		case statusCode:
 			// this should not happen, but no need to panic; just ignore this message.
 			log.Warn("unxepected status message received", "peer", p.peer.ID())
+		case messagesCode:
+			log.Warn("Message received", "peer", p.peer.ID())
 		default:
 		}
 		packet.Discard()
