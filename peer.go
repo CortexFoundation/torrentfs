@@ -58,8 +58,8 @@ func (peer *Peer) handshake() error {
 	peer.wg.Add(1)
 	go func() {
 		defer peer.wg.Done()
-
-		errc <- p2p.SendItems(peer.ws, statusCode, ProtocolVersion, 0, nil, false)
+		log.Info("Nas send items", "status", statusCode, "version", ProtocolVersion)
+		errc <- p2p.SendItems(peer.ws, statusCode, ProtocolVersion)
 	}()
 	if err := <-errc; err != nil {
 		return fmt.Errorf("peer [%x] failed to send status packet: %v", peer.ID(), err)

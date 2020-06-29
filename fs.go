@@ -97,6 +97,7 @@ func (tfs *TorrentFS) HandlePeer(peer *p2p.Peer, rw p2p.MsgReadWriter) error {
 	return tfs.runMessageLoop(tfsPeer, rw)
 }
 func (tfs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
+	log.Info("Nas msg receiving ...")
 	for {
 		// fetch the next packet
 		packet, err := rw.ReadMsg()
