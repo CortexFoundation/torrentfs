@@ -7,7 +7,6 @@ import (
 	"github.com/CortexFoundation/CortexTheseus/p2p"
 	"github.com/CortexFoundation/CortexTheseus/rpc"
 	"sync"
-	"time"
 )
 
 // TorrentFS contains the torrent file system internals.
@@ -141,25 +140,6 @@ func (tfs *TorrentFS) APIs() []rpc.API {
 
 func (tfs *TorrentFS) Version() uint {
 	return tfs.protocol.Version
-}
-
-func (api *PublicTorrentAPI) Version(ctx context.Context) string {
-	return ProtocolVersionStr
-}
-
-type PublicTorrentAPI struct {
-	w *TorrentFS
-
-	lastUsed map[string]time.Time // keeps track when a filter was polled for the last time.
-}
-
-// NewPublicWhisperAPI create a new RPC whisper service.
-func NewPublicTorrentAPI(w *TorrentFS) *PublicTorrentAPI {
-	api := &PublicTorrentAPI{
-		w:        w,
-		lastUsed: make(map[string]time.Time),
-	}
-	return api
 }
 
 // Start starts the data collection thread and the listening server of the dashboard.
