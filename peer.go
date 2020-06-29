@@ -60,10 +60,8 @@ func (peer *Peer) handshake() error {
 		defer peer.wg.Done()
 		log.Info("Nas send items", "status", statusCode, "version", ProtocolVersion)
 		errc <- p2p.SendItems(peer.ws, statusCode, ProtocolVersion)
+		log.Info("Nas send items OK", "status", statusCode, "version", ProtocolVersion, "len", len(errc))
 	}()
-	if err := <-errc; err != nil {
-		return fmt.Errorf("peer [%x] failed to send status packet: %v", peer.ID(), err)
-	}
 	// Fetch the remote status packet and verify protocol match
 	packet, err := peer.ws.ReadMsg()
 	if err != nil {
@@ -84,7 +82,6 @@ func (peer *Peer) handshake() error {
 	if peerVersion != ProtocolVersion {
 		return fmt.Errorf("peer [%x]: protocol version mismatch %d != %d", peer.ID(), peerVersion, ProtocolVersion)
 	}
-
 	if err := <-errc; err != nil {
 		return fmt.Errorf("peer [%x] failed to send status packet: %v", peer.ID(), err)
 	}
