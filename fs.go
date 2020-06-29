@@ -119,7 +119,6 @@ func (tfs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 		}
 		packet.Discard()
 	}
-	return nil
 }
 
 // Protocols implements the node.Service interface.
@@ -135,7 +134,6 @@ func (tfs *TorrentFS) APIs() []rpc.API {
 			Public:    false,
 		},
 	}
-	return nil
 }
 
 func (tfs *TorrentFS) Version() uint {
