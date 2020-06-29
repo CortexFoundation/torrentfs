@@ -25,6 +25,8 @@ const (
 	NumberOfMessageCodes = 128
 	ProtocolVersionStr   = "1.0"
 
+	DefaultMaxMessageSize = uint32(1024)
+
 	statusCode   = 0
 	messagesCode = 1
 

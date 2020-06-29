@@ -60,7 +60,7 @@ func New(config *Config, commit string, cache, compress bool) (*TorrentFS, error
 				"tcp":            !config.DisableTCP,
 				"dht":            !config.DisableDHT,
 				"listen":         config.Port,
-				//"maxMessageSize": torrentInstance.MaxMessageSize(),
+				"maxMessageSize": torrentInstance.MaxMessageSize(),
 			}
 		},
 	}
@@ -69,7 +69,7 @@ func New(config *Config, commit string, cache, compress bool) (*TorrentFS, error
 }
 
 func (tfs *TorrentFS) MaxMessageSize() uint32 {
-	return NumberOfMessageCodes
+	return DefaultMaxMessageSize
 }
 
 func (tfs *TorrentFS) HandlePeer(peer *p2p.Peer, rw p2p.MsgReadWriter) error {
