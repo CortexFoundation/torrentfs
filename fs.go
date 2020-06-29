@@ -11,9 +11,9 @@ import (
 
 // TorrentFS contains the torrent file system internals.
 type TorrentFS struct {
-	//protocol p2p.Protocol // Protocol description and parameters
-	config  *Config
-	monitor *Monitor
+	protocol p2p.Protocol // Protocol description and parameters
+	config   *Config
+	monitor  *Monitor
 
 	peerMu sync.RWMutex       // Mutex to sync the active peer set
 	peers  map[*Peer]struct{} // Set of currently active peers
@@ -47,7 +47,7 @@ func New(config *Config, commit string, cache, compress bool) (*TorrentFS, error
 		peers:   make(map[*Peer]struct{}),
 	}
 
-	/*torrentInstance.protocol = p2p.Protocol{
+	torrentInstance.protocol = p2p.Protocol{
 		Name:    ProtocolName,
 		Version: uint(ProtocolVersion),
 		Length:  NumberOfMessageCodes,
@@ -55,13 +55,13 @@ func New(config *Config, commit string, cache, compress bool) (*TorrentFS, error
 		NodeInfo: func() interface{} {
 			return map[string]interface{}{
 				"version": ProtocolVersionStr,
-				"utp":    !config.DisableUTP,
-				"tcp":    !config.DisableTCP,
-				"dht":    !config.DisableDHT,
-				"listen": config.Port,
+				"utp":     !config.DisableUTP,
+				"tcp":     !config.DisableTCP,
+				"dht":     !config.DisableDHT,
+				"listen":  config.Port,
 			}
 		},
-	}*/
+	}
 
 	return torrentInstance, nil
 }
@@ -99,24 +99,27 @@ func (tfs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 }
 
 // Protocols implements the node.Service interface.
-func (tfs *TorrentFS) Protocols() []p2p.Protocol { return nil } //return []p2p.Protocol{tfs.protocol} }
+func (tfs *TorrentFS) Protocols() []p2p.Protocol { return []p2p.Protocol{tfs.protocol} }
 
 // APIs implements the node.Service interface.
 func (tfs *TorrentFS) APIs() []rpc.API {
-	//return []rpc.API{
-	//	{
-	//		Namespace: ProtocolName,
-	//		Version:   ProtocolVersionStr,
-	//		Service:   NewPublicTorrentAPI(tfs),
-	//		Public: false,
-	//	},
-	//}
+	return []rpc.API{
+		{
+			Namespace: ProtocolName,
+			Version:   ProtocolVersionStr,
+			Service:   NewPublicTorrentAPI(tfs),
+			Public:    false,
+		},
+	}
 	return nil
 }
 
 func (tfs *TorrentFS) Version() uint {
-	//return tfs.protocol.Version
-	return 0
+	return tfs.protocol.Version
+}
+
+func (api *PublicTorrentAPI) Version(ctx context.Context) string {
+	return ProtocolVersionStr
 }
 
 type PublicTorrentAPI struct {

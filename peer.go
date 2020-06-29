@@ -17,7 +17,9 @@ package torrentfs
 
 import (
 	"fmt"
+	"github.com/CortexFoundation/CortexTheseus/log"
 	"github.com/CortexFoundation/CortexTheseus/p2p"
+	"github.com/CortexFoundation/CortexTheseus/rlp"
 	mapset "github.com/ucwong/golang-set"
 	"sync"
 )
@@ -62,6 +64,31 @@ func (peer *Peer) handshake() error {
 	if err := <-errc; err != nil {
 		return fmt.Errorf("peer [%x] failed to send status packet: %v", peer.ID(), err)
 	}
+	// Fetch the remote status packet and verify protocol match
+	packet, err := peer.ws.ReadMsg()
+	if err != nil {
+		return err
+	}
+	if packet.Code != statusCode {
+		return fmt.Errorf("peer [%x] sent packet %x before status packet", peer.ID(), packet.Code)
+	}
+	s := rlp.NewStream(packet.Payload, uint64(packet.Size))
+	_, err = s.List()
+	if err != nil {
+		return fmt.Errorf("peer [%x] sent bad status message: %v", peer.ID(), err)
+	}
+	peerVersion, err := s.Uint()
+	if err != nil {
+		return fmt.Errorf("peer [%x] sent bad status message (unable to decode version): %v", peer.ID(), err)
+	}
+	if peerVersion != ProtocolVersion {
+		return fmt.Errorf("peer [%x]: protocol version mismatch %d != %d", peer.ID(), peerVersion, ProtocolVersion)
+	}
+
+	if err := <-errc; err != nil {
+		return fmt.Errorf("peer [%x] failed to send status packet: %v", peer.ID(), err)
+	}
+	log.Info("Tfs p2p hanshake success", "id", peer.ID(), "status", packet.Code, "version", peerVersion)
 	return nil
 }
 
