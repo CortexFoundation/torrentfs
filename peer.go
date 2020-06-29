@@ -53,7 +53,7 @@ func (p *Peer) Start() error {
 }
 
 func (peer *Peer) handshake() error {
-	//log.Info("Nas handshake", "peer", *peer.peer)
+	log.Info("Nas handshake", "peer", peer.ID())
 	errc := make(chan error, 1)
 	peer.wg.Add(1)
 	go func() {
@@ -88,7 +88,7 @@ func (peer *Peer) handshake() error {
 	if err := <-errc; err != nil {
 		return fmt.Errorf("peer [%x] failed to send status packet: %v", peer.ID(), err)
 	}
-	log.Info("Tfs p2p hanshake success", "id", peer.ID(), "status", packet.Code, "version", peerVersion)
+	log.Info("Nas p2p hanshake success", "id", peer.ID(), "status", packet.Code, "version", peerVersion)
 	return nil
 }
 

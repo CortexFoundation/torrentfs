@@ -2,6 +2,7 @@ package torrentfs
 
 import (
 	"context"
+	"errors"
 	"github.com/CortexFoundation/CortexTheseus/log"
 	"github.com/CortexFoundation/CortexTheseus/p2p"
 	"github.com/CortexFoundation/CortexTheseus/rpc"
@@ -54,11 +55,12 @@ func New(config *Config, commit string, cache, compress bool) (*TorrentFS, error
 		Run:     torrentInstance.HandlePeer,
 		NodeInfo: func() interface{} {
 			return map[string]interface{}{
-				"version": ProtocolVersionStr,
-				"utp":     !config.DisableUTP,
-				"tcp":     !config.DisableTCP,
-				"dht":     !config.DisableDHT,
-				"listen":  config.Port,
+				"version":        ProtocolVersionStr,
+				"utp":            !config.DisableUTP,
+				"tcp":            !config.DisableTCP,
+				"dht":            !config.DisableDHT,
+				"listen":         config.Port,
+				"maxMessageSize": torrentInstance.MaxMessageSize(),
 			}
 		},
 	}
@@ -66,7 +68,7 @@ func New(config *Config, commit string, cache, compress bool) (*TorrentFS, error
 	return torrentInstance, nil
 }
 
-func (tfs *TorrentFS) MaxMessageSize() uint64 {
+func (tfs *TorrentFS) MaxMessageSize() uint32 {
 	return NumberOfMessageCodes
 }
 
@@ -95,6 +97,26 @@ func (tfs *TorrentFS) HandlePeer(peer *p2p.Peer, rw p2p.MsgReadWriter) error {
 	return tfs.runMessageLoop(tfsPeer, rw)
 }
 func (tfs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
+	for {
+		// fetch the next packet
+		packet, err := rw.ReadMsg()
+		if err != nil {
+			log.Debug("message loop", "peer", p.peer.ID(), "err", err)
+			return err
+		}
+		if packet.Size > tfs.MaxMessageSize() {
+			log.Warn("oversized message received", "peer", p.peer.ID())
+			return errors.New("oversized message received")
+		}
+
+		switch packet.Code {
+		case statusCode:
+			// this should not happen, but no need to panic; just ignore this message.
+			log.Warn("unxepected status message received", "peer", p.peer.ID())
+		default:
+		}
+		packet.Discard()
+	}
 	return nil
 }
 
