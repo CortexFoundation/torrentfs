@@ -49,33 +49,35 @@ func New(config *Config, commit string, cache, compress bool) (*TorrentFS, error
 		peers:   make(map[string]*Peer),
 	}
 
-	torrentInstance.protocol = p2p.Protocol{
-		Name:    ProtocolName,
-		Version: uint(ProtocolVersion),
-		Length:  NumberOfMessageCodes,
-		Run:     torrentInstance.HandlePeer,
-		NodeInfo: func() interface{} {
-			return map[string]interface{}{
-				"version": ProtocolVersion,
-				//"utp":            !config.DisableUTP,
-				//"tcp":            !config.DisableTCP,
-				"dht":    !config.DisableDHT,
-				"listen": config.Port,
-				"root":   monitor.fs.Root(),
-				"files":  len(monitor.fs.Files()),
-				"leafs":  len(monitor.fs.Blocks()),
-				"number": monitor.currentNumber,
-				//"maxMessageSize": torrentInstance.MaxMessageSize(),
-			}
-		},
-		PeerInfo: func(id enode.ID) interface{} {
-			torrentInstance.peerMu.Lock()
-			defer torrentInstance.peerMu.Unlock()
-			if p := torrentInstance.peers[fmt.Sprintf("%x", id[:8])]; p != nil {
-				return p.Info()
-			}
-			return nil
-		},
+	if config.FullSeed {
+		torrentInstance.protocol = p2p.Protocol{
+			Name:    ProtocolName,
+			Version: uint(ProtocolVersion),
+			Length:  NumberOfMessageCodes,
+			Run:     torrentInstance.HandlePeer,
+			NodeInfo: func() interface{} {
+				return map[string]interface{}{
+					"version":        ProtocolVersion,
+					"utp":            !config.DisableUTP,
+					"tcp":            !config.DisableTCP,
+					"dht":            !config.DisableDHT,
+					"listen":         config.Port,
+					"root":           monitor.fs.Root(),
+					"files":          len(monitor.fs.Files()),
+					"leafs":          len(monitor.fs.Blocks()),
+					"number":         monitor.currentNumber,
+					"maxMessageSize": torrentInstance.MaxMessageSize(),
+				}
+			},
+			PeerInfo: func(id enode.ID) interface{} {
+				torrentInstance.peerMu.Lock()
+				defer torrentInstance.peerMu.Unlock()
+				if p := torrentInstance.peers[fmt.Sprintf("%x", id[:8])]; p != nil {
+					return p.Info()
+				}
+				return nil
+			},
+		}
 	}
 
 	return torrentInstance, nil
@@ -132,9 +134,9 @@ func (tfs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 				log.Warn("failed to decode peer state, peer will be disconnected", "peer", p.peer.ID(), "err", err)
 				return errors.New("invalid peer state")
 			}
-			tfs.peerMu.Lock()
+			//tfs.peerMu.Lock()
 			p.peerInfo = info
-			tfs.peerMu.Unlock()
+			//tfs.peerMu.Unlock()
 		case messagesCode:
 			//
 		default:

@@ -48,10 +48,11 @@ type Peer struct {
 }
 
 type PeerInfo struct {
-	Listen uint64 `json:"listen"`
-	Root   string `json:"root"` // SHA3 hash of the peer's best owned block
-	Files  uint64 `json:"files"`
-	Leafs  uint64 `json:"leafs"`
+	Version uint64 `json:"version"`
+	Listen  uint64 `json:"listen"`
+	Root    string `json:"root"` // SHA3 hash of the peer's best owned block
+	Files   uint64 `json:"files"`
+	Leafs   uint64 `json:"leafs"`
 }
 
 func newPeer(id string, host *TorrentFS, remote *p2p.Peer, rw p2p.MsgReadWriter) *Peer {
@@ -117,7 +118,7 @@ func (peer *Peer) update() {
 }
 
 func (peer *Peer) status() error {
-	if err := p2p.Send(peer.ws, peerStateCode, &PeerInfo{uint64(peer.host.config.Port), peer.host.monitor.fs.Root().Hex(), uint64(len(peer.host.monitor.fs.Files())), uint64(len(peer.host.monitor.fs.Blocks()))}); err != nil {
+	if err := p2p.Send(peer.ws, peerStateCode, &PeerInfo{Version: ProtocolVersion, Listen: uint64(peer.host.config.Port), Root: peer.host.monitor.fs.Root().Hex(), Files: uint64(len(peer.host.monitor.fs.Files())), Leafs: uint64(len(peer.host.monitor.fs.Blocks()))}); err != nil {
 		return err
 	}
 	return nil
@@ -148,7 +149,7 @@ func (peer *Peer) handshake() error {
 	go func() {
 		defer peer.wg.Done()
 		log.Debug("Nas send items", "status", statusCode, "version", ProtocolVersion)
-		errc <- p2p.SendItems(peer.ws, statusCode, ProtocolVersion, &PeerInfo{uint64(peer.host.config.Port), peer.host.monitor.fs.Root().Hex(), uint64(len(peer.host.monitor.fs.Files())), uint64(len(peer.host.monitor.fs.Blocks()))})
+		errc <- p2p.SendItems(peer.ws, statusCode, ProtocolVersion, &PeerInfo{Listen: uint64(peer.host.config.Port), Root: peer.host.monitor.fs.Root().Hex(), Files: uint64(len(peer.host.monitor.fs.Files())), Leafs: uint64(len(peer.host.monitor.fs.Blocks()))})
 		log.Debug("Nas send items OK", "status", statusCode, "version", ProtocolVersion, "len", len(errc))
 	}()
 	// Fetch the remote status packet and verify protocol match
@@ -205,6 +206,7 @@ func (peer *Peer) handshake() error {
 		//peer.leafs = info.Leafs
 		//peer.peerInfo = info
 	}
+	peer.peerInfo.Version = peerVersion
 
 	timeout := time.NewTicker(handshakeTimeout)
 	defer timeout.Stop()
@@ -218,7 +220,7 @@ func (peer *Peer) handshake() error {
 		return fmt.Errorf("peer [%x] timeout: %v", peer.ID(), err)
 	}
 
-	log.Info("Nas p2p hanshake success", "id", peer.ID(), "status", packet.Code, "version", peerVersion)
+	log.Debug("Nas p2p hanshake success", "id", peer.ID(), "status", packet.Code, "version", peerVersion)
 	return nil
 }
 
