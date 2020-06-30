@@ -39,6 +39,8 @@ type Peer struct {
 
 	wg sync.WaitGroup
 
+	version uint64
+
 	peerInfo *PeerInfo
 
 	//listen uint64
@@ -48,11 +50,10 @@ type Peer struct {
 }
 
 type PeerInfo struct {
-	Version uint64 `json:"version"`
-	Listen  uint64 `json:"listen"`
-	Root    string `json:"root"` // SHA3 hash of the peer's best owned block
-	Files   uint64 `json:"files"`
-	Leafs   uint64 `json:"leafs"`
+	Listen uint64 `json:"listen"`
+	Root   string `json:"root"` // SHA3 hash of the peer's best owned block
+	Files  uint64 `json:"files"`
+	Leafs  uint64 `json:"leafs"`
 }
 
 func newPeer(id string, host *TorrentFS, remote *p2p.Peer, rw p2p.MsgReadWriter) *Peer {
@@ -206,7 +207,7 @@ func (peer *Peer) handshake() error {
 		//peer.leafs = info.Leafs
 		//peer.peerInfo = info
 	}
-	peer.peerInfo.Version = peerVersion
+	peer.version = peerVersion
 
 	timeout := time.NewTicker(handshakeTimeout)
 	defer timeout.Stop()
