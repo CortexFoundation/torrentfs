@@ -53,41 +53,39 @@ func New(config *Config, commit string, cache, compress bool) (*TorrentFS, error
 		peers:   make(map[string]*Peer),
 	}
 
-	if config.FullSeed {
-		torrentInstance.protocol = p2p.Protocol{
-			Name:    ProtocolName,
-			Version: uint(ProtocolVersion),
-			Length:  NumberOfMessageCodes,
-			Run:     torrentInstance.HandlePeer,
-			NodeInfo: func() interface{} {
+	torrentInstance.protocol = p2p.Protocol{
+		Name:    ProtocolName,
+		Version: uint(ProtocolVersion),
+		Length:  NumberOfMessageCodes,
+		Run:     torrentInstance.HandlePeer,
+		NodeInfo: func() interface{} {
+			return map[string]interface{}{
+				"version": ProtocolVersion,
+				"status": map[string]interface{}{
+					"dht":            !config.DisableDHT,
+					"listen":         torrentInstance.LocalPort(),
+					"root":           monitor.fs.Root(),
+					"files":          torrentInstance.Congress(),
+					"leafs":          len(monitor.fs.Blocks()),
+					"number":         monitor.currentNumber,
+					"maxMessageSize": torrentInstance.MaxMessageSize(),
+				},
+			}
+		},
+		PeerInfo: func(id enode.ID) interface{} {
+			torrentInstance.peerMu.Lock()
+			defer torrentInstance.peerMu.Unlock()
+			if p := torrentInstance.peers[fmt.Sprintf("%x", id[:8])]; p != nil {
 				return map[string]interface{}{
-					"version": ProtocolVersion,
-					"status": map[string]interface{}{
-						"dht":            !config.DisableDHT,
-						"listen":         torrentInstance.LocalPort(),
-						"root":           monitor.fs.Root(),
-						"files":          torrentInstance.Congress(),
-						"leafs":          len(monitor.fs.Blocks()),
-						"number":         monitor.currentNumber,
-						"maxMessageSize": torrentInstance.MaxMessageSize(),
-					},
+					"version": p.version,
+					"listen":  p.Info().Listen,
+					"root":    p.Info().Root,
+					"files":   p.Info().Files,
+					"leafs":   p.Info().Leafs,
 				}
-			},
-			PeerInfo: func(id enode.ID) interface{} {
-				torrentInstance.peerMu.Lock()
-				defer torrentInstance.peerMu.Unlock()
-				if p := torrentInstance.peers[fmt.Sprintf("%x", id[:8])]; p != nil {
-					return map[string]interface{}{
-						"version": p.version,
-						"listen":  p.Info().Listen,
-						"root":    p.Info().Root,
-						"files":   p.Info().Files,
-						"leafs":   p.Info().Leafs,
-					}
-				}
-				return nil
-			},
-		}
+			}
+			return nil
+		},
 	}
 
 	return torrentInstance, nil
@@ -129,10 +127,13 @@ func (tfs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 			log.Debug("message loop", "peer", p.peer.ID(), "err", err)
 			return err
 		}
+
 		if packet.Size > tfs.MaxMessageSize() {
 			log.Warn("oversized message received", "peer", p.peer.ID())
 			return errors.New("oversized message received")
 		}
+
+		log.Debug("Nas package", "size", packet.Size)
 
 		switch packet.Code {
 		case statusCode:
