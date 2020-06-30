@@ -79,12 +79,10 @@ func New(config *Config, commit string, cache, compress bool) (*TorrentFS, error
 				if p := torrentInstance.peers[fmt.Sprintf("%x", id[:8])]; p != nil {
 					return map[string]interface{}{
 						"version": p.version,
-						"status": map[string]interface{}{
-							"listen": p.Info().Listen,
-							"root":   p.Info().Root,
-							"files":  p.Info().Files,
-							"leafs":  p.Info().Leafs,
-						},
+						"listen":  p.Info().Listen,
+						"root":    p.Info().Root,
+						"files":   p.Info().Files,
+						"leafs":   p.Info().Leafs,
 					}
 				}
 				return nil
