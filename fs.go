@@ -25,6 +25,10 @@ func (t *TorrentFS) storage() *TorrentManager {
 	return t.monitor.dl
 }
 
+func (t *TorrentFS) chain() *ChainDB {
+	return t.monitor.fs
+}
+
 var torrentInstance *TorrentFS = nil
 
 func GetStorage() CortexStorage {
@@ -61,7 +65,7 @@ func New(config *Config, commit string, cache, compress bool) (*TorrentFS, error
 					"utp":            !config.DisableUTP,
 					"tcp":            !config.DisableTCP,
 					"dht":            !config.DisableDHT,
-					"listen":         config.Port,
+					"listen":         torrentInstance.LocalPort(),
 					"root":           monitor.fs.Root(),
 					"files":          len(monitor.fs.Files()),
 					"leafs":          len(monitor.fs.Blocks()),
@@ -112,7 +116,6 @@ func (tfs *TorrentFS) HandlePeer(peer *p2p.Peer, rw p2p.MsgReadWriter) error {
 	return tfs.runMessageLoop(tfsPeer, rw)
 }
 func (tfs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
-	//log.Info("Nas msg receiving ...")
 	for {
 		// fetch the next packet
 		packet, err := rw.ReadMsg()
@@ -191,4 +194,8 @@ func (fs *TorrentFS) Available(ctx context.Context, infohash string, rawSize int
 
 func (fs *TorrentFS) GetFile(ctx context.Context, infohash, subpath string) ([]byte, error) {
 	return fs.storage().GetFile(infohash, subpath)
+}
+
+func (fs *TorrentFS) LocalPort() int {
+	return fs.storage().LocalPort()
 }
