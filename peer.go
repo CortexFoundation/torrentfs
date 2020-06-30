@@ -27,6 +27,7 @@ import (
 )
 
 type Peer struct {
+	id   string
 	host *TorrentFS
 	peer *p2p.Peer
 	ws   p2p.MsgReadWriter
@@ -37,10 +38,25 @@ type Peer struct {
 	quit  chan struct{}
 
 	wg sync.WaitGroup
+
+	peerInfo *PeerInfo
+
+	//listen uint64
+	//root   string
+	//files  uint64
+	//leafs  uint64
 }
 
-func newPeer(host *TorrentFS, remote *p2p.Peer, rw p2p.MsgReadWriter) *Peer {
+type PeerInfo struct {
+	Listen uint64 `json:"listen"`
+	Root   string `json:"root"` // SHA3 hash of the peer's best owned block
+	Files  uint64 `json:"files"`
+	Leafs  uint64 `json:"leafs"`
+}
+
+func newPeer(id string, host *TorrentFS, remote *p2p.Peer, rw p2p.MsgReadWriter) *Peer {
 	return &Peer{
+		id:      id,
 		host:    host,
 		peer:    remote,
 		ws:      rw,
@@ -48,6 +64,17 @@ func newPeer(host *TorrentFS, remote *p2p.Peer, rw p2p.MsgReadWriter) *Peer {
 		known:   mapset.NewSet(),
 		quit:    make(chan struct{}),
 	}
+}
+
+func (peer *Peer) Info() *PeerInfo {
+	/*return &PeerInfo{
+		Listen: peer.listen,
+		Root:   peer.root,
+		Files:  peer.files,
+		Leafs:  peer.leafs,
+	}*/
+
+	return peer.peerInfo
 }
 
 func (peer *Peer) start() error {
@@ -63,6 +90,8 @@ func (peer *Peer) update() {
 	defer expire.Stop()
 	transmit := time.NewTicker(transmissionCycle)
 	defer transmit.Stop()
+	stateTicker := time.NewTicker(peerStateCycle)
+	defer stateTicker.Stop()
 
 	// Loop and transmit until termination is requested
 	for {
@@ -75,6 +104,11 @@ func (peer *Peer) update() {
 				log.Trace("broadcast failed", "reason", err, "peer", peer.ID())
 				return
 			}
+		case <-stateTicker.C:
+			if err := peer.status(); err != nil {
+				log.Trace("broadcast failed", "reason", err, "peer", peer.ID())
+				return
+			}
 
 		case <-peer.quit:
 			return
@@ -82,10 +116,17 @@ func (peer *Peer) update() {
 	}
 }
 
+func (peer *Peer) status() error {
+	if err := p2p.Send(peer.ws, peerStateCode, &PeerInfo{uint64(peer.host.config.Port), peer.host.monitor.fs.Root().Hex(), uint64(len(peer.host.monitor.fs.Files())), uint64(len(peer.host.monitor.fs.Blocks()))}); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (peer *Peer) broadcast() error {
-	// if err := p2p.Send(peer.ws, messagesCode, bundle); err != nil {
-	//                return err
-	//      }
+	//if err := p2p.Send(peer.ws, messagesCode, &PeerInfo{uint64(peer.host.config.Port), peer.host.monitor.fs.Root().Hex(), uint64(len(peer.host.monitor.fs.Files())), uint64(len(peer.host.monitor.fs.Blocks()))}); err != nil {
+	//             return err
+	// }
 	return nil
 }
 
@@ -101,14 +142,14 @@ func (peer *Peer) expire() {
 }
 
 func (peer *Peer) handshake() error {
-	log.Info("Nas handshake", "peer", peer.ID())
+	log.Debug("Nas handshake", "peer", peer.ID())
 	errc := make(chan error, 1)
 	peer.wg.Add(1)
 	go func() {
 		defer peer.wg.Done()
-		log.Info("Nas send items", "status", statusCode, "version", ProtocolVersion)
-		errc <- p2p.SendItems(peer.ws, statusCode, ProtocolVersion)
-		log.Info("Nas send items OK", "status", statusCode, "version", ProtocolVersion, "len", len(errc))
+		log.Debug("Nas send items", "status", statusCode, "version", ProtocolVersion)
+		errc <- p2p.SendItems(peer.ws, statusCode, ProtocolVersion, &PeerInfo{uint64(peer.host.config.Port), peer.host.monitor.fs.Root().Hex(), uint64(len(peer.host.monitor.fs.Files())), uint64(len(peer.host.monitor.fs.Blocks()))})
+		log.Debug("Nas send items OK", "status", statusCode, "version", ProtocolVersion, "len", len(errc))
 	}()
 	// Fetch the remote status packet and verify protocol match
 	packet, err := peer.ws.ReadMsg()
@@ -130,9 +171,53 @@ func (peer *Peer) handshake() error {
 	if peerVersion != ProtocolVersion {
 		return fmt.Errorf("peer [%x]: protocol version mismatch %d != %d", peer.ID(), peerVersion, ProtocolVersion)
 	}
-	if err := <-errc; err != nil {
-		return fmt.Errorf("peer [%x] failed to send status packet: %v", peer.ID(), err)
+
+	/*peer.listen, err = s.Uint()
+	if err != nil {
+		return fmt.Errorf("peer [%x] sent bad status message (unable to decode listen): %v", peer.ID(), err)
 	}
+
+	var r []byte
+	r, err = s.Bytes()
+
+	if err != nil {
+		return fmt.Errorf("peer [%x] sent bad status message (unable to decode root): %v", peer.ID(), err)
+	}
+	peer.root = common.BytesToHash(r).Hex()
+
+	peer.files, err = s.Uint()
+	if err != nil {
+		return fmt.Errorf("peer [%x] sent bad status message (unable to decode files): %v", peer.ID(), err)
+	}
+
+	peer.leafs, err = s.Uint()
+	if err != nil {
+		return fmt.Errorf("peer [%x] sent bad status message (unable to decode leafs): %v", peer.ID(), err)
+	}*/
+	//var info *PeerInfo
+	err = s.Decode(&peer.peerInfo)
+	if err != nil {
+		return fmt.Errorf("peer [%x] failed to send peer info packet: %v", peer.ID(), err)
+		//} else {
+		//peer.listen = info.Listen
+		//peer.root = info.Root
+		//peer.files = info.Files
+		//peer.leafs = info.Leafs
+		//peer.peerInfo = info
+	}
+
+	timeout := time.NewTicker(handshakeTimeout)
+	defer timeout.Stop()
+	select {
+	case err := <-errc:
+		if err != nil {
+			return fmt.Errorf("peer [%x] failed to send status packet: %v", peer.ID(), err)
+		}
+	case <-timeout.C:
+		log.Info("Handshake timeout")
+		return fmt.Errorf("peer [%x] timeout: %v", peer.ID(), err)
+	}
+
 	log.Info("Nas p2p hanshake success", "id", peer.ID(), "status", packet.Code, "version", peerVersion)
 	return nil
 }

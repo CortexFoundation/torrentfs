@@ -3,8 +3,10 @@ package torrentfs
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/CortexFoundation/CortexTheseus/log"
 	"github.com/CortexFoundation/CortexTheseus/p2p"
+	"github.com/CortexFoundation/CortexTheseus/p2p/enode"
 	"github.com/CortexFoundation/CortexTheseus/rpc"
 	"sync"
 )
@@ -15,8 +17,8 @@ type TorrentFS struct {
 	config   *Config
 	monitor  *Monitor
 
-	peerMu sync.RWMutex       // Mutex to sync the active peer set
-	peers  map[*Peer]struct{} // Set of currently active peers
+	peerMu sync.RWMutex     // Mutex to sync the active peer set
+	peers  map[string]*Peer // Set of currently active peers
 }
 
 func (t *TorrentFS) storage() *TorrentManager {
@@ -44,7 +46,7 @@ func New(config *Config, commit string, cache, compress bool) (*TorrentFS, error
 	torrentInstance = &TorrentFS{
 		config:  config,
 		monitor: monitor,
-		peers:   make(map[*Peer]struct{}),
+		peers:   make(map[string]*Peer),
 	}
 
 	torrentInstance.protocol = p2p.Protocol{
@@ -54,13 +56,25 @@ func New(config *Config, commit string, cache, compress bool) (*TorrentFS, error
 		Run:     torrentInstance.HandlePeer,
 		NodeInfo: func() interface{} {
 			return map[string]interface{}{
-				"version":        ProtocolVersionStr,
-				"utp":            !config.DisableUTP,
-				"tcp":            !config.DisableTCP,
-				"dht":            !config.DisableDHT,
-				"listen":         config.Port,
-				"maxMessageSize": torrentInstance.MaxMessageSize(),
+				"version": ProtocolVersion,
+				//"utp":            !config.DisableUTP,
+				//"tcp":            !config.DisableTCP,
+				"dht":    !config.DisableDHT,
+				"listen": config.Port,
+				"root":   monitor.fs.Root(),
+				"files":  len(monitor.fs.Files()),
+				"leafs":  len(monitor.fs.Blocks()),
+				"number": monitor.currentNumber,
+				//"maxMessageSize": torrentInstance.MaxMessageSize(),
 			}
+		},
+		PeerInfo: func(id enode.ID) interface{} {
+			torrentInstance.peerMu.Lock()
+			defer torrentInstance.peerMu.Unlock()
+			if p := torrentInstance.peers[fmt.Sprintf("%x", id[:8])]; p != nil {
+				return p.Info()
+			}
+			return nil
 		},
 	}
 
@@ -72,15 +86,15 @@ func (tfs *TorrentFS) MaxMessageSize() uint32 {
 }
 
 func (tfs *TorrentFS) HandlePeer(peer *p2p.Peer, rw p2p.MsgReadWriter) error {
-	tfsPeer := newPeer(tfs, peer, rw)
+	tfsPeer := newPeer(fmt.Sprintf("%x", peer.ID().Bytes()[:8]), tfs, peer, rw)
 
 	tfs.peerMu.Lock()
-	tfs.peers[tfsPeer] = struct{}{}
+	tfs.peers[tfsPeer.id] = tfsPeer
 	tfs.peerMu.Unlock()
 
 	defer func() {
 		tfs.peerMu.Lock()
-		delete(tfs.peers, tfsPeer)
+		delete(tfs.peers, tfsPeer.id)
 		tfs.peerMu.Unlock()
 	}()
 
@@ -96,7 +110,7 @@ func (tfs *TorrentFS) HandlePeer(peer *p2p.Peer, rw p2p.MsgReadWriter) error {
 	return tfs.runMessageLoop(tfsPeer, rw)
 }
 func (tfs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
-	log.Info("Nas msg receiving ...")
+	//log.Info("Nas msg receiving ...")
 	for {
 		// fetch the next packet
 		packet, err := rw.ReadMsg()
@@ -111,10 +125,18 @@ func (tfs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 
 		switch packet.Code {
 		case statusCode:
-			// this should not happen, but no need to panic; just ignore this message.
 			log.Warn("unxepected status message received", "peer", p.peer.ID())
+		case peerStateCode:
+			var info *PeerInfo
+			if err := packet.Decode(&info); err != nil {
+				log.Warn("failed to decode peer state, peer will be disconnected", "peer", p.peer.ID(), "err", err)
+				return errors.New("invalid peer state")
+			}
+			tfs.peerMu.Lock()
+			p.peerInfo = info
+			tfs.peerMu.Unlock()
 		case messagesCode:
-			log.Warn("Message received", "peer", p.peer.ID())
+			//
 		default:
 		}
 		packet.Discard()
