@@ -67,7 +67,7 @@ func New(config *Config, commit string, cache, compress bool) (*TorrentFS, error
 					"dht":            !config.DisableDHT,
 					"listen":         torrentInstance.LocalPort(),
 					"root":           monitor.fs.Root(),
-					"files":          len(monitor.fs.Files()),
+					"files":          torrentInstance.Congress(),
 					"leafs":          len(monitor.fs.Blocks()),
 					"number":         monitor.currentNumber,
 					"maxMessageSize": torrentInstance.MaxMessageSize(),
@@ -198,4 +198,8 @@ func (fs *TorrentFS) GetFile(ctx context.Context, infohash, subpath string) ([]b
 
 func (fs *TorrentFS) LocalPort() int {
 	return fs.storage().LocalPort()
+}
+
+func (fs *TorrentFS) Congress() int {
+	return fs.storage().Congress()
 }

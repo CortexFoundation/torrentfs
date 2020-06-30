@@ -937,3 +937,7 @@ func (fs *TorrentManager) Metrics() time.Duration {
 func (fs *TorrentManager) LocalPort() int {
 	return fs.client.LocalPort()
 }
+
+func (fs *TorrentManager) Congress() int {
+	return len(fs.seedingTorrents)
+}
