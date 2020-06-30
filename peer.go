@@ -68,13 +68,6 @@ func newPeer(id string, host *TorrentFS, remote *p2p.Peer, rw p2p.MsgReadWriter)
 }
 
 func (peer *Peer) Info() *PeerInfo {
-	/*return &PeerInfo{
-		Listen: peer.listen,
-		Root:   peer.root,
-		Files:  peer.files,
-		Leafs:  peer.leafs,
-	}*/
-
 	return peer.peerInfo
 }
 
@@ -82,6 +75,13 @@ func (peer *Peer) start() error {
 	peer.wg.Add(1)
 	go peer.update()
 	return nil
+}
+
+func (peer *Peer) UpdateInfo(info *PeerInfo) {
+	peer.peerInfo.Listen = info.Listen
+	peer.peerInfo.Root = info.Root
+	peer.peerInfo.Files = info.Files
+	peer.peerInfo.Leafs = info.Leafs
 }
 
 func (peer *Peer) update() {
@@ -118,7 +118,7 @@ func (peer *Peer) update() {
 }
 
 func (peer *Peer) state() error {
-	if err := p2p.Send(peer.ws, peerStateCode, &PeerInfo{Version: ProtocolVersion, Listen: uint64(peer.host.LocalPort()), Root: peer.host.monitor.fs.Root().Hex(), Files: uint64(peer.host.Congress()), Leafs: uint64(len(peer.host.chain().Blocks()))}); err != nil {
+	if err := p2p.Send(peer.ws, statusCode, &PeerInfo{Listen: uint64(peer.host.LocalPort()), Root: peer.host.monitor.fs.Root().Hex(), Files: uint64(peer.host.Congress()), Leafs: uint64(len(peer.host.chain().Blocks()))}); err != nil {
 		return err
 	}
 	return nil

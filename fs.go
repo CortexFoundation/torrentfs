@@ -130,16 +130,12 @@ func (tfs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 
 		switch packet.Code {
 		case statusCode:
-			log.Warn("unxepected status message received", "peer", p.peer.ID())
-		case peerStateCode:
 			var info *PeerInfo
 			if err := packet.Decode(&info); err != nil {
 				log.Warn("failed to decode peer state, peer will be disconnected", "peer", p.peer.ID(), "err", err)
 				return errors.New("invalid peer state")
 			}
-			//tfs.peerMu.Lock()
-			p.peerInfo = info
-			//tfs.peerMu.Unlock()
+			p.UpdateInfo(info)
 		case messagesCode:
 			//
 		default:
