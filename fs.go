@@ -61,9 +61,9 @@ func New(config *Config, commit string, cache, compress bool) (*TorrentFS, error
 			Run:     torrentInstance.HandlePeer,
 			NodeInfo: func() interface{} {
 				return map[string]interface{}{
-					"version":        ProtocolVersion,
-					"utp":            !config.DisableUTP,
-					"tcp":            !config.DisableTCP,
+					"version": ProtocolVersion,
+					//"utp":            !config.DisableUTP,
+					//"tcp":            !config.DisableTCP,
 					"dht":            !config.DisableDHT,
 					"listen":         torrentInstance.LocalPort(),
 					"root":           monitor.fs.Root(),

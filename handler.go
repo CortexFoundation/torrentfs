@@ -941,3 +941,11 @@ func (fs *TorrentManager) LocalPort() int {
 func (fs *TorrentManager) Congress() int {
 	return len(fs.seedingTorrents)
 }
+
+func (fs *TorrentManager) Candidate() int {
+	return len(fs.activeTorrents)
+}
+
+func (fs *TorrentManager) Nominee() int {
+	return len(fs.pendingTorrents)
+}
