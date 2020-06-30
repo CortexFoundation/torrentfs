@@ -15,7 +15,6 @@ type PublicTorrentAPI struct {
 	lastUsed map[string]time.Time // keeps track when a filter was polled for the last time.
 }
 
-// NewPublicWhisperAPI create a new RPC whisper service.
 func NewPublicTorrentAPI(w *TorrentFS) *PublicTorrentAPI {
 	api := &PublicTorrentAPI{
 		w:        w,

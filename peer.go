@@ -78,13 +78,6 @@ func (peer *Peer) start() error {
 	return nil
 }
 
-func (peer *Peer) UpdateInfo(info *PeerInfo) {
-	peer.peerInfo.Listen = info.Listen
-	peer.peerInfo.Root = info.Root
-	peer.peerInfo.Files = info.Files
-	peer.peerInfo.Leafs = info.Leafs
-}
-
 func (peer *Peer) update() {
 	defer peer.wg.Done()
 	// Start the tickers for the updates
@@ -174,39 +167,11 @@ func (peer *Peer) handshake() error {
 		return fmt.Errorf("peer [%x]: protocol version mismatch %d != %d", peer.ID(), peerVersion, ProtocolVersion)
 	}
 
-	/*peer.listen, err = s.Uint()
-	if err != nil {
-		return fmt.Errorf("peer [%x] sent bad status message (unable to decode listen): %v", peer.ID(), err)
-	}
-
-	var r []byte
-	r, err = s.Bytes()
-
-	if err != nil {
-		return fmt.Errorf("peer [%x] sent bad status message (unable to decode root): %v", peer.ID(), err)
-	}
-	peer.root = common.BytesToHash(r).Hex()
-
-	peer.files, err = s.Uint()
-	if err != nil {
-		return fmt.Errorf("peer [%x] sent bad status message (unable to decode files): %v", peer.ID(), err)
-	}
-
-	peer.leafs, err = s.Uint()
-	if err != nil {
-		return fmt.Errorf("peer [%x] sent bad status message (unable to decode leafs): %v", peer.ID(), err)
-	}*/
-	//var info *PeerInfo
 	err = s.Decode(&peer.peerInfo)
 	if err != nil {
 		return fmt.Errorf("peer [%x] failed to send peer info packet: %v", peer.ID(), err)
-		//} else {
-		//peer.listen = info.Listen
-		//peer.root = info.Root
-		//peer.files = info.Files
-		//peer.leafs = info.Leafs
-		//peer.peerInfo = info
 	}
+
 	peer.version = peerVersion
 
 	timeout := time.NewTicker(handshakeTimeout)

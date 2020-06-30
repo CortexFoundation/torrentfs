@@ -29,16 +29,16 @@ func (t *TorrentFS) chain() *ChainDB {
 	return t.monitor.fs
 }
 
-var torrentInstance *TorrentFS = nil
+var inst *TorrentFS = nil
 
 func GetStorage() CortexStorage {
-	return torrentInstance //GetTorrentInstance()
+	return inst //GetTorrentInstance()
 }
 
 // New creates a new torrentfs instance with the given configuration.
 func New(config *Config, commit string, cache, compress bool) (*TorrentFS, error) {
-	if torrentInstance != nil {
-		return torrentInstance, nil
+	if inst != nil {
+		return inst, nil
 	}
 
 	monitor, moErr := NewMonitor(config, cache, compress)
@@ -47,35 +47,36 @@ func New(config *Config, commit string, cache, compress bool) (*TorrentFS, error
 		return nil, moErr
 	}
 
-	torrentInstance = &TorrentFS{
+	inst = &TorrentFS{
 		config:  config,
 		monitor: monitor,
 		peers:   make(map[string]*Peer),
 	}
 
-	torrentInstance.protocol = p2p.Protocol{
+	inst.protocol = p2p.Protocol{
 		Name:    ProtocolName,
 		Version: uint(ProtocolVersion),
 		Length:  NumberOfMessageCodes,
-		Run:     torrentInstance.HandlePeer,
+		Run:     inst.HandlePeer,
 		NodeInfo: func() interface{} {
 			return map[string]interface{}{
 				"version": ProtocolVersion,
 				"status": map[string]interface{}{
 					"dht":            !config.DisableDHT,
-					"listen":         torrentInstance.LocalPort(),
+					"listen":         inst.LocalPort(),
 					"root":           monitor.fs.Root(),
-					"files":          torrentInstance.Congress(),
+					"files":          inst.Congress(),
+					"active":         inst.Candidate(),
 					"leafs":          len(monitor.fs.Blocks()),
 					"number":         monitor.currentNumber,
-					"maxMessageSize": torrentInstance.MaxMessageSize(),
+					"maxMessageSize": inst.MaxMessageSize(),
 				},
 			}
 		},
 		PeerInfo: func(id enode.ID) interface{} {
-			torrentInstance.peerMu.Lock()
-			defer torrentInstance.peerMu.Unlock()
-			if p := torrentInstance.peers[fmt.Sprintf("%x", id[:8])]; p != nil {
+			inst.peerMu.Lock()
+			defer inst.peerMu.Unlock()
+			if p := inst.peers[fmt.Sprintf("%x", id[:8])]; p != nil {
 				return map[string]interface{}{
 					"version": p.version,
 					"listen":  p.Info().Listen,
@@ -88,7 +89,7 @@ func New(config *Config, commit string, cache, compress bool) (*TorrentFS, error
 		},
 	}
 
-	return torrentInstance, nil
+	return inst, nil
 }
 
 func (tfs *TorrentFS) MaxMessageSize() uint32 {
@@ -205,4 +206,8 @@ func (fs *TorrentFS) LocalPort() int {
 
 func (fs *TorrentFS) Congress() int {
 	return fs.storage().Congress()
+}
+
+func (fs *TorrentFS) Candidate() int {
+	return fs.storage().Candidate()
 }
