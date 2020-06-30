@@ -61,21 +61,26 @@ func New(config *Config, commit string, cache, compress bool) (*TorrentFS, error
 			Run:     torrentInstance.HandlePeer,
 			NodeInfo: func() interface{} {
 				return map[string]interface{}{
-					"version":        ProtocolVersion,
-					"dht":            !config.DisableDHT,
-					"listen":         torrentInstance.LocalPort(),
-					"root":           monitor.fs.Root(),
-					"files":          torrentInstance.Congress(),
-					"leafs":          len(monitor.fs.Blocks()),
-					"number":         monitor.currentNumber,
-					"maxMessageSize": torrentInstance.MaxMessageSize(),
+					"version": ProtocolVersion,
+					"status": map[string]interface{}{
+						"dht":            !config.DisableDHT,
+						"listen":         torrentInstance.LocalPort(),
+						"root":           monitor.fs.Root(),
+						"files":          torrentInstance.Congress(),
+						"leafs":          len(monitor.fs.Blocks()),
+						"number":         monitor.currentNumber,
+						"maxMessageSize": torrentInstance.MaxMessageSize(),
+					},
 				}
 			},
 			PeerInfo: func(id enode.ID) interface{} {
 				torrentInstance.peerMu.Lock()
 				defer torrentInstance.peerMu.Unlock()
 				if p := torrentInstance.peers[fmt.Sprintf("%x", id[:8])]; p != nil {
-					return []interface{}{p.Info(), p.version}
+					return map[string]interface{}{
+						"version": p.version,
+						"status":  p.Info(),
+					}
 				}
 				return nil
 			},
