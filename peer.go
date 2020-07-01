@@ -81,24 +81,24 @@ func (peer *Peer) start() error {
 func (peer *Peer) update() {
 	defer peer.wg.Done()
 	// Start the tickers for the updates
-	expire := time.NewTicker(expirationCycle)
-	defer expire.Stop()
-	transmit := time.NewTicker(transmissionCycle)
-	defer transmit.Stop()
+	//expire := time.NewTicker(expirationCycle)
+	//defer expire.Stop()
+	//transmit := time.NewTicker(transmissionCycle)
+	//defer transmit.Stop()
 	stateTicker := time.NewTicker(peerStateCycle)
 	defer stateTicker.Stop()
 
 	// Loop and transmit until termination is requested
 	for {
 		select {
-		case <-expire.C:
-			peer.expire()
+		//	case <-expire.C:
+		//		peer.expire()
 
-		case <-transmit.C:
-			if err := peer.broadcast(); err != nil {
-				log.Trace("broadcast failed", "reason", err, "peer", peer.ID())
-				return
-			}
+		//	case <-transmit.C:
+		//		if err := peer.broadcast(); err != nil {
+		//			log.Trace("broadcast failed", "reason", err, "peer", peer.ID())
+		//			return
+		//		}
 		case <-stateTicker.C:
 			if err := peer.state(); err != nil {
 				log.Trace("broadcast failed", "reason", err, "peer", peer.ID())
@@ -151,6 +151,9 @@ func (peer *Peer) handshake() error {
 	if err != nil {
 		return err
 	}
+
+	defer packet.Discard()
+
 	if packet.Code != statusCode {
 		return fmt.Errorf("peer [%x] sent packet %x before status packet", peer.ID(), packet.Code)
 	}
@@ -174,7 +177,7 @@ func (peer *Peer) handshake() error {
 
 	peer.version = peerVersion
 
-	timeout := time.NewTicker(handshakeTimeout)
+	timeout := time.NewTimer(handshakeTimeout)
 	defer timeout.Stop()
 	select {
 	case err := <-errc:
@@ -193,7 +196,6 @@ func (peer *Peer) handshake() error {
 func (peer *Peer) stop() error {
 	close(peer.quit)
 	peer.wg.Wait()
-	log.Info("Nas peer stopped")
 	return nil
 }
 func (peer *Peer) ID() []byte {

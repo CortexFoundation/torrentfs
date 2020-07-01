@@ -131,6 +131,7 @@ func (tfs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 
 		if packet.Size > tfs.MaxMessageSize() {
 			log.Warn("oversized message received", "peer", p.peer.ID())
+			packet.Discard()
 			return errors.New("oversized message received")
 		}
 
