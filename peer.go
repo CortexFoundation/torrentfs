@@ -51,7 +51,7 @@ type Peer struct {
 
 type PeerInfo struct {
 	Listen uint64 `json:"listen"`
-	Root   string `json:"root"` // SHA3 hash of the peer's best owned block
+	Root   common.Hash `json:"root"` // SHA3 hash of the peer's best owned block
 	Files  uint64 `json:"files"`
 	Leafs  uint64 `json:"leafs"`
 }
@@ -112,7 +112,7 @@ func (peer *Peer) update() {
 }
 
 func (peer *Peer) state() error {
-	if err := p2p.Send(peer.ws, statusCode, &PeerInfo{Listen: uint64(peer.host.LocalPort()), Root: peer.host.monitor.fs.Root().Hex(), Files: uint64(peer.host.Congress()), Leafs: uint64(len(peer.host.chain().Blocks()))}); err != nil {
+	if err := p2p.Send(peer.ws, statusCode, &PeerInfo{Listen: uint64(peer.host.LocalPort()), Root: peer.host.monitor.fs.Root(), Files: uint64(peer.host.Congress()), Leafs: uint64(len(peer.host.chain().Blocks()))}); err != nil {
 		return err
 	}
 	return nil
@@ -143,7 +143,7 @@ func (peer *Peer) handshake() error {
 	go func() {
 		defer peer.wg.Done()
 		log.Debug("Nas send items", "status", statusCode, "version", ProtocolVersion)
-		errc <- p2p.SendItems(peer.ws, statusCode, ProtocolVersion, &PeerInfo{Listen: uint64(peer.host.LocalPort()), Root: peer.host.monitor.fs.Root().Hex(), Files: uint64(peer.host.Congress()), Leafs: uint64(len(peer.host.chain().Blocks()))})
+		errc <- p2p.SendItems(peer.ws, statusCode, ProtocolVersion, &PeerInfo{Listen: uint64(peer.host.LocalPort()), Root: peer.host.monitor.fs.Root(), Files: uint64(peer.host.Congress()), Leafs: uint64(len(peer.host.chain().Blocks()))})
 		log.Debug("Nas send items OK", "status", statusCode, "version", ProtocolVersion, "len", len(errc))
 	}()
 	// Fetch the remote status packet and verify protocol match
