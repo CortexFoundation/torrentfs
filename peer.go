@@ -138,7 +138,7 @@ func (peer *Peer) expire() {
 
 func (peer *Peer) handshake() error {
 	log.Debug("Nas handshake", "peer", peer.ID())
-	errc := make(chan error, 1)
+	errc := make(chan error, 2)
 	peer.wg.Add(1)
 	go func() {
 		defer peer.wg.Done()
@@ -147,6 +147,31 @@ func (peer *Peer) handshake() error {
 		log.Debug("Nas send items OK", "status", statusCode, "version", ProtocolVersion, "len", len(errc))
 	}()
 	// Fetch the remote status packet and verify protocol match
+	peer.wg.Add(1)
+	go func() {
+		defer peer.wg.Done()
+		errc <- peer.readStatus()
+	}()
+
+	timeout := time.NewTimer(handshakeTimeout)
+	defer timeout.Stop()
+	for i := 0; i < 2; i++ {
+		select {
+		case err := <-errc:
+			if err != nil {
+				return fmt.Errorf("peer [%x] failed to send status packet: %v", peer.ID(), err)
+			}
+		case <-timeout.C:
+			log.Info("Handshake timeout")
+			return fmt.Errorf("peer [%x] timeout", peer.ID())
+		}
+	}
+
+	log.Debug("Nas p2p hanshake success", "id", peer.ID())
+	return nil
+}
+
+func (peer *Peer) readStatus() error {
 	packet, err := peer.ws.ReadMsg()
 	if err != nil {
 		return err
@@ -176,20 +201,6 @@ func (peer *Peer) handshake() error {
 	}
 
 	peer.version = peerVersion
-
-	timeout := time.NewTimer(handshakeTimeout)
-	defer timeout.Stop()
-	select {
-	case err := <-errc:
-		if err != nil {
-			return fmt.Errorf("peer [%x] failed to send status packet: %v", peer.ID(), err)
-		}
-	case <-timeout.C:
-		log.Info("Handshake timeout")
-		return fmt.Errorf("peer [%x] timeout: %v", peer.ID(), err)
-	}
-
-	log.Debug("Nas p2p hanshake success", "id", peer.ID(), "status", packet.Code, "version", peerVersion)
 	return nil
 }
 
