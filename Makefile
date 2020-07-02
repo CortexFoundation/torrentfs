@@ -19,4 +19,4 @@ all:
 	go build -v -o $(GOBIN)/seeding cmd/seeding/*.go
 clean:
 	go clean -cache
-	rm -fr build/_workspace/* $(GOBIN)/*
+	rm -rf $(GOBIN)/*
