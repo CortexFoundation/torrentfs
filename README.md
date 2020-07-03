@@ -33,5 +33,5 @@ tree store
 #### Download file
 ```
 ./torrent download 'infohash:0803be8fc7309d155dfcee65a92a6254bd55a3d2'
-ls -alt data && md5sum data
+ls -alt data && md5sum data && cat data
 ```
