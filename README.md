@@ -7,7 +7,8 @@ or
 make
 ```
 ```cd build/bin```
-```echo "Hello torrent" > file
+
+```echo "Hello torrent" > file ```
 #### torrent-create : to create torrent file
 ```./torrent-create file > torrent```
 #### torrent-magnet : load info hash from torrent file
