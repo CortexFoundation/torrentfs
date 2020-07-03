@@ -1,11 +1,14 @@
 # P2P file system of cortex full node
+
+## Import
 ```
 go get github.com/CortexFoundation/torrentfs
-
-or
-
+```
+## Build
+```
 make
 ```
+## How to use
 ```cd build/bin```
 
 ```mkdir -p store/0803be8fc7309d155dfcee65a92a6254bd55a3d2```
