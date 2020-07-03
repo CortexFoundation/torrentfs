@@ -17,9 +17,9 @@ make
 ```./seeding -dataDir=store```
 under store folder
 ```
-ec6b1f5b5073c07dd35a53a3a13220c1a21e426d
+f3bc013c3cda4bb9f74a6f7696e66efa7be92a9a
 ├── data
 └── torrent
 ```
 #### torrent : to download file
-```./torrent download 'infohash:ec6b1f5b5073c07dd35a53a3a13220c1a21e426d' ```
+```./torrent download 'infohash:f3bc013c3cda4bb9f74a6f7696e66efa7be92a9a' ```
