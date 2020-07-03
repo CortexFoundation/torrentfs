@@ -241,13 +241,12 @@ func mainExitCode() int {
 		return 1
 	}
 
-	array := make([][]string, len(params.MainnetTrackers))
+	/*array := make([][]string, len(params.MainnetTrackers))
 	for i, tracker := range params.MainnetTrackers {
 		array[i] = []string{"udp" + tracker}
-		//array[i] = []string{tracker}
 	}
 
-	log.Println(array)
+	log.Println(array)*/
 
 	go func() {
 		/*
@@ -271,7 +270,7 @@ func mainExitCode() int {
 						spec := torrent.TorrentSpecFromMetaInfo(mi)
 						ih := spec.InfoHash
 						//spec.Trackers = append(spec.Trackers, params.MainnetTrackers)
-						spec.Trackers = array
+						spec.Trackers = [][]string{params.MainnetTrackers}
 
 						spec.Storage = storage.NewFile(filePath)
 						t, _, err := client.AddTorrentSpec(spec)
