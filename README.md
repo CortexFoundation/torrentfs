@@ -19,4 +19,4 @@ ec6b1f5b5073c07dd35a53a3a13220c1a21e426d
 └── torrent
 ```
 #### torrent : to download file
-```./torrent download $magnet```
+```./torrent download 'infohash:ec6b1f5b5073c07dd35a53a3a13220c1a21e426d'
