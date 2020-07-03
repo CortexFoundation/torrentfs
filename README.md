@@ -6,6 +6,8 @@ go get github.com/CortexFoundation/torrentfs
 ```
 ## Build
 ```
+https://github.com/CortexFoundation/torrentfs.git
+cd torrentfs
 make
 ```
 ## How to use
