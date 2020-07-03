@@ -8,23 +8,23 @@ make
 ```
 ```cd build/bin```
 
-```mkdir -p store/f3bc013c3cda4bb9f74a6f7696e66efa7be92a9a```
+```mkdir -p store/0803be8fc7309d155dfcee65a92a6254bd55a3d2```
 
-```echo "Hello torrent" > store/f3bc013c3cda4bb9f74a6f7696e66efa7be92a9a/data ```
+```echo "Hello torrent" > store/0803be8fc7309d155dfcee65a92a6254bd55a3d2/data ```
 
 #### torrent-create : to create torrent file
-```./torrent-create store/f3bc013c3cda4bb9f74a6f7696e66efa7be92a9a/data > store/f3bc013c3cda4bb9f74a6f7696e66efa7be92a9a/torrent```
+```./torrent-create store/0803be8fc7309d155dfcee65a92a6254bd55a3d2/data > store/0803be8fc7309d155dfcee65a92a6254bd55a3d2/torrent```
 #### torrent-magnet : load info hash from torrent file
-```./torrent-magnet < store/f3bc013c3cda4bb9f74a6f7696e66efa7be92a9a/torrent```
+```./torrent-magnet < store/0803be8fc7309d155dfcee65a92a6254bd55a3d2/torrent```
 
 ```
 tree store
 
-f3bc013c3cda4bb9f74a6f7696e66efa7be92a9a
+0803be8fc7309d155dfcee65a92a6254bd55a3d2
 ├── data
 └── torrent
 ```
 #### seeding : to seed file to dht
 ```./seeding -dataDir=store```
 #### torrent : to download file
-```./torrent download 'infohash:f3bc013c3cda4bb9f74a6f7696e66efa7be92a9a' ```
+```./torrent download 'infohash:0803be8fc7309d155dfcee65a92a6254bd55a3d2' ```
