@@ -6,16 +6,18 @@ import (
 
 	"github.com/anacrolix/tagflag"
 
+	"github.com/CortexFoundation/torrentfs/params"
 	"github.com/anacrolix/torrent/bencode"
 	"github.com/anacrolix/torrent/metainfo"
 )
 
 var (
 	builtinAnnounceList = [][]string{
-		{"udp://tracker.cortexlabs.ai:5008"},
-		{"udp://tracker.openbittorrent.com:80"},
-		{"udp://tracker.publicbt.com:80"},
-		{"udp://tracker.istole.it:6969"},
+		//{"udp://tracker.cortexlabs.ai:5008"},
+		//{"udp://tracker.openbittorrent.com:80"},
+		//{"udp://tracker.publicbt.com:80"},
+		//{"udp://tracker.istole.it:6969"},
+		params.MainnetTrackers,
 	}
 )
 
