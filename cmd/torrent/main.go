@@ -242,6 +242,7 @@ func downloadErr(args []string, parent *tagflag.Parser) error {
 	clientConfig.NoDHT = !flags.Dht
 	clientConfig.Debug = flags.Debug
 	clientConfig.Seed = flags.Seed
+	clientConfig.ListenPort = 0
 	clientConfig.PublicIp4 = flags.PublicIP
 	clientConfig.PublicIp6 = flags.PublicIP
 	clientConfig.DisablePEX = !flags.Pex
