@@ -35,3 +35,6 @@ tree mnt
 ./torrent download 'infohash:0803be8fc7309d155dfcee65a92a6254bd55a3d2'
 ls -alt data && md5sum data && cat data
 ```
+# Special thanks
+
+[Anacrolix BitTorrent client package and utilities](https://github.com/anacrolix/torrent)
