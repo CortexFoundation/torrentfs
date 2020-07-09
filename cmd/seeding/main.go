@@ -9,7 +9,7 @@ import (
 	"net"
 	"os"
 	"os/signal"
-	"os/user"
+	//"os/user"
 	"path/filepath"
 	"syscall"
 	"time"
@@ -32,13 +32,14 @@ var (
 		ReadaheadBytes tagflag.Bytes
 		ListenAddr     *net.TCPAddr
 	}{
-		DataDir: func() string {
+		/*DataDir: func() string {
 			_user, err := user.Current()
 			if err != nil {
 				log.Fatal(err)
 			}
-			return filepath.Join(_user.HomeDir, ".torrent")
-		}(),
+			return filepath.Join(_user.HomeDir, ".cortex/storage")
+		}(),*/
+		DataDir:        "mnt",
 		ReadaheadBytes: 10 << 20,
 		ListenAddr:     &net.TCPAddr{},
 	}
