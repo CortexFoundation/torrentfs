@@ -54,6 +54,8 @@ type ChainDB struct {
 	treeUpdates           time.Duration
 	metrics               bool
 
+	torrents map[string]uint64
+
 	//rootCache *lru.Cache
 }
 
@@ -83,6 +85,8 @@ func NewChainDB(config *Config) (*ChainDB, error) {
 	fs.metrics = config.Metrics
 
 	fs.version = version
+
+	fs.torrents = make(map[string]uint64)
 
 	//fs.rootCache, _ = lru.New(8)
 
@@ -119,6 +123,10 @@ func (fs *ChainDB) Files() []*types.FileInfo {
 
 func (fs *ChainDB) Blocks() []*types.Block {
 	return fs.blocks
+}
+
+func (fs *ChainDB) Torrents() map[string]uint64 {
+	return fs.torrents
 }
 
 func (fs *ChainDB) Leaves() []merkletree.Content {
@@ -697,6 +705,11 @@ func (fs *ChainDB) SkipPrint() {
 }
 
 func (fs *ChainDB) AddTorrent(ih string, size uint64) error {
+	if s, ok := fs.torrents[ih]; ok {
+		if s > size {
+			return nil
+		}
+	}
 	return fs.db.Update(func(tx *bolt.Tx) error {
 		buk, err := tx.CreateBucketIfNotExists([]byte("torrent_" + fs.version))
 		if err != nil {
@@ -709,7 +722,7 @@ func (fs *ChainDB) AddTorrent(ih string, size uint64) error {
 }
 
 func (fs *ChainDB) initTorrents() (map[string]uint64, error) {
-	torrents := make(map[string]uint64)
+	//torrents := make(map[string]uint64)
 	err := fs.db.Update(func(tx *bolt.Tx) error {
 		if buk, err := tx.CreateBucketIfNotExists([]byte("torrent_" + fs.version)); err != nil {
 			return err
@@ -720,7 +733,7 @@ func (fs *ChainDB) initTorrents() (map[string]uint64, error) {
 				if err != nil {
 					return err
 				}
-				torrents[string(k)] = size
+				fs.torrents[string(k)] = size
 			}
 			log.Info("Torrent initializing ... ...", "blocks")
 			return nil
@@ -729,5 +742,5 @@ func (fs *ChainDB) initTorrents() (map[string]uint64, error) {
 	if err != nil {
 		return nil, err
 	}
-	return torrents, nil
+	return fs.torrents, nil
 }
