@@ -1,22 +1,40 @@
 # P2P file system of cortex full node
+
+## Import
 ```
 go get github.com/CortexFoundation/torrentfs
-
-or
-
+```
+## Build
+```
+https://github.com/CortexFoundation/torrentfs.git
+cd torrentfs
 make
 ```
-#### torrent-create : to create torrent file
-```./torrent-create file > torrent```
-#### torrent-magnet : load info hash from torrent file
-```./torrent-magnet < torrent```
-#### seeding : to seed file to dht
-```./seeding -dataDir=store```
-under store folder
+## How to use
 ```
-ec6b1f5b5073c07dd35a53a3a13220c1a21e426d
+cd build/bin
+mkdir -p mnt/0803be8fc7309d155dfcee65a92a6254bd55a3d2
+echo "Hello torrent" > mnt/0803be8fc7309d155dfcee65a92a6254bd55a3d2/data
+```
+#### Create torrent file
+```
+./torrent-create mnt/0803be8fc7309d155dfcee65a92a6254bd55a3d2/data > mnt/0803be8fc7309d155dfcee65a92a6254bd55a3d2/torrent
+```
+#### Load info hash from torrent file
+```
+./torrent-magnet < mnt/0803be8fc7309d155dfcee65a92a6254bd55a3d2/torrent
+tree mnt
+0803be8fc7309d155dfcee65a92a6254bd55a3d2
 ├── data
 └── torrent
 ```
-#### torrent : to download file
-```./torrent download $magnet```
+#### Seed file to dht
+```./seeding -dataDir=mnt```
+#### Download file
+```
+./torrent download 'infohash:0803be8fc7309d155dfcee65a92a6254bd55a3d2'
+ls -alt data && md5sum data && cat data
+```
+# Special thanks
+
+[Anacrolix BitTorrent client package and utilities](https://github.com/anacrolix/torrent)

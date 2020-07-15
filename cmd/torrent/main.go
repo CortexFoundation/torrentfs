@@ -22,10 +22,17 @@ import (
 	"github.com/anacrolix/tagflag"
 	"golang.org/x/time/rate"
 
+	"github.com/CortexFoundation/torrentfs/params"
 	"github.com/anacrolix/torrent"
 	"github.com/anacrolix/torrent/iplist"
 	"github.com/anacrolix/torrent/metainfo"
 	"github.com/anacrolix/torrent/storage"
+)
+
+var (
+	trackers = [][]string{
+		params.MainnetTrackers,
+	}
 )
 
 func torrentBar(t *torrent.Torrent, pieceStates bool) {
@@ -75,6 +82,7 @@ func addTorrents(client *torrent.Client) error {
 				if err != nil {
 					return nil, xerrors.Errorf("error adding magnet: %w", err)
 				}
+				t.AddTrackers(trackers)
 				return t, nil
 			} else if strings.HasPrefix(arg, "http://") || strings.HasPrefix(arg, "https://") {
 				response, err := http.Get(arg)
@@ -91,9 +99,11 @@ func addTorrents(client *torrent.Client) error {
 				if err != nil {
 					return nil, xerrors.Errorf("adding torrent: %w", err)
 				}
+				t.AddTrackers(trackers)
 				return t, nil
 			} else if strings.HasPrefix(arg, "infohash:") {
 				t, _ := client.AddTorrentInfoHash(metainfo.NewHashFromHex(strings.TrimPrefix(arg, "infohash:")))
+				t.AddTrackers(trackers)
 				return t, nil
 			} else {
 				metaInfo, err := metainfo.LoadFromFile(arg)
@@ -104,6 +114,7 @@ func addTorrents(client *torrent.Client) error {
 				if err != nil {
 					return nil, xerrors.Errorf("adding torrent: %w", err)
 				}
+				t.AddTrackers(trackers)
 				return t, nil
 			}
 		}()
@@ -231,6 +242,7 @@ func downloadErr(args []string, parent *tagflag.Parser) error {
 	clientConfig.NoDHT = !flags.Dht
 	clientConfig.Debug = flags.Debug
 	clientConfig.Seed = flags.Seed
+	clientConfig.ListenPort = 0
 	clientConfig.PublicIp4 = flags.PublicIP
 	clientConfig.PublicIp6 = flags.PublicIP
 	clientConfig.DisablePEX = !flags.Pex

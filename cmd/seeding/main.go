@@ -9,7 +9,7 @@ import (
 	"net"
 	"os"
 	"os/signal"
-	"os/user"
+	//"os/user"
 	"path/filepath"
 	"syscall"
 	"time"
@@ -32,13 +32,14 @@ var (
 		ReadaheadBytes tagflag.Bytes
 		ListenAddr     *net.TCPAddr
 	}{
-		DataDir: func() string {
+		/*DataDir: func() string {
 			_user, err := user.Current()
 			if err != nil {
 				log.Fatal(err)
 			}
-			return filepath.Join(_user.HomeDir, ".torrent")
-		}(),
+			return filepath.Join(_user.HomeDir, ".cortex/storage")
+		}(),*/
+		DataDir:        "mnt",
 		ReadaheadBytes: 10 << 20,
 		ListenAddr:     &net.TCPAddr{},
 	}
@@ -241,13 +242,12 @@ func mainExitCode() int {
 		return 1
 	}
 
-	array := make([][]string, len(params.MainnetTrackers))
+	/*array := make([][]string, len(params.MainnetTrackers))
 	for i, tracker := range params.MainnetTrackers {
 		array[i] = []string{"udp" + tracker}
-		//array[i] = []string{tracker}
 	}
 
-	log.Println(array)
+	log.Println(array)*/
 
 	go func() {
 		/*
@@ -271,7 +271,7 @@ func mainExitCode() int {
 						spec := torrent.TorrentSpecFromMetaInfo(mi)
 						ih := spec.InfoHash
 						//spec.Trackers = append(spec.Trackers, params.MainnetTrackers)
-						spec.Trackers = array
+						spec.Trackers = [][]string{params.MainnetTrackers}
 
 						spec.Storage = storage.NewFile(filePath)
 						t, _, err := client.AddTorrentSpec(spec)
