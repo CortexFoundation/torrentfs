@@ -23,6 +23,7 @@ import (
 	"github.com/CortexFoundation/torrentfs/merkletree"
 	"github.com/CortexFoundation/torrentfs/params"
 	"github.com/CortexFoundation/torrentfs/types"
+	"sync"
 	//lru "github.com/hashicorp/golang-lru"
 	"fmt"
 	"github.com/CortexFoundation/CortexTheseus/common"
@@ -55,7 +56,7 @@ type ChainDB struct {
 	metrics               bool
 
 	torrents map[string]uint64
-
+	lock     sync.Mutex
 	//rootCache *lru.Cache
 }
 
@@ -705,6 +706,9 @@ func (fs *ChainDB) SkipPrint() {
 }
 
 func (fs *ChainDB) AddTorrent(ih string, size uint64) (bool, error) {
+	fs.lock.Lock()
+	defer fs.lock.Unlock()
+
 	if s, ok := fs.torrents[ih]; ok {
 		if s >= size {
 			return false, nil
