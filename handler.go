@@ -474,12 +474,15 @@ func (tm *TorrentManager) init() {
 	}
 }
 
+//Search and donwload files from torrent
 func (tm *TorrentManager) Search(hex string) {
 	hash := metainfo.NewHashFromHex(hex)
 	if t := tm.addInfoHash(hash, 0); t != nil {
 		if _, ok := GoodFiles[hex]; !ok {
 			GoodFiles[hex] = false // add but not active
 		}
+	} else {
+		log.Warn("Failed to add info hash", "ih", hex)
 	}
 }
 
