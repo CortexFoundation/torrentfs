@@ -293,7 +293,7 @@ func (tm *TorrentManager) addInfoHash(ih metainfo.Hash, BytesRequested int64) *T
 	if spec == nil {
 		tmpDataPath := filepath.Join(tm.TmpDataDir, ih.HexString())
 		spec = &torrent.TorrentSpec{
-			Trackers: [][]string{}, //tm.trackers, //[][]string{},
+			//		Trackers: [][]string{}, //tm.trackers, //[][]string{},
 			InfoHash: ih,
 			Storage:  storage.NewFile(tmpDataPath),
 		}
@@ -481,15 +481,22 @@ func (tm *TorrentManager) Search(hex string, request int64) error {
 	if !common.IsHexAddress(hex) {
 		return errors.New("Invalid infohash format")
 	}
-	hash := metainfo.NewHashFromHex(strings.TrimPrefix(strings.ToLower(hex), common.Prefix))
+
+	hex = strings.TrimPrefix(strings.ToLower(hex), common.Prefix)
+	if _, ok := BadFiles[hex]; ok {
+		return nil
+	}
+
+	hash := metainfo.NewHashFromHex(hex)
+
 	if t := tm.addInfoHash(hash, request); t != nil {
 		if request > 0 {
 			tm.updateInfoHash(hash, request)
-		} else if request == 0 {
-		} else {
-			if _, ok := GoodFiles[hex]; !ok {
-				GoodFiles[hex] = false // add but not active
-			}
+			//} else if request == 0 {
+			//} else {
+			//	if _, ok := GoodFiles[hex]; !ok {
+			//		GoodFiles[hex] = false // add but not active
+			//	}
 		}
 	} else {
 		log.Warn("Failed to add info hash", "ih", hex)

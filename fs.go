@@ -203,12 +203,14 @@ func (fs *TorrentFS) GetFile(ctx context.Context, infohash, subpath string) ([]b
 }
 
 func (fs *TorrentFS) Download(ctx context.Context, ih string, request int64) error {
-	if err := fs.chain().AddTorrent(ih, uint64(request)); err != nil {
+	if update, err := fs.chain().AddTorrent(ih, uint64(request)); err != nil {
 		return err
-	}
-
-	if err := fs.storage().Search(ih, request); err != nil {
-		return err
+	} else {
+		if update {
+			if err := fs.storage().Search(ih, request); err != nil {
+				return err
+			}
+		}
 	}
 
 	return nil

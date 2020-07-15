@@ -704,10 +704,10 @@ func (fs *ChainDB) SkipPrint() {
 	fmt.Println(str)
 }
 
-func (fs *ChainDB) AddTorrent(ih string, size uint64) error {
+func (fs *ChainDB) AddTorrent(ih string, size uint64) (bool, error) {
 	if s, ok := fs.torrents[ih]; ok {
 		if s >= size {
-			return nil
+			return false, nil
 		}
 	}
 	err := fs.db.Update(func(tx *bolt.Tx) error {
@@ -721,11 +721,11 @@ func (fs *ChainDB) AddTorrent(ih string, size uint64) error {
 	})
 
 	if err != nil {
-		return err
+		return false, err
 	}
 	fs.torrents[ih] = size
 
-	return nil
+	return true, nil
 }
 
 func (fs *ChainDB) initTorrents() (map[string]uint64, error) {
