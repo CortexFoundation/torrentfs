@@ -477,7 +477,7 @@ func (tm *TorrentManager) init() {
 //Search and donwload files from torrent
 func (tm *TorrentManager) Search(hex string, request int64) {
 	hash := metainfo.NewHashFromHex(strings.TrimPrefix(strings.ToLower(hex), common.Prefix))
-	if t := tm.addInfoHash(hash, 0); t != nil {
+	if t := tm.addInfoHash(hash, request); t != nil {
 		if request > 0 {
 			tm.updateInfoHash(hash, request)
 		} else if request == 0 {
