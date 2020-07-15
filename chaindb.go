@@ -706,7 +706,7 @@ func (fs *ChainDB) SkipPrint() {
 
 func (fs *ChainDB) AddTorrent(ih string, size uint64) error {
 	if s, ok := fs.torrents[ih]; ok {
-		if s > size {
+		if s >= size {
 			return nil
 		}
 	}
