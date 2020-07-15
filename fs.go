@@ -202,6 +202,11 @@ func (fs *TorrentFS) GetFile(ctx context.Context, infohash, subpath string) ([]b
 	return fs.storage().GetFile(infohash, subpath)
 }
 
+func (fs *TorrentFS) Download(ctx context.Context, ih string, raw int64) error {
+	go fs.storage().Search(ih, raw)
+	return nil
+}
+
 func (fs *TorrentFS) LocalPort() int {
 	return fs.storage().LocalPort()
 }
