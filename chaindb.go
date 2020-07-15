@@ -695,3 +695,39 @@ func (fs *ChainDB) SkipPrint() {
 	//log.Info("Skip chart", "skips", str)
 	fmt.Println(str)
 }
+
+func (fs *ChainDB) AddTorrent(ih string, size uint64) error {
+	return fs.db.Update(func(tx *bolt.Tx) error {
+		buk, err := tx.CreateBucketIfNotExists([]byte("torrent_" + fs.version))
+		if err != nil {
+			return err
+		}
+		e := buk.Put([]byte(ih), []byte(strconv.FormatUint(size, 16)))
+
+		return e
+	})
+}
+
+func (fs *ChainDB) initTorrents() (map[string]uint64, error) {
+	torrents := make(map[string]uint64)
+	err := fs.db.Update(func(tx *bolt.Tx) error {
+		if buk, err := tx.CreateBucketIfNotExists([]byte("torrent_" + fs.version)); err != nil {
+			return err
+		} else {
+			c := buk.Cursor()
+			for k, v := c.First(); k != nil; k, v = c.Next() {
+				size, err := strconv.ParseUint(string(v), 16, 64)
+				if err != nil {
+					return err
+				}
+				torrents[string(k)] = size
+			}
+			log.Info("Torrent initializing ... ...", "blocks")
+			return nil
+		}
+	})
+	if err != nil {
+		return nil, err
+	}
+	return torrents, nil
+}

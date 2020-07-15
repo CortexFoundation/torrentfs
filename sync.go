@@ -118,8 +118,16 @@ func NewMonitor(flag *Config, cache, compress, listen bool) (*Monitor, error) {
 		log.Warn("Fs start error")
 		return nil, err
 	}
+	if listen {
+		m.IndexInit()
+	} else {
 
-	m.IndexInit()
+		torrents, _ := fs.initTorrents()
+		for k, v := range torrents {
+			tMana.Search(k, int64(v))
+		}
+
+	}
 
 	return m, nil
 }

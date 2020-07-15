@@ -203,6 +203,7 @@ func (fs *TorrentFS) GetFile(ctx context.Context, infohash, subpath string) ([]b
 }
 
 func (fs *TorrentFS) Download(ctx context.Context, ih string, request int64) error {
+	fs.chain().AddTorrent(ih, uint64(request))
 	go fs.storage().Search(ih, request)
 	return nil
 }
