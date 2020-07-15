@@ -467,18 +467,18 @@ func (tm *TorrentManager) init() {
 		log.Debug("Chain files init", "files", len(GoodFiles))
 
 		for k, _ := range GoodFiles {
-			tm.Search(k, 0)
+			tm.Search(k)
 		}
 
 		log.Debug("Chain files OK !!!")
 	}
 }
 
-func (tm *TorrentManager) Search(hex string, request int64) {
+func (tm *TorrentManager) Search(hex string) {
 	hash := metainfo.NewHashFromHex(hex)
-	if t := tm.addInfoHash(hash, request); t != nil {
-		if request > 0 {
-			tm.updateInfoHash(hash, request)
+	if t := tm.addInfoHash(hash, 0); t != nil {
+		if _, ok := GoodFiles[hex]; !ok {
+			GoodFiles[hex] = false // add but not active
 		}
 	}
 }
