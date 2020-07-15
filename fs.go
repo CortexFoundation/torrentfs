@@ -202,8 +202,8 @@ func (fs *TorrentFS) GetFile(ctx context.Context, infohash, subpath string) ([]b
 	return fs.storage().GetFile(infohash, subpath)
 }
 
-func (fs *TorrentFS) Download(ctx context.Context, ih string) error {
-	go fs.storage().Search(ih)
+func (fs *TorrentFS) Download(ctx context.Context, ih string, request int64) error {
+	go fs.storage().Search(ih, request)
 	return nil
 }
 

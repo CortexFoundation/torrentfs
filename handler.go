@@ -467,7 +467,7 @@ func (tm *TorrentManager) init() {
 		log.Debug("Chain files init", "files", len(GoodFiles))
 
 		for k, _ := range GoodFiles {
-			tm.Search(k)
+			tm.Search(k, 0)
 		}
 
 		log.Debug("Chain files OK !!!")
@@ -475,11 +475,16 @@ func (tm *TorrentManager) init() {
 }
 
 //Search and donwload files from torrent
-func (tm *TorrentManager) Search(hex string) {
+func (tm *TorrentManager) Search(hex string, request int64) {
 	hash := metainfo.NewHashFromHex(strings.TrimPrefix(strings.ToLower(hex), common.Prefix))
 	if t := tm.addInfoHash(hash, 0); t != nil {
-		if _, ok := GoodFiles[hex]; !ok {
-			GoodFiles[hex] = false // add but not active
+		if request > 0 {
+			tm.updateInfoHash(hash, request)
+		} else if request == 0 {
+		} else {
+			if _, ok := GoodFiles[hex]; !ok {
+				GoodFiles[hex] = false // add but not active
+			}
 		}
 	} else {
 		log.Warn("Failed to add info hash", "ih", hex)

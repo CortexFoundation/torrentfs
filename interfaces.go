@@ -24,5 +24,5 @@ type CortexStorage interface {
 	GetFile(ctx context.Context, infohash, path string) ([]byte, error)
 	Stop() error
 
-	Download(ctx context.Context, ih string) error
+	Download(ctx context.Context, ih string, request int64) error
 }
