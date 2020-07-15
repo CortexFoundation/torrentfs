@@ -71,7 +71,8 @@ type Monitor struct {
 	ckp         *params.TrustedCheckpoint
 	start       mclock.AbsTime
 
-	local bool
+	local  bool
+	listen bool
 
 	closeOnce sync.Once
 }
@@ -80,7 +81,7 @@ type Monitor struct {
 // Once Ipcpath is settle, this method prefers to build socket connection in order to
 // get higher communicating performance.
 // IpcPath is unavailable on windows.
-func NewMonitor(flag *Config, cache, compress bool) (*Monitor, error) {
+func NewMonitor(flag *Config, cache, compress, listen bool) (*Monitor, error) {
 	fs, fsErr := NewChainDB(flag)
 	if fsErr != nil {
 		log.Error("file storage failed", "err", fsErr)
@@ -110,6 +111,7 @@ func NewMonitor(flag *Config, cache, compress bool) (*Monitor, error) {
 	}
 	m.blockCache, _ = lru.New(delay)
 	m.sizeCache, _ = lru.New(batch)
+	m.listen = listen
 	//e = nil
 
 	if err := m.dl.Start(); err != nil {
@@ -466,6 +468,10 @@ func (m *Monitor) Start() error {
 	//}
 
 	//m.IndexInit()
+	if !m.listen {
+		log.Info("Disable listener")
+		return nil
+	}
 
 	m.wg.Add(1)
 	go func() {
