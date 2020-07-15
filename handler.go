@@ -477,9 +477,9 @@ func (tm *TorrentManager) init() {
 }
 
 //Search and donwload files from torrent
-func (tm *TorrentManager) Search(hex string, request int64) {
+func (tm *TorrentManager) Search(hex string, request int64) error {
 	if !common.IsHexAddress(hex) {
-		return
+		return errors.New("Invalid infohash format")
 	}
 	hash := metainfo.NewHashFromHex(strings.TrimPrefix(strings.ToLower(hex), common.Prefix))
 	if t := tm.addInfoHash(hash, request); t != nil {
@@ -493,7 +493,10 @@ func (tm *TorrentManager) Search(hex string, request int64) {
 		}
 	} else {
 		log.Warn("Failed to add info hash", "ih", hex)
+		return errors.New("Failed to add info hash")
 	}
+
+	return nil
 }
 
 func (tm *TorrentManager) mainLoop() {
