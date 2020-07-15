@@ -476,7 +476,7 @@ func (tm *TorrentManager) init() {
 
 //Search and donwload files from torrent
 func (tm *TorrentManager) Search(hex string) {
-	hash := metainfo.NewHashFromHex(hex)
+	hash := metainfo.NewHashFromHex(strings.TrimPrefix(strings.ToLower(hex), common.Prefix))
 	if t := tm.addInfoHash(hash, 0); t != nil {
 		if _, ok := GoodFiles[hex]; !ok {
 			GoodFiles[hex] = false // add but not active
@@ -832,7 +832,7 @@ func (fs *TorrentManager) Available(infohash string, rawSize int64) (bool, error
 		return false, errors.New("raw size is zero or negative")
 	}
 
-	ih := metainfo.NewHashFromHex(infohash)
+	ih := metainfo.NewHashFromHex(strings.TrimPrefix(strings.ToLower(infohash), common.Prefix))
 	if torrent := fs.getTorrent(ih); torrent == nil {
 		return false, errors.New("file not exist")
 	} else {
@@ -848,9 +848,18 @@ func (fs *TorrentManager) GetFile(infohash, subpath string) ([]byte, error) {
 	if fs.metrics {
 		defer func(start time.Time) { fs.Updates += time.Since(start) }(time.Now())
 	}
-	ih := metainfo.NewHashFromHex(infohash)
+	ih := metainfo.NewHashFromHex(strings.TrimPrefix(strings.ToLower(infohash), common.Prefix))
+
 	if torrent := fs.getTorrent(ih); torrent == nil {
-		log.Debug("Torrent not found", "hash", infohash)
+		//defer func() {
+		//	if active, ok := GoodFiles[infohash]; !ok {
+		//		GoodFiles[infohash] = true
+		//	} else {
+		//		if !active {
+		//			GoodFiles[infohash] = true
+		//		}
+		//	}
+		//}()
 		return nil, errors.New("file not exist")
 	} else {
 
