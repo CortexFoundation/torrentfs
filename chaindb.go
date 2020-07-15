@@ -710,7 +710,7 @@ func (fs *ChainDB) AddTorrent(ih string, size uint64) error {
 			return nil
 		}
 	}
-	return fs.db.Update(func(tx *bolt.Tx) error {
+	err := fs.db.Update(func(tx *bolt.Tx) error {
 		buk, err := tx.CreateBucketIfNotExists([]byte("torrent_" + fs.version))
 		if err != nil {
 			return err
@@ -719,6 +719,13 @@ func (fs *ChainDB) AddTorrent(ih string, size uint64) error {
 
 		return e
 	})
+
+	if err != nil {
+		return err
+	}
+	fs.torrents[ih] = size
+
+	return nil
 }
 
 func (fs *ChainDB) initTorrents() (map[string]uint64, error) {
