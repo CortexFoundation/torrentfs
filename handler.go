@@ -488,19 +488,14 @@ func (tm *TorrentManager) Search(hex string, request int64) error {
 	}
 
 	hash := metainfo.NewHashFromHex(hex)
-
-	if t := tm.addInfoHash(hash, request); t != nil {
-		if request > 0 {
-			tm.updateInfoHash(hash, request)
-			//} else if request == 0 {
-			//} else {
-			//	if _, ok := GoodFiles[hex]; !ok {
-			//		GoodFiles[hex] = false // add but not active
-			//	}
+	if request == 0 {
+		if t := tm.addInfoHash(hash, request); t == nil {
+			return errors.New("Failed to add info hash")
 		}
+	} else if request > 0 {
+		tm.updateInfoHash(hash, request)
 	} else {
-		log.Warn("Failed to add info hash", "ih", hex)
-		return errors.New("Failed to add info hash")
+		return errors.New("Request can't be negative")
 	}
 
 	return nil
