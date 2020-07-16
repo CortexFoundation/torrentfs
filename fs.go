@@ -36,7 +36,7 @@ func GetStorage() CortexStorage {
 }
 
 // New creates a new torrentfs instance with the given configuration.
-func New(config *Config, commit string, cache, compress, listen bool) (*TorrentFS, error) {
+func New(config *Config, cache, compress, listen bool) (*TorrentFS, error) {
 	if inst != nil {
 		return inst, nil
 	}
