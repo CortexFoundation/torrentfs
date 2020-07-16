@@ -594,7 +594,7 @@ func (tm *TorrentManager) pendingLoop() {
 							}
 
 						} else {
-							log.Warn("Boost failed", "ih", ih.String(), "err", err)
+							log.Debug("Boost failed", "ih", ih.String(), "err", err)
 							if t.start == 0 && (tm.bytes[ih] > 0 || tm.fullSeed || t.loop > 600) { //|| len(tm.pendingTorrents) == 1) {
 								t.AddTrackers(tm.trackers)
 								t.start = mclock.Now()

@@ -746,7 +746,7 @@ func (fs *ChainDB) initTorrents() (map[string]uint64, error) {
 				}
 				fs.torrents[string(k)] = size
 			}
-			log.Info("Torrent initializing ... ...", "blocks")
+			log.Info("Torrent initializing ... ...", "torrents", len(fs.torrents))
 			return nil
 		}
 	})
