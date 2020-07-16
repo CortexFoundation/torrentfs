@@ -690,10 +690,10 @@ func (m *Monitor) syncLastBlock() uint64 {
 		}
 	}
 	m.lastNumber = maxNumber
-	if maxNumber-minNumber > delay/2 {
+	if maxNumber-minNumber > batch-1 {
 		elapsed := time.Duration(mclock.Now()) - time.Duration(start)
 		elapsed_a := time.Duration(mclock.Now()) - time.Duration(m.start)
-		log.Debug("Chain segment frozen", "from", minNumber, "to", maxNumber, "range", uint64(maxNumber-minNumber), "current", uint64(m.currentNumber), "progress", float64(maxNumber)/float64(m.currentNumber), "last", m.lastNumber, "elapsed", common.PrettyDuration(elapsed), "bps", float64(maxNumber-minNumber)*1000*1000*1000/float64(elapsed), "bps_a", float64(maxNumber)*1000*1000*1000/float64(elapsed_a), "cap", len(m.taskCh), "duration", common.PrettyDuration(elapsed_a))
+		log.Info("Chain segment frozen", "from", minNumber, "to", maxNumber, "range", uint64(maxNumber-minNumber), "current", uint64(m.currentNumber), "progress", float64(maxNumber)/float64(m.currentNumber), "last", m.lastNumber, "elapsed", common.PrettyDuration(elapsed), "bps", float64(maxNumber-minNumber)*1000*1000*1000/float64(elapsed), "bps_a", float64(maxNumber)*1000*1000*1000/float64(elapsed_a), "cap", len(m.taskCh), "duration", common.PrettyDuration(elapsed_a))
 	}
 	return uint64(maxNumber - minNumber)
 }
