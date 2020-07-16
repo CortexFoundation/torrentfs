@@ -421,11 +421,14 @@ func NewTorrentManager(config *Config, fsid uint64, cache, compress bool) (*Torr
 	return torrentManager, nil
 }
 
-func (tm *TorrentManager) Start() error {
+func (tm *TorrentManager) Start(listen bool) error {
 	tm.init()
 
-	tm.wg.Add(1)
-	go tm.mainLoop()
+	if listen {
+		tm.wg.Add(1)
+		go tm.mainLoop()
+	}
+
 	tm.wg.Add(1)
 	go tm.pendingLoop()
 	tm.wg.Add(1)
@@ -488,7 +491,7 @@ func (tm *TorrentManager) Search(hex string, request int64, resume bool) error {
 	}
 
 	hash := metainfo.NewHashFromHex(hex)
-	if request == 0 || resume{
+	if request == 0 || resume {
 		if t := tm.addInfoHash(hash, request); t == nil {
 			return errors.New("Failed to add info hash")
 		}

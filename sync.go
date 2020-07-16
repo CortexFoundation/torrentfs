@@ -114,7 +114,7 @@ func NewMonitor(flag *Config, cache, compress, listen bool) (*Monitor, error) {
 	m.listen = listen
 	//e = nil
 
-	if err := m.dl.Start(); err != nil {
+	if err := m.dl.Start(listen); err != nil {
 		log.Warn("Fs start error")
 		return nil, err
 	}
