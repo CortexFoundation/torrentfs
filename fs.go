@@ -63,13 +63,14 @@ func New(config *Config, cache, compress, listen bool) (*TorrentFS, error) {
 				"version": ProtocolVersion,
 				"status": map[string]interface{}{
 					"dht":            !config.DisableDHT,
-					"listen":         inst.LocalPort(),
+					"port":           inst.LocalPort(),
 					"root":           inst.chain().Root().Hex(),
 					"files":          inst.Congress(),
 					"active":         inst.Candidate(),
 					"leafs":          len(inst.chain().Blocks()),
 					"number":         monitor.currentNumber,
 					"maxMessageSize": inst.MaxMessageSize(),
+					"listen":         monitor.listen,
 				},
 			}
 		},
