@@ -124,7 +124,7 @@ func NewMonitor(flag *Config, cache, compress, listen bool) (*Monitor, error) {
 	} else {
 		torrents, _ := fs.initTorrents()
 		for k, v := range torrents {
-			tMana.Search(k, int64(v))
+			tMana.Search(k, int64(v), true)
 		}
 	}
 
