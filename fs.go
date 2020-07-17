@@ -36,12 +36,12 @@ func GetStorage() CortexStorage {
 }
 
 // New creates a new torrentfs instance with the given configuration.
-func New(config *Config, cache, compress bool) (*TorrentFS, error) {
+func New(config *Config, cache, compress, listen bool) (*TorrentFS, error) {
 	if inst != nil {
 		return inst, nil
 	}
 
-	monitor, moErr := NewMonitor(config, cache, compress)
+	monitor, moErr := NewMonitor(config, cache, compress, listen)
 	if moErr != nil {
 		log.Error("Failed create monitor")
 		return nil, moErr
