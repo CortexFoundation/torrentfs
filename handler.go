@@ -421,13 +421,11 @@ func NewTorrentManager(config *Config, fsid uint64, cache, compress bool) (*Torr
 	return torrentManager, nil
 }
 
-func (tm *TorrentManager) Start(listen bool) error {
+func (tm *TorrentManager) Start() error {
 	tm.init()
 
-	if listen {
-		tm.wg.Add(1)
-		go tm.mainLoop()
-	}
+	tm.wg.Add(1)
+	go tm.mainLoop()
 
 	tm.wg.Add(1)
 	go tm.pendingLoop()

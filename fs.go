@@ -36,12 +36,12 @@ func GetStorage() CortexStorage {
 }
 
 // New creates a new torrentfs instance with the given configuration.
-func New(config *Config, cache, compress, listen bool) (*TorrentFS, error) {
+func New(config *Config, cache, compress bool) (*TorrentFS, error) {
 	if inst != nil {
 		return inst, nil
 	}
 
-	monitor, moErr := NewMonitor(config, cache, compress, listen)
+	monitor, moErr := NewMonitor(config, cache, compress)
 	if moErr != nil {
 		log.Error("Failed create monitor")
 		return nil, moErr
@@ -70,7 +70,7 @@ func New(config *Config, cache, compress, listen bool) (*TorrentFS, error) {
 					"leafs":          len(inst.chain().Blocks()),
 					"number":         monitor.currentNumber,
 					"maxMessageSize": inst.MaxMessageSize(),
-					"listen":         monitor.listen,
+					//					"listen":         monitor.listen,
 				},
 			}
 		},
@@ -205,9 +205,9 @@ func (fs *TorrentFS) GetFile(ctx context.Context, infohash, subpath string) ([]b
 
 func (fs *TorrentFS) Download(ctx context.Context, ih string, request int64) error {
 
-	if fs.monitor.listen {
-		return nil
-	}
+	//if fs.monitor.listen {
+	//return nil
+	//}
 
 	if update, err := fs.chain().AddTorrent(ih, uint64(request)); err != nil {
 		return err

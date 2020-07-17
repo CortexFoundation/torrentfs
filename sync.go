@@ -71,8 +71,8 @@ type Monitor struct {
 	ckp         *params.TrustedCheckpoint
 	start       mclock.AbsTime
 
-	local  bool
-	listen bool
+	local bool
+	//listen bool
 
 	closeOnce sync.Once
 }
@@ -81,7 +81,7 @@ type Monitor struct {
 // Once Ipcpath is settle, this method prefers to build socket connection in order to
 // get higher communicating performance.
 // IpcPath is unavailable on windows.
-func NewMonitor(flag *Config, cache, compress, listen bool) (*Monitor, error) {
+func NewMonitor(flag *Config, cache, compress bool) (*Monitor, error) {
 	fs, fsErr := NewChainDB(flag)
 	if fsErr != nil {
 		log.Error("file storage failed", "err", fsErr)
@@ -111,21 +111,19 @@ func NewMonitor(flag *Config, cache, compress, listen bool) (*Monitor, error) {
 	}
 	m.blockCache, _ = lru.New(delay)
 	m.sizeCache, _ = lru.New(batch)
-	m.listen = listen
-	//e = nil
+	//m.listen = listen
 
-	if err := m.dl.Start(listen); err != nil {
+	if err := m.dl.Start(); err != nil {
 		log.Warn("Fs start error")
 		return nil, err
 	}
 
-	if listen {
-		m.IndexInit()
-	} else {
-		torrents, _ := fs.initTorrents()
-		for k, v := range torrents {
-			tMana.Search(k, int64(v), true)
-		}
+	//if listen {
+	m.IndexInit()
+	//}
+	torrents, _ := fs.initTorrents()
+	for k, v := range torrents {
+		tMana.Search(k, int64(v), true)
 	}
 
 	return m, nil
@@ -448,9 +446,13 @@ func (m *Monitor) Stop() {
 			return
 		}
 		atomic.StoreInt32(&(m.terminated), 1)
-		close(m.exitCh)
-		log.Info("Monitor is waiting to be closed")
-		m.wg.Wait()
+		if m.exitCh == nil {
+			close(m.exitCh)
+			log.Info("Monitor is waiting to be closed")
+			m.wg.Wait()
+		} else {
+			log.Warn("Listener has already been stopped")
+		}
 
 		m.blockCache.Purge()
 		m.sizeCache.Purge()
@@ -469,16 +471,10 @@ func (m *Monitor) Stop() {
 
 // Start ... start ListenOn on the rpc port of a blockchain full node
 func (m *Monitor) Start() error {
-	//if err := m.dl.Start(); err != nil {
-	//	log.Warn("Fs start error")
-	//	return err
+	//if !m.listen {
+	//log.Info("Disable listener")
+	//return nil
 	//}
-
-	//m.IndexInit()
-	if !m.listen {
-		log.Info("Disable listener")
-		return nil
-	}
 
 	m.wg.Add(1)
 	go func() {
@@ -561,6 +557,12 @@ func (m *Monitor) syncLatestBlock() {
 			} else if progress > 1 {
 				timer.Reset(time.Millisecond * 1000)
 			} else {
+				if m.currentNumber != 0 {
+					log.Warn("Finish sync, listener will be stopped", "current", m.currentNumber)
+					close(m.exitCh)
+					m.wg.Wait()
+					return
+				}
 				timer.Reset(time.Millisecond * 2000)
 			}
 			m.fs.Flush()

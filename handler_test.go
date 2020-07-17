@@ -14,7 +14,7 @@ func TestGetFile(t *testing.T) {
 	fmt.Println(DefaultConfig)
 	tm, _ := NewTorrentManager(&DefaultConfig, 1, false, false)
 	tm.Search(ih, 0, false)
-	tm.Start(false)
+	tm.Start()
 	defer tm.Close()
 	time.Sleep(3 * time.Second)
 	a, _ := tm.Available(ih, 100000000)
