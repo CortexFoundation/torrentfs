@@ -68,6 +68,9 @@ var (
 	availableMeter = metrics.NewRegisteredMeter("torrent/available/call", nil)
 	diskReadMeter  = metrics.NewRegisteredMeter("torrent/disk/read", nil)
 
+	downloadMeter = metrics.NewRegisteredMeter("torrent/download/call", nil)
+	updateMeter   = metrics.NewRegisteredMeter("torrent/update/call", nil)
+
 	memcacheHitMeter  = metrics.NewRegisteredMeter("torrent/memcache/hit", nil)
 	memcacheReadMeter = metrics.NewRegisteredMeter("torrent/memcache/read", nil)
 
@@ -494,10 +497,13 @@ func (tm *TorrentManager) Search(hex string, request int64, resume bool) error {
 			return errors.New("Failed to add info hash")
 		}
 	} else if request > 0 {
+		updateMeter.Mark(1)
 		tm.updateInfoHash(hash, request)
 	} else {
 		return errors.New("Request can't be negative")
 	}
+
+	downloadMeter.Mark(1)
 
 	return nil
 }
