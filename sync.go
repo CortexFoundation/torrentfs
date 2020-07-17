@@ -118,13 +118,12 @@ func NewMonitor(flag *Config, cache, compress, listen bool) (*Monitor, error) {
 		return nil, err
 	}
 
-	//if listen {
-	m.IndexInit()
-	//}
 	torrents, _ := fs.initTorrents()
 	for k, v := range torrents {
 		tMana.Search(k, int64(v), true)
 	}
+
+	m.IndexInit()
 
 	return m, nil
 }
