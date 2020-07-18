@@ -64,12 +64,12 @@ type Monitor struct {
 	wg            sync.WaitGroup
 	rpcWg         sync.WaitGroup
 
-	taskCh      chan *types.Block
-	newTaskHook func(*types.Block)
-	blockCache  *lru.Cache
-	sizeCache   *lru.Cache
-	ckp         *params.TrustedCheckpoint
-	start       mclock.AbsTime
+	//taskCh      chan *types.Block
+	//newTaskHook func(*types.Block)
+	blockCache *lru.Cache
+	sizeCache  *lru.Cache
+	ckp        *params.TrustedCheckpoint
+	start      mclock.AbsTime
 
 	local  bool
 	listen bool
@@ -106,8 +106,8 @@ func NewMonitor(flag *Config, cache, compress, listen bool) (*Monitor, error) {
 		lastNumber:    uint64(0),
 		scope:         uint64(math.Min(float64(runtime.NumCPU()*4), float64(8))),
 		currentNumber: uint64(0),
-		taskCh:        make(chan *types.Block, batch),
-		start:         mclock.Now(),
+		//taskCh:        make(chan *types.Block, batch),
+		start: mclock.Now(),
 	}
 	m.blockCache, _ = lru.New(delay)
 	m.sizeCache, _ = lru.New(batch)
@@ -716,7 +716,7 @@ func (m *Monitor) syncLastBlock() uint64 {
 	if maxNumber-minNumber > delay {
 		elapsed := time.Duration(mclock.Now()) - time.Duration(start)
 		elapsed_a := time.Duration(mclock.Now()) - time.Duration(m.start)
-		log.Info("Chain segment frozen", "from", minNumber, "to", maxNumber, "range", uint64(maxNumber-minNumber), "current", uint64(m.currentNumber), "progress", float64(maxNumber)/float64(m.currentNumber), "last", m.lastNumber, "elapsed", common.PrettyDuration(elapsed), "bps", float64(maxNumber-minNumber)*1000*1000*1000/float64(elapsed), "bps_a", float64(maxNumber)*1000*1000*1000/float64(elapsed_a), "cap", len(m.taskCh), "duration", common.PrettyDuration(elapsed_a))
+		log.Info("Chain segment frozen", "from", minNumber, "to", maxNumber, "range", uint64(maxNumber-minNumber), "current", uint64(m.currentNumber), "progress", float64(maxNumber)/float64(m.currentNumber), "last", m.lastNumber, "elapsed", common.PrettyDuration(elapsed), "bps", float64(maxNumber-minNumber)*1000*1000*1000/float64(elapsed), "bps_a", float64(maxNumber)*1000*1000*1000/float64(elapsed_a), "duration", common.PrettyDuration(elapsed_a))
 	}
 	return uint64(maxNumber - minNumber)
 }
@@ -746,13 +746,13 @@ func (m *Monitor) solve(block *types.Block) error {
 				}
 			}
 
-			log.Debug("Seal fs record", "number", i, "cap", len(m.taskCh), "record", record, "root", m.fs.Root().Hex(), "blocks", len(m.fs.Blocks()), "txs", m.fs.Txs(), "files", len(m.fs.Files()), "ckp", m.fs.CheckPoint)
+			log.Debug("Seal fs record", "number", i, "record", record, "root", m.fs.Root().Hex(), "blocks", len(m.fs.Blocks()), "txs", m.fs.Txs(), "files", len(m.fs.Files()), "ckp", m.fs.CheckPoint)
 		} else {
 			if m.fs.LastListenBlockNumber < i {
 				m.fs.LastListenBlockNumber = i
 			}
 
-			log.Trace("Confirm to seal the fs record", "number", i, "cap", len(m.taskCh))
+			log.Trace("Confirm to seal the fs record", "number", i)
 		}
 		m.blockCache.Add(i, block.Hash.Hex())
 	}
