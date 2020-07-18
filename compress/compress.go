@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"compress/gzip"
 	"github.com/CortexFoundation/CortexTheseus/log"
+	"github.com/golang/snappy"
 	"io"
 	"time"
 )
@@ -51,4 +52,21 @@ func ZipData(data []byte) (compressedData []byte, err error) {
 	compressedData = b.Bytes()
 
 	return
+}
+
+func SnappyEncode(data []byte) ([]byte, error) {
+	start := time.Now()
+	defer log.Info("Snappy encode", "cost", time.Since(start))
+
+	return snappy.Encode(nil, data), nil
+}
+
+func SnappyDecode(data []byte) ([]byte, error) {
+	start := time.Now()
+	defer log.Info("Snappy decode", "cost", time.Since(start))
+	res, err := snappy.Decode(nil, data)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
 }
