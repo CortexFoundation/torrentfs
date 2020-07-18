@@ -328,52 +328,50 @@ func (fs *ChainDB) progress(f *types.FileInfo, init bool) (bool, error) {
 				return err
 			}
 			return buk.Put(k, v)
-		} else {
-			var info types.FileInfo
-			if err := json.Unmarshal(bef, &info); err != nil {
-				update = true
-				return buk.Put(k, v)
-			}
+		}
+		var info types.FileInfo
+		if err := json.Unmarshal(bef, &info); err != nil {
+			update = true
+			return buk.Put(k, v)
+		}
 
-			if info.LeftSize > f.LeftSize {
-				update = true
-				if *info.ContractAddr != *f.ContractAddr {
-					var insert = true
-					for _, addr := range info.Relate {
-						if *f.ContractAddr == addr {
-							insert = false
-							break
-						}
-					}
-					if insert {
-						log.Debug("New relate file found and progressing", "hash", info.Meta.InfoHash.String(), "old", info.ContractAddr, "new", f.ContractAddr, "relate", len(info.Relate), "init", init)
-						f.Relate = append(f.Relate, *info.ContractAddr)
-					} else {
-						log.Debug("Address changed and progressing", "hash", info.Meta.InfoHash.String(), "old", info.ContractAddr, "new", f.ContractAddr, "relate", len(info.Relate), "init", init)
+		if info.LeftSize > f.LeftSize {
+			update = true
+			if *info.ContractAddr != *f.ContractAddr {
+				var insert = true
+				for _, addr := range info.Relate {
+					if *f.ContractAddr == addr {
+						insert = false
+						break
 					}
 				}
-				v, err = json.Marshal(f)
-				if err != nil {
-					return err
-				}
-				return buk.Put(k, v)
-			} else {
-				if *info.ContractAddr != *f.ContractAddr {
-					for _, addr := range info.Relate {
-						if *f.ContractAddr == addr {
-							return nil
-						}
-					}
-					info.Relate = append(info.Relate, *f.ContractAddr)
-					v, err = json.Marshal(info)
-					if err != nil {
-						return err
-					}
-					log.Debug("New relate file found", "hash", info.Meta.InfoHash.String(), "old", info.ContractAddr, "new", f.ContractAddr, "r", len(info.Relate), "l", info.LeftSize, "r", len(f.Relate), "l", f.LeftSize, "init", init)
-					f.Relate = info.Relate
-					return buk.Put(k, v)
+				if insert {
+					log.Debug("New relate file found and progressing", "hash", info.Meta.InfoHash.String(), "old", info.ContractAddr, "new", f.ContractAddr, "relate", len(info.Relate), "init", init)
+					f.Relate = append(f.Relate, *info.ContractAddr)
+				} else {
+					log.Debug("Address changed and progressing", "hash", info.Meta.InfoHash.String(), "old", info.ContractAddr, "new", f.ContractAddr, "relate", len(info.Relate), "init", init)
 				}
 			}
+			v, err = json.Marshal(f)
+			if err != nil {
+				return err
+			}
+			return buk.Put(k, v)
+		}
+		if *info.ContractAddr != *f.ContractAddr {
+			for _, addr := range info.Relate {
+				if *f.ContractAddr == addr {
+					return nil
+				}
+			}
+			info.Relate = append(info.Relate, *f.ContractAddr)
+			v, err = json.Marshal(info)
+			if err != nil {
+				return err
+			}
+			log.Debug("New relate file found", "hash", info.Meta.InfoHash.String(), "old", info.ContractAddr, "new", f.ContractAddr, "r", len(info.Relate), "l", info.LeftSize, "r", len(f.Relate), "l", f.LeftSize, "init", init)
+			f.Relate = info.Relate
+			return buk.Put(k, v)
 		}
 		return nil
 	})
@@ -441,75 +439,75 @@ func (fs *ChainDB) Version() string {
 
 func (fs *ChainDB) initBlocks() error {
 	return fs.db.Update(func(tx *bolt.Tx) error {
-		if buk, err := tx.CreateBucketIfNotExists([]byte("blocks_" + fs.version)); err != nil {
+		buk, err := tx.CreateBucketIfNotExists([]byte("blocks_" + fs.version))
+		if err != nil {
 			return err
-		} else {
-			c := buk.Cursor()
-
-			for k, v := c.First(); k != nil; k, v = c.Next() {
-
-				var x types.Block
-
-				if err := json.Unmarshal(v, &x); err != nil {
-					return err
-				}
-				fs.blocks = append(fs.blocks, &x)
-				fs.txs += uint64(len(x.Txs))
-			}
-			sort.Slice(fs.blocks, func(i, j int) bool {
-				return fs.blocks[i].Number < fs.blocks[j].Number
-			})
-			log.Info("Fs blocks initializing ... ...", "blocks", len(fs.blocks), "txs", fs.txs)
-			return nil
 		}
+		c := buk.Cursor()
+
+		for k, v := c.First(); k != nil; k, v = c.Next() {
+
+			var x types.Block
+
+			if err := json.Unmarshal(v, &x); err != nil {
+				return err
+			}
+			fs.blocks = append(fs.blocks, &x)
+			fs.txs += uint64(len(x.Txs))
+		}
+		sort.Slice(fs.blocks, func(i, j int) bool {
+			return fs.blocks[i].Number < fs.blocks[j].Number
+		})
+		log.Info("Fs blocks initializing ... ...", "blocks", len(fs.blocks), "txs", fs.txs)
+		return nil
 	})
 }
 
 func (fs *ChainDB) history() error {
 	return fs.db.Update(func(tx *bolt.Tx) error {
-		if buk, err := tx.CreateBucketIfNotExists([]byte("version_" + fs.version)); err != nil {
+		buk, err := tx.CreateBucketIfNotExists([]byte("version_" + fs.version))
+		if err != nil {
 			return err
-		} else {
-			c := buk.Cursor()
-
-			for k, v := c.First(); k != nil; k, v = c.Next() {
-				log.Info("History", "k", string(k), "v", common.BytesToHash(v))
-			}
-			return nil
 		}
+		c := buk.Cursor()
+
+		for k, v := c.First(); k != nil; k, v = c.Next() {
+			log.Info("History", "k", string(k), "v", common.BytesToHash(v))
+		}
+		return nil
 	})
 }
 
 func (fs *ChainDB) initFiles() error {
 	return fs.db.Update(func(tx *bolt.Tx) error {
-		if buk, err := tx.CreateBucketIfNotExists([]byte("files_" + fs.version)); buk == nil || err != nil {
+		buk, err := tx.CreateBucketIfNotExists([]byte("files_" + fs.version))
+		if buk == nil || err != nil {
 			return err
-		} else {
-			c := buk.Cursor()
+		}
+		c := buk.Cursor()
 
-			for k, v := c.First(); k != nil; k, v = c.Next() {
+		for k, v := c.First(); k != nil; k, v = c.Next() {
 
-				var x types.FileInfo
+			var x types.FileInfo
 
-				if err := json.Unmarshal(v, &x); err != nil {
-					return err
-				}
-				fs.filesContractAddr[*x.ContractAddr] = &x
-				fs.files = append(fs.files, &x)
-				if x.Relate == nil {
-					x.Relate = append(x.Relate, *x.ContractAddr)
-				}
-				for _, addr := range x.Relate {
-					if _, ok := fs.filesContractAddr[addr]; !ok {
-						tmp := x
-						tmp.ContractAddr = &addr
-						fs.filesContractAddr[addr] = &tmp
-					}
+			if err := json.Unmarshal(v, &x); err != nil {
+				return err
+			}
+			fs.filesContractAddr[*x.ContractAddr] = &x
+			fs.files = append(fs.files, &x)
+			if x.Relate == nil {
+				x.Relate = append(x.Relate, *x.ContractAddr)
+			}
+			for _, addr := range x.Relate {
+				if _, ok := fs.filesContractAddr[addr]; !ok {
+					tmp := x
+					tmp.ContractAddr = &addr
+					fs.filesContractAddr[addr] = &tmp
 				}
 			}
-			log.Info("File init finished", "files", len(fs.files), "total", len(fs.filesContractAddr))
-			return nil
 		}
+		log.Info("File init finished", "files", len(fs.files), "total", len(fs.filesContractAddr))
+		return nil
 	})
 }
 
