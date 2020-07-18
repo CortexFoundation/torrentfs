@@ -199,7 +199,7 @@ func (m *Monitor) IndexInit() error {
 	return nil
 }
 
-func (m *Monitor) taskLoop() {
+/*func (m *Monitor) taskLoop() {
 	defer m.wg.Done()
 	for {
 		select {
@@ -212,11 +212,14 @@ func (m *Monitor) taskLoop() {
 				log.Warn("Block solved failed, try again", "err", err, "num", task.Number)
 			}
 		case <-m.exitCh:
+			if cap(m.taskCh) > 0 {
+				continue
+			}
 			log.Info("Monitor task channel closed")
 			return
 		}
 	}
-}
+}*/
 
 // SetConnection method builds connection to remote or local communicator.
 func (m *Monitor) buildConnection(ipcpath string, rpcuri string) (*rpc.Client, error) {
@@ -517,8 +520,8 @@ func (m *Monitor) startWork() error {
 	if err := m.IndexCheck(); err != nil {
 		return err
 	}
-	m.wg.Add(1)
-	go m.taskLoop()
+	//m.wg.Add(1)
+	//go m.taskLoop()
 	m.wg.Add(1)
 	go m.listenLatestBlock()
 	m.wg.Add(1)
@@ -663,7 +666,12 @@ func (m *Monitor) syncLastBlock() uint64 {
 				return 0
 			}
 			for _, rpcBlock := range blocks {
-				if len(m.taskCh) < cap(m.taskCh) {
+				if err := m.solve(rpcBlock); err != nil {
+					m.lastNumber = i - 1
+					return 0
+				}
+				i++
+				/*if len(m.taskCh) < cap(m.taskCh) {
 					m.taskCh <- rpcBlock
 					i++
 				} else {
@@ -674,7 +682,7 @@ func (m *Monitor) syncLastBlock() uint64 {
 						log.Warn("Chain segment frozen", "from", minNumber, "to", i, "range", uint64(i-minNumber), "current", uint64(m.currentNumber), "progress", float64(i)/float64(m.currentNumber), "last", m.lastNumber, "elapsed", common.PrettyDuration(elapsed), "bps", float64(i-minNumber)*1000*1000*1000/float64(elapsed), "bps_a", float64(maxNumber)*1000*1000*1000/float64(elapsed_a), "cap", len(m.taskCh))
 					}
 					return 0
-				}
+				}*/
 			}
 		} else {
 
@@ -684,7 +692,12 @@ func (m *Monitor) syncLastBlock() uint64 {
 				m.lastNumber = i - 1
 				return 0
 			}
-			if len(m.taskCh) < cap(m.taskCh) {
+			if err := m.solve(rpcBlock); err != nil {
+				m.lastNumber = i - 1
+				return 0
+			}
+			i++
+			/*if len(m.taskCh) < cap(m.taskCh) {
 				m.taskCh <- rpcBlock
 				i++
 			} else {
@@ -695,11 +708,12 @@ func (m *Monitor) syncLastBlock() uint64 {
 					log.Warn("Chain segment frozen", "from", minNumber, "to", i, "range", uint64(i-minNumber), "current", uint64(m.currentNumber), "progress", float64(i)/float64(m.currentNumber), "last", m.lastNumber, "elapsed", common.PrettyDuration(elapsed), "bps", float64(i-minNumber)*1000*1000*1000/float64(elapsed), "bps_a", float64(maxNumber)*1000*1000*1000/float64(elapsed_a), "cap", len(m.taskCh))
 				}
 				return 0
-			}
+			}*/
 		}
 	}
 	m.lastNumber = maxNumber
-	if maxNumber-minNumber > batch-1 {
+	//if maxNumber-minNumber > batch-1 {
+	if maxNumber-minNumber > delay {
 		elapsed := time.Duration(mclock.Now()) - time.Duration(start)
 		elapsed_a := time.Duration(mclock.Now()) - time.Duration(m.start)
 		log.Info("Chain segment frozen", "from", minNumber, "to", maxNumber, "range", uint64(maxNumber-minNumber), "current", uint64(m.currentNumber), "progress", float64(maxNumber)/float64(m.currentNumber), "last", m.lastNumber, "elapsed", common.PrettyDuration(elapsed), "bps", float64(maxNumber-minNumber)*1000*1000*1000/float64(elapsed), "bps_a", float64(maxNumber)*1000*1000*1000/float64(elapsed_a), "cap", len(m.taskCh), "duration", common.PrettyDuration(elapsed_a))
