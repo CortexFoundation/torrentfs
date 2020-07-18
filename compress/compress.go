@@ -3,14 +3,14 @@ package compress
 import (
 	"bytes"
 	"compress/gzip"
-	clog "github.com/CortexFoundation/CortexTheseus/log"
+	"github.com/CortexFoundation/CortexTheseus/log"
 	"io"
 	"time"
 )
 
 func UnzipData(data []byte) (resData []byte, err error) {
 	start := time.Now()
-	defer clog.Info("Unzip data", "cost", time.Since(start))
+	defer log.Info("Unzip data", "cost", time.Since(start))
 	b := bytes.NewBuffer(data)
 	var r io.Reader
 	r, err = gzip.NewReader(b)
@@ -31,7 +31,7 @@ func UnzipData(data []byte) (resData []byte, err error) {
 
 func ZipData(data []byte) (compressedData []byte, err error) {
 	start := time.Now()
-	defer clog.Info("Zip data", "cost", time.Since(start))
+	defer log.Info("Zip data", "cost", time.Since(start))
 	var b bytes.Buffer
 	gz := gzip.NewWriter(&b)
 
