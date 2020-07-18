@@ -493,12 +493,23 @@ func (tm *TorrentManager) Search(hex string, request int64, resume bool) error {
 
 	hash := metainfo.NewHashFromHex(hex)
 	if request == 0 || resume {
-		if t := tm.addInfoHash(hash, request); t == nil {
-			return errors.New("Failed to add info hash")
-		}
+
+		tm.UpdateTorrent(types.FlowControlMeta{
+			InfoHash:       hash,
+			BytesRequested: uint64(request),
+			IsCreate:       true,
+		})
+		//if t := tm.addInfoHash(hash, request); t == nil {
+		//	return errors.New("Failed to add info hash")
+		//}
 	} else if request > 0 {
 		updateMeter.Mark(1)
-		tm.updateInfoHash(hash, request)
+		tm.UpdateTorrent(types.FlowControlMeta{
+			InfoHash:       hash,
+			BytesRequested: uint64(request),
+			IsCreate:       false,
+		})
+		//tm.updateInfoHash(hash, request)
 	} else {
 		return errors.New("Request can't be negative")
 	}
