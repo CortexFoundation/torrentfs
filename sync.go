@@ -565,7 +565,7 @@ func (m *Monitor) syncLatestBlock() {
 				timer.Reset(time.Millisecond * 1000)
 			} else {
 				if !m.listen {
-					if m.currentNumber >= m.ckp.TfsCheckPoint {
+					if (m.ckp != nil && m.currentNumber >= m.ckp.TfsCheckPoint) || (m.ckp == nil && m.currentNumber > 0) {
 						m.fs.Flush()
 						go m.exit()
 						log.Warn("Finish sync, listener will be stopped", "current", m.currentNumber)
