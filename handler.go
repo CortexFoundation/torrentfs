@@ -535,22 +535,25 @@ func (tm *TorrentManager) mainLoop() {
 			}
 
 			if meta.IsCreate {
-				counter := 0
-				for {
-					if t := tm.addInfoHash(meta.InfoHash, int64(meta.BytesRequested)); t != nil {
-						log.Debug("Seed [create] success", "ih", meta.InfoHash, "request", meta.BytesRequested)
-						if int64(meta.BytesRequested) > 0 {
-							tm.updateInfoHash(meta.InfoHash, int64(meta.BytesRequested))
-						}
-						break
-					} else {
-						if counter > 10 {
-							panic("Fail adding file for 10 times")
-						}
-						log.Error("Seed [create] failed", "ih", meta.InfoHash, "request", meta.BytesRequested, "counter", counter)
-						counter++
+				//counter := 0
+				//for {
+				if t := tm.addInfoHash(meta.InfoHash, int64(meta.BytesRequested)); t != nil {
+					log.Debug("Seed [create] success", "ih", meta.InfoHash, "request", meta.BytesRequested)
+					if int64(meta.BytesRequested) > 0 {
+						tm.updateInfoHash(meta.InfoHash, int64(meta.BytesRequested))
 					}
+				} else {
+					log.Error("Seed [create] failed", "ih", meta.InfoHash, "request", meta.BytesRequested)
 				}
+				//		break
+				//	} else {
+				//		if counter > 10 {
+				//			panic("Fail adding file for 10 times")
+				//		}
+				//		log.Error("Seed [create] failed", "ih", meta.InfoHash, "request", meta.BytesRequested, "counter", counter)
+				//		counter++
+				//	}
+				//}
 			} else {
 				log.Debug("Seed [update] success", "ih", meta.InfoHash, "request", meta.BytesRequested)
 				tm.updateInfoHash(meta.InfoHash, int64(meta.BytesRequested))
