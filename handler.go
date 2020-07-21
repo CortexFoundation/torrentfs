@@ -50,10 +50,10 @@ import (
 )
 
 const (
-	bucket                  = params.Bucket //it is best size is 1/3 full nodes
-	group                   = params.Group
-	updateTorrentChanBuffer = params.SyncBatch
-	torrentChanSize         = 64
+	bucket = params.Bucket //it is best size is 1/3 full nodes
+	group  = params.Group
+	//updateTorrentChanBuffer = params.SyncBatch
+	torrentChanSize = 64
 
 	torrentPending = iota //2
 	torrentPaused
@@ -385,7 +385,7 @@ func NewTorrentManager(config *Config, fsid uint64, cache, compress bool) (*Torr
 		TmpDataDir:          tmpFilePath,
 		boostFetcher:        NewBoostDataFetcher(config.BoostNodes),
 		closeAll:            make(chan struct{}),
-		updateTorrent:       make(chan interface{}, updateTorrentChanBuffer),
+		updateTorrent:       make(chan interface{}), // updateTorrentChanBuffer),
 		seedingChan:         make(chan *Torrent, torrentChanSize),
 		activeChan:          make(chan *Torrent, torrentChanSize),
 		pendingChan:         make(chan *Torrent, torrentChanSize),
@@ -430,7 +430,6 @@ func NewTorrentManager(config *Config, fsid uint64, cache, compress bool) (*Torr
 }
 
 func (tm *TorrentManager) Start() error {
-	tm.init()
 
 	tm.wg.Add(1)
 	go tm.mainLoop()
@@ -441,6 +440,8 @@ func (tm *TorrentManager) Start() error {
 	go tm.activeLoop()
 	tm.wg.Add(1)
 	go tm.seedingLoop()
+
+	tm.init()
 
 	return nil
 }
