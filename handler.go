@@ -17,6 +17,7 @@ package torrentfs
 
 import (
 	"bytes"
+	"context"
 	"crypto/sha1"
 	"errors"
 	"fmt"
@@ -167,9 +168,13 @@ func (tm *TorrentManager) dropAll() {
 	tm.client.Close()
 }
 
-func (tm *TorrentManager) UpdateTorrent(input interface{}) error {
-	tm.updateTorrent <- input
-	return nil
+func (tm *TorrentManager) UpdateTorrent(ctx context.Context, input interface{}) error {
+	select {
+	case tm.updateTorrent <- input:
+		return nil
+	case <-ctx.Done():
+		return ctx.Err()
+	}
 }
 
 func (tm *TorrentManager) buildUdpTrackers(trackers []string) (array [][]string) {
@@ -473,7 +478,7 @@ func (tm *TorrentManager) init() {
 		log.Debug("Chain files init", "files", len(GoodFiles))
 
 		for k, _ := range GoodFiles {
-			tm.Search(k, 0, false)
+			tm.Search(context.Background(), k, 0, false)
 		}
 
 		log.Debug("Chain files OK !!!")
@@ -481,7 +486,7 @@ func (tm *TorrentManager) init() {
 }
 
 //Search and donwload files from torrent
-func (tm *TorrentManager) Search(hex string, request int64, resume bool) error {
+func (tm *TorrentManager) Search(ctx context.Context, hex string, request int64, resume bool) (err error) {
 	if !common.IsHexAddress(hex) {
 		return errors.New("Invalid infohash format")
 	}
@@ -494,27 +499,27 @@ func (tm *TorrentManager) Search(hex string, request int64, resume bool) error {
 	hash := metainfo.NewHashFromHex(hex)
 	if request == 0 || resume {
 
-		tm.UpdateTorrent(types.FlowControlMeta{
+		err = tm.UpdateTorrent(ctx, types.FlowControlMeta{
 			InfoHash:       hash,
 			BytesRequested: uint64(request),
 			IsCreate:       true,
 		})
-		//if t := tm.addInfoHash(hash, request); t == nil {
-		//	return errors.New("Failed to add info hash")
-		//}
 	} else if request > 0 {
 		updateMeter.Mark(1)
-		tm.UpdateTorrent(types.FlowControlMeta{
+		err = tm.UpdateTorrent(ctx, types.FlowControlMeta{
 			InfoHash:       hash,
 			BytesRequested: uint64(request),
 			IsCreate:       false,
 		})
-		//tm.updateInfoHash(hash, request)
 	} else {
 		return errors.New("Request can't be negative")
 	}
 
 	downloadMeter.Mark(1)
+
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
