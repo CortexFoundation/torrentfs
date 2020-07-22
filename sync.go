@@ -122,7 +122,7 @@ func NewMonitor(flag *Config, cache, compress, listen bool) (*Monitor, error) {
 
 	torrents, _ := fs.initTorrents()
 	for k, v := range torrents {
-		if err := tMana.Search(context.Background(), k, int64(v), true); err != nil {
+		if err := tMana.Search(context.Background(), k, int64(v)); err != nil {
 			return nil, err
 		}
 	}
@@ -189,7 +189,6 @@ func (m *Monitor) indexInit() error {
 		m.dl.UpdateTorrent(context.Background(), types.FlowControlMeta{
 			InfoHash:       file.Meta.InfoHash,
 			BytesRequested: bytesRequested,
-			IsCreate:       true,
 		})
 		if file.LeftSize == 0 {
 			seed++
@@ -356,7 +355,6 @@ func (m *Monitor) parseFileMeta(tx *types.Transaction, meta *types.FileMeta, b *
 		m.dl.UpdateTorrent(context.Background(), types.FlowControlMeta{
 			InfoHash:       meta.InfoHash,
 			BytesRequested: 0,
-			IsCreate:       true,
 		})
 	}
 	return nil
@@ -418,7 +416,6 @@ func (m *Monitor) parseBlockTorrentInfo(b *types.Block) (bool, error) {
 						m.dl.UpdateTorrent(context.Background(), types.FlowControlMeta{
 							InfoHash:       file.Meta.InfoHash,
 							BytesRequested: bytesRequested,
-							IsCreate:       false,
 						})
 					}
 				}

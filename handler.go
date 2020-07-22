@@ -287,6 +287,10 @@ func (tm *TorrentManager) addInfoHash(ih metainfo.Hash, BytesRequested int64) *T
 		return t
 	}
 
+	if BytesRequested < 0 {
+		return nil
+	}
+
 	tmpTorrentPath := filepath.Join(tm.TmpDataDir, ih.HexString(), "torrent")
 	seedTorrentPath := filepath.Join(tm.DataDir, ih.HexString(), "torrent")
 
@@ -479,7 +483,7 @@ func (tm *TorrentManager) init() {
 		log.Debug("Chain files init", "files", len(GoodFiles))
 
 		for k, _ := range GoodFiles {
-			tm.Search(context.Background(), k, 0, false)
+			tm.Search(context.Background(), k, 0)
 		}
 
 		log.Debug("Chain files OK !!!")
@@ -487,9 +491,13 @@ func (tm *TorrentManager) init() {
 }
 
 //Search and donwload files from torrent
-func (tm *TorrentManager) Search(ctx context.Context, hex string, request int64, resume bool) (err error) {
+func (tm *TorrentManager) Search(ctx context.Context, hex string, request int64) (err error) {
 	if !common.IsHexAddress(hex) {
 		return errors.New("Invalid infohash format")
+	}
+
+	if request < 0 {
+		return errors.New("Request can't be negative")
 	}
 
 	hex = strings.TrimPrefix(strings.ToLower(hex), common.Prefix)
@@ -498,23 +506,10 @@ func (tm *TorrentManager) Search(ctx context.Context, hex string, request int64,
 	}
 
 	hash := metainfo.NewHashFromHex(hex)
-	if request == 0 || resume {
-
-		err = tm.UpdateTorrent(ctx, types.FlowControlMeta{
-			InfoHash:       hash,
-			BytesRequested: uint64(request),
-			IsCreate:       true,
-		})
-	} else if request > 0 {
-		updateMeter.Mark(1)
-		err = tm.UpdateTorrent(ctx, types.FlowControlMeta{
-			InfoHash:       hash,
-			BytesRequested: uint64(request),
-			IsCreate:       false,
-		})
-	} else {
-		return errors.New("Request can't be negative")
-	}
+	err = tm.UpdateTorrent(ctx, types.FlowControlMeta{
+		InfoHash:       hash,
+		BytesRequested: uint64(request),
+	})
 
 	downloadMeter.Mark(1)
 
@@ -535,28 +530,12 @@ func (tm *TorrentManager) mainLoop() {
 				continue
 			}
 
-			if meta.IsCreate {
-				//counter := 0
-				//for {
-				if t := tm.addInfoHash(meta.InfoHash, int64(meta.BytesRequested)); t != nil {
-					log.Debug("Seed [create] success", "ih", meta.InfoHash, "request", meta.BytesRequested)
-					if int64(meta.BytesRequested) > 0 {
-						tm.updateInfoHash(meta.InfoHash, int64(meta.BytesRequested))
-					}
-				} else {
-					log.Error("Seed [create] failed", "ih", meta.InfoHash, "request", meta.BytesRequested)
-				}
-				//		break
-				//	} else {
-				//		if counter > 10 {
-				//			panic("Fail adding file for 10 times")
-				//		}
-				//		log.Error("Seed [create] failed", "ih", meta.InfoHash, "request", meta.BytesRequested, "counter", counter)
-				//		counter++
-				//	}
-				//}
-			} else {
-				log.Debug("Seed [update] success", "ih", meta.InfoHash, "request", meta.BytesRequested)
+			if t := tm.addInfoHash(meta.InfoHash, int64(meta.BytesRequested)); t == nil {
+				log.Error("Seed [create] failed", "ih", meta.InfoHash, "request", meta.BytesRequested)
+				continue
+			}
+			if int64(meta.BytesRequested) > 0 {
+				updateMeter.Mark(1)
 				tm.updateInfoHash(meta.InfoHash, int64(meta.BytesRequested))
 			}
 		case <-tm.closeAll:
