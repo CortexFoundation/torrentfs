@@ -217,6 +217,14 @@ func (fs *TorrentFS) Download(ctx context.Context, ih string, request int64) err
 	return nil
 }
 
+func (fs *TorrentFS) Generate(ctx context.Context, ih string) []byte {
+	return nil
+}
+
+func (fs *TorrentFS) Verify(ctx context.Context, ih string, proof []byte) bool {
+	return false
+}
+
 func (fs *TorrentFS) LocalPort() int {
 	return fs.storage().LocalPort()
 }
