@@ -1,6 +1,7 @@
 package torrentfs
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"testing"
@@ -13,8 +14,8 @@ func TestGetFile(t *testing.T) {
 	ih := "aea5584d0cd3865e90c80eace3bfcb062473d966"
 	fmt.Println(DefaultConfig)
 	tm, _ := NewTorrentManager(&DefaultConfig, 1, false, false)
-	tm.Search(ih, 0, false)
 	tm.Start()
+	tm.Search(context.Background(), ih, 0)
 	defer tm.Close()
 	time.Sleep(3 * time.Second)
 	a, _ := tm.Available(ih, 100000000)
