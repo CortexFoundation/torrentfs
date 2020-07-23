@@ -26,4 +26,7 @@ type CortexStorage interface {
 	Stop() error
 
 	Download(ctx context.Context, ih string, request int64) error
+
+	Generate(ctx context.Context, ih string) []byte
+	Verify(ctx context.Context, ih string, proof []byte) bool
 }
