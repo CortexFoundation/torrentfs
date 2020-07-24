@@ -31,6 +31,10 @@ jobs:
         fi
     #- name: golangci-lint
     #  uses: actions-contrib/golangci-lint@v1
+
+    # Check the format of code
+    - name: Check code formatting using gofmt
+      uses: Jerome1337/gofmt-action@v1.0.3
       
     - name: Static code check
       run: |
