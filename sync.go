@@ -127,7 +127,7 @@ func NewMonitor(flag *Config, cache, compress, listen bool) (*Monitor, error) {
 		}
 	}
 
-	m.indexInit()
+	//m.indexInit()
 
 	return m, nil
 }
@@ -352,6 +352,9 @@ func (m *Monitor) parseFileMeta(tx *types.Transaction, meta *types.FileMeta, b *
 	}
 	if update && op == 1 {
 		log.Debug("Create new file", "ih", meta.InfoHash, "op", op)
+
+		m.fs.AddTorrent(meta.InfoHash.HexString(), 0)
+
 		m.dl.UpdateTorrent(context.Background(), types.FlowControlMeta{
 			InfoHash:       meta.InfoHash,
 			BytesRequested: 0,
@@ -412,6 +415,7 @@ func (m *Monitor) parseBlockTorrentInfo(b *types.Block) (bool, error) {
 						} else {
 							log.Debug("Data processing ...", "ih", file.Meta.InfoHash, "addr", (*tx.Recipient).String(), "remain", common.StorageSize(remainingSize), "request", common.StorageSize(bytesRequested), "raw", common.StorageSize(file.Meta.RawSize), "number", b.Number)
 						}
+						m.fs.AddTorrent(file.Meta.InfoHash.HexString(), bytesRequested)
 
 						m.dl.UpdateTorrent(context.Background(), types.FlowControlMeta{
 							InfoHash:       file.Meta.InfoHash,
