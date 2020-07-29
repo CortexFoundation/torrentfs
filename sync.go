@@ -354,7 +354,7 @@ func (m *Monitor) parseFileMeta(tx *types.Transaction, meta *types.FileMeta, b *
 	if update && op == 1 {
 		log.Debug("Create new file", "ih", meta.InfoHash, "op", op)
 
-		if u, err := m.fs.AddTorrent(meta.InfoHash.HexString(), 0); u && err == nil {
+		if u, err := m.fs.SetTorrent(meta.InfoHash.HexString(), 0); u && err == nil {
 			m.dl.Search(context.Background(), meta.InfoHash.HexString(), 0)
 		}
 		//m.dl.UpdateTorrent(context.Background(), types.FlowControlMeta{
@@ -417,7 +417,7 @@ func (m *Monitor) parseBlockTorrentInfo(b *types.Block) (bool, error) {
 						} else {
 							log.Debug("Data processing ...", "ih", file.Meta.InfoHash, "addr", (*tx.Recipient).String(), "remain", common.StorageSize(remainingSize), "request", common.StorageSize(bytesRequested), "raw", common.StorageSize(file.Meta.RawSize), "number", b.Number)
 						}
-						if u, err := m.fs.AddTorrent(file.Meta.InfoHash.HexString(), bytesRequested); u && err == nil {
+						if u, err := m.fs.SetTorrent(file.Meta.InfoHash.HexString(), bytesRequested); u && err == nil {
 							m.dl.Search(context.Background(), file.Meta.InfoHash.HexString(), bytesRequested)
 						}
 						//m.dl.UpdateTorrent(context.Background(), types.FlowControlMeta{
