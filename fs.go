@@ -196,7 +196,13 @@ func (tfs *TorrentFS) Stop() error {
 }
 
 func (fs *TorrentFS) Available(ctx context.Context, infohash string, rawSize uint64) (bool, error) {
-	return fs.storage().Available(infohash, rawSize)
+	ret, err := fs.storage().Available(infohash, rawSize)
+
+	if errors.Is(err, ErrInactiveTorrent) {
+		//todo active torrent
+	}
+
+	return ret, nil
 }
 
 func (fs *TorrentFS) GetFile(ctx context.Context, infohash, subpath string) ([]byte, error) {

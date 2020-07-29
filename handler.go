@@ -859,10 +859,10 @@ func (tm *TorrentManager) Available(infohash string, rawSize uint64) (bool, erro
 
 	ih := metainfo.NewHashFromHex(strings.TrimPrefix(strings.ToLower(infohash), common.Prefix))
 	if torrent := tm.getTorrent(ih); torrent == nil {
-		return false, errors.New("file not exist")
+		return false, ErrInactiveTorrent
 	} else {
 		if !torrent.Ready() {
-			return false, errors.New("download not completed")
+			return false, ErrUnfinished
 		}
 		return torrent.BytesCompleted() <= int64(rawSize), nil
 	}
