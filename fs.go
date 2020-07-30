@@ -41,6 +41,10 @@ func New(config *Config, cache, compress, listen bool) (*TorrentFS, error) {
 		return inst, nil
 	}
 
+	if config.Mode == "full" {
+		config.FullSeed = true
+	}
+
 	monitor, moErr := NewMonitor(config, cache, compress, listen)
 	if moErr != nil {
 		log.Error("Failed create monitor")
