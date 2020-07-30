@@ -202,27 +202,21 @@ func (fs *TorrentFS) Available(ctx context.Context, infohash string, rawSize uin
 			if status, progress, e := fs.chain().GetTorrent(infohash); e == nil && status {
 				log.Debug("Active torrent in Available", "ih", infohash, "progress", progress)
 				if progress >= rawSize {
-					log.Debug("Torrent sync downloading", "ih", infohash, "progress", progress)
-					ch := make(chan bool)
-					log.Warn("Lazy mode starting", "ih", infohash, "request", progress)
-					if e := fs.storage().Search(ctx, infohash, progress, ch); e == nil {
-
-						select {
-						case s := <-ch:
-							if s {
-								ret, err = fs.storage().available(infohash, rawSize)
-							}
-						case <-ctx.Done():
-						}
+					//ch := make(chan bool)
+					log.Debug("Lazy mode starting", "ih", infohash, "request", progress)
+					if e := fs.storage().Search(ctx, infohash, progress, nil); e == nil {
+						//select {
+						//case s := <-ch:
+						//	if s {
+						//		ret, err = fs.storage().available(infohash, rawSize)
+						//	}
+						//case <-ctx.Done():
+						//}
 					}
 
-					log.Warn("Torrent sync downloading finished", "ih", infohash, "progress", progress, "err", err, "ret", ret, "raw", rawSize)
+					log.Debug("Torrent sync downloading finished", "ih", infohash, "progress", progress, "err", err, "ret", ret, "raw", rawSize)
 				}
 			}
-			//} else {
-			//	if status, progress, e := fs.chain().GetTorrent(infohash); e == nil && status {
-			//		log.Error("Active torrent in Available", "ih", infohash, "progress", progress, "err", err)
-			//	}
 		}
 
 		if err != nil {
@@ -234,14 +228,7 @@ func (fs *TorrentFS) Available(ctx context.Context, infohash string, rawSize uin
 }
 
 func (fs *TorrentFS) GetFile(ctx context.Context, infohash, subpath string) ([]byte, error) {
-
 	ret, err := fs.storage().getFile(infohash, subpath)
-	//if errors.Is(err, ErrInactiveTorrent) {
-	//	if status, progress, err := fs.chain().GetTorrent(infohash); err == nil && status {
-	//		log.Warn("Active torrent found in GetFile", "ih", infohash, "progress", progress)
-	//		fs.storage().Search(ctx, infohash, progress, nil)
-	//	}
-	//}
 
 	if err != nil {
 		log.Debug("Not avaialble err in getFile", "err", err, "ret", ret, "ih", infohash)
