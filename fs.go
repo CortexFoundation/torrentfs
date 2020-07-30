@@ -204,7 +204,7 @@ func (fs *TorrentFS) Available(ctx context.Context, infohash string, rawSize uin
 				if progress >= rawSize {
 					log.Debug("Torrent sync downloading", "ih", infohash, "progress", progress)
 					ch := make(chan bool)
-					log.Debug("Search in fs available", "ih", infohash, "request", progress)
+					log.Warn("Lazy mode starting", "ih", infohash, "request", progress)
 					if e := fs.storage().Search(ctx, infohash, progress, ch); e == nil {
 
 						select {
@@ -216,7 +216,7 @@ func (fs *TorrentFS) Available(ctx context.Context, infohash string, rawSize uin
 						}
 					}
 
-					log.Debug("Torrent sync downloading finished", "ih", infohash, "progress", progress, "err", err, "ret", ret, "raw", rawSize)
+					log.Warn("Torrent sync downloading finished", "ih", infohash, "progress", progress, "err", err, "ret", ret, "raw", rawSize)
 				}
 			}
 			//} else {
