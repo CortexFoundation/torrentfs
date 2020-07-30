@@ -49,7 +49,7 @@ var DefaultConfig = Config{
 	Port:            40401,
 	DefaultTrackers: params.MainnetTrackers,
 	BoostNodes:      params.TorrentBoostNodes,
-	Mode:            "normal",
+	Mode:            "default",
 	DisableUTP:      true,
 	DisableDHT:      false,
 	DisableTCP:      false,
