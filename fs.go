@@ -196,25 +196,67 @@ func (tfs *TorrentFS) Stop() error {
 }
 
 func (fs *TorrentFS) Available(ctx context.Context, infohash string, rawSize uint64) (bool, error) {
-	ret, err := fs.storage().Available(infohash, rawSize)
+	ret, err := fs.storage().available(infohash, rawSize)
+	if fs.config.Mode == "lazy" {
+		if errors.Is(err, ErrInactiveTorrent) {
+			if status, progress, e := fs.chain().GetTorrent(infohash); e == nil && status {
+				log.Debug("Active torrent in Available", "ih", infohash, "progress", progress)
+				if progress >= rawSize {
+					log.Debug("Torrent sync downloading", "ih", infohash, "progress", progress)
+					ch := make(chan bool)
+					log.Debug("Search in fs available", "ih", infohash, "request", progress)
+					if e := fs.storage().Search(ctx, infohash, progress, ch); e == nil {
 
-	if errors.Is(err, ErrInactiveTorrent) {
-		//todo active torrent
+						select {
+						case s := <-ch:
+							if s {
+								ret, err = fs.storage().available(infohash, rawSize)
+							}
+						case <-ctx.Done():
+						}
+					}
+
+					log.Debug("Torrent sync downloading finished", "ih", infohash, "progress", progress, "err", err, "ret", ret, "raw", rawSize)
+				}
+			}
+			//} else {
+			//	if status, progress, e := fs.chain().GetTorrent(infohash); e == nil && status {
+			//		log.Error("Active torrent in Available", "ih", infohash, "progress", progress, "err", err)
+			//	}
+		}
+
+		if err != nil {
+			log.Debug("Not avaialble err", "err", err, "ret", ret, "ih", infohash, "raw", rawSize)
+		}
 	}
 
-	return ret, nil
+	return ret, err
 }
 
 func (fs *TorrentFS) GetFile(ctx context.Context, infohash, subpath string) ([]byte, error) {
-	return fs.storage().GetFile(infohash, subpath)
+
+	ret, err := fs.storage().getFile(infohash, subpath)
+	//if errors.Is(err, ErrInactiveTorrent) {
+	//	if status, progress, err := fs.chain().GetTorrent(infohash); err == nil && status {
+	//		log.Warn("Active torrent found in GetFile", "ih", infohash, "progress", progress)
+	//		fs.storage().Search(ctx, infohash, progress, nil)
+	//	}
+	//}
+
+	if err != nil {
+		log.Debug("Not avaialble err in getFile", "err", err, "ret", ret, "ih", infohash)
+	}
+
+	return ret, err
 }
 
 func (fs *TorrentFS) Download(ctx context.Context, ih string, request uint64) error {
-	if update, err := fs.chain().SetTorrent(ih, request); err != nil {
+	if update, p, err := fs.chain().SetTorrent(ih, request); err != nil {
 		return err
 	} else {
 		if update {
-			if err := fs.storage().Search(ctx, ih, request); err != nil {
+			log.Debug("Search in fs download", "ih", ih, "request", p)
+			if err := fs.storage().Search(ctx, ih, p, nil); err != nil {
 				return err
 			}
 		}

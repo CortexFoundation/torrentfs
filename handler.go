@@ -119,7 +119,7 @@ func (tm *TorrentManager) getLimitation(value int64) int64 {
 	return ((value + block - 1) / block) * block
 }
 
-func (tm *TorrentManager) register(t *torrent.Torrent, requested int64, status int, ih metainfo.Hash) *Torrent {
+func (tm *TorrentManager) register(t *torrent.Torrent, requested int64, status int, ih metainfo.Hash, ch chan bool) *Torrent {
 	tt := &Torrent{
 		t,
 		tm.maxEstablishedConns, 5, tm.maxEstablishedConns,
@@ -128,7 +128,7 @@ func (tm *TorrentManager) register(t *torrent.Torrent, requested int64, status i
 		0, 0, status,
 		ih.String(),
 		filepath.Join(tm.TmpDataDir, ih.String()),
-		0, 1, 0, 0, false, true, 0,
+		0, 1, 0, 0, false, true, 0, ch,
 	}
 	tm.setTorrent(ih, tt)
 
@@ -167,6 +167,11 @@ func (tm *TorrentManager) Close() error {
 func (tm *TorrentManager) dropAll() {
 	tm.lock.Lock()
 	defer tm.lock.Unlock()
+	for _, t := range tm.torrents {
+		if t.ch != nil {
+			close(t.ch)
+		}
+	}
 
 	tm.client.Close()
 }
@@ -285,7 +290,8 @@ func (tm *TorrentManager) loadSpec(ih metainfo.Hash, filePath string, BytesReque
 	return spec
 }
 
-func (tm *TorrentManager) addInfoHash(ih metainfo.Hash, BytesRequested int64) *Torrent {
+func (tm *TorrentManager) addInfoHash(ih metainfo.Hash, BytesRequested int64, ch chan bool) *Torrent {
+	log.Debug("Add seed", "ih", ih, "bytes", BytesRequested, "ch", ch)
 	if t := tm.getTorrent(ih); t != nil {
 		return t
 	}
@@ -315,7 +321,7 @@ func (tm *TorrentManager) addInfoHash(ih metainfo.Hash, BytesRequested int64) *T
 	}
 
 	if t, _, err := tm.client.AddTorrentSpec(spec); err == nil {
-		return tm.register(t, BytesRequested, torrentPending, ih)
+		return tm.register(t, BytesRequested, torrentPending, ih, ch)
 	}
 
 	return nil
@@ -463,7 +469,7 @@ func (tm *TorrentManager) seedingLoop() {
 				if active, ok := GoodFiles[t.InfoHash()]; tm.cache && ok && active {
 					for _, file := range t.Files() {
 						log.Trace("Precache file", "ih", t.InfoHash(), "ok", ok, "active", active)
-						go tm.GetFile(t.InfoHash(), file.Path())
+						go tm.getFile(t.InfoHash(), file.Path())
 					}
 				}
 
@@ -486,7 +492,7 @@ func (tm *TorrentManager) init() {
 	log.Debug("Chain files init", "files", len(GoodFiles))
 
 	for k, _ := range GoodFiles {
-		tm.Search(context.Background(), k, 0)
+		tm.Search(context.Background(), k, 0, nil)
 	}
 
 	log.Debug("Chain files OK !!!")
@@ -494,7 +500,7 @@ func (tm *TorrentManager) init() {
 }
 
 //Search and donwload files from torrent
-func (tm *TorrentManager) Search(ctx context.Context, hex string, request uint64) (err error) {
+func (tm *TorrentManager) Search(ctx context.Context, hex string, request uint64, ch chan bool) (err error) {
 	if !common.IsHexAddress(hex) {
 		return errors.New("Invalid infohash format")
 	}
@@ -512,6 +518,7 @@ func (tm *TorrentManager) Search(ctx context.Context, hex string, request uint64
 	err = tm.UpdateTorrent(ctx, types.FlowControlMeta{
 		InfoHash:       hash,
 		BytesRequested: request,
+		Ch:             ch,
 	})
 
 	downloadMeter.Mark(1)
@@ -533,7 +540,7 @@ func (tm *TorrentManager) mainLoop() {
 				continue
 			}
 			bytes := int64(meta.BytesRequested)
-			if t := tm.addInfoHash(meta.InfoHash, bytes); t == nil {
+			if t := tm.addInfoHash(meta.InfoHash, bytes, meta.Ch); t == nil {
 				log.Error("Seed [create] failed", "ih", meta.InfoHash, "request", bytes)
 				continue
 			}
@@ -844,10 +851,7 @@ func (tm *TorrentManager) graceSeeding(slot int) error {
 	return nil
 }
 
-func (tm *TorrentManager) Available(infohash string, rawSize uint64) (bool, error) {
-	//if fs.metrics {
-	//	defer func(start time.Time) { fs.Updates += time.Since(start) }(time.Now())
-	//}
+func (tm *TorrentManager) available(infohash string, rawSize uint64) (bool, error) {
 	availableMeter.Mark(1)
 	if rawSize <= 0 {
 		return false, errors.New("raw size is zero or negative")
@@ -862,13 +866,19 @@ func (tm *TorrentManager) Available(infohash string, rawSize uint64) (bool, erro
 		return false, ErrInactiveTorrent
 	} else {
 		if !torrent.Ready() {
+			//if torrent.ch != nil {
+			//	<-torrent.ch
+			//	if torrent.Ready() {
+			//		return torrent.BytesCompleted() <= int64(rawSize), nil
+			//	}
+			//}
 			return false, ErrUnfinished
 		}
 		return torrent.BytesCompleted() <= int64(rawSize), nil
 	}
 }
 
-func (tm *TorrentManager) GetFile(infohash, subpath string) ([]byte, error) {
+func (tm *TorrentManager) getFile(infohash, subpath string) ([]byte, error) {
 	getfileMeter.Mark(1)
 	if tm.metrics {
 		defer func(start time.Time) { tm.Updates += time.Since(start) }(time.Now())
@@ -880,16 +890,7 @@ func (tm *TorrentManager) GetFile(infohash, subpath string) ([]byte, error) {
 	ih := metainfo.NewHashFromHex(strings.TrimPrefix(strings.ToLower(infohash), common.Prefix))
 
 	if torrent := tm.getTorrent(ih); torrent == nil {
-		//defer func() {
-		//	if active, ok := GoodFiles[infohash]; !ok {
-		//		GoodFiles[infohash] = true
-		//	} else {
-		//		if !active {
-		//			GoodFiles[infohash] = true
-		//		}
-		//	}
-		//}()
-		return nil, errors.New("file not exist")
+		return nil, ErrInactiveTorrent
 	} else {
 
 		subpath = strings.TrimPrefix(subpath, "/")

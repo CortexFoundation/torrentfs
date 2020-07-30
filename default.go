@@ -33,7 +33,7 @@ type Config struct {
 	DisableDHT      bool     `toml:",omitempty"`
 	DefaultTrackers []string `toml:",omitempty"`
 	BoostNodes      []string `toml:",omitempty"`
-	SyncMode        string   `toml:",omitempty"`
+	Mode            string   `toml:",omitempty"`
 	MaxSeedingNum   int      `toml:",omitempty"`
 	MaxActiveNum    int      `toml:",omitempty"`
 	FullSeed        bool     `toml:",omitempty"`
@@ -49,7 +49,7 @@ var DefaultConfig = Config{
 	Port:            40401,
 	DefaultTrackers: params.MainnetTrackers,
 	BoostNodes:      params.TorrentBoostNodes,
-	SyncMode:        "full",
+	Mode:            "normal",
 	DisableUTP:      true,
 	DisableDHT:      false,
 	DisableTCP:      false,
