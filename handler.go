@@ -473,12 +473,12 @@ func (tm *TorrentManager) seedingLoop() {
 				}()
 			}
 			if s {
-				if active, ok := GoodFiles[t.InfoHash()]; tm.cache && ok && active {
-					for _, file := range t.Files() {
-						log.Trace("Precache file", "ih", t.InfoHash(), "ok", ok, "active", active)
-						go tm.getFile(t.InfoHash(), file.Path())
-					}
-				}
+				//if active, ok := GoodFiles[t.InfoHash()]; tm.cache && ok && active {
+				//	for _, file := range t.Files() {
+				//		log.Trace("Precache file", "ih", t.InfoHash(), "ok", ok, "active", active)
+				//		go tm.getFile(t.InfoHash(), file.Path())
+				//	}
+				//}
 
 				if len(tm.seedingTorrents) > params.LimitSeeding {
 					tm.dropSeeding(tm.slot)
