@@ -706,6 +706,7 @@ func (fs *ChainDB) SkipPrint() {
 	fmt.Println(str)
 }
 
+// SetTorrent is for recording torrent latest status
 func (fs *ChainDB) SetTorrent(ih string, size uint64) (bool, uint64, error) {
 	fs.lock.Lock()
 	defer fs.lock.Unlock()

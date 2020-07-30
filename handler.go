@@ -573,7 +573,7 @@ func (tm *TorrentManager) pendingLoop() {
 				if _, ok := BadFiles[ih.String()]; ok {
 					continue
 				}
-				t.loop += 1
+				t.loop++
 				if t.Torrent.Info() != nil {
 					if t.start == 0 {
 						if t.isBoosting {
@@ -689,7 +689,7 @@ func (tm *TorrentManager) activeLoop() {
 				}
 
 				if t.bytesRequested == 0 {
-					active_wait += 1
+					active_wait++
 					if log_counter%60 == 0 {
 						log.Debug("[Waiting]", "ih", ih.String(), "complete", common.StorageSize(t.bytesCompleted), "req", common.StorageSize(t.bytesRequested), "quota", common.StorageSize(t.bytesRequested), "limit", common.StorageSize(t.bytesLimitation), "total", common.StorageSize(t.BytesMissing()), "seg", len(t.Torrent.PieceStateRuns()), "peers", t.currentConns, "max", t.Torrent.NumPieces())
 					}
@@ -740,14 +740,14 @@ func (tm *TorrentManager) activeLoop() {
 
 				if t.bytesCompleted >= t.bytesLimitation {
 					t.Pause()
-					active_paused += 1
+					active_paused++
 					if log_counter%45 == 0 {
 						bar := ProgressBar(t.bytesCompleted, t.Torrent.Length(), "[Paused]")
 						log.Info(bar, "hash", common.HexToHash(ih.String()), "complete", common.StorageSize(t.bytesCompleted), "req", common.StorageSize(t.bytesRequested), "limit", common.StorageSize(t.bytesLimitation), "total", common.StorageSize(t.bytesMissing+t.bytesCompleted), "prog", math.Min(float64(t.bytesCompleted), float64(t.bytesRequested))/float64(t.bytesCompleted+t.bytesMissing), "seg", len(t.Torrent.PieceStateRuns()), "peers", t.currentConns, "max", t.Torrent.NumPieces())
 					}
 					continue
 				} else if t.bytesRequested >= t.bytesCompleted+t.bytesMissing {
-					t.loop += 1
+					t.loop++
 					if tm.boost && t.loop > downloadWaitingTime/queryTimeInterval && t.bytesCompleted*2 < t.bytesRequested {
 						t.loop = 0
 						if t.isBoosting {
@@ -776,7 +776,7 @@ func (tm *TorrentManager) activeLoop() {
 							t.Torrent.Drop()
 							t.ReloadFile(filepaths, filedatas, tm)
 						}(t)
-						active_boost += 1
+						active_boost++
 						if log_counter%30 == 0 {
 							log.Debug("[Boosting]", "hash", ih.String(), "complete", common.StorageSize(t.bytesCompleted), "quota", common.StorageSize(t.bytesRequested), "total", common.StorageSize(t.bytesMissing+t.bytesCompleted), "prog", math.Min(float64(t.bytesCompleted), float64(t.bytesRequested))/float64(t.bytesCompleted+t.bytesMissing), "seg", len(t.Torrent.PieceStateRuns()), "max", t.Torrent.NumPieces(), "status", t.status, "boost", t.isBoosting)
 						}
@@ -792,7 +792,7 @@ func (tm *TorrentManager) activeLoop() {
 
 				if t.bytesCompleted < t.bytesLimitation && !t.isBoosting {
 					t.Run(tm.slot)
-					active_running += 1
+					active_running++
 				}
 			}
 

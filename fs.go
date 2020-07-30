@@ -212,9 +212,8 @@ func (fs *TorrentFS) Available(ctx context.Context, infohash string, rawSize uin
 						//	}
 						//case <-ctx.Done():
 						//}
+						log.Debug("Torrent sync downloading finished", "ih", infohash, "progress", progress, "err", err, "ret", ret, "raw", rawSize)
 					}
-
-					log.Debug("Torrent sync downloading finished", "ih", infohash, "progress", progress, "err", err, "ret", ret, "raw", rawSize)
 				}
 			}
 		}
