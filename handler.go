@@ -176,7 +176,8 @@ func (tm *TorrentManager) dropAll() {
 	tm.client.Close()
 }
 
-func (tm *TorrentManager) commit(ctx context.Context, hash metainfo.Hash, request uint64, ch chan bool) error {
+func (tm *TorrentManager) commit(ctx context.Context, hex string, request uint64, ch chan bool) error {
+	hash := metainfo.NewHashFromHex(hex)
 	select {
 	case tm.updateTorrent <- types.FlowControlMeta{
 		InfoHash:       hash,
@@ -525,8 +526,7 @@ func (tm *TorrentManager) Search(ctx context.Context, hex string, request uint64
 		return nil
 	}
 
-	hash := metainfo.NewHashFromHex(hex)
-	err = tm.commit(ctx, hash, request, ch)
+	err = tm.commit(ctx, hex, request, ch)
 
 	downloadMeter.Mark(1)
 
