@@ -199,6 +199,7 @@ func (tfs *TorrentFS) Stop() error {
 	return nil
 }
 
+// Available is used to check the file status
 func (fs *TorrentFS) Available(ctx context.Context, infohash string, rawSize uint64) (bool, error) {
 	ret, err := fs.storage().available(infohash, rawSize)
 	if fs.config.Mode == "lazy" && errors.Is(err, ErrInactiveTorrent) {
@@ -213,6 +214,7 @@ func (fs *TorrentFS) Available(ctx context.Context, infohash string, rawSize uin
 	return ret, err
 }
 
+// GetFile is used to get file from storage
 func (fs *TorrentFS) GetFile(ctx context.Context, infohash, subpath string) ([]byte, error) {
 	ret, err := fs.storage().getFile(infohash, subpath)
 
@@ -223,6 +225,7 @@ func (fs *TorrentFS) GetFile(ctx context.Context, infohash, subpath string) ([]b
 	return ret, err
 }
 
+//Download is used to download file with request
 func (fs *TorrentFS) Download(ctx context.Context, ih string, request uint64) error {
 	if update, p, err := fs.chain().SetTorrent(ih, request); err != nil {
 		return err

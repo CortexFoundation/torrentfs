@@ -177,17 +177,17 @@ func (tm *TorrentManager) dropAll() {
 }
 
 func (tm *TorrentManager) commit(ctx context.Context, hex string, request uint64, ch chan bool) error {
-	hash := metainfo.NewHashFromHex(hex)
 	select {
 	case tm.updateTorrent <- types.FlowControlMeta{
-		InfoHash:       hash,
+		InfoHash:       metainfo.NewHashFromHex(hex),
 		BytesRequested: request,
 		Ch:             ch,
 	}:
-		return nil
 	case <-ctx.Done():
 		return ctx.Err()
 	}
+
+	return nil
 }
 
 func (tm *TorrentManager) buildUdpTrackers(trackers []string) (array [][]string) {

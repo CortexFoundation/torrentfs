@@ -124,7 +124,7 @@ func (t *Torrent) Ready() bool {
 	t.cited += 1
 	ret := t.IsSeeding()
 	if !ret {
-		log.Debug("Not reday", "ih", t.InfoHash(), "status", t.status, "seed", t.Torrent.Seeding(), "seeding", torrentSeeding)
+		log.Debug("Not ready", "ih", t.InfoHash(), "status", t.status, "seed", t.Torrent.Seeding(), "seeding", torrentSeeding)
 	}
 
 	return ret
