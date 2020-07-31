@@ -512,7 +512,7 @@ func (tm *TorrentManager) init() {
 }
 
 //Search and donwload files from torrent
-func (tm *TorrentManager) Search(ctx context.Context, hex string, request uint64, ch chan bool) (err error) {
+func (tm *TorrentManager) Search(ctx context.Context, hex string, request uint64, ch chan bool) error {
 	if !common.IsHexAddress(hex) {
 		return errors.New("Invalid infohash format")
 	}
@@ -526,15 +526,9 @@ func (tm *TorrentManager) Search(ctx context.Context, hex string, request uint64
 		return nil
 	}
 
-	err = tm.commit(ctx, hex, request, ch)
-
 	downloadMeter.Mark(1)
 
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return tm.commit(ctx, hex, request, ch)
 }
 
 func (tm *TorrentManager) mainLoop() {
@@ -966,17 +960,15 @@ func (tm *TorrentManager) getFile(infohash, subpath string) ([]byte, error) {
 func (tm *TorrentManager) unzip(data []byte) ([]byte, error) {
 	if tm.compress {
 		return compress.UnzipData(data)
-	} else {
-		return data, nil
 	}
+	return data, nil
 }
 
 func (tm *TorrentManager) zip(data []byte) ([]byte, error) {
 	if tm.compress {
 		return compress.ZipData(data)
-	} else {
-		return data, nil
 	}
+	return data, nil
 }
 
 func (tm *TorrentManager) Metrics() time.Duration {
