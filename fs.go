@@ -201,29 +201,12 @@ func (tfs *TorrentFS) Stop() error {
 
 func (fs *TorrentFS) Available(ctx context.Context, infohash string, rawSize uint64) (bool, error) {
 	ret, err := fs.storage().available(infohash, rawSize)
-	if fs.config.Mode == "lazy" {
-		if errors.Is(err, ErrInactiveTorrent) {
-			if status, progress, e := fs.chain().GetTorrent(infohash); e == nil && status {
-				log.Debug("Active torrent in Available", "ih", infohash, "progress", progress)
-				//if progress >= rawSize {
-				//ch := make(chan bool)
-				log.Debug("Lazy mode starting", "ih", infohash, "request", progress)
-				if e := fs.storage().Search(ctx, infohash, progress, nil); e == nil {
-					//select {
-					//case s := <-ch:
-					//	if s {
-					//		ret, err = fs.storage().available(infohash, rawSize)
-					//	}
-					//case <-ctx.Done():
-					//}
-					log.Debug("Torrent sync downloading finished", "ih", infohash, "progress", progress, "err", err, "ret", ret, "raw", rawSize)
-				}
-				//}
+	if fs.config.Mode == "lazy" && errors.Is(err, ErrInactiveTorrent) {
+		if status, progress, e := fs.chain().GetTorrent(infohash); e == nil && status {
+			log.Debug("Lazy mode starting", "ih", infohash, "request", progress)
+			if e := fs.storage().Search(ctx, infohash, progress, nil); e == nil {
+				log.Debug("Torrent sync downloading finished", "ih", infohash, "progress", progress, "err", err, "ret", ret, "raw", rawSize)
 			}
-		}
-
-		if err != nil {
-			log.Debug("Not avaialble err", "err", err, "ret", ret, "ih", infohash, "raw", rawSize)
 		}
 	}
 
