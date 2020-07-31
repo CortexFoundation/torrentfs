@@ -202,7 +202,7 @@ func (tfs *TorrentFS) Stop() error {
 // Available is used to check the file status
 func (fs *TorrentFS) Available(ctx context.Context, infohash string, rawSize uint64) (bool, error) {
 	ret, err := fs.storage().available(infohash, rawSize)
-	if fs.config.Mode == "lazy" && errors.Is(err, ErrInactiveTorrent) {
+	if fs.config.Mode == LAZY && errors.Is(err, ErrInactiveTorrent) {
 		if status, progress, e := fs.chain().GetTorrent(infohash); e == nil && status {
 			log.Debug("Lazy mode starting", "ih", infohash, "request", progress)
 			if e := fs.storage().Search(ctx, infohash, progress, nil); e == nil {

@@ -119,7 +119,7 @@ func NewMonitor(flag *Config, cache, compress, listen bool) (*Monitor, error) {
 		log.Warn("Fs start error")
 		return nil, err
 	}
-	if flag.Mode != "lazy" {
+	if flag.Mode != LAZY {
 		torrents, _ := fs.initTorrents()
 		for k, v := range torrents {
 			if err := tMana.Search(context.Background(), k, v, nil); err != nil {

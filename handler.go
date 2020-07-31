@@ -99,7 +99,7 @@ type TorrentManager struct {
 	seedingChan         chan *Torrent
 	activeChan          chan *Torrent
 	pendingChan         chan *Torrent
-	fullSeed            bool
+	mode                string
 	boost               bool
 	id                  uint64
 	slot                int
@@ -408,7 +408,7 @@ func NewTorrentManager(config *Config, fsid uint64, cache, compress bool) (*Torr
 		seedingChan:         make(chan *Torrent, torrentChanSize),
 		activeChan:          make(chan *Torrent, torrentChanSize),
 		pendingChan:         make(chan *Torrent, torrentChanSize),
-		fullSeed:            config.FullSeed,
+		mode:                config.Mode,
 		id:                  fsid,
 		slot:                int(fsid % bucket),
 	}
@@ -459,7 +459,9 @@ func (tm *TorrentManager) Start() error {
 	tm.wg.Add(1)
 	go tm.mainLoop()
 
-	tm.init()
+	if tm.mode != LAZY {
+		tm.init()
+	}
 
 	return nil
 }
@@ -604,7 +606,7 @@ func (tm *TorrentManager) pendingLoop() {
 
 						} else {
 							log.Debug("Boost failed", "ih", ih.String(), "err", err)
-							if t.start == 0 && (tm.bytes[ih] > 0 || tm.fullSeed || t.loop > 600) { //|| len(tm.pendingTorrents) == 1) {
+							if t.start == 0 && (tm.bytes[ih] > 0 || tm.mode == FULL || t.loop > 600) { //|| len(tm.pendingTorrents) == 1) {
 								t.AddTrackers(tm.trackers)
 								t.start = mclock.Now()
 							}
@@ -612,7 +614,7 @@ func (tm *TorrentManager) pendingLoop() {
 						}
 					}
 				} else {
-					if _, ok := GoodFiles[t.InfoHash()]; t.start == 0 && (ok || tm.bytes[ih] > 0 || tm.fullSeed || t.loop > 600) {
+					if _, ok := GoodFiles[t.InfoHash()]; t.start == 0 && (ok || tm.bytes[ih] > 0 || tm.mode == FULL || t.loop > 600) {
 						if ok {
 							log.Debug("Good file found in pending", "ih", common.HexToHash(ih.String()))
 						}
@@ -653,7 +655,7 @@ func (tm *TorrentManager) activeLoop() {
 					}
 				} else {
 					tm.lock.RLock()
-					if tm.fullSeed {
+					if tm.mode == FULL {
 						if tm.bytes[ih] >= t.Length() {
 							BytesRequested = tm.bytes[ih]
 							t.fast = true
