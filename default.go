@@ -36,12 +36,12 @@ type Config struct {
 	Mode            string   `toml:",omitempty"`
 	MaxSeedingNum   int      `toml:",omitempty"`
 	MaxActiveNum    int      `toml:",omitempty"`
-	FullSeed        bool     `toml:",omitempty"`
-	Boost           bool     `toml:",omitempty"`
-	Quiet           bool     `toml:",omitempty"`
-	UploadRate      int      `toml:",omitempty"`
-	DownloadRate    int      `toml:",omitempty"`
-	Metrics         bool     `toml:",omitempty"`
+	//FullSeed        bool     `toml:",omitempty"`
+	Boost        bool `toml:",omitempty"`
+	Quiet        bool `toml:",omitempty"`
+	UploadRate   int  `toml:",omitempty"`
+	DownloadRate int  `toml:",omitempty"`
+	Metrics      bool `toml:",omitempty"`
 }
 
 // DefaultConfig contains default settings for the storage.
@@ -55,12 +55,12 @@ var DefaultConfig = Config{
 	DisableTCP:      false,
 	MaxSeedingNum:   params.LimitSeeding / 2,
 	MaxActiveNum:    params.LimitSeeding / 2,
-	FullSeed:        false,
-	Boost:           false,
-	Quiet:           true,
-	UploadRate:      -1,
-	DownloadRate:    -1,
-	Metrics:         true,
+	//FullSeed:        false,
+	Boost:        false,
+	Quiet:        true,
+	UploadRate:   -1,
+	DownloadRate: -1,
+	Metrics:      true,
 }
 
 const (
