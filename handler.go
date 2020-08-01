@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with the CortexTheseus library. If not, see <http://www.gnu.org/licenses/>.
+
 package torrentfs
 
 import (
@@ -50,10 +51,10 @@ import (
 )
 
 const (
-	bucket                  = params.Bucket //it is best size is 1/3 full nodes
-	group                   = params.Group
-	updateTorrentChanBuffer = params.SyncBatch
-	torrentChanSize         = 64
+	bucket          = params.Bucket //it is best size is 1/3 full nodes
+	group           = params.Group
+	taskChanBuffer  = params.SyncBatch
+	torrentChanSize = 64
 
 	torrentPending = iota //2
 	torrentPaused
@@ -80,8 +81,8 @@ var (
 )
 
 type TorrentManager struct {
-	client              *torrent.Client
-	bytes               map[metainfo.Hash]int64
+	client *torrent.Client
+	//bytes               map[metainfo.Hash]int64
 	torrents            map[metainfo.Hash]*Torrent
 	seedingTorrents     map[metainfo.Hash]*Torrent
 	activeTorrents      map[metainfo.Hash]*Torrent
@@ -93,7 +94,7 @@ type TorrentManager struct {
 	DataDir             string
 	TmpDataDir          string
 	closeAll            chan struct{}
-	updateTorrent       chan interface{}
+	taskChan            chan interface{}
 	lock                sync.RWMutex
 	wg                  sync.WaitGroup
 	seedingChan         chan *Torrent
@@ -178,7 +179,7 @@ func (tm *TorrentManager) dropAll() {
 
 func (tm *TorrentManager) commit(ctx context.Context, hex string, request uint64, ch chan bool) error {
 	select {
-	case tm.updateTorrent <- types.FlowControlMeta{
+	case tm.taskChan <- types.FlowControlMeta{
 		InfoHash:       metainfo.NewHashFromHex(hex),
 		BytesRequested: request,
 		Ch:             ch,
@@ -332,12 +333,12 @@ func (tm *TorrentManager) addInfoHash(ih metainfo.Hash, BytesRequested int64, ch
 	return nil
 }
 
-func (tm *TorrentManager) updateInfoHash(ih metainfo.Hash, BytesRequested int64) {
-	log.Debug("Update seed", "ih", ih, "bytes", BytesRequested)
+func (tm *TorrentManager) updateInfoHash(t *Torrent, BytesRequested int64) {
 	tm.lock.Lock()
 	defer tm.lock.Unlock()
-	if t, ok := tm.bytes[ih]; !ok || t < BytesRequested {
-		tm.bytes[ih] = BytesRequested
+	if t.bytesRequested < BytesRequested {
+		t.bytesRequested = BytesRequested
+		t.bytesLimitation = tm.getLimitation(BytesRequested)
 	}
 	updateMeter.Mark(1)
 }
@@ -392,19 +393,19 @@ func NewTorrentManager(config *Config, fsid uint64, cache, compress bool) (*Torr
 	}
 
 	torrentManager := &TorrentManager{
-		client:              cl,
-		torrents:            make(map[metainfo.Hash]*Torrent),
-		pendingTorrents:     make(map[metainfo.Hash]*Torrent),
-		seedingTorrents:     make(map[metainfo.Hash]*Torrent),
-		activeTorrents:      make(map[metainfo.Hash]*Torrent),
-		bytes:               make(map[metainfo.Hash]int64),
+		client:          cl,
+		torrents:        make(map[metainfo.Hash]*Torrent),
+		pendingTorrents: make(map[metainfo.Hash]*Torrent),
+		seedingTorrents: make(map[metainfo.Hash]*Torrent),
+		activeTorrents:  make(map[metainfo.Hash]*Torrent),
+		//bytes:               make(map[metainfo.Hash]int64),
 		maxSeedTask:         config.MaxSeedingNum,
 		maxEstablishedConns: cfg.EstablishedConnsPerTorrent,
 		DataDir:             config.DataDir,
 		TmpDataDir:          tmpFilePath,
 		boostFetcher:        NewBoostDataFetcher(config.BoostNodes),
 		closeAll:            make(chan struct{}),
-		updateTorrent:       make(chan interface{}, updateTorrentChanBuffer),
+		taskChan:            make(chan interface{}, taskChanBuffer),
 		seedingChan:         make(chan *Torrent, torrentChanSize),
 		activeChan:          make(chan *Torrent, torrentChanSize),
 		pendingChan:         make(chan *Torrent, torrentChanSize),
@@ -537,7 +538,7 @@ func (tm *TorrentManager) mainLoop() {
 	defer tm.wg.Done()
 	for {
 		select {
-		case msg := <-tm.updateTorrent:
+		case msg := <-tm.taskChan:
 			meta := msg.(types.FlowControlMeta)
 			if _, ok := BadFiles[meta.InfoHash.HexString()]; ok {
 				continue
@@ -546,9 +547,10 @@ func (tm *TorrentManager) mainLoop() {
 			if t := tm.addInfoHash(meta.InfoHash, bytes, meta.Ch); t == nil {
 				log.Error("Seed [create] failed", "ih", meta.InfoHash, "request", bytes)
 				continue
-			}
-			if bytes > 0 {
-				tm.updateInfoHash(meta.InfoHash, bytes)
+			} else {
+				if bytes > 0 {
+					tm.updateInfoHash(t, bytes)
+				}
 			}
 		case <-tm.closeAll:
 			return
@@ -589,7 +591,7 @@ func (tm *TorrentManager) pendingLoop() {
 							tm.activeChan <- t
 						}
 					}
-				} else if tm.boost && (t.loop > torrentWaitingTime/queryTimeInterval || (t.start == 0 && tm.bytes[ih] > 0)) {
+				} else if tm.boost && (t.loop > torrentWaitingTime/queryTimeInterval || (t.start == 0 && t.bytesRequested > 0)) {
 					if !t.isBoosting {
 						t.loop = 0
 						t.isBoosting = true
@@ -606,7 +608,7 @@ func (tm *TorrentManager) pendingLoop() {
 
 						} else {
 							log.Debug("Boost failed", "ih", ih.String(), "err", err)
-							if t.start == 0 && (tm.bytes[ih] > 0 || tm.mode == FULL || t.loop > 600) { //|| len(tm.pendingTorrents) == 1) {
+							if t.start == 0 && (t.bytesRequested > 0 || tm.mode == FULL || t.loop > 600) { //|| len(tm.pendingTorrents) == 1) {
 								t.AddTrackers(tm.trackers)
 								t.start = mclock.Now()
 							}
@@ -614,7 +616,7 @@ func (tm *TorrentManager) pendingLoop() {
 						}
 					}
 				} else {
-					if _, ok := GoodFiles[t.InfoHash()]; t.start == 0 && (ok || tm.bytes[ih] > 0 || tm.mode == FULL || t.loop > 600) {
+					if _, ok := GoodFiles[t.InfoHash()]; t.start == 0 && (ok || t.bytesRequested > 0 || tm.mode == FULL || t.loop > 600) {
 						if ok {
 							log.Debug("Good file found in pending", "ih", common.HexToHash(ih.String()))
 						}
@@ -646,42 +648,35 @@ func (tm *TorrentManager) activeLoop() {
 			log_counter++
 
 			for ih, t := range tm.activeTorrents {
-				BytesRequested := int64(0)
+				//BytesRequested := int64(0)
 				if _, ok := GoodFiles[t.InfoHash()]; ok {
-					if t.Length() != t.bytesRequested || !t.fast {
-						BytesRequested = t.Length()
-						t.fast = true
-						log.Debug("Good file found", "hash", common.HexToHash(ih.String()), "size", common.StorageSize(BytesRequested), "request", common.StorageSize(t.bytesRequested), "len", common.StorageSize(t.Length()), "limit", common.StorageSize(t.bytesLimitation))
-					}
+					t.fast = true
 				} else {
-					tm.lock.RLock()
 					if tm.mode == FULL {
-						if tm.bytes[ih] >= t.Length() {
-							BytesRequested = tm.bytes[ih]
+						if t.bytesRequested >= t.Length() {
 							t.fast = true
 						} else {
 							if t.bytesRequested <= t.BytesCompleted()+block/2 {
-								BytesRequested = int64(math.Min(float64(t.Length()), float64(t.bytesRequested+block)))
+								tm.lock.Lock()
+								t.bytesRequested = int64(math.Min(float64(t.Length()), float64(t.bytesRequested+block)))
+								t.bytesLimitation = tm.getLimitation(t.bytesRequested)
+								tm.lock.Unlock()
 								t.fast = false
 							}
 						}
 					} else {
-						if tm.bytes[ih] >= t.Length() {
-							BytesRequested = tm.bytes[ih]
+						if t.bytesRequested >= t.Length() {
 							t.fast = true
 						} else {
 							if t.bytesRequested <= t.BytesCompleted()+block/2 {
-								BytesRequested = int64(math.Min(float64(tm.bytes[ih]), float64(t.bytesRequested+block)))
+								//tm.lock.Lock()
+								//t.bytesRequested = int64(math.Min(float64(tm.bytes[ih]), float64(t.bytesRequested+block)))
+								//t.bytesLimitation = tm.getLimitation(t.bytesRequested)
+								//tm.lock.Unlock()
 								t.fast = false
 							}
 						}
 					}
-					tm.lock.RUnlock()
-				}
-
-				if t.bytesRequested < BytesRequested {
-					t.bytesRequested = BytesRequested
-					t.bytesLimitation = tm.getLimitation(BytesRequested)
 				}
 
 				if t.bytesRequested == 0 {

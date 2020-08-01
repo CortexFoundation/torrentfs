@@ -32,6 +32,6 @@ const (
 
 	peerStateCycle    = time.Second * 60
 	expirationCycle   = time.Second
-	transmissionCycle = 300 * time.Millisecond
+	transmissionCycle = 5 * time.Second
 	handshakeTimeout  = 60 * time.Second
 )

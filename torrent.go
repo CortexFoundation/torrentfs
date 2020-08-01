@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with the CortexTheseus library. If not, see <http://www.gnu.org/licenses/>.
+
 package torrentfs
 
 import (
@@ -174,9 +175,8 @@ func (t *Torrent) Seed() bool {
 		elapsed := time.Duration(mclock.Now()) - time.Duration(t.start)
 		log.Info("Imported new segment", "hash", common.HexToHash(t.InfoHash()), "size", common.StorageSize(t.BytesCompleted()), "files", len(t.Files()), "pieces", t.Torrent.NumPieces(), "seg", len(t.Torrent.PieceStateRuns()), "cited", t.cited, "peers", t.currentConns, "status", t.status, "elapsed", common.PrettyDuration(elapsed))
 		return true
-	} else {
-		log.Debug("Torrent is not seeding", "iih", t.InfoHash())
 	}
+
 	return false
 }
 
