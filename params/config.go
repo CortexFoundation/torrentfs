@@ -24,5 +24,5 @@ const (
 	//Scope     = 4
 	//TIER         = 3
 	//LEAFS        = 32768
-	LimitSeeding = 2
+	LimitSeeding = 2048
 )
