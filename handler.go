@@ -558,13 +558,12 @@ func (tm *TorrentManager) mainLoop() {
 			} else {
 				if bytes > 0 {
 					tm.updateInfoHash(t, bytes)
+					if t.currentConns <= 1 {
+						t.currentConns = tm.maxEstablishedConns
+						t.Torrent.SetMaxEstablishedConns(tm.maxEstablishedConns)
+						log.Warn("Active torrent", "ih", meta.InfoHash, "bytes", bytes)
+					}
 				}
-
-				//if t.currentConns <= 1 {
-				//	t.currentConns = tm.maxEstablishedConns
-				//	t.Torrent.SetMaxEstablishedConns(tm.maxEstablishedConns)
-				//	log.Warn("Active torrent", "ih", meta.InfoHash, "bytes", bytes)
-				//}
 			}
 			//time.Sleep(time.Second)
 		case <-tm.closeAll:
