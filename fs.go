@@ -234,6 +234,10 @@ func (tfs *TorrentFS) Stop() error {
 	}
 	// Wait until every goroutine terminates.
 	tfs.monitor.stop()
+
+	if tfs.nasCache != nil {
+		tfs.nasCache.Purge()
+	}
 	return nil
 }
 
@@ -258,7 +262,7 @@ func (fs *TorrentFS) Available(ctx context.Context, infohash string, rawSize uin
 				invoke := time.Duration(cost) > time.Second*60 || (time.Duration(cost) > time.Second*30 && f == 0)
 				if ProtocolVersion == 2 && f < rawSize && invoke && speed < 256*1024 {
 					go func() {
-						log.Error("Nas 2.0 query", "ih", infohash, "cap", cap(fs.queryChan), "len", len(fs.queryChan), "available", ret, "raw", rawSize, "finish", f, "cost", common.PrettyDuration(cost), "speed", common.StorageSize(speed), "err", err)
+						log.Error("Nas 2.0 query", "ih", infohash, "cap", cap(fs.queryChan), "len", len(fs.queryChan), "available", ret, "raw", rawSize, "finish", f, "cost", common.PrettyDuration(cost), "speed", common.StorageSize(speed), "cache", fs.nasCache.Len(), "err", err)
 						fs.queryChan <- Query{Hash: infohash, Size: rawSize}
 					}()
 					fs.nasCache.Add(infohash, rawSize)
