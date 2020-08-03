@@ -453,17 +453,19 @@ func (m *Monitor) parseBlockTorrentInfo(b *types.Block) (bool, error) {
 }
 
 func (m *Monitor) exit() {
-	if m.exitCh != nil {
-		close(m.exitCh)
-		m.wg.Wait()
-		m.exitCh = nil
-	} else {
-		log.Warn("Listener has already been stopped")
-	}
+	m.closeOnce.Do(func() {
+		if m.exitCh != nil {
+			close(m.exitCh)
+			m.wg.Wait()
+			m.exitCh = nil
+		} else {
+			log.Warn("Listener has already been stopped")
+		}
+	})
 }
 
 func (m *Monitor) stop() {
-	m.closeOnce.Do(func() {
+	//m.closeOnce.Do(func() {
 		if atomic.LoadInt32(&(m.terminated)) == 1 {
 			return
 		}
@@ -483,7 +485,7 @@ func (m *Monitor) stop() {
 			log.Error("Monitor File Storage closed", "error", err)
 		}
 		log.Info("Fs listener synchronizing closed")
-	})
+	//})
 }
 
 // Start ... start ListenOn on the rpc port of a blockchain full node
