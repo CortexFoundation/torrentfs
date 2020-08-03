@@ -255,7 +255,7 @@ func (fs *TorrentFS) Available(ctx context.Context, infohash string, rawSize uin
 					t := float64(cost) / (1000 * 1000 * 1000)
 					speed = float64(f) / t
 				}
-				if ProtocolVersion == 2 && f < rawSize && time.Duration(cost) > time.Second*60 && speed < 256*1024 {
+				if ProtocolVersion == 2 && f < rawSize && time.Duration(cost) > time.Second*1 && speed < 256*1024 {
 					go func() {
 						log.Error("Nas 2.0 query", "ih", infohash, "cap", cap(fs.queryChan), "len", len(fs.queryChan), "available", ret, "raw", rawSize, "finish", f, "cost", common.PrettyDuration(cost), "speed", common.StorageSize(speed), "err", err)
 						fs.queryChan <- Query{Hash: infohash, Size: rawSize}
