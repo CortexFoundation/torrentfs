@@ -13,25 +13,11 @@
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with the CortexTheseus library. If not, see <http://www.gnu.org/licenses/>.
+
 package torrentfs
 
-import (
-	"time"
-)
-
 const (
-	ProtocolName         = "nas"
-	ProtocolVersion      = uint64(1)
-	NumberOfMessageCodes = 128
-	ProtocolVersionStr   = "1.0"
-
-	DefaultMaxMessageSize = uint32(1024)
-
-	statusCode   = 0
-	messagesCode = 1
-
-	peerStateCycle    = time.Second * 60
-	expirationCycle   = time.Second
-	transmissionCycle = 5 * time.Second
-	handshakeTimeout  = 60 * time.Second
+	FULL    = "full"
+	DEFAULT = "default"
+	LAZY    = "lazy"
 )

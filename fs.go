@@ -177,7 +177,7 @@ func (tfs *TorrentFS) Version() uint {
 // Start starts the data collection thread and the listening server of the dashboard.
 // Implements the node.Service interface.
 func (tfs *TorrentFS) Start(server *p2p.Server) error {
-	log.Info("Started nas v.1.0", "config", tfs)
+	log.Info("Started nas v.1.0", "config", tfs, "mode", tfs.config.Mode)
 	if tfs == nil || tfs.monitor == nil {
 		return nil
 	}
@@ -195,20 +195,40 @@ func (tfs *TorrentFS) Stop() error {
 	return nil
 }
 
+// Available is used to check the file status
 func (fs *TorrentFS) Available(ctx context.Context, infohash string, rawSize uint64) (bool, error) {
-	return fs.storage().Available(infohash, rawSize)
+	ret, err := fs.storage().available(infohash, rawSize)
+	if fs.config.Mode == LAZY && errors.Is(err, ErrInactiveTorrent) {
+		if status, progress, e := fs.chain().GetTorrent(infohash); e == nil && status {
+			log.Debug("Lazy mode starting", "ih", infohash, "request", progress)
+			if e := fs.storage().Search(ctx, infohash, progress, nil); e == nil {
+				log.Debug("Torrent sync downloading finished", "ih", infohash, "progress", progress, "err", err, "ret", ret, "raw", rawSize)
+			}
+		}
+	}
+
+	return ret, err
 }
 
+// GetFile is used to get file from storage
 func (fs *TorrentFS) GetFile(ctx context.Context, infohash, subpath string) ([]byte, error) {
-	return fs.storage().GetFile(infohash, subpath)
+	ret, err := fs.storage().getFile(infohash, subpath)
+
+	if err != nil {
+		log.Debug("Not avaialble err in getFile", "err", err, "ret", ret, "ih", infohash)
+	}
+
+	return ret, err
 }
 
+//Download is used to download file with request
 func (fs *TorrentFS) Download(ctx context.Context, ih string, request uint64) error {
-	if update, err := fs.chain().AddTorrent(ih, request); err != nil {
+	if update, p, err := fs.chain().SetTorrent(ih, request); err != nil {
 		return err
 	} else {
 		if update {
-			if err := fs.storage().Search(ctx, ih, request); err != nil {
+			log.Debug("Search in fs download", "ih", ih, "request", p)
+			if err := fs.storage().Search(ctx, ih, p, nil); err != nil {
 				return err
 			}
 		}
