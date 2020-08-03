@@ -180,8 +180,13 @@ func (tfs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 					log.Warn("failed to decode msg, peer will be disconnected", "peer", p.peer.ID(), "err", err)
 					return errors.New("invalid msg")
 				}
-				log.Error("Nas msg received", "version", ProtocolVersion, "msg", info)
-				if err := tfs.storage().Search(context.Background(), info.Hash, info.Size, nil); err != nil {
+				if _, suc := tfs.nasCache.Get(info.Hash); !suc {
+					log.Error("Nas msg received", "version", ProtocolVersion, "msg", info)
+					if err := tfs.storage().Search(context.Background(), info.Hash, info.Size, nil); err != nil {
+						log.Error("Nas 2.0 error", "err", err)
+						return err
+					}
+					tfs.nasCache.Add(info.Hash, info.Size)
 				}
 			}
 		default:
@@ -242,14 +247,19 @@ func (fs *TorrentFS) Available(ctx context.Context, infohash string, rawSize uin
 				}
 			}
 		} else if errors.Is(err, ErrUnfinished) {
-			if _, suc := inst.nasCache.Get(infohash); !suc {
-				if ProtocolVersion == 2 && f < rawSize && time.Duration(cost) > time.Second*60 {
+			if _, suc := fs.nasCache.Get(infohash); !suc {
+				var speed float64
+				if cost > 0 {
+					t := float64(cost) / (1000 * 1000 * 1000)
+					speed = float64(f) / t
+				}
+				if ProtocolVersion == 2 && f < rawSize && time.Duration(cost) > time.Second*60 && speed < 256*1024 {
 					go func() {
-						log.Error("Nas 2.0 query", "ih", infohash, "cap", cap(fs.queryChan), "len", len(fs.queryChan), "available", ret, "raw", rawSize, "finish", f, "cost", common.PrettyDuration(cost), "err", err)
+						log.Error("Nas 2.0 query", "ih", infohash, "cap", cap(fs.queryChan), "len", len(fs.queryChan), "available", ret, "raw", rawSize, "finish", f, "cost", common.PrettyDuration(cost), "speed", common.StorageSize(speed), "err", err)
 						fs.queryChan <- Query{Hash: infohash, Size: rawSize}
 					}()
+					fs.nasCache.Add(infohash, rawSize)
 				}
-				inst.nasCache.Add(infohash, rawSize)
 			}
 			log.Debug("Torrent sync downloading", "ih", infohash, "available", ret, "raw", rawSize, "finish", f, "err", err)
 		}
