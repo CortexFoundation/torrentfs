@@ -1,3 +1,19 @@
+// Copyright 2020 The CortexTheseus Authors
+// This file is part of the CortexTheseus library.
+//
+// The CortexTheseus library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// The CortexTheseus library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with the CortexTheseus library. If not, see <http://www.gnu.org/licenses/>
+
 package torrentfs
 
 import (
@@ -19,6 +35,8 @@ type TorrentFS struct {
 
 	peerMu sync.RWMutex     // Mutex to sync the active peer set
 	peers  map[string]*Peer // Set of currently active peers
+
+	queryChan chan Query
 }
 
 func (t *TorrentFS) storage() *TorrentManager {
@@ -48,9 +66,10 @@ func New(config *Config, cache, compress, listen bool) (*TorrentFS, error) {
 	}
 
 	inst = &TorrentFS{
-		config:  config,
-		monitor: monitor,
-		peers:   make(map[string]*Peer),
+		config:    config,
+		monitor:   monitor,
+		peers:     make(map[string]*Peer),
+		queryChan: make(chan Query, 128),
 	}
 
 	inst.protocol = p2p.Protocol{
@@ -132,7 +151,7 @@ func (tfs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 
 		if packet.Size > tfs.MaxMessageSize() {
 			log.Warn("oversized message received", "peer", p.peer.ID())
-			packet.Discard()
+			//packet.Discard()
 			return errors.New("oversized message received")
 		}
 
@@ -143,12 +162,21 @@ func (tfs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 			var info *PeerInfo
 			if err := packet.Decode(&info); err != nil {
 				log.Warn("failed to decode peer state, peer will be disconnected", "peer", p.peer.ID(), "err", err)
-				packet.Discard()
+				//packet.Discard()
 				return errors.New("invalid peer state")
 			}
 			p.peerInfo = info
 		case messagesCode:
-			//
+			if ProtocolVersion == 2 {
+				var info *Query
+				if err := packet.Decode(&info); err != nil {
+					log.Warn("failed to decode msg, peer will be disconnected", "peer", p.peer.ID(), "err", err)
+					return errors.New("invalid msg")
+				}
+				log.Warn("Nas msg received", "version", ProtocolVersion, "msg", info)
+				if err := tfs.storage().Search(context.Background(), info.Hash, info.Size, nil); err != nil {
+				}
+			}
 		default:
 		}
 		packet.Discard()
@@ -197,25 +225,34 @@ func (tfs *TorrentFS) Stop() error {
 
 // Available is used to check the file status
 func (fs *TorrentFS) Available(ctx context.Context, infohash string, rawSize uint64) (bool, error) {
-	ret, err := fs.storage().available(infohash, rawSize)
-	if fs.config.Mode == LAZY && errors.Is(err, ErrInactiveTorrent) {
-		if status, progress, e := fs.chain().GetTorrent(infohash); e == nil && status {
-			log.Debug("Lazy mode starting", "ih", infohash, "request", progress)
-			if e := fs.storage().Search(ctx, infohash, progress, nil); e == nil {
-				log.Debug("Torrent sync downloading finished", "ih", infohash, "progress", progress, "err", err, "ret", ret, "raw", rawSize)
+	ret, f, err := fs.storage().available(infohash, rawSize)
+	if fs.config.Mode == LAZY {
+		if errors.Is(err, ErrInactiveTorrent) {
+			if progress, e := fs.chain().GetTorrent(infohash); e == nil {
+				log.Debug("Lazy mode starting", "ih", infohash, "request", progress)
+				if e := fs.storage().Search(ctx, infohash, progress, nil); e == nil {
+					log.Warn("Torrent sync downloading", "ih", infohash, "progress", progress, "err", err, "available", ret, "raw", rawSize, "err", err)
+				}
 			}
+		} else if errors.Is(err, ErrUnfinished) {
+			if ProtocolVersion == 2 && f == 0{
+				go func() {
+					log.Warn("Nas 2.0 query send when checking", "cap", cap(fs.queryChan), "len", len(fs.queryChan), "version", ProtocolVersion)
+					fs.queryChan <- Query{Hash: infohash, Size: rawSize}
+				}()
+			}
+			log.Warn("Torrent sync downloading", "ih", infohash, "available", ret, "raw", rawSize, "finish", f, "err", err)
 		}
 	}
-
 	return ret, err
 }
 
 // GetFile is used to get file from storage
 func (fs *TorrentFS) GetFile(ctx context.Context, infohash, subpath string) ([]byte, error) {
-	ret, err := fs.storage().getFile(infohash, subpath)
+	ret, f, err := fs.storage().getFile(infohash, subpath)
 
 	if err != nil {
-		log.Debug("Not avaialble err in getFile", "err", err, "ret", ret, "ih", infohash)
+		log.Warn("Not avaialble err in getFile", "err", err, "ret", ret, "ih", infohash, "progress", f)
 	}
 
 	return ret, err
