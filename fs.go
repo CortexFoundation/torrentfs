@@ -182,9 +182,11 @@ func (tfs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 				}
 				if _, suc := tfs.nasCache.Get(info.Hash); !suc {
 					log.Error("Nas msg received", "version", ProtocolVersion, "msg", info)
-					if err := tfs.storage().Search(context.Background(), info.Hash, info.Size, nil); err != nil {
-						log.Error("Nas 2.0 error", "err", err)
-						return err
+					if progress, e := tfs.chain().GetTorrent(info.Hash); e == nil && progress >= info.Size {
+						if err := tfs.storage().Search(context.Background(), info.Hash, info.Size, nil); err != nil {
+							log.Error("Nas 2.0 error", "err", err)
+							return err
+						}
 					}
 					tfs.nasCache.Add(info.Hash, info.Size)
 				}
