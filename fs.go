@@ -235,7 +235,7 @@ func (fs *TorrentFS) Available(ctx context.Context, infohash string, rawSize uin
 				}
 			}
 		} else if errors.Is(err, ErrUnfinished) {
-			if ProtocolVersion == 2 && f == 0{
+			if ProtocolVersion == 2 && f == 0 {
 				go func() {
 					log.Warn("Nas 2.0 query send when checking", "cap", cap(fs.queryChan), "len", len(fs.queryChan), "version", ProtocolVersion)
 					fs.queryChan <- Query{Hash: infohash, Size: rawSize}
