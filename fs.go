@@ -262,7 +262,7 @@ func (fs *TorrentFS) Available(ctx context.Context, infohash string, rawSize uin
 				invoke := time.Duration(cost) > time.Second*60 || (time.Duration(cost) > time.Second*30 && f == 0)
 				if ProtocolVersion == 2 && f < rawSize && invoke && speed < 256*1024 {
 					go func() {
-						log.Error("Nas 2.0 query", "ih", infohash, "cap", cap(fs.queryChan), "len", len(fs.queryChan), "available", ret, "raw", rawSize, "finish", f, "cost", common.PrettyDuration(cost), "speed", common.StorageSize(speed), "cache", fs.nasCache.Len(), "err", err)
+						log.Error("Nas 2.0 query", "ih", infohash, "queue", len(fs.queryChan), "raw", rawSize, "finish", f, "cost", common.PrettyDuration(cost), "speed", common.StorageSize(speed), "cache", fs.nasCache.Len(), "err", err)
 						fs.queryChan <- Query{Hash: infohash, Size: rawSize}
 					}()
 					fs.nasCache.Add(infohash, rawSize)
@@ -276,6 +276,11 @@ func (fs *TorrentFS) Available(ctx context.Context, infohash string, rawSize uin
 
 // GetFile is used to get file from storage, current this will not be call after available passed
 func (fs *TorrentFS) GetFile(ctx context.Context, infohash, subpath string) ([]byte, error) {
+	//func (fs *TorrentFS) GetFile(ctx context.Context, infohash string, rawSize uint64,  subpath string) ([]byte, error) {
+	//if available, err := fs.Available(ctx, infohash, rawSize); err != nil || !available{
+	//	return nil, err
+	//}
+
 	ret, f, err := fs.storage().getFile(infohash, subpath)
 
 	if err != nil {
