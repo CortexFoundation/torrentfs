@@ -883,19 +883,19 @@ func (tm *TorrentManager) graceSeeding(slot int) error {
 	return nil
 }
 
-func (tm *TorrentManager) available(infohash string, rawSize uint64) (bool, uint64, error) {
+func (tm *TorrentManager) available(infohash string, rawSize uint64) (bool, uint64, mclock.AbsTime, error) {
 	availableMeter.Mark(1)
 	if rawSize <= 0 {
-		return false, 0, errors.New("raw size is zero or negative")
+		return false, 0, 0, errors.New("raw size is zero or negative")
 	}
 
 	if !common.IsHexAddress(infohash) {
-		return false, 0, errors.New("Invalid infohash format")
+		return false, 0, 0, errors.New("Invalid infohash format")
 	}
 
 	ih := metainfo.NewHashFromHex(strings.TrimPrefix(strings.ToLower(infohash), common.Prefix))
 	if t := tm.getTorrent(ih); t == nil {
-		return false, 0, ErrInactiveTorrent
+		return false, 0, 0, ErrInactiveTorrent
 	} else {
 		if !t.Ready() {
 			//if torrent.ch != nil {
@@ -904,7 +904,10 @@ func (tm *TorrentManager) available(infohash string, rawSize uint64) (bool, uint
 			//		return torrent.BytesCompleted() <= int64(rawSize), nil
 			//	}
 			//}
-			return false, uint64(t.BytesCompleted()), ErrUnfinished
+			if t.start == 0 {
+				return false, uint64(t.BytesCompleted()), 0, ErrUnfinished
+			}
+			return false, uint64(t.BytesCompleted()), mclock.Now() - t.start, ErrUnfinished
 		}
 
 		ok := t.BytesCompleted() <= int64(rawSize)
@@ -913,7 +916,7 @@ func (tm *TorrentManager) available(infohash string, rawSize uint64) (bool, uint
 		//	t.Torrent.SetMaxEstablishedConns(tm.maxEstablishedConns)
 		//}
 
-		return ok, uint64(t.BytesCompleted()), nil
+		return ok, uint64(t.BytesCompleted()), mclock.Now() - t.start, nil
 	}
 }
 

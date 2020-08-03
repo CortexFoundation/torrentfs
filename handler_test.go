@@ -34,7 +34,7 @@ func TestGetFile(t *testing.T) {
 	tm.Search(context.Background(), ih, 0, nil)
 	defer tm.Close()
 	time.Sleep(5 * time.Second)
-	a, _, _ := tm.available(ih, 100000000)
+	a, _, _, _ := tm.available(ih, 100000000)
 	fmt.Println("available", a)
 	file, _, _ := tm.getFile(ih, "data")
 	if file == nil {

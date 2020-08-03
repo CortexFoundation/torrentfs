@@ -20,11 +20,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/CortexFoundation/CortexTheseus/common"
 	"github.com/CortexFoundation/CortexTheseus/log"
 	"github.com/CortexFoundation/CortexTheseus/p2p"
 	"github.com/CortexFoundation/CortexTheseus/p2p/enode"
 	"github.com/CortexFoundation/CortexTheseus/rpc"
 	"sync"
+	"time"
 )
 
 // TorrentFS contains the torrent file system internals.
@@ -173,7 +175,7 @@ func (tfs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 					log.Warn("failed to decode msg, peer will be disconnected", "peer", p.peer.ID(), "err", err)
 					return errors.New("invalid msg")
 				}
-				log.Warn("Nas msg received", "version", ProtocolVersion, "msg", info)
+				log.Error("Nas msg received", "version", ProtocolVersion, "msg", info)
 				if err := tfs.storage().Search(context.Background(), info.Hash, info.Size, nil); err != nil {
 				}
 			}
@@ -225,29 +227,29 @@ func (tfs *TorrentFS) Stop() error {
 
 // Available is used to check the file status
 func (fs *TorrentFS) Available(ctx context.Context, infohash string, rawSize uint64) (bool, error) {
-	ret, f, err := fs.storage().available(infohash, rawSize)
+	ret, f, cost, err := fs.storage().available(infohash, rawSize)
 	if fs.config.Mode == LAZY {
 		if errors.Is(err, ErrInactiveTorrent) {
 			if progress, e := fs.chain().GetTorrent(infohash); e == nil {
 				log.Debug("Lazy mode starting", "ih", infohash, "request", progress)
 				if e := fs.storage().Search(ctx, infohash, progress, nil); e == nil {
-					log.Warn("Torrent sync downloading", "ih", infohash, "progress", progress, "err", err, "available", ret, "raw", rawSize, "err", err)
+					log.Warn("Torrent wake up", "ih", infohash, "progress", progress, "err", err, "available", ret, "raw", rawSize, "err", err)
 				}
 			}
 		} else if errors.Is(err, ErrUnfinished) {
-			if ProtocolVersion == 2 && f == 0 {
+			if ProtocolVersion == 2 && f < rawSize && time.Duration(cost) > time.Second*60 {
 				go func() {
-					log.Warn("Nas 2.0 query send when checking", "cap", cap(fs.queryChan), "len", len(fs.queryChan), "version", ProtocolVersion)
+					log.Error("Nas 2.0 query", "ih", infohash, "cap", cap(fs.queryChan), "len", len(fs.queryChan), "available", ret, "raw", rawSize, "finish", f, "cost", common.PrettyDuration(cost), "err", err)
 					fs.queryChan <- Query{Hash: infohash, Size: rawSize}
 				}()
 			}
-			log.Warn("Torrent sync downloading", "ih", infohash, "available", ret, "raw", rawSize, "finish", f, "err", err)
+			log.Debug("Torrent sync downloading", "ih", infohash, "available", ret, "raw", rawSize, "finish", f, "err", err)
 		}
 	}
 	return ret, err
 }
 
-// GetFile is used to get file from storage
+// GetFile is used to get file from storage, current this will not be call after available passed
 func (fs *TorrentFS) GetFile(ctx context.Context, infohash, subpath string) ([]byte, error) {
 	ret, f, err := fs.storage().getFile(infohash, subpath)
 
