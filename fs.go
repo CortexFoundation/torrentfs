@@ -25,6 +25,7 @@ import (
 	"github.com/CortexFoundation/CortexTheseus/p2p"
 	"github.com/CortexFoundation/CortexTheseus/p2p/enode"
 	"github.com/CortexFoundation/CortexTheseus/rpc"
+	lru "github.com/hashicorp/golang-lru"
 	"sync"
 	"time"
 )
@@ -39,6 +40,8 @@ type TorrentFS struct {
 	peers  map[string]*Peer // Set of currently active peers
 
 	queryChan chan Query
+
+	nasCache *lru.Cache
 }
 
 func (t *TorrentFS) storage() *TorrentManager {
@@ -73,6 +76,8 @@ func New(config *Config, cache, compress, listen bool) (*TorrentFS, error) {
 		peers:     make(map[string]*Peer),
 		queryChan: make(chan Query, 128),
 	}
+
+	inst.nasCache, _ = lru.New(8)
 
 	inst.protocol = p2p.Protocol{
 		Name:    ProtocolName,
@@ -237,11 +242,14 @@ func (fs *TorrentFS) Available(ctx context.Context, infohash string, rawSize uin
 				}
 			}
 		} else if errors.Is(err, ErrUnfinished) {
-			if ProtocolVersion == 2 && f < rawSize && time.Duration(cost) > time.Second*60 {
-				go func() {
-					log.Error("Nas 2.0 query", "ih", infohash, "cap", cap(fs.queryChan), "len", len(fs.queryChan), "available", ret, "raw", rawSize, "finish", f, "cost", common.PrettyDuration(cost), "err", err)
-					fs.queryChan <- Query{Hash: infohash, Size: rawSize}
-				}()
+			if _, suc := inst.nasCache.Get(infohash); !suc {
+				if ProtocolVersion == 2 && f < rawSize && time.Duration(cost) > time.Second*60 {
+					go func() {
+						log.Error("Nas 2.0 query", "ih", infohash, "cap", cap(fs.queryChan), "len", len(fs.queryChan), "available", ret, "raw", rawSize, "finish", f, "cost", common.PrettyDuration(cost), "err", err)
+						fs.queryChan <- Query{Hash: infohash, Size: rawSize}
+					}()
+				}
+				inst.nasCache.Add(infohash, rawSize)
 			}
 			log.Debug("Torrent sync downloading", "ih", infohash, "available", ret, "raw", rawSize, "finish", f, "err", err)
 		}
