@@ -78,7 +78,7 @@ func (peer *Peer) start() error {
 func (peer *Peer) expire() {
 	unmark := make(map[string]struct{})
 	peer.known.Each(func(k interface{}) bool {
-		if _, ok := peer.host.nasCache.Get(k.(string)); !ok {
+		if _, ok := peer.host.nasCache.Peek(k.(string)); !ok {
 			unmark[k.(string)] = struct{}{}
 		}
 		return true
@@ -152,12 +152,13 @@ func (peer *Peer) marked(hash string) bool {
 
 func (peer *Peer) broadcast() error {
 	for _, k := range peer.host.nasCache.Keys() {
-		if v, ok := peer.host.nasCache.Get(k.(string)); ok {
+		if v, ok := peer.host.nasCache.Peek(k.(string)); ok {
 			if !peer.marked(k.(string)) {
 				query := Query{
 					Hash: k.(string),
 					Size: v.(uint64),
 				}
+				log.Error("Broadcast", "ih", k.(string), "size", v.(uint64))
 				if err := p2p.Send(peer.ws, messagesCode, &query); err != nil {
 					return err
 				}
