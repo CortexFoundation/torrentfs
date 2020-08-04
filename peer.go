@@ -138,7 +138,13 @@ func (peer *Peer) handshake() error {
 	go func() {
 		defer peer.wg.Done()
 		log.Debug("Nas send items", "status", statusCode, "version", ProtocolVersion)
-		errc <- p2p.SendItems(peer.ws, statusCode, ProtocolVersion, &PeerInfo{Listen: uint64(peer.host.LocalPort()), Root: peer.host.chain().Root(), Files: uint64(peer.host.Congress()), Leafs: uint64(len(peer.host.chain().Blocks()))})
+		info := PeerInfo{
+			Listen: uint64(peer.host.LocalPort()),
+			Root:   peer.host.chain().Root(),
+			Files:  uint64(peer.host.Congress()),
+			Leafs:  uint64(len(peer.host.chain().Blocks())),
+		}
+		errc <- p2p.SendItems(peer.ws, statusCode, ProtocolVersion, &info)
 		log.Debug("Nas send items OK", "status", statusCode, "version", ProtocolVersion, "len", len(errc))
 	}()
 	// Fetch the remote status packet and verify protocol match
