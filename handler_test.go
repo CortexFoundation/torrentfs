@@ -31,12 +31,12 @@ func TestGetFile(t *testing.T) {
 	fmt.Println(DefaultConfig)
 	tm, _ := NewTorrentManager(&DefaultConfig, 1, false, false)
 	tm.Start()
-	tm.Search(context.Background(), ih, 100000000, nil)
+	tm.Search(context.Background(), ih, 0, nil)
 	defer tm.Close()
 	time.Sleep(5 * time.Second)
-	a, _ := tm.available(ih, 100000000)
+	a, _, _, _ := tm.available(ih, 100000000)
 	fmt.Println("available", a)
-	file, _ := tm.getFile(ih, "data")
+	file, _, _ := tm.getFile(ih, "data")
 	if file == nil {
 		log.Fatal("failed to get file")
 	}
