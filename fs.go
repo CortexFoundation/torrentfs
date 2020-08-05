@@ -258,19 +258,20 @@ func (fs *TorrentFS) Available(ctx context.Context, infohash string, rawSize uin
 			if e := fs.storage().Search(ctx, infohash, progress, nil); e == nil {
 				log.Warn("Torrent wake up", "ih", infohash, "progress", progress, "err", err, "available", ret, "raw", rawSize, "err", err)
 			}
+		} else {
+			//todo
 		}
 	} else if errors.Is(err, ErrUnfinished) {
 		if suc := fs.nasCache.Contains(infohash); !suc {
-			var speed float64
-			if cost > 0 {
-				t := float64(cost) / (1000 * 1000 * 1000)
-				speed = float64(f) / t
+			if f < rawSize {
+				var speed float64
+				if cost > 0 {
+					t := float64(cost) / (1000 * 1000 * 1000)
+					speed = float64(f) / t
+				}
+				log.Info("Nas 2.0 query", "ih", infohash, "raw", common.StorageSize(float64(rawSize)), "finish", f, "cost", common.PrettyDuration(cost), "speed", common.StorageSize(speed), "cache", fs.nasCache.Len(), "err", err)
+				fs.nasCache.Add(infohash, rawSize)
 			}
-			//invoke := time.Duration(cost) > time.Second*60 || (time.Duration(cost) > time.Second*30 && f == 0) || (time.Duration(cost) > time.Second*5 && f == 0 && cost == 0)
-			//if f < rawSize && invoke && speed < 256*1024 {
-			log.Info("Nas 2.0 query", "ih", infohash, "raw", common.StorageSize(float64(rawSize)), "finish", f, "cost", common.PrettyDuration(cost), "speed", common.StorageSize(speed), "cache", fs.nasCache.Len(), "err", err)
-			fs.nasCache.Add(infohash, rawSize)
-			//}
 		}
 
 		log.Debug("Torrent sync downloading", "ih", infohash, "available", ret, "raw", rawSize, "finish", f, "err", err)
