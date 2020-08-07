@@ -226,11 +226,11 @@ func mainExitCode() int {
 	cfg.Logger = xlog.Discard
 	cfg.Seed = true
 	cfg.DropDuplicatePeerIds = true
-	//cfg.EstablishedConnsPerTorrent = 10
-	//cfg.HalfOpenConnsPerTorrent = 10
+	cfg.EstablishedConnsPerTorrent = 1
+	cfg.HalfOpenConnsPerTorrent = 1
 	cfg.DisableUTP = true
 	cfg.DisableTCP = false
-	cfg.NoDHT = false
+	cfg.NoDHT = true
 	client, err := torrent.NewClient(cfg)
 	if err != nil {
 		log.Print(err)
