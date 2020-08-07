@@ -263,7 +263,7 @@ func (fs *TorrentFS) Available(ctx context.Context, infohash string, rawSize uin
 			}
 		} else if errors.Is(err, ErrUnfinished) {
 			if suc := fs.nasCache.Contains(infohash); !suc {
-				if f < rawSize {
+				if f == 0 {
 					var speed float64
 					if cost > 0 {
 						t := float64(cost) / (1000 * 1000 * 1000)
