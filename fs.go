@@ -43,6 +43,7 @@ type TorrentFS struct {
 
 	nasCache   *lru.Cache
 	queryCache *lru.Cache
+	nasCounter uint64
 }
 
 func (t *TorrentFS) storage() *TorrentManager {
@@ -99,6 +100,7 @@ func New(config *Config, cache, compress, listen bool) (*TorrentFS, error) {
 					"number":         monitor.currentNumber,
 					"maxMessageSize": inst.MaxMessageSize(),
 					//					"listen":         monitor.listen,
+					"metrics": inst.NasCounter(),
 				},
 			}
 		},
@@ -188,6 +190,7 @@ func (tfs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 							return err
 						}
 					}
+					tfs.nasCounter++
 					tfs.queryCache.Add(info.Hash, info.Size)
 				}
 			}
@@ -326,4 +329,8 @@ func (fs *TorrentFS) Congress() int {
 
 func (fs *TorrentFS) Candidate() int {
 	return fs.storage().Candidate()
+}
+
+func (fs *TorrentFS) NasCounter() uint64 {
+	return fs.nasCounter
 }
