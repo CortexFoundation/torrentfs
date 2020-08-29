@@ -689,6 +689,7 @@ func (tm *TorrentManager) pendingLoop() {
 						}
 						if err := t.ReloadTorrent(data, tm); err == nil {
 							tm.setTorrent(ih, t)
+							t.start = mclock.Now()
 						}
 					}
 				} else {
