@@ -319,16 +319,13 @@ func (tm *TorrentManager) addInfoHash(ih metainfo.Hash, BytesRequested int64, ch
 		spec = tm.loadSpec(ih, tmpTorrentPath)
 	}
 
-	if spec == nil {
-		if tm.boost {
-			if data, err := tm.boostFetcher.FetchTorrent(ih.String()); err == nil {
-				buf := bytes.NewBuffer(data)
-				mi, err := metainfo.Load(buf)
+	//if spec == nil {
+	/*if tm.boost {
+		if data, err := tm.boostFetcher.FetchTorrent(ih.String()); err == nil {
+			buf := bytes.NewBuffer(data)
+			mi, err := metainfo.Load(buf)
 
-				if err != nil {
-					log.Error("Error while adding torrent", "Err", err)
-					return nil
-				}
+			if err == nil {
 				spec = torrent.TorrentSpecFromMetaInfo(mi)
 				tmpDataPath := filepath.Join(tm.TmpDataDir, ih.HexString())
 				spec.Storage = storage.NewFile(tmpDataPath)
@@ -364,18 +361,20 @@ func (tm *TorrentManager) addInfoHash(ih metainfo.Hash, BytesRequested int64, ch
 
 					return tm.register(t, BytesRequested, torrentPending, ih, ch)
 				}
+			}
 
-			}
 		}
-		if spec == nil {
-			tmpDataPath := filepath.Join(tm.TmpDataDir, ih.HexString())
-			spec = &torrent.TorrentSpec{
-				InfoHash: ih,
-				Storage:  storage.NewFile(tmpDataPath),
-				//Storage: storage.NewFileWithCompletion(tmpDataPath, storage.NewMapPieceCompletion()),
-			}
+	}*/
+
+	if spec == nil {
+		tmpDataPath := filepath.Join(tm.TmpDataDir, ih.HexString())
+		spec = &torrent.TorrentSpec{
+			InfoHash: ih,
+			Storage:  storage.NewFile(tmpDataPath),
+			//Storage: storage.NewFileWithCompletion(tmpDataPath, storage.NewMapPieceCompletion()),
 		}
 	}
+	//}
 
 	if t, _, err := tm.client.AddTorrentSpec(spec); err == nil {
 		return tm.register(t, BytesRequested, torrentPending, ih, ch)
@@ -635,6 +634,9 @@ func (tm *TorrentManager) pendingLoop() {
 					continue
 				}
 				t.loop++
+				if tm.boost {
+					//todo
+				}
 				if t.Torrent.Info() != nil {
 					if t.start == 0 {
 						if t.isBoosting {
@@ -679,6 +681,13 @@ func (tm *TorrentManager) pendingLoop() {
 							t.BoostOff()
 						}
 					}*/
+				} else if tm.boost { //&& (t.loop > torrentWaitingTime/queryTimeInterval || (t.start == 0 && t.bytesRequested > 0)) {
+					log.Warn("Boost seed", "ih", ih.String())
+					if data, err := tm.boostFetcher.FetchTorrent(ih.String()); err == nil {
+						if err := t.ReloadTorrent(data, tm); err == nil {
+							tm.setTorrent(ih, t)
+						}
+					}
 				} else {
 					if _, ok := GoodFiles[t.InfoHash()]; t.start == 0 && (ok || t.bytesRequested > 0 || tm.mode == FULL || t.loop > 600) {
 						if ok {
