@@ -345,6 +345,7 @@ func (tm *TorrentManager) addInfoHash(ih metainfo.Hash, BytesRequested int64, ch
 								log.Trace("mkdir", "tmpDataPath", tmpDataPath, "subpath", subpath, "dir", dir)
 								if err := os.MkdirAll(dir, 0750); err != nil {
 									log.Error("mkdir", "err", err)
+									continue
 								}
 							}
 							f, e := os.OpenFile(p, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
@@ -362,7 +363,6 @@ func (tm *TorrentManager) addInfoHash(ih metainfo.Hash, BytesRequested int64, ch
 					}
 
 					return tm.register(t, BytesRequested, torrentPending, ih, ch)
-					//return nil
 				}
 
 			}
