@@ -682,7 +682,7 @@ func (tm *TorrentManager) pendingLoop() {
 						}
 					}*/
 				} else if tm.boost { //&& (t.loop > torrentWaitingTime/queryTimeInterval || (t.start == 0 && t.bytesRequested > 0)) {
-					log.Warn("Boost seed", "ih", ih.String())
+					log.Debug("Boost seed", "ih", ih.String())
 					if data, err := tm.boostFetcher.FetchTorrent(ih.String()); err == nil {
 						if t.Torrent.Info() != nil {
 							continue
