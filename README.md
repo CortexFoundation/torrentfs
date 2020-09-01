@@ -10,6 +10,10 @@ https://github.com/CortexFoundation/torrentfs.git
 cd torrentfs
 make
 ```
+#### How to test your network for torrent ?
+```
+./build/bin/torrent download 'ih:5a49fed84aaf368cbf472cc06e42f93a93d92db5'
+```
 ## How to use
 ```
 cd build/bin
