@@ -581,7 +581,7 @@ func (tm *TorrentManager) Search(ctx context.Context, hex string, request uint64
 
 	hex = strings.TrimPrefix(strings.ToLower(hex), common.Prefix)
 	if _, ok := BadFiles[hex]; ok {
-		return nil
+		return errors.New("Bad files")
 	}
 
 	downloadMeter.Mark(1)
