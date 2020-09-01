@@ -12,7 +12,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/anacrolix/missinggo"
+	"github.com/anacrolix/missinggo/v2"
 	"github.com/dustin/go-humanize"
 	"golang.org/x/xerrors"
 
@@ -295,7 +295,7 @@ func downloadErr(args []string, parent *tagflag.Parser) error {
 	addTorrents(client)
 	defer outputStats(client)
 	if client.WaitAll() {
-		log.Print("downloaded ALL the torrents")
+		log.Print("downloaded ALL the torrents !!!!!!!!!!!!!!!!!!!")
 	} else {
 		return xerrors.New("y u no complete torrents?!")
 	}
