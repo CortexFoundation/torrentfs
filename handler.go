@@ -559,8 +559,8 @@ func (tm *TorrentManager) init() {
 	//if tm.cache {
 	log.Debug("Chain files init", "files", len(GoodFiles))
 
-	for k, ok := range GoodFiles {
-		if tm.mode != LAZY || ok {
+	for k, _ := range GoodFiles {
+		if tm.mode != LAZY { //|| ok {
 			tm.Search(context.Background(), k, 0, nil)
 		}
 	}
