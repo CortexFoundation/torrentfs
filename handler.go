@@ -179,12 +179,13 @@ func (tm *TorrentManager) dropAll() {
 
 func (tm *TorrentManager) commit(ctx context.Context, hex string, request uint64, ch chan bool) error {
 	log.Debug("Commit task", "ih", hex, "request", request, "ch", ch)
-	select {
-	case tm.taskChan <- types.FlowControlMeta{
+	task := types.FlowControlMeta{
 		InfoHash:       metainfo.NewHashFromHex(hex),
 		BytesRequested: request,
 		Ch:             ch,
-	}:
+	}
+	select {
+	case tm.taskChan <- task:
 	case <-ctx.Done():
 		return ctx.Err()
 	}
