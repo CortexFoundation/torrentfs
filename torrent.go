@@ -249,7 +249,7 @@ func (t *Torrent) download(p, slot int) {
 	}
 
 	e = s + p
-	log.Info("Donwloaded pieces", "ih", t.Torrent.InfoHash(), "s", s, "e", e, "p", p, "slot", slot, "bucket", bucket, "total", t.Torrent.NumPieces())
+	log.Info("Donwloaded pieces", "ih", t.Torrent.InfoHash(), "s", s, "e", e, "p", p, "total", t.Torrent.NumPieces())
 	t.Torrent.DownloadPieces(s, e)
 }
 
