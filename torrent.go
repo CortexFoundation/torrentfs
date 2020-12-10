@@ -229,6 +229,7 @@ func (t *Torrent) Run(slot int) {
 	}
 }
 
+// Find out the start and end
 func (t *Torrent) download(p, slot int) {
 	var s, e int
 	s = (t.Torrent.NumPieces() * slot) / bucket
