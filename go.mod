@@ -1,6 +1,6 @@
 module github.com/CortexFoundation/torrentfs
 
-go 1.14
+go 1.15
 
 require (
 	bazil.org/fuse v0.0.0-20200430160008-602fc2ff4a00
@@ -10,7 +10,7 @@ require (
 	github.com/anacrolix/log v0.7.1-0.20200604014615-c244de44fd2d
 	github.com/anacrolix/missinggo/v2 v2.5.0
 	github.com/anacrolix/tagflag v1.1.1-0.20200411025953-9bb5209d56c2
-	github.com/anacrolix/torrent v1.19.0
+	github.com/anacrolix/torrent v1.19.1-0.20201220230444-f3d3fd37244f
 	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8
 	github.com/davecgh/go-spew v1.1.1
 	github.com/dustin/go-humanize v1.0.0
