@@ -94,6 +94,7 @@ func NewChainDB(config *Config) (*ChainDB, error) {
 	//fs.rootCache, _ = lru.New(8)
 
 	if err := fs.initBlockNumber(); err != nil {
+		log.Error("Init block error", "err", err)
 		return nil, err
 	}
 	//if err := fs.initCheckPoint(); err != nil {
@@ -103,13 +104,16 @@ func NewChainDB(config *Config) (*ChainDB, error) {
 	//	return nil, err
 	//}
 	if err := fs.initFiles(); err != nil {
+		log.Error("Init files error", "err", err)
 		return nil, err
 	}
 	if err := fs.initMerkleTree(); err != nil {
+		log.Error("Init mkt error", "err", err)
 		return nil, err
 	}
 
 	if err := fs.initID(); err != nil {
+		log.Error("Init node id error", "err", err)
 		return nil, err
 	}
 
@@ -357,10 +361,10 @@ func (fs *ChainDB) progress(f *types.FileInfo, init bool) (bool, error) {
 						}
 					}
 					if insert {
-						log.Debug("New relate file found and progressing", "hash", info.Meta.InfoHash.String(), "old", info.ContractAddr, "new", f.ContractAddr, "relate", len(info.Relate), "init", init)
+						log.Debug("New relate file found and progressing", "hash", info.Meta.InfoHash, "old", info.ContractAddr, "new", f.ContractAddr, "relate", len(info.Relate), "init", init)
 						f.Relate = append(f.Relate, *info.ContractAddr)
 					} else {
-						log.Debug("Address changed and progressing", "hash", info.Meta.InfoHash.String(), "old", info.ContractAddr, "new", f.ContractAddr, "relate", len(info.Relate), "init", init)
+						log.Debug("Address changed and progressing", "hash", info.Meta.InfoHash, "old", info.ContractAddr, "new", f.ContractAddr, "relate", len(info.Relate), "init", init)
 					}
 				}
 				v, err = json.Marshal(f)
@@ -380,7 +384,7 @@ func (fs *ChainDB) progress(f *types.FileInfo, init bool) (bool, error) {
 					if err != nil {
 						return err
 					}
-					log.Debug("New relate file found", "hash", info.Meta.InfoHash.String(), "old", info.ContractAddr, "new", f.ContractAddr, "r", len(info.Relate), "l", info.LeftSize, "r", len(f.Relate), "l", f.LeftSize, "init", init)
+					log.Debug("New relate file found", "hash", info.Meta.InfoHash, "old", info.ContractAddr, "new", f.ContractAddr, "r", len(info.Relate), "l", info.LeftSize, "r", len(f.Relate), "l", f.LeftSize, "init", init)
 					f.Relate = info.Relate
 					return buk.Put(k, v)
 				}
@@ -501,8 +505,8 @@ func (fs *ChainDB) initFiles() error {
 			for k, v := c.First(); k != nil; k, v = c.Next() {
 
 				var x types.FileInfo
-
 				if err := json.Unmarshal(v, &x); err != nil {
+					log.Error("Json unmarshal error", "err", err)
 					return err
 				}
 				fs.filesContractAddr[*x.ContractAddr] = &x
