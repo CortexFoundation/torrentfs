@@ -17,7 +17,7 @@ require (
 	github.com/edsrzf/mmap-go v1.0.0
 	github.com/fsnotify/fsnotify v1.4.9
 	github.com/golang/snappy v0.0.3-0.20201103224600-674baa8c7fc3
-	github.com/hashicorp/golang-lru v0.5.5-0.20200511160909-eb529947af53
+	github.com/hashicorp/golang-lru v0.5.5-0.20210104140557-80c98217689d
 	github.com/pborman/uuid v1.2.0
 	github.com/ucwong/golang-set v1.8.1-0.20200419153428-d7b0b1ac2d43
 	go.etcd.io/bbolt v1.3.6-0.20200807205753-f6be82302843
