@@ -334,10 +334,6 @@ func (fs *ChainDB) progress(f *types.FileInfo, init bool) (bool, error) {
 			return err
 		}
 
-		//k, err := json.Marshal(f.Meta.InfoHash)
-		//if err != nil {
-		//	return err
-		//}
 		k := []byte(f.Meta.InfoHash)
 		var v []byte
 		bef := buk.Get(k)
