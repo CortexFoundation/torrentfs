@@ -185,8 +185,8 @@ github.com/anacrolix/torrent v1.18.1-0.20201121024423-388e6899a15b/go.mod h1:nhO
 github.com/anacrolix/torrent v1.21.0/go.mod h1:3/BQux1sn5l887GdTw7AYSAmaZn+e7AXAZWFCsqh1bA=
 github.com/anacrolix/torrent v1.22.0/go.mod h1:GWTwQkOAilf0LR3C6A74XEkWPg0ejfFD9GcEIe57ess=
 github.com/anacrolix/torrent v1.23.0/go.mod h1:737rU+al1LBWEs3IHBystZvsbg24iSP+8Gb25Vc/s5U=
-github.com/anacrolix/torrent v1.25.1-0.20210224011147-a22c1334c6e9 h1:oakKJ9/3qAzQy21xWDnM47m5Cz5HKoLO3TVwi2R6d7w=
-github.com/anacrolix/torrent v1.25.1-0.20210224011147-a22c1334c6e9/go.mod h1:d4V6QqkInfQidWVk8b8hMv8mtciswNitI1A2BiRSQV0=
+github.com/anacrolix/torrent v1.25.1-0.20210224024805-693c30dd889e h1:Wt8MnbPV2DkSI2gMGdT1mBcljzKWWZ5bqIVEjEH52Y4=
+github.com/anacrolix/torrent v1.25.1-0.20210224024805-693c30dd889e/go.mod h1:d4V6QqkInfQidWVk8b8hMv8mtciswNitI1A2BiRSQV0=
 github.com/anacrolix/upnp v0.1.1/go.mod h1:LXsbsp5h+WGN7YR+0A7iVXm5BL1LYryDev1zuJMWYQo=
 github.com/anacrolix/upnp v0.1.2-0.20200416075019-5e9378ed1425 h1:/Wi6l2ONI1FUFWN4cBwHOO90V4ylp4ud/eov6GUcVFk=
 github.com/anacrolix/upnp v0.1.2-0.20200416075019-5e9378ed1425/go.mod h1:Pz94W3kl8rf+wxH3IbCa9Sq+DTJr8OSbV2Q3/y51vYs=
@@ -674,7 +674,6 @@ github.com/openzipkin/zipkin-go v0.2.2/go.mod h1:NaW6tEwdmWMaCDZzg8sh+IBNOxHMPnh
 github.com/pact-foundation/pact-go v1.0.4/go.mod h1:uExwJY4kCzNPcHRj+hCR/HBbOOIwwtUjcrb0b5/5kLM=
 github.com/pascaldekloe/goe v0.0.0-20180627143212-57f6aae5913c/go.mod h1:lzWF7FIEvWOWxwDKqyGYQf6ZUaNfKdP144TG7ZOy1lc=
 github.com/paulbellamy/ratecounter v0.2.0/go.mod h1:Hfx1hDpSGoqxkVVpBi/IlYD7kChlfo5C6hzIHwPqfFE=
-github.com/pborman/uuid v1.2.0 h1:J7Q5mO4ysT1dv8hyrUGHb9+ooztCXu1D8MY8DZYsu3g=
 github.com/pborman/uuid v1.2.0/go.mod h1:X/NO0urCmaxf9VXbdlT7C2Yzkj2IKimNn4k+gtPdI/k=
 github.com/pelletier/go-toml v1.2.0/go.mod h1:5z9KED0ma1S8pY6P1sdut58dfprrGBbd/94hg7ilaic=
 github.com/pelletier/go-toml v1.4.0/go.mod h1:PN7xzY2wHTK0K9p34ErDQMlFxa51Fk0OUruD3k1mMwo=
