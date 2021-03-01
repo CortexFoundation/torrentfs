@@ -564,7 +564,7 @@ func (fs *ChainDB) initID() error {
 		if err != nil {
 			return err
 		}
-		id := binary.LittleEndian.Uint64([]byte(uid))
+		id := binary.LittleEndian.Uint64([]byte(uid[:]))
 		e := buk.Put([]byte("key"), []byte(strconv.FormatUint(id, 16)))
 		fs.id = id //binary.LittleEndian.Uint64([]byte(id[:]))//uint64(id[:])
 
