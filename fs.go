@@ -26,7 +26,7 @@ import (
 	"github.com/CortexFoundation/CortexTheseus/p2p/enode"
 	"github.com/CortexFoundation/CortexTheseus/rpc"
 	lru "github.com/hashicorp/golang-lru"
-	"github.com/ucwong/bucket"
+	xbucket "github.com/ucwong/bucket"
 	"sync"
 	//"time"
 )
@@ -46,7 +46,7 @@ type TorrentFS struct {
 	queryCache *lru.Cache
 	nasCounter uint64
 
-	bucket *bucket.Bucket
+	bucket xbucket.Bucket
 }
 
 func (t *TorrentFS) storage() *TorrentManager {
@@ -94,7 +94,7 @@ func New(config *Config, cache, compress, listen bool) (*TorrentFS, error) {
 	inst.nasCache, _ = lru.New(25)
 	inst.queryCache, _ = lru.New(25)
 
-	inst.bucket = bucket.Bolt()
+	inst.bucket = xbucket.Bolt()
 
 	inst.protocol = p2p.Protocol{
 		Name:    ProtocolName,
