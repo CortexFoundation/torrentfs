@@ -20,8 +20,9 @@ require (
 	github.com/golang/snappy v0.0.3
 	github.com/google/uuid v1.2.0
 	github.com/hashicorp/golang-lru v0.5.5-0.20210104140557-80c98217689d
+	github.com/ucwong/bucket v0.0.0-20210322094045-e1d3d0605880
 	github.com/ucwong/golang-set v1.8.1-0.20200419153428-d7b0b1ac2d43
-	go.etcd.io/bbolt v1.3.6-0.20210304170446-8f715c091730
+	go.etcd.io/bbolt v1.3.6-0.20210316082519-6565e9dd8935
 	golang.org/x/time v0.0.0-20210220033141-f8bda1e9f3ba
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1
 	gopkg.in/urfave/cli.v1 v1.20.0
