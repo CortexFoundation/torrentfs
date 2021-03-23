@@ -94,7 +94,7 @@ func New(config *Config, cache, compress, listen bool) (*TorrentFS, error) {
 	inst.nasCache, _ = lru.New(25)
 	inst.queryCache, _ = lru.New(25)
 
-	inst.bucket = xbucket.Bolt()
+	inst.bucket = xbucket.Badger()
 
 	inst.protocol = p2p.Protocol{
 		Name:    ProtocolName,
@@ -309,13 +309,20 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 
 // GetFile is used to get file from storage, current this will not be call after available passed
 func (fs *TorrentFS) GetFile(ctx context.Context, infohash, subpath string) ([]byte, error) {
+	x := fs.bucket.Get([]byte(infohash + subpath))
+	if x != nil {
+		log.Info("xbucket running", "ih", infohash, "subpath", subpath)
+		return x, nil
+	}
 	ret, f, err := fs.storage().getFile(infohash, subpath)
 
 	if err != nil {
 		log.Warn("Not avaialble err in getFile", "err", err, "ret", ret, "ih", infohash, "progress", f)
+	} else {
+		if ret != nil {
+			fs.bucket.Set([]byte(infohash+subpath), ret)
+		}
 	}
-
-	fs.bucket.Set([]byte(infohash), ret)
 
 	return ret, err
 }
