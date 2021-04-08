@@ -26,6 +26,7 @@ import (
 	"github.com/CortexFoundation/CortexTheseus/p2p/enode"
 	"github.com/CortexFoundation/CortexTheseus/rpc"
 	lru "github.com/hashicorp/golang-lru"
+	"github.com/ucwong/golang-kv"
 	"sync"
 	//"time"
 )
@@ -44,6 +45,7 @@ type TorrentFS struct {
 	nasCache   *lru.Cache
 	queryCache *lru.Cache
 	nasCounter uint64
+	bucket     kv.Bucket
 }
 
 func (t *TorrentFS) storage() *TorrentManager {
@@ -90,6 +92,8 @@ func New(config *Config, cache, compress, listen bool) (*TorrentFS, error) {
 
 	inst.nasCache, _ = lru.New(25)
 	inst.queryCache, _ = lru.New(25)
+
+	inst.bucket = kv.Badger(config.DataDir)
 
 	inst.protocol = p2p.Protocol{
 		Name:    ProtocolName,
@@ -302,13 +306,19 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 
 // GetFile is used to get file from storage, current this will not be call after available passed
 func (fs *TorrentFS) GetFile(ctx context.Context, infohash, subpath string) ([]byte, error) {
+	ssd := fs.bucket.Get([]byte(infohash + subpath))
+	if ssd != nil {
+		log.Warn("SSD invoked", "ih", infohash, "subpath", subpath, "size", len(ssd))
+		return ssd, nil
+	}
 	ret, f, err := fs.storage().getFile(infohash, subpath)
 
 	if err != nil {
 		log.Warn("Not avaialble err in getFile", "err", err, "ret", ret, "ih", infohash, "progress", f)
+	} else {
+		//
+		fs.bucket.Set([]byte(infohash+subpath), ret)
 	}
-
-	//TODO
 
 	return ret, err
 }
