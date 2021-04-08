@@ -501,7 +501,7 @@ func NewTorrentManager(config *Config, fsid uint64, cache, compress bool) (*Torr
 	hotSize := config.MaxSeedingNum/64 + 1
 	torrentManager.hotCache, _ = lru.New(hotSize)
 	//torrentManager.ssd = kv.HA(filepath.Join(config.DataDir, ".ssd"), 0)
-	torrentManager.ssd = kv.Badger(filepath.Join(config.DataDir, ".ssd.badger"))
+	torrentManager.ssd = kv.Badger(filepath.Join(config.DataDir, ".ssd"))
 	log.Info("Hot cache created", "size", hotSize)
 
 	if len(config.DefaultTrackers) > 0 {
