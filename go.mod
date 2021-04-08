@@ -20,7 +20,7 @@ require (
 	github.com/golang/snappy v0.0.3
 	github.com/google/uuid v1.2.0
 	github.com/hashicorp/golang-lru v0.5.5-0.20210104140557-80c98217689d
-	github.com/ucwong/golang-kv v1.0.2
+	github.com/ucwong/golang-kv v1.0.2-0.20210408061929-1a4eb454192f
 	github.com/ucwong/golang-set v1.8.1-0.20200419153428-d7b0b1ac2d43
 	go.etcd.io/bbolt v1.3.6-0.20210324172249-5082d3bbc22e
 	golang.org/x/time v0.0.0-20210220033141-f8bda1e9f3ba
