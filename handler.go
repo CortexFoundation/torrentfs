@@ -551,6 +551,8 @@ func (tm *TorrentManager) seedingLoop() {
 					tm.maxSeedTask++
 					tm.graceSeeding(tm.slot)
 				}
+
+				//TODO
 			}
 		case <-tm.closeAll:
 			log.Info("Seeding loop closed")
