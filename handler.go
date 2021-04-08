@@ -163,8 +163,9 @@ func (tm *TorrentManager) Close() error {
 	if tm.fileCache != nil {
 		tm.fileCache.Reset()
 	}
-
-	tm.hotCache.Purge()
+	if tm.hotCache != nil {
+		tm.hotCache.Purge()
+	}
 	if tm.ssd != nil {
 		tm.ssd.Close()
 	}
@@ -499,7 +500,7 @@ func NewTorrentManager(config *Config, fsid uint64, cache, compress bool) (*Torr
 
 	hotSize := config.MaxSeedingNum/64 + 1
 	torrentManager.hotCache, _ = lru.New(hotSize)
-	torrentManager.ssd = kv.HA(filepath.Join(config.DataDir, ".ssd"), 1)
+	torrentManager.ssd = kv.HA(filepath.Join(config.DataDir, ".ssd"), 0)
 	log.Info("Hot cache created", "size", hotSize)
 
 	if len(config.DefaultTrackers) > 0 {
@@ -1045,7 +1046,7 @@ func (tm *TorrentManager) getFile(infohash, subpath string) ([]byte, uint64, err
 		if tm.ssd != nil {
 			ss := tm.ssd.Get([]byte(key))
 			if ss != nil {
-				log.Warn("SSD out", "key", key, "size", len(ss))
+				//log.Warn("SSD out", "key", key, "size", len(ss))
 				return ss, uint64(torrent.BytesCompleted()), nil
 			}
 		}
@@ -1074,7 +1075,7 @@ func (tm *TorrentManager) getFile(infohash, subpath string) ([]byte, uint64, err
 						}
 
 						if tm.ssd != nil {
-							log.Warn("SSD in", "key", key, "size", len(c))
+							//log.Warn("SSD in", "key", key, "size", len(c))
 							tm.ssd.Set([]byte(key), c)
 						}
 					}
