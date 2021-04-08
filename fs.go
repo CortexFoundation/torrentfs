@@ -311,7 +311,6 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 
 // GetFile is used to get file from storage, current this will not be call after available passed
 func (fs *TorrentFS) GetFile(ctx context.Context, infohash, subpath string) ([]byte, error) {
-
 	if fs.ssd != nil {
 		tmp := fs.ssd.Get([]byte(infohash + subpath))
 		if tmp != nil {
@@ -327,6 +326,7 @@ func (fs *TorrentFS) GetFile(ctx context.Context, infohash, subpath string) ([]b
 	} else {
 		if fs.ssd != nil {
 			fs.ssd.Set([]byte(infohash+subpath), ret)
+			log.Warn("SSD update", "ih", infohash, "subpath", subpath, "size", len(ret))
 		}
 	}
 
