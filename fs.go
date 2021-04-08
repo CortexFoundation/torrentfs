@@ -27,6 +27,7 @@ import (
 	"github.com/CortexFoundation/CortexTheseus/rpc"
 	lru "github.com/hashicorp/golang-lru"
 	"github.com/ucwong/golang-kv"
+	"path/filepath"
 	"sync"
 	//"time"
 )
@@ -93,7 +94,7 @@ func New(config *Config, cache, compress, listen bool) (*TorrentFS, error) {
 	inst.nasCache, _ = lru.New(25)
 	inst.queryCache, _ = lru.New(25)
 
-	inst.bucket = kv.Badger(config.DataDir)
+	inst.bucket = kv.Badger(filepath.Join(config.DataDir, ".ssd"))
 
 	inst.protocol = p2p.Protocol{
 		Name:    ProtocolName,
