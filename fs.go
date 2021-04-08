@@ -94,7 +94,7 @@ func New(config *Config, cache, compress, listen bool) (*TorrentFS, error) {
 	inst.nasCache, _ = lru.New(25)
 	inst.queryCache, _ = lru.New(25)
 
-	inst.bucket = kv.Badger(filepath.Join(config.DataDir, ".ssd"))
+	inst.bucket = kv.HA(filepath.Join(config.DataDir, ".ssd"))
 
 	inst.protocol = p2p.Protocol{
 		Name:    ProtocolName,
@@ -261,6 +261,10 @@ func (tfs *TorrentFS) Stop() error {
 
 	if tfs.queryCache != nil {
 		tfs.queryCache.Purge()
+	}
+
+	if tfs.bucket != nil {
+		tfs.bucket.Close()
 	}
 	return nil
 }
