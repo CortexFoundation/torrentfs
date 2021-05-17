@@ -137,7 +137,9 @@ func (t *Torrent) WriteTorrent() error {
 		t.Pause()
 		return nil
 	}
-
+	if err := os.MkdirAll(t.filepath, 0755); err != nil {
+		return err
+	}
 	if f, err := os.OpenFile(filepath.Join(t.filepath, "torrent"), os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0660); err == nil {
 		defer f.Close()
 		log.Debug("Write seed file", "path", t.filepath)
