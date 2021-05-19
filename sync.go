@@ -577,6 +577,7 @@ func (m *Monitor) syncLatestBlock() {
 	timer := time.NewTimer(time.Second * queryTimeInterval)
 	defer timer.Stop()
 	progress := uint64(0)
+	end := false
 	for {
 		select {
 		case <-timer.C:
@@ -584,12 +585,19 @@ func (m *Monitor) syncLatestBlock() {
 			// Avoid sync in full mode, fresh interval may be less.
 			if progress >= delay {
 				//timer.Reset(0)
+				end = false
 				timer.Reset(time.Millisecond * 2000)
 			} else if progress > 1 {
+				end = false
 				timer.Reset(time.Millisecond * 3000)
 			} else {
 				if !m.listen {
 					if (m.ckp != nil && m.currentNumber >= m.ckp.TfsCheckPoint) || (m.ckp == nil && m.currentNumber > 0) {
+						if !end {
+							end = true
+							timer.Reset(time.Millisecond * 6000)
+							continue
+						}
 						m.fs.Flush()
 						go m.exit()
 						elapsed := time.Duration(mclock.Now()) - time.Duration(m.start)
