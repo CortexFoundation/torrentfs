@@ -604,6 +604,7 @@ func (m *Monitor) syncLatestBlock() {
 						log.Warn("Finish sync, listener will be paused", "current", m.currentNumber, "elapsed", common.PrettyDuration(elapsed), "ckp", m.ckp.TfsCheckPoint, "progress", progress, "end", end)
 						//return
 						timer.Reset(time.Millisecond * 1000 * 300)
+						end = false
 					}
 				}
 				timer.Reset(time.Millisecond * 6000)
