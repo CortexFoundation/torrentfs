@@ -628,10 +628,10 @@ func (tm *TorrentManager) Search(ctx context.Context, hex string, request uint64
 	}
 
 	//if tm.mode == FULL {
-	if request == 0 {
-		log.Warn("Prepare mode", "ih", hex)
-		request = uint64(block)
-	}
+	//if request == 0 {
+	//	log.Warn("Prepare mode", "ih", hex)
+	//	request = uint64(block)
+	//}
 	//}
 
 	downloadMeter.Mark(1)
@@ -651,7 +651,13 @@ func (tm *TorrentManager) mainLoop() {
 			if IsBad(meta.InfoHash) {
 				continue
 			}
+
 			bytes := int64(meta.BytesRequested)
+			if bytes == 0 {
+				log.Warn("Prepare mode", "ih", meta.InfoHash)
+				bytes = block
+			}
+
 			if t := tm.addInfoHash(meta.InfoHash, bytes, meta.Ch); t == nil {
 				log.Error("Seed [create] failed", "ih", meta.InfoHash, "request", bytes)
 				continue
