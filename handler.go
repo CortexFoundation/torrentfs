@@ -871,7 +871,7 @@ func (tm *TorrentManager) activeLoop() {
 				if t.bytesCompleted >= t.bytesLimitation {
 					t.Pause()
 					active_paused++
-					if log_counter%60 == 0 && active_paused < 11 {
+					if log_counter%300 == 0 && active_paused < 11 {
 						bar := ProgressBar(t.bytesCompleted, t.Torrent.Length(), "[Paused]")
 						log.Info(bar, "ih", ih, "complete", common.StorageSize(t.bytesCompleted), "req", common.StorageSize(t.bytesRequested), "limit", common.StorageSize(t.bytesLimitation), "total", common.StorageSize(t.bytesMissing+t.bytesCompleted), "seg", len(t.Torrent.PieceStateRuns()), "peers", t.currentConns, "max", t.Torrent.NumPieces())
 					}
