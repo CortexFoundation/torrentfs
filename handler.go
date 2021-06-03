@@ -627,6 +627,13 @@ func (tm *TorrentManager) Search(ctx context.Context, hex string, request uint64
 		return nil
 	}
 
+	//if tm.mode == FULL {
+	if request == 0 {
+		log.Warn("Prepare mode", "ih", hex)
+		request = uint64(block)
+	}
+	//}
+
 	downloadMeter.Mark(1)
 
 	return tm.commit(ctx, hex, request, ch)
