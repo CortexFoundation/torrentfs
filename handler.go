@@ -654,7 +654,6 @@ func (tm *TorrentManager) mainLoop() {
 
 			bytes := int64(meta.BytesRequested)
 			if bytes == 0 {
-				log.Warn("Prepare mode", "ih", meta.InfoHash)
 				bytes = block
 			}
 
