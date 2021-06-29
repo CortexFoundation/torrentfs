@@ -329,6 +329,7 @@ func (fs *TorrentFS) Download(ctx context.Context, ih string, request uint64) er
 }
 
 func (fs *TorrentFS) Status(ctx context.Context, ih string) (int, error) {
+	//TODO
 	return 0, nil
 }
 
