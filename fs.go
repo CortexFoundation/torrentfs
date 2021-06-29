@@ -328,6 +328,10 @@ func (fs *TorrentFS) Download(ctx context.Context, ih string, request uint64) er
 	return nil
 }
 
+func (fs *TorrentFS) Status(ctx context.Context, ih string) (int, error) {
+	return 0, nil
+}
+
 func (fs *TorrentFS) LocalPort() int {
 	return fs.storage().LocalPort()
 }
