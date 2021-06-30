@@ -325,7 +325,28 @@ func (fs *TorrentFS) Download(ctx context.Context, ih string, request uint64) er
 		}
 	}
 
+	//for k, _ := range GoodFiles {
+	//	status, _ := fs.Status(ctx, k)
+	//	log.Info("Torrent status", "ih", k, "status", status)
+	//}
+
 	return nil
+}
+
+func (fs *TorrentFS) Status(ctx context.Context, ih string) (int, error) {
+	if fs.storage().IsPending(ih) {
+		return 1, nil
+	}
+
+	if fs.storage().IsDownloading(ih) {
+		return 2, nil
+	}
+
+	if fs.storage().IsSeeding(ih) {
+		return 0, nil
+	}
+
+	return 3, nil
 }
 
 func (fs *TorrentFS) LocalPort() int {
