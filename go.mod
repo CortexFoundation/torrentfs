@@ -4,9 +4,9 @@ go 1.17
 
 require (
 	bazil.org/fuse v0.0.0-20200524192727-fb710f7dfd05
-	github.com/CortexFoundation/CortexTheseus v1.10.26
+	github.com/CortexFoundation/CortexTheseus v1.10.22
 	github.com/CortexFoundation/merkletree v0.0.0-20210226031755-94f6423532ee
-	github.com/allegro/bigcache/v3 v3.0.0
+	github.com/allegro/bigcache/v3 v3.0.0-20210909062657-c2b72fe951a1
 	github.com/anacrolix/envpprof v1.1.1
 	github.com/anacrolix/log v0.9.0
 	github.com/anacrolix/missinggo/v2 v2.5.2
