@@ -11,7 +11,7 @@ require (
 	github.com/anacrolix/log v0.9.0
 	github.com/anacrolix/missinggo/v2 v2.5.2
 	github.com/anacrolix/tagflag v1.3.0
-	github.com/anacrolix/torrent v1.31.1-0.20210909125124-35064425eb43
+	github.com/anacrolix/torrent v1.31.1-0.20210910222643-d957502528e0
 	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8
 	github.com/davecgh/go-spew v1.1.1
 	github.com/dustin/go-humanize v1.0.0
@@ -31,7 +31,7 @@ require (
 	crawshaw.io/sqlite v0.3.3-0.20210127221821-98b1f83c5508 // indirect
 	github.com/RoaringBitmap/roaring v0.9.4 // indirect
 	github.com/StackExchange/wmi v0.0.0-20190523213315-cbe66965904d // indirect
-	github.com/anacrolix/chansync v0.1.1-0.20210904130811-9cd7139c8dd9 // indirect
+	github.com/anacrolix/chansync v0.2.1-0.20210910114620-14955c95ded9 // indirect
 	github.com/anacrolix/confluence v1.8.0 // indirect
 	github.com/anacrolix/dht/v2 v2.10.5-0.20210902001729-06cc4fe90e53 // indirect
 	github.com/anacrolix/go-libutp v1.0.4 // indirect
