@@ -319,6 +319,11 @@ func (fs *TorrentFS) GetFile(ctx context.Context, infohash, subpath string) ([]b
 	return ret, err
 }
 
+// Seeding Local File, validate folder, seeding and load files
+func (fs *TorrentFS) SeedingLocal(ctx context.Context, filePath string, copyMode bool) (ih common.Address, err error) {
+	return
+}
+
 //Download is used to download file with request
 func (fs *TorrentFS) Download(ctx context.Context, ih string, request uint64) error {
 	update, p, err := fs.chain().SetTorrent(ih, request)

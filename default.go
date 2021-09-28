@@ -43,10 +43,6 @@ type Config struct {
 	UploadRate   int  `toml:",omitempty"`
 	DownloadRate int  `toml:",omitempty"`
 	Metrics      bool `toml:",omitempty"`
-	// Seeding Local Files, validate proper directory structure
-	// @Key: File Path to seeding (absolute or relative path)
-	// @Value: 'true' for Copy Mode, 'false' for Link Mode
-	SeedingLocalFiles map[string]bool
 }
 
 // DefaultConfig contains default settings for the storage.
