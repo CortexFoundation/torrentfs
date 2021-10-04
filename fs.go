@@ -20,13 +20,20 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"os"
+	"path/filepath"
+	"strings"
+	"sync"
+
 	"github.com/CortexFoundation/CortexTheseus/common"
 	"github.com/CortexFoundation/CortexTheseus/log"
 	"github.com/CortexFoundation/CortexTheseus/p2p"
 	"github.com/CortexFoundation/CortexTheseus/p2p/enode"
 	"github.com/CortexFoundation/CortexTheseus/rpc"
+	"github.com/CortexFoundation/torrentfs/params"
+	"github.com/anacrolix/torrent/bencode"
+	"github.com/anacrolix/torrent/metainfo"
 	lru "github.com/hashicorp/golang-lru"
-	"sync"
 	//"time"
 )
 
@@ -321,6 +328,70 @@ func (fs *TorrentFS) GetFile(ctx context.Context, infohash, subpath string) ([]b
 
 // Seeding Local File, validate folder, seeding and load files
 func (fs *TorrentFS) SeedingLocal(ctx context.Context, filePath string, copyMode bool) (ih common.Address, err error) {
+	// 1. check folder exist
+	if _, err = os.Stat(filePath); err != nil {
+		return
+	}
+
+	// 2. check subfile data exist
+	dataPath := filepath.Join(filePath, "data")
+	if _, err = os.Stat(dataPath); err != nil {
+		return
+	}
+
+	// 3. generate torrent file, rewrite if exists
+	mi := metainfo.MetaInfo{
+		AnnounceList: [][]string{params.MainnetTrackers},
+	}
+	mi.SetDefaults()
+	info := metainfo.Info{PieceLength: 256 * 1024}
+	err = info.BuildFromFilePath(dataPath)
+	if err != nil {
+		return
+	}
+	mi.InfoBytes, err = bencode.Marshal(info)
+	if err != nil {
+		return
+	}
+	fileTorrent, err := os.OpenFile(filepath.Join(filePath, "torrent"), os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		return
+	}
+	err = mi.Write(fileTorrent)
+	if err != nil {
+		return
+	}
+
+	// 4. copy or link
+	ih = common.Address(mi.HashInfoBytes())
+	log.Warn("SeedingLocal", "Generate infoHash", ih.Hex(), "From dataPath", dataPath)
+	linkDst := strings.TrimPrefix(strings.ToLower(ih.Hex()), common.Prefix)
+	linkDst = filepath.Join(fs.storage().TmpDataDir, linkDst)
+	if copyMode {
+	} else {
+
+		// check if symbol link exist
+		if _, err = os.Stat(linkDst); err == nil {
+			// choice-1: original symbol link exists, cover it. (passed)
+
+			// choice-2: original symbol link exists, return error
+			err = os.ErrExist
+		} else {
+			// create symbol link
+			if absOriFilePath, err1 := filepath.Abs(filePath); err1 != nil {
+				err = err1
+			} else {
+				err = os.Symlink(absOriFilePath, linkDst)
+			}
+		}
+	}
+
+	// 5. seeding
+	if err == nil || err == os.ErrExist {
+		log.Warn("SeedingLocal", "dest", linkDst, "err", err)
+		fs.storage().Search(context.Background(), ih.Hex(), 0, nil)
+	}
+
 	return
 }
 
