@@ -368,6 +368,7 @@ func (fs *TorrentFS) SeedingLocal(ctx context.Context, filePath string, copyMode
 	linkDst := strings.TrimPrefix(strings.ToLower(ih.Hex()), common.Prefix)
 	linkDst = filepath.Join(fs.storage().TmpDataDir, linkDst)
 	if copyMode {
+		err = GetFolderCopier().Copy(filePath, linkDst)
 	} else {
 
 		// check if symbol link exist
