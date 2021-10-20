@@ -335,10 +335,40 @@ func (fs *TorrentFS) SeedingLocal(ctx context.Context, filePath string, isLinkMo
 		return
 	}
 
-	// 2. check subfile data exist
+	// 2. check subfile data exist and not empty:
+	// recursively iterate until meet file not empty
+	var iterateForValidFile func(basePath string, dataInfo os.FileInfo) bool
+	iterateForValidFile = func(basePath string, dataInfo os.FileInfo) bool {
+		filePath := filepath.Join(basePath, dataInfo.Name())
+		if dataInfo.IsDir() {
+			dirFp, _ := os.Open(filePath)
+			if fInfos, err := dirFp.Readdir(0); err != nil {
+				return false
+			} else {
+				for _, v := range fInfos {
+					// return as soon as possible if meet 'true', else continue
+					if iterateForValidFile(filePath, v) {
+						return true
+					}
+				}
+			}
+		} else if dataInfo.Size() > 0 {
+			return true
+		}
+		return false
+	}
+
 	dataPath := filepath.Join(filePath, "data")
-	if _, err = os.Stat(dataPath); err != nil {
+	if dataInfo, err1 := os.Stat(dataPath); err1 != nil {
+		err = err1
 		return
+	} else {
+		validFlag := iterateForValidFile(filePath, dataInfo)
+		if !validFlag {
+			err = errors.New("SeedingLocal: Empty Seeding Data!")
+			log.Error("SeedingLocal", "check", err.Error())
+			return
+		}
 	}
 
 	// 3. generate torrent file, rewrite if exists
@@ -395,7 +425,8 @@ func (fs *TorrentFS) SeedingLocal(ctx context.Context, filePath string, isLinkMo
 		fs.storage().Search(context.Background(), ih.Hex(), 0, nil)
 	}
 
-	return ih.Hex(), err
+	infoHash = ih.Hex()
+	return
 }
 
 //Download is used to download file with request

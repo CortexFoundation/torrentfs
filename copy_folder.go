@@ -64,9 +64,7 @@ func (fc *folderCopier) fcopy(src, dest string, info os.FileInfo) (err error) {
 	var buf []byte = nil
 	var w io.Writer = f
 	// var r io.Reader = s
-	if _, err = io.CopyBuffer(w, s, buf); err != nil {
-		return err
-	}
+	_, err = io.CopyBuffer(w, s, buf)
 	return
 }
 
@@ -77,9 +75,10 @@ func (fc *folderCopier) dcopy(srcdir, destdir string, info os.FileInfo) (err err
 
 	_, err = os.Stat(destdir)
 	if err == nil {
-		return os.ErrExist
+		err = os.ErrExist
+		return
 	} else if err != nil && !os.IsNotExist(err) {
-		return err // Unwelcome error type...!
+		return // Unwelcome error type...!
 	}
 
 	originalMode := info.Mode()
@@ -113,16 +112,16 @@ func (fc *folderCopier) dcopy(srcdir, destdir string, info os.FileInfo) (err err
 func (fc *folderCopier) switchboard(src, dest string, info os.FileInfo) (err error) {
 	switch {
 	case info.Mode()&os.ModeSymlink != 0:
-		return nil
+		return
 	case info.IsDir():
 		err = fc.dcopy(src, dest, info)
 	case info.Mode()&os.ModeNamedPipe != 0:
-		return nil
+		return
 	default:
 		err = fc.fcopy(src, dest, info)
 	}
 
-	return err
+	return
 }
 
 // Copy copies src to dest, doesn't matter if src is a directory or a file.
