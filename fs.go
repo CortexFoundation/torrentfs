@@ -422,7 +422,7 @@ func (fs *TorrentFS) SeedingLocal(ctx context.Context, filePath string, isLinkMo
 	// 5. seeding
 	if err == nil || err == os.ErrExist {
 		log.Warn("SeedingLocal", "dest", linkDst, "err", err)
-		fs.storage().Search(context.Background(), ih.Hex(), 0, nil)
+		err = fs.storage().Search(context.Background(), ih.Hex(), 0, nil)
 	}
 
 	infoHash = ih.Hex()
