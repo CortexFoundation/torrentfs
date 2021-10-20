@@ -329,7 +329,7 @@ func (fs *TorrentFS) GetFile(ctx context.Context, infohash, subpath string) ([]b
 // Seeding Local File, validate folder, seeding and
 // load files, default mode is copyMode, linkMode
 // will limit user's operations for original files
-func (fs *TorrentFS) SeedingLocal(ctx context.Context, filePath string, isLinkMode bool) (ih common.Address, err error) {
+func (fs *TorrentFS) SeedingLocal(ctx context.Context, filePath string, isLinkMode bool) (infoHash string, err error) {
 	// 1. check folder exist
 	if _, err = os.Stat(filePath); err != nil {
 		return
@@ -365,7 +365,7 @@ func (fs *TorrentFS) SeedingLocal(ctx context.Context, filePath string, isLinkMo
 	}
 
 	// 4. copy or link, will not cover if dst exist!
-	ih = common.Address(mi.HashInfoBytes())
+	ih := common.Address(mi.HashInfoBytes())
 	log.Warn("SeedingLocal", "Generate infoHash", ih.Hex(), "From dataPath", dataPath)
 	linkDst := strings.TrimPrefix(strings.ToLower(ih.Hex()), common.Prefix)
 	linkDst = filepath.Join(fs.storage().TmpDataDir, linkDst)
@@ -395,7 +395,7 @@ func (fs *TorrentFS) SeedingLocal(ctx context.Context, filePath string, isLinkMo
 		fs.storage().Search(context.Background(), ih.Hex(), 0, nil)
 	}
 
-	return
+	return ih.Hex(), err
 }
 
 //Download is used to download file with request
