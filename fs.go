@@ -377,26 +377,23 @@ func (fs *TorrentFS) SeedingLocal(ctx context.Context, filePath string, isLinkMo
 	}
 	mi.SetDefaults()
 	info := metainfo.Info{PieceLength: 256 * 1024}
-	err = info.BuildFromFilePath(dataPath)
-	if err != nil {
+	if err = info.BuildFromFilePath(dataPath); err != nil {
 		return
 	}
-	mi.InfoBytes, err = bencode.Marshal(info)
-	if err != nil {
+	if mi.InfoBytes, err = bencode.Marshal(info); err != nil {
 		return
 	}
 	fileTorrent, err := os.OpenFile(filepath.Join(filePath, "torrent"), os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		return
 	}
-	err = mi.Write(fileTorrent)
-	if err != nil {
+	if err = mi.Write(fileTorrent); err != nil {
 		return
 	}
 
 	// 4. copy or link, will not cover if dst exist!
 	ih := common.Address(mi.HashInfoBytes())
-	log.Warn("SeedingLocal", "Generate infoHash", ih.Hex(), "From dataPath", dataPath)
+	log.Info("SeedingLocal", "Generate infoHash", ih.Hex(), "From dataPath", dataPath)
 	linkDst := strings.TrimPrefix(strings.ToLower(ih.Hex()), common.Prefix)
 	linkDst = filepath.Join(fs.storage().TmpDataDir, linkDst)
 	if !isLinkMode {
@@ -421,7 +418,7 @@ func (fs *TorrentFS) SeedingLocal(ctx context.Context, filePath string, isLinkMo
 
 	// 5. seeding
 	if err == nil || err == os.ErrExist {
-		log.Warn("SeedingLocal", "dest", linkDst, "err", err)
+		log.Debug("SeedingLocal", "dest", linkDst, "err", err)
 		err = fs.storage().Search(context.Background(), ih.Hex(), 0, nil)
 	}
 
