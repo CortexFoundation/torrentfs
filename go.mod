@@ -55,6 +55,7 @@ require (
 	github.com/huin/goupnp v1.0.2 // indirect
 	github.com/jackpal/go-nat-pmp v1.0.2 // indirect
 	github.com/mschoch/smat v0.2.0 // indirect
+	github.com/otiai10/copy v1.6.0 // indirect
 	github.com/pion/datachannel v1.4.21 // indirect
 	github.com/pion/dtls/v2 v2.0.9 // indirect
 	github.com/pion/ice/v2 v2.1.12 // indirect
