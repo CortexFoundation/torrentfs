@@ -34,6 +34,7 @@ import (
 	"github.com/anacrolix/torrent/bencode"
 	"github.com/anacrolix/torrent/metainfo"
 	lru "github.com/hashicorp/golang-lru"
+	Copy "github.com/otiai10/copy"
 	//"time"
 )
 
@@ -397,7 +398,7 @@ func (fs *TorrentFS) SeedingLocal(ctx context.Context, filePath string, isLinkMo
 	linkDst := strings.TrimPrefix(strings.ToLower(ih.Hex()), common.Prefix)
 	linkDst = filepath.Join(fs.storage().TmpDataDir, linkDst)
 	if !isLinkMode {
-		err = GetFolderCopier().Copy(filePath, linkDst)
+		err = Copy.Copy(filePath, linkDst)
 	} else {
 
 		// check if symbol link exist
