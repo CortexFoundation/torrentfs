@@ -53,7 +53,7 @@ var DefaultConfig = Config{
 	Mode:            "default",
 	DisableUTP:      false,
 	DisableDHT:      false,
-	DisableTCP:      false,
+	DisableTCP:      true,
 	DisableIPv6:     false,
 	MaxSeedingNum:   params.LimitSeeding / 2,
 	MaxActiveNum:    params.LimitSeeding / 2,
