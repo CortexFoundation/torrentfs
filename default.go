@@ -51,7 +51,7 @@ var DefaultConfig = Config{
 	DefaultTrackers: params.MainnetTrackers,
 	BoostNodes:      params.TorrentBoostNodes,
 	Mode:            "default",
-	DisableUTP:      true,
+	DisableUTP:      false,
 	DisableDHT:      false,
 	DisableTCP:      false,
 	DisableIPv6:     false,
