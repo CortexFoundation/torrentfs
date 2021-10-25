@@ -6,9 +6,9 @@ require (
 	bazil.org/fuse v0.0.0-20200524192727-fb710f7dfd05
 	github.com/CortexFoundation/CortexTheseus v1.10.28-0.20211020062553-47875a4cb444
 	github.com/CortexFoundation/merkletree v0.0.0-20210226031755-94f6423532ee
-	github.com/allegro/bigcache/v3 v3.0.0
+	github.com/allegro/bigcache/v3 v3.0.1
 	github.com/anacrolix/envpprof v1.1.1
-	github.com/anacrolix/log v0.9.0
+	github.com/anacrolix/log v0.10.0
 	github.com/anacrolix/missinggo/v2 v2.5.2
 	github.com/anacrolix/tagflag v1.3.0
 	github.com/anacrolix/torrent v1.33.1-0.20211019030748-3ef8cfba27af
@@ -20,8 +20,9 @@ require (
 	github.com/golang/snappy v0.0.4
 	github.com/google/uuid v1.3.0
 	github.com/hashicorp/golang-lru v0.5.5-0.20210104140557-80c98217689d
+	github.com/otiai10/copy v1.6.0
 	github.com/ucwong/golang-set v1.8.1-0.20200419153428-d7b0b1ac2d43
-	go.etcd.io/bbolt v1.3.6
+	go.etcd.io/bbolt v1.3.7-0.20210702075620-b18879eb6c41
 	golang.org/x/time v0.0.0-20210723032227-1f47c861a9ac
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1
 	gopkg.in/urfave/cli.v1 v1.20.0
@@ -55,7 +56,6 @@ require (
 	github.com/huin/goupnp v1.0.2 // indirect
 	github.com/jackpal/go-nat-pmp v1.0.2 // indirect
 	github.com/mschoch/smat v0.2.0 // indirect
-	github.com/otiai10/copy v1.6.0 // indirect
 	github.com/pion/datachannel v1.4.21 // indirect
 	github.com/pion/dtls/v2 v2.0.9 // indirect
 	github.com/pion/ice/v2 v2.1.12 // indirect
