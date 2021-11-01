@@ -115,6 +115,60 @@ type TorrentManager struct {
 	Updates time.Duration
 
 	hotCache *lru.Cache
+
+	// For manage torrents Seeding by SeedingLocal(), true/false means seeding/pause
+	localSeedLock  sync.RWMutex
+	localSeedFiles map[string]bool
+}
+
+// can only call by fs.go: 'SeedingLocal()'
+func (tm *TorrentManager) addLocalSeedFile(ih string) bool {
+	tm.localSeedLock.Lock()
+	defer tm.localSeedLock.Unlock()
+
+	if _, ok := GoodFiles[ih]; ok {
+		return false
+	}
+	tm.localSeedFiles[ih] = true
+	return true
+}
+
+// only files in map:localSeedFile can be drop!
+func (tm *TorrentManager) pauseLocalSeedFile(ih string) bool {
+	tm.localSeedLock.Lock()
+	defer tm.localSeedLock.Unlock()
+	if _, ok := tm.localSeedFiles[ih]; !ok {
+		return false
+	} else if _, ok := GoodFiles[ih]; ok {
+		return false
+	}
+
+	if t := tm.getTorrent(ih); t != nil {
+		t.Pause()
+	}
+	//delete(tm.localSeedFiles, ih)
+
+	return true
+}
+
+// divide localSeed/on-chain Files
+// return status of torrents
+func (tm *TorrentManager) listAllTorrents() (localFiles map[string]int, otherFiles map[string]int) {
+	tm.lock.RLock()
+	tm.localSeedLock.RLock()
+	defer tm.lock.RUnlock()
+	defer tm.localSeedLock.RUnlock()
+
+	localFiles = make(map[string]int)
+	otherFiles = make(map[string]int)
+	for ih, tt := range tm.torrents {
+		if _, ok := tm.localSeedFiles[ih]; ok {
+			localFiles[ih] = tt.status
+		} else {
+			otherFiles[ih] = tt.status
+		}
+	}
+	return
 }
 
 func (tm *TorrentManager) getLimitation(value int64) int64 {
