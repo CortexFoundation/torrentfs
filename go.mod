@@ -7,11 +7,11 @@ require (
 	github.com/CortexFoundation/CortexTheseus v1.10.28-0.20211020062553-47875a4cb444
 	github.com/CortexFoundation/merkletree v0.0.0-20210226031755-94f6423532ee
 	github.com/allegro/bigcache/v3 v3.0.1
-	github.com/anacrolix/envpprof v1.1.1
+	github.com/anacrolix/envpprof v1.1.2-0.20210622065137-4accee5b7ac4
 	github.com/anacrolix/log v0.10.0
 	github.com/anacrolix/missinggo/v2 v2.5.2
-	github.com/anacrolix/tagflag v1.3.0
-	github.com/anacrolix/torrent v1.34.1-0.20211101012120-1f22c5136627
+	github.com/anacrolix/tagflag v1.3.1-0.20210717093243-41ae76143afa
+	github.com/anacrolix/torrent v1.35.1-0.20211103024906-002de0ebe308
 	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8
 	github.com/davecgh/go-spew v1.1.1
 	github.com/dustin/go-humanize v1.0.0
