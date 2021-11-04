@@ -433,6 +433,16 @@ func (fs *TorrentFS) SeedingLocal(ctx context.Context, filePath string, isLinkMo
 	return
 }
 
+// PauseSeeding Local File
+func (fs *TorrentFS) PauseLocalSeed(ctx context.Context, ih string) (err error) {
+	return fs.storage().pauseLocalSeedFile(ih)
+}
+
+// List All Torrents Status (read-only)
+func (fs *TorrentFS) ListAllTorrents(ctx context.Context) (localFiles map[string]int, otherFiles map[string]int) {
+	return fs.storage().listAllTorrents()
+}
+
 //Download is used to download file with request
 func (fs *TorrentFS) Download(ctx context.Context, ih string, request uint64) error {
 	update, p, err := fs.chain().SetTorrent(ih, request)

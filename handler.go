@@ -134,13 +134,13 @@ func (tm *TorrentManager) addLocalSeedFile(ih string) bool {
 }
 
 // only files in map:localSeedFile can be drop!
-func (tm *TorrentManager) pauseLocalSeedFile(ih string) bool {
+func (tm *TorrentManager) pauseLocalSeedFile(ih string) error {
 	tm.localSeedLock.Lock()
 	defer tm.localSeedLock.Unlock()
 	if _, ok := tm.localSeedFiles[ih]; !ok {
-		return false
+		return errors.New(fmt.Sprintf("Not Local Seeding File<%s>", ih))
 	} else if _, ok := GoodFiles[ih]; ok {
-		return false
+		return errors.New(fmt.Sprintf("Cannot Pause On-Chain GoodFile<%s>", ih))
 	}
 
 	if t := tm.getTorrent(ih); t != nil {
@@ -148,7 +148,7 @@ func (tm *TorrentManager) pauseLocalSeedFile(ih string) bool {
 	}
 	//delete(tm.localSeedFiles, ih)
 
-	return true
+	return nil
 }
 
 // divide localSeed/on-chain Files
