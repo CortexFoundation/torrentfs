@@ -399,8 +399,8 @@ func (fs *TorrentFS) SeedingLocal(ctx context.Context, filePath string, isLinkMo
 	// 4. copy or link, will not cover if dst exist!
 	ih := common.Address(mi.HashInfoBytes())
 	log.Info("Local file Seeding", "ih", ih.Hex(), "path", dataPath)
-	linkDst := strings.TrimPrefix(strings.ToLower(ih.Hex()), common.Prefix)
-	linkDst = filepath.Join(fs.storage().TmpDataDir, linkDst)
+	ihHexLower := strings.TrimPrefix(strings.ToLower(ih.Hex()), common.Prefix)
+	linkDst := filepath.Join(fs.storage().TmpDataDir, ihHexLower)
 	if !isLinkMode {
 		err = Copy.Copy(filePath, linkDst)
 	} else {
@@ -425,11 +425,11 @@ func (fs *TorrentFS) SeedingLocal(ctx context.Context, filePath string, isLinkMo
 		log.Debug("SeedingLocal", "dest", linkDst, "err", err)
 		err = fs.storage().Search(context.Background(), ih.Hex(), 0, nil)
 		if err == nil {
-			fs.storage().addLocalSeedFile(ih.Hex())
+			fs.storage().addLocalSeedFile(ihHexLower)
 		}
 	}
 
-	infoHash = ih.Hex()
+	infoHash = ihHexLower //ih.Hex
 	return
 }
 
@@ -439,7 +439,7 @@ func (fs *TorrentFS) PauseLocalSeed(ctx context.Context, ih string) (err error) 
 }
 
 // List All Torrents Status (read-only)
-func (fs *TorrentFS) ListAllTorrents(ctx context.Context) (localFiles map[string]int, otherFiles map[string]int) {
+func (fs *TorrentFS) ListAllTorrents(ctx context.Context) map[string]map[string]int {
 	return fs.storage().listAllTorrents()
 }
 

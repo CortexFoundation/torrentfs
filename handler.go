@@ -64,6 +64,9 @@ const (
 
 	block = int64(params.PER_UPLOAD_BYTES)
 	loops = 30
+
+	torrentTypeOnChain = 0
+	torrentTypeLocal   = 1
 )
 
 var (
@@ -123,6 +126,11 @@ type TorrentManager struct {
 
 // can only call by fs.go: 'SeedingLocal()'
 func (tm *TorrentManager) addLocalSeedFile(ih string) bool {
+	if !common.IsHexAddress(ih) {
+		return false
+	}
+	ih = strings.TrimPrefix(strings.ToLower(ih), common.Prefix)
+
 	tm.localSeedLock.Lock()
 	defer tm.localSeedLock.Unlock()
 
@@ -135,40 +143,50 @@ func (tm *TorrentManager) addLocalSeedFile(ih string) bool {
 
 // only files in map:localSeedFile can be drop!
 func (tm *TorrentManager) pauseLocalSeedFile(ih string) error {
+	if !common.IsHexAddress(ih) {
+		return errors.New("invalid infohash format")
+	}
+	ih = strings.TrimPrefix(strings.ToLower(ih), common.Prefix)
+
 	tm.localSeedLock.Lock()
 	defer tm.localSeedLock.Unlock()
-	if _, ok := tm.localSeedFiles[ih]; !ok {
+	if valid, ok := tm.localSeedFiles[ih]; !ok {
 		return errors.New(fmt.Sprintf("Not Local Seeding File<%s>", ih))
 	} else if _, ok := GoodFiles[ih]; ok {
 		return errors.New(fmt.Sprintf("Cannot Pause On-Chain GoodFile<%s>", ih))
+	} else if !valid {
+		return errors.New(fmt.Sprintf("Local Seeding File Is InValid<%s>", ih))
 	}
 
 	if t := tm.getTorrent(ih); t != nil {
 		t.Pause()
 	}
 	//delete(tm.localSeedFiles, ih)
+	tm.localSeedFiles[ih] = false
 
 	return nil
 }
 
 // divide localSeed/on-chain Files
 // return status of torrents
-func (tm *TorrentManager) listAllTorrents() (localFiles map[string]int, otherFiles map[string]int) {
+func (tm *TorrentManager) listAllTorrents() map[string]map[string]int {
 	tm.lock.RLock()
 	tm.localSeedLock.RLock()
 	defer tm.lock.RUnlock()
 	defer tm.localSeedLock.RUnlock()
 
-	localFiles = make(map[string]int)
-	otherFiles = make(map[string]int)
+	tts := make(map[string]map[string]int)
 	for ih, tt := range tm.torrents {
+		tType := torrentTypeOnChain
 		if _, ok := tm.localSeedFiles[ih]; ok {
-			localFiles[ih] = tt.status
-		} else {
-			otherFiles[ih] = tt.status
+			tType = torrentTypeLocal
+		}
+		tts[ih] = map[string]int{
+			"status": tt.status,
+			"type":   tType,
 		}
 	}
-	return
+	return tts
 }
 
 func (tm *TorrentManager) getLimitation(value int64) int64 {
@@ -558,6 +576,7 @@ func NewTorrentManager(config *Config, fsid uint64, cache, compress bool) (*Torr
 		boost:               config.Boost,
 		id:                  fsid,
 		slot:                int(fsid % bucket),
+		localSeedFiles:      make(map[string]bool),
 	}
 
 	if cache {
