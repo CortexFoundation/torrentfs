@@ -141,7 +141,7 @@ func (tm *TorrentManager) addLocalSeedFile(ih string) bool {
 	return true
 }
 
-// only files in map:localSeedFile can be drop!
+// only files in map:localSeedFile can be paused!
 func (tm *TorrentManager) pauseLocalSeedFile(ih string) error {
 	if !common.IsHexAddress(ih) {
 		return errors.New("invalid infohash format")
@@ -155,14 +155,40 @@ func (tm *TorrentManager) pauseLocalSeedFile(ih string) error {
 	} else if _, ok := GoodFiles[ih]; ok {
 		return errors.New(fmt.Sprintf("Cannot Pause On-Chain GoodFile<%s>", ih))
 	} else if !valid {
-		return errors.New(fmt.Sprintf("Local Seeding File Is InValid<%s>", ih))
+		return errors.New(fmt.Sprintf("Local Seeding File Is Not Seeding<%s>", ih))
 	}
 
 	if t := tm.getTorrent(ih); t != nil {
+		log.Debug("TorrentFS", "from seed to pause", "ok")
 		t.Pause()
 	}
-	//delete(tm.localSeedFiles, ih)
 	tm.localSeedFiles[ih] = false
+
+	return nil
+}
+
+// only files in map:localSeedFile can be resumed!
+func (tm *TorrentManager) resumeLocalSeedFile(ih string) error {
+	if !common.IsHexAddress(ih) {
+		return errors.New("invalid infohash format")
+	}
+	ih = strings.TrimPrefix(strings.ToLower(ih), common.Prefix)
+
+	tm.localSeedLock.Lock()
+	defer tm.localSeedLock.Unlock()
+	if valid, ok := tm.localSeedFiles[ih]; !ok {
+		return errors.New(fmt.Sprintf("Not Local Seeding File<%s>", ih))
+	} else if _, ok := GoodFiles[ih]; ok {
+		return errors.New(fmt.Sprintf("Cannot Operate On-Chain GoodFile<%s>", ih))
+	} else if valid {
+		return errors.New(fmt.Sprintf("Local Seeding File Is Already Seeding<%s>", ih))
+	}
+
+	if t := tm.getTorrent(ih); t != nil {
+		resumeFlag := t.Seed()
+		log.Debug("TorrentFS", "from pause to seed", resumeFlag)
+		tm.localSeedFiles[ih] = resumeFlag
+	}
 
 	return nil
 }

@@ -438,6 +438,11 @@ func (fs *TorrentFS) PauseLocalSeed(ctx context.Context, ih string) (err error) 
 	return fs.storage().pauseLocalSeedFile(ih)
 }
 
+// ResumeSeeding Local File
+func (fs *TorrentFS) ResumeLocalSeed(ctx context.Context, ih string) (err error) {
+	return fs.storage().resumeLocalSeedFile(ih)
+}
+
 // List All Torrents Status (read-only)
 func (fs *TorrentFS) ListAllTorrents(ctx context.Context) map[string]map[string]int {
 	return fs.storage().listAllTorrents()
