@@ -131,12 +131,12 @@ func (tm *TorrentManager) addLocalSeedFile(ih string) bool {
 	}
 	ih = strings.TrimPrefix(strings.ToLower(ih), common.Prefix)
 
-	tm.localSeedLock.Lock()
-	defer tm.localSeedLock.Unlock()
-
 	if _, ok := GoodFiles[ih]; ok {
 		return false
 	}
+
+	tm.localSeedLock.Lock()
+	defer tm.localSeedLock.Unlock()
 	tm.localSeedFiles[ih] = true
 	return true
 }
@@ -161,8 +161,8 @@ func (tm *TorrentManager) pauseLocalSeedFile(ih string) error {
 	if t := tm.getTorrent(ih); t != nil {
 		log.Debug("TorrentFS", "from seed to pause", "ok")
 		t.Pause()
+		tm.localSeedFiles[ih] = !t.Paused()
 	}
-	tm.localSeedFiles[ih] = false
 
 	return nil
 }
