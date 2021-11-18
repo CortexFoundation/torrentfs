@@ -3,11 +3,11 @@ module github.com/CortexFoundation/torrentfs
 go 1.17
 
 require (
-	bazil.org/fuse v0.0.0-20200524192727-fb710f7dfd05
 	github.com/CortexFoundation/CortexTheseus v1.10.28-0.20211020062553-47875a4cb444
 	github.com/CortexFoundation/merkletree v0.0.0-20210226031755-94f6423532ee
-	github.com/allegro/bigcache/v3 v3.0.1
+	github.com/allegro/bigcache/v3 v3.0.2-0.20211118104225-16df11e2ee38
 	github.com/anacrolix/envpprof v1.1.2-0.20210622065137-4accee5b7ac4
+	github.com/anacrolix/fuse v0.2.0
 	github.com/anacrolix/log v0.10.0
 	github.com/anacrolix/missinggo/v2 v2.5.2
 	github.com/anacrolix/tagflag v1.3.1-0.20210717093243-41ae76143afa
@@ -35,7 +35,6 @@ require (
 	github.com/anacrolix/chansync v0.3.0 // indirect
 	github.com/anacrolix/confluence v1.9.0 // indirect
 	github.com/anacrolix/dht/v2 v2.13.0 // indirect
-	github.com/anacrolix/fuse v0.2.0 // indirect
 	github.com/anacrolix/go-libutp v1.0.5-0.20211117031120-2dac1c67ecc5 // indirect
 	github.com/anacrolix/missinggo v1.3.0 // indirect
 	github.com/anacrolix/missinggo/perf v1.0.0 // indirect
