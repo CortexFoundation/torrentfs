@@ -13,9 +13,9 @@ import (
 	"syscall"
 	"time"
 
-	"bazil.org/fuse"
-	fusefs "bazil.org/fuse/fs"
 	_ "github.com/anacrolix/envpprof"
+	"github.com/anacrolix/fuse"
+	fusefs "github.com/anacrolix/fuse/fs"
 	"github.com/anacrolix/tagflag"
 
 	"github.com/anacrolix/torrent"
