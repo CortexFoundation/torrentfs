@@ -281,6 +281,7 @@ func (tfs *TorrentFS) Stop() error {
 // Available is used to check the file status
 func (fs *TorrentFS) available(ctx context.Context, infohash string, rawSize uint64) (bool, error) {
 	ret, f, cost, err := fs.storage().available(infohash, rawSize)
+
 	if fs.config.Mode == LAZY {
 		if errors.Is(err, ErrInactiveTorrent) {
 			if progress, e := fs.chain().GetTorrent(infohash); e == nil {
@@ -311,7 +312,7 @@ func (fs *TorrentFS) available(ctx context.Context, infohash string, rawSize uin
 }
 
 func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSize uint64, subpath string) ([]byte, error) {
-	if available, err := fs.available(ctx, infohash, rawSize); err != nil || !available {
+	if ok, err := fs.available(ctx, infohash, rawSize); err != nil || !ok {
 		return nil, err
 	}
 
@@ -364,7 +365,7 @@ func (fs *TorrentFS) SeedingLocal(ctx context.Context, filePath string, isLinkMo
 		validFlag := iterateForValidFile(filePath, dataInfo)
 		if !validFlag {
 			err = errors.New("SeedingLocal: Empty Seeding Data!")
-			log.Error("SeedingLocal", "check", err.Error())
+			log.Error("SeedingLocal", "check", err.Error(), "path", dataPath)
 			return
 		}
 	}
@@ -428,12 +429,12 @@ func (fs *TorrentFS) SeedingLocal(ctx context.Context, filePath string, isLinkMo
 }
 
 // PauseSeeding Local File
-func (fs *TorrentFS) PauseLocalSeed(ctx context.Context, ih string) (err error) {
+func (fs *TorrentFS) PauseLocalSeed(ctx context.Context, ih string) error {
 	return fs.storage().pauseLocalSeedFile(ih)
 }
 
 // ResumeSeeding Local File
-func (fs *TorrentFS) ResumeLocalSeed(ctx context.Context, ih string) (err error) {
+func (fs *TorrentFS) ResumeLocalSeed(ctx context.Context, ih string) error {
 	return fs.storage().resumeLocalSeedFile(ih)
 }
 
