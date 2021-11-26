@@ -11,7 +11,7 @@ require (
 	github.com/anacrolix/log v0.10.0
 	github.com/anacrolix/missinggo/v2 v2.5.2
 	github.com/anacrolix/tagflag v1.3.1-0.20210717093243-41ae76143afa
-	github.com/anacrolix/torrent v1.38.1-0.20211119020242-8e5ae65837e3
+	github.com/anacrolix/torrent v1.38.1-0.20211122071047-8555ab7f2142
 	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8
 	github.com/davecgh/go-spew v1.1.1
 	github.com/dustin/go-humanize v1.0.0
@@ -29,7 +29,6 @@ require (
 )
 
 require (
-	crawshaw.io/sqlite v0.3.3-0.20210127221821-98b1f83c5508 // indirect
 	github.com/RoaringBitmap/roaring v0.9.4 // indirect
 	github.com/StackExchange/wmi v0.0.0-20190523213315-cbe66965904d // indirect
 	github.com/anacrolix/chansync v0.3.0 // indirect
@@ -56,6 +55,7 @@ require (
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/huin/goupnp v1.0.2 // indirect
 	github.com/jackpal/go-nat-pmp v1.0.2 // indirect
+	github.com/mattn/go-isatty v0.0.13-0.20200128103942-cb30d6282491 // indirect
 	github.com/mschoch/smat v0.2.0 // indirect
 	github.com/pion/datachannel v1.4.21 // indirect
 	github.com/pion/dtls/v2 v2.0.9 // indirect
@@ -75,6 +75,7 @@ require (
 	github.com/pion/udp v0.1.1 // indirect
 	github.com/pion/webrtc/v3 v3.0.32 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/remyoudompheng/bigfft v0.0.0-20200410134404-eec4a21b6bb0 // indirect
 	github.com/rs/dnscache v0.0.0-20210201191234-295bba877686 // indirect
 	github.com/ryszard/goskiplist v0.0.0-20150312221310-2dfbae5fcf46 // indirect
 	github.com/shirou/gopsutil v3.21.4-0.20210419000835-c7a38de76ee5+incompatible // indirect
@@ -86,4 +87,9 @@ require (
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
 	golang.org/x/sys v0.0.0-20211023085530-d6a326fbbf70 // indirect
 	gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce // indirect
+	modernc.org/libc v1.11.3 // indirect
+	modernc.org/mathutil v1.4.1 // indirect
+	modernc.org/memory v1.0.5 // indirect
+	modernc.org/sqlite v1.13.0 // indirect
+	zombiezen.com/go/sqlite v0.8.0 // indirect
 )
