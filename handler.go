@@ -747,6 +747,7 @@ func (tm *TorrentManager) mainLoop() {
 
 			bytes := int64(meta.BytesRequested)
 			if bytes == 0 {
+				//preloading
 				bytes = block
 			}
 
