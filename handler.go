@@ -726,6 +726,10 @@ func (tm *TorrentManager) init() {
 	log.Debug("Chain files OK !!!")
 }
 
+func (tm *TorrentManager) Simulate() {
+	tm.simulate = true
+}
+
 //Search and donwload files from torrent
 func (tm *TorrentManager) Search(ctx context.Context, hex string, request uint64, ch chan bool) error {
 	if !common.IsHexAddress(hex) {
