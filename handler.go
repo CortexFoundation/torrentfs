@@ -122,6 +122,9 @@ type TorrentManager struct {
 	// For manage torrents Seeding by SeedingLocal(), true/false means seeding/pause
 	localSeedLock  sync.RWMutex
 	localSeedFiles map[string]bool
+
+	initCh   chan struct{}
+	simulate bool
 }
 
 // can only call by fs.go: 'SeedingLocal()'
@@ -588,6 +591,8 @@ func NewTorrentManager(config *Config, fsid uint64, cache, compress bool) (*Torr
 		TmpDataDir:          tmpFilePath,
 		boostFetcher:        NewBoostDataFetcher(config.BoostNodes),
 		closeAll:            make(chan struct{}),
+		initCh:              make(chan struct{}),
+		simulate:            false,
 		taskChan:            make(chan interface{}, taskChanBuffer),
 		seedingChan:         make(chan *Torrent, torrentChanSize),
 		activeChan:          make(chan *Torrent, torrentChanSize),
@@ -652,6 +657,10 @@ func (tm *TorrentManager) Start() error {
 	return nil
 }
 
+func (tm *TorrentManager) prepare() bool {
+	return true
+}
+
 func (tm *TorrentManager) seedingLoop() {
 	defer tm.wg.Done()
 	for {
@@ -666,6 +675,12 @@ func (tm *TorrentManager) seedingLoop() {
 					t.ch <- s
 				}()
 			}
+
+			if len(tm.seedingTorrents) == len(GoodFiles) && !tm.simulate {
+				//TODO sync initialize
+				close(tm.initCh)
+			}
+
 			if s {
 				//if active, ok := GoodFiles[t.InfoHash()]; tm.cache && ok && active {
 				//	for _, file := range t.Files() {
@@ -689,7 +704,6 @@ func (tm *TorrentManager) seedingLoop() {
 }
 
 func (tm *TorrentManager) init() {
-	//if tm.cache {
 	log.Debug("Chain files init", "files", len(GoodFiles))
 
 	for k, ok := range GoodFiles {
@@ -698,8 +712,22 @@ func (tm *TorrentManager) init() {
 		}
 	}
 
+	if !tm.simulate {
+		//TODO sync initialize
+		select {
+		case <-tm.initCh:
+			log.Info("Chain files sync init OK !!!", "seeding", len(tm.seedingTorrents), "pending", len(tm.pendingTorrents), "active", len(tm.activeTorrents), "good", len(GoodFiles))
+		case <-tm.closeAll:
+			log.Info("Init files closed")
+			return
+		}
+	}
+
 	log.Debug("Chain files OK !!!")
-	//}
+}
+
+func (tm *TorrentManager) Simulate() {
+	tm.simulate = true
 }
 
 //Search and donwload files from torrent
@@ -789,7 +817,7 @@ func (tm *TorrentManager) pendingLoop() {
 				}
 				t.loop++
 				if tm.boost {
-					//todo
+					//TODO
 				}
 				if t.Torrent.Info() != nil {
 					if t.start == 0 {
