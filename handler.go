@@ -652,6 +652,10 @@ func (tm *TorrentManager) Start() error {
 	return nil
 }
 
+func (tm *TorrentManager) prepare() bool {
+	return true
+}
+
 func (tm *TorrentManager) seedingLoop() {
 	defer tm.wg.Done()
 	for {
@@ -666,6 +670,9 @@ func (tm *TorrentManager) seedingLoop() {
 					t.ch <- s
 				}()
 			}
+			if len(tm.seedingTorrents) >= len(GoodFiles) {
+			}
+
 			if s {
 				//if active, ok := GoodFiles[t.InfoHash()]; tm.cache && ok && active {
 				//	for _, file := range t.Files() {
@@ -697,6 +704,9 @@ func (tm *TorrentManager) init() {
 			tm.Search(context.Background(), k, 0, nil)
 		}
 	}
+
+	//TODO
+
 
 	log.Debug("Chain files OK !!!")
 	//}
