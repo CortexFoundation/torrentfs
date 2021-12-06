@@ -260,6 +260,7 @@ func (tfs *TorrentFS) Start(server *p2p.Server) (err error) {
 	if err != nil {
 		return
 	}
+	//TODO
 	return
 }
 

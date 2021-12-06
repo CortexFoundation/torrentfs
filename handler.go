@@ -122,6 +122,8 @@ type TorrentManager struct {
 	// For manage torrents Seeding by SeedingLocal(), true/false means seeding/pause
 	localSeedLock  sync.RWMutex
 	localSeedFiles map[string]bool
+
+	initCh chan struct{}
 }
 
 // can only call by fs.go: 'SeedingLocal()'
@@ -588,6 +590,7 @@ func NewTorrentManager(config *Config, fsid uint64, cache, compress bool) (*Torr
 		TmpDataDir:          tmpFilePath,
 		boostFetcher:        NewBoostDataFetcher(config.BoostNodes),
 		closeAll:            make(chan struct{}),
+		initCh:              make(chan struct{}),
 		taskChan:            make(chan interface{}, taskChanBuffer),
 		seedingChan:         make(chan *Torrent, torrentChanSize),
 		activeChan:          make(chan *Torrent, torrentChanSize),
@@ -670,7 +673,10 @@ func (tm *TorrentManager) seedingLoop() {
 					t.ch <- s
 				}()
 			}
-			if len(tm.seedingTorrents) >= len(GoodFiles) {
+
+			if len(tm.seedingTorrents) == len(GoodFiles) {
+				//TODO sync initialize
+				close(tm.initCh)
 			}
 
 			if s {
@@ -696,7 +702,6 @@ func (tm *TorrentManager) seedingLoop() {
 }
 
 func (tm *TorrentManager) init() {
-	//if tm.cache {
 	log.Debug("Chain files init", "files", len(GoodFiles))
 
 	for k, ok := range GoodFiles {
@@ -705,11 +710,16 @@ func (tm *TorrentManager) init() {
 		}
 	}
 
-	//TODO
-
+	//TODO sync initialize
+	select {
+	case <-tm.initCh:
+		log.Info("Chain files sync init OK !!!")
+	case <-tm.closeAll:
+		log.Info("Init files closed")
+		return
+	}
 
 	log.Debug("Chain files OK !!!")
-	//}
 }
 
 //Search and donwload files from torrent
@@ -799,7 +809,7 @@ func (tm *TorrentManager) pendingLoop() {
 				}
 				t.loop++
 				if tm.boost {
-					//todo
+					//TODO
 				}
 				if t.Torrent.Info() != nil {
 					if t.start == 0 {
