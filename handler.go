@@ -713,7 +713,7 @@ func (tm *TorrentManager) init() {
 	//TODO sync initialize
 	select {
 	case <-tm.initCh:
-		log.Info("Chain files sync init OK !!!", "seeding", len(tm.seedingTorrents), "pending", len(tm.pendingTorrents), "active", len(tm.activeTorrents))
+		log.Info("Chain files sync init OK !!!", "seeding", len(tm.seedingTorrents), "pending", len(tm.pendingTorrents), "active", len(tm.activeTorrents), "good", len(GoodFiles))
 	case <-tm.closeAll:
 		log.Info("Init files closed")
 		return
