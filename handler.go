@@ -710,7 +710,7 @@ func (tm *TorrentManager) init() {
 	for k, ok := range GoodFiles {
 		//if tm.mode != LAZY || ok {
 		if ok {
-			if err := tm.Search(context.Background(), k, 0, nil); err != nil {
+			if err := tm.Search(context.Background(), k, 0, nil); err == nil {
 				tm.good++
 			}
 		}
