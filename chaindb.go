@@ -749,6 +749,8 @@ func (fs *ChainDB) SetTorrent(ih string, size uint64) (bool, uint64, error) {
 
 	fs.torrents[ih] = size
 
+	log.Info("Torrent status has been changed", "ih", ih, "size", size, "count", len(fs.torrents))
+
 	return true, size, nil
 }
 
