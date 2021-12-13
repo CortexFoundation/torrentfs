@@ -11,7 +11,7 @@ require (
 	github.com/anacrolix/log v0.10.0
 	github.com/anacrolix/missinggo/v2 v2.5.2
 	github.com/anacrolix/tagflag v1.3.1-0.20210717093243-41ae76143afa
-	github.com/anacrolix/torrent v1.38.1-0.20211207020806-7197c5f49339
+	github.com/anacrolix/torrent v1.39.2-0.20211213011643-8c129d6bfce9
 	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8
 	github.com/davecgh/go-spew v1.1.1
 	github.com/dustin/go-humanize v1.0.0
@@ -33,8 +33,8 @@ require (
 	github.com/StackExchange/wmi v0.0.0-20190523213315-cbe66965904d // indirect
 	github.com/anacrolix/chansync v0.3.0 // indirect
 	github.com/anacrolix/confluence v1.9.0 // indirect
-	github.com/anacrolix/dht/v2 v2.13.0 // indirect
-	github.com/anacrolix/go-libutp v1.0.5-0.20211117031120-2dac1c67ecc5 // indirect
+	github.com/anacrolix/dht/v2 v2.13.1-0.20211209181115-6ae2bd446b12 // indirect
+	github.com/anacrolix/go-libutp v1.1.0 // indirect
 	github.com/anacrolix/missinggo v1.3.0 // indirect
 	github.com/anacrolix/missinggo/perf v1.0.0 // indirect
 	github.com/anacrolix/mmsg v1.0.0 // indirect
@@ -46,7 +46,6 @@ require (
 	github.com/benbjohnson/immutable v0.3.0 // indirect
 	github.com/bits-and-blooms/bitset v1.2.0 // indirect
 	github.com/btcsuite/btcd v0.20.1-beta // indirect
-	github.com/elliotchance/orderedmap v1.4.0 // indirect
 	github.com/go-ole/go-ole v1.2.4 // indirect
 	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/google/btree v1.0.1 // indirect
@@ -76,7 +75,6 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20200410134404-eec4a21b6bb0 // indirect
 	github.com/rs/dnscache v0.0.0-20210201191234-295bba877686 // indirect
-	github.com/ryszard/goskiplist v0.0.0-20150312221310-2dfbae5fcf46 // indirect
 	github.com/shirou/gopsutil v3.21.4-0.20210419000835-c7a38de76ee5+incompatible // indirect
 	github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7 // indirect
 	github.com/tklauser/go-sysconf v0.3.5 // indirect
