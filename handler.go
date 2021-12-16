@@ -735,7 +735,9 @@ func (tm *TorrentManager) init() error {
 }
 
 func (tm *TorrentManager) Simulate() {
-	tm.simulate = true
+	if !tm.simulate {
+		tm.simulate = true
+	}
 }
 
 //Search and donwload files from torrent
