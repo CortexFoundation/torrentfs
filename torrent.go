@@ -129,9 +129,9 @@ func (t *Torrent) Ready() bool {
 		return false
 	}
 
-	t.lock.Lock()
-	t.cited += 1
-	t.lock.Unlock()
+	//t.lock.Lock()
+	//t.cited += 1
+	//t.lock.Unlock()
 
 	ret := t.IsSeeding()
 	if !ret {
