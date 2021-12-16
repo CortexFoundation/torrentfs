@@ -20,6 +20,7 @@ import (
 	"bytes"
 	"os"
 	"path/filepath"
+	"sync"
 	"time"
 
 	"github.com/CortexFoundation/CortexTheseus/common"
@@ -50,6 +51,8 @@ type Torrent struct {
 	fast                bool
 	start               mclock.AbsTime
 	ch                  chan bool
+
+	lock sync.RWMutex
 }
 
 func (t *Torrent) BytesLeft() int64 {
@@ -64,6 +67,7 @@ func (t *Torrent) InfoHash() string {
 }
 
 func (t *Torrent) ReloadFile(files []string, datas [][]byte, tm *TorrentManager) {
+
 	if len(files) > 1 {
 		err := os.MkdirAll(filepath.Dir(filepath.Join(t.filepath, "data")), 0600) //os.ModePerm)
 		if err != nil {
@@ -95,6 +99,7 @@ func (t *Torrent) ReloadFile(files []string, datas [][]byte, tm *TorrentManager)
 }
 
 func (t *Torrent) ReloadTorrent(data []byte, tm *TorrentManager) error {
+
 	//err := os.Remove(filepath.Join(t.filepath, ".torrent.bolt.db"))
 	//if err != nil {
 	//	log.Warn("Remove path failed", "path", filepath.Join(t.filepath, ".torrent.bolt.db"), "err", err)
@@ -159,6 +164,9 @@ func (t *Torrent) BoostOff() {
 }
 
 func (t *Torrent) Seed() bool {
+	//t.lock.Lock()
+	//defer t.lock.Unlock()
+
 	if t.Torrent.Info() == nil {
 		log.Debug("Torrent info is nil", "ih", t.InfoHash())
 		return false
@@ -168,7 +176,7 @@ func (t *Torrent) Seed() bool {
 		return true
 	}
 	if t.currentConns <= t.minEstablishedConns {
-		t.currentConns = t.maxEstablishedConns
+		t.setCurrentConns(t.maxEstablishedConns)
 		t.Torrent.SetMaxEstablishedConns(t.currentConns)
 	}
 	if t.Torrent.Seeding() {
@@ -190,8 +198,9 @@ func (t *Torrent) IsSeeding() bool {
 }
 
 func (t *Torrent) Pause() {
+
 	if t.currentConns > t.minEstablishedConns {
-		t.currentConns = t.minEstablishedConns
+		t.setCurrentConns(t.minEstablishedConns)
 		t.Torrent.SetMaxEstablishedConns(t.minEstablishedConns)
 	}
 	if t.status != torrentPaused {
@@ -217,12 +226,12 @@ func (t *Torrent) Run(slot int) {
 
 	if t.fast {
 		if t.currentConns <= t.minEstablishedConns {
-			t.currentConns = t.maxEstablishedConns
+			t.setCurrentConns(t.maxEstablishedConns)
 			t.Torrent.SetMaxEstablishedConns(t.currentConns)
 		}
 	} else {
 		if t.currentConns > t.minEstablishedConns {
-			t.currentConns = t.minEstablishedConns
+			t.setCurrentConns(t.minEstablishedConns)
 			t.Torrent.SetMaxEstablishedConns(t.currentConns)
 		}
 	}
@@ -267,4 +276,11 @@ func (t *Torrent) Finished() bool {
 
 func (t *Torrent) Pending() bool {
 	return t.status == torrentPending
+}
+
+func (t *Torrent) setCurrentConns(c int) {
+	t.lock.Lock()
+	defer t.lock.Unlock()
+
+	t.currentConns = c
 }
