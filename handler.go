@@ -857,7 +857,7 @@ func (tm *TorrentManager) pendingLoop() {
 						t.AddTrackers(tm.trackers)
 						t.start = mclock.Now()
 					}
-
+					t.lock.Lock()
 					if err := t.WriteTorrent(); err == nil {
 						if len(tm.activeChan) < cap(tm.activeChan) {
 							delete(tm.pendingTorrents, ih)
@@ -865,6 +865,7 @@ func (tm *TorrentManager) pendingLoop() {
 							tm.activeChan <- t
 						}
 					}
+					t.lock.Unlock()
 					/*} else if tm.boost && (t.loop > torrentWaitingTime/queryTimeInterval || (t.start == 0 && t.bytesRequested > 0)) {
 					if !t.isBoosting {
 						log.Info("Boost download seed", "ih", ih)

@@ -286,8 +286,8 @@ func (t *Torrent) Pending() bool {
 }
 
 func (t *Torrent) setCurrentConns(c int) {
-	t.lock.Lock()
-	defer t.lock.Unlock()
+	//t.lock.Lock()
+	//defer t.lock.Unlock()
 
 	t.currentConns = c
 }
