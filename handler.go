@@ -652,10 +652,8 @@ func (tm *TorrentManager) Start() error {
 	tm.wg.Add(1)
 	go tm.mainLoop()
 	//if tm.mode != LAZY {
-	tm.init()
+	return tm.init()
 	//}
-
-	return nil
 }
 
 func (tm *TorrentManager) prepare() bool {
@@ -704,7 +702,7 @@ func (tm *TorrentManager) seedingLoop() {
 	}
 }
 
-func (tm *TorrentManager) init() {
+func (tm *TorrentManager) init() error {
 	log.Debug("Chain files init", "files", len(GoodFiles))
 
 	if tm.mode == LAZY {
@@ -715,6 +713,9 @@ func (tm *TorrentManager) init() {
 		if ok {
 			if err := tm.Search(context.Background(), k, 0, nil); err == nil {
 				tm.good++
+			} else {
+				log.Info("Fs init failed", "err", err)
+				return err
 			}
 		}
 	}
@@ -723,14 +724,14 @@ func (tm *TorrentManager) init() {
 		//TODO sync initialize
 		select {
 		case <-tm.initCh:
-			log.Info("Chain files sync init OK !!!", "seeding", len(tm.seedingTorrents), "pending", len(tm.pendingTorrents), "active", len(tm.activeTorrents), "good", len(GoodFiles))
+			log.Info("Chain files sync init OK !!!", "seeding", len(tm.seedingTorrents), "pending", len(tm.pendingTorrents), "active", len(tm.activeTorrents), "good", len(GoodFiles), "active", tm.good)
 		case <-tm.closeAll:
 			log.Info("Init files closed")
-			return
 		}
 	}
 
 	log.Debug("Chain files OK !!!")
+	return nil
 }
 
 func (tm *TorrentManager) Simulate() {
