@@ -128,7 +128,11 @@ func (t *Torrent) Ready() bool {
 	if _, ok := BadFiles[t.InfoHash()]; ok {
 		return false
 	}
+
+	t.lock.Lock()
 	t.cited += 1
+	t.lock.Unlock()
+
 	ret := t.IsSeeding()
 	if !ret {
 		log.Debug("Not ready", "ih", t.InfoHash(), "status", t.status, "seed", t.Torrent.Seeding(), "seeding", torrentSeeding)
@@ -180,7 +184,10 @@ func (t *Torrent) Seed() bool {
 		t.Torrent.SetMaxEstablishedConns(t.currentConns)
 	}
 	if t.Torrent.Seeding() {
+		t.lock.Lock()
 		t.status = torrentSeeding
+		t.lock.Unlock()
+
 		elapsed := time.Duration(mclock.Now()) - time.Duration(t.start)
 		if active, ok := GoodFiles[t.InfoHash()]; !ok {
 			log.Info("New active nas found", "ih", t.InfoHash(), "ok", ok, "active", active, "size", common.StorageSize(t.BytesCompleted()), "files", len(t.Files()), "pieces", t.Torrent.NumPieces(), "seg", len(t.Torrent.PieceStateRuns()), "cited", t.cited, "peers", t.currentConns, "status", t.status, "elapsed", common.PrettyDuration(elapsed))
