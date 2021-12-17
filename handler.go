@@ -769,10 +769,10 @@ func (tm *TorrentManager) Search(ctx context.Context, hex string, request uint64
 		return nil
 	}
 
-	 if request == 0x7fffffffffffffff {
-                //TODO 0x7fffffffffffffff local downloading file as good & inactive
-                GoodFiles[hex] = false
-        }
+	if request == 0x7fffffffffffffff {
+		// TODO 0x7fffffffffffffff local downloading file
+		// GoodFiles[hex] = false
+	}
 
 	//if tm.mode == FULL {
 	//if request == 0 {
