@@ -763,17 +763,16 @@ func (tm *TorrentManager) Search(ctx context.Context, hex string, request uint64
 		return errors.New("invalid infohash format")
 	}
 
-	if request < 0 {
-		return errors.New("request can't be negative")
-	}
-
 	hex = strings.TrimPrefix(strings.ToLower(hex), common.Prefix)
-	//if _, ok := BadFiles[hex]; ok {
-	//	return nil
-	//}
+
 	if IsBad(hex) {
 		return nil
 	}
+
+	 if request == 0x7fffffffffffffff {
+                //TODO 0x7fffffffffffffff local downloading file as good & inactive
+                GoodFiles[hex] = false
+        }
 
 	//if tm.mode == FULL {
 	//if request == 0 {
