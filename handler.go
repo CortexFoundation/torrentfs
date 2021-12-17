@@ -736,7 +736,6 @@ func (tm *TorrentManager) init() error {
 	}
 
 	if !tm.simulate {
-		//TODO sync initialize
 		select {
 		case <-tm.initCh:
 			log.Info("Chain files sync init OK !!!", "seeding", len(tm.seedingTorrents), "pending", len(tm.pendingTorrents), "active", len(tm.activeTorrents), "good", len(GoodFiles), "active", tm.good)
@@ -750,6 +749,9 @@ func (tm *TorrentManager) init() error {
 }
 
 func (tm *TorrentManager) Simulate() {
+	tm.lock.Lock()
+	defer tm.lock.Unlock()
+
 	if !tm.simulate {
 		tm.simulate = true
 	}
