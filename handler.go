@@ -867,42 +867,42 @@ func (tm *TorrentManager) pendingLoop() {
 					}
 					t.lock.Unlock()
 					/*} else if tm.boost && (t.loop > torrentWaitingTime/queryTimeInterval || (t.start == 0 && t.bytesRequested > 0)) {
-					if !t.isBoosting {
-						log.Info("Boost download seed", "ih", ih)
-						t.loop = 0
-						t.isBoosting = true
-						if data, err := tm.boostFetcher.FetchTorrent(ih.String()); err == nil {
-							if t.Torrent.Info() != nil {
+						if !t.isBoosting {
+							log.Info("Boost download seed", "ih", ih)
+							t.loop = 0
+							t.isBoosting = true
+							if data, err := tm.boostFetcher.FetchTorrent(ih.String()); err == nil {
+								if t.Torrent.Info() != nil {
+									t.BoostOff()
+									continue
+								}
+								if err := t.ReloadTorrent(data, tm); err == nil {
+									tm.setTorrent(ih, t)
+								} else {
+									t.BoostOff()
+								}
+
+							} else {
+								log.Debug("Boost failed", "ih", ih.String(), "err", err)
+								if t.start == 0 && (t.bytesRequested > 0 || tm.mode == FULL || t.loop > 600) { //|| len(tm.pendingTorrents) == 1) {
+									t.AddTrackers(tm.trackers)
+									t.start = mclock.Now()
+								}
 								t.BoostOff()
+							}
+						}
+					} else if tm.boost && (t.loop > 60 || (t.start == 0 && t.bytesRequested > 0)) {
+						log.Trace("Boost seed", "ih", ih, "loop", t.loop, "request", t.bytesRequested, "start", t.start)
+						t.loop = 0
+						t.start = mclock.Now()
+						if data, err := tm.boostFetcher.FetchTorrent(ih); err == nil {
+							if t.Torrent.Info() != nil {
 								continue
 							}
 							if err := t.ReloadTorrent(data, tm); err == nil {
 								tm.setTorrent(ih, t)
-							} else {
-								t.BoostOff()
 							}
-
-						} else {
-							log.Debug("Boost failed", "ih", ih.String(), "err", err)
-							if t.start == 0 && (t.bytesRequested > 0 || tm.mode == FULL || t.loop > 600) { //|| len(tm.pendingTorrents) == 1) {
-								t.AddTrackers(tm.trackers)
-								t.start = mclock.Now()
-							}
-							t.BoostOff()
-						}
-					}*/
-				} else if tm.boost && (t.loop > 60 || (t.start == 0 && t.bytesRequested > 0)) {
-					log.Trace("Boost seed", "ih", ih, "loop", t.loop, "request", t.bytesRequested, "start", t.start)
-					t.loop = 0
-					t.start = mclock.Now()
-					if data, err := tm.boostFetcher.FetchTorrent(ih); err == nil {
-						if t.Torrent.Info() != nil {
-							continue
-						}
-						if err := t.ReloadTorrent(data, tm); err == nil {
-							tm.setTorrent(ih, t)
-						}
-					}
+						}*/
 				} else {
 					if _, ok := GoodFiles[t.InfoHash()]; t.start == 0 && (ok || t.bytesRequested > 0 || tm.mode == FULL || t.loop > 600) {
 						if ok {
@@ -910,6 +910,10 @@ func (tm *TorrentManager) pendingLoop() {
 						}
 						t.AddTrackers(tm.trackers)
 						t.start = mclock.Now()
+					} else {
+						if t.loop > 600 {
+							//TODO
+						}
 					}
 				}
 			}
