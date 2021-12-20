@@ -533,8 +533,8 @@ func (tm *TorrentManager) addInfoHash(ih string, BytesRequested int64, ch chan b
 }
 
 func (tm *TorrentManager) updateInfoHash(t *Torrent, BytesRequested int64) {
-	tm.lock.Lock()
-	defer tm.lock.Unlock()
+	t.lock.Lock()
+	defer t.lock.Unlock()
 	if t.bytesRequested < BytesRequested {
 		t.bytesRequested = BytesRequested
 		t.bytesLimitation = tm.getLimitation(BytesRequested)
