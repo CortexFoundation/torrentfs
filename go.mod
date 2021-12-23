@@ -11,7 +11,7 @@ require (
 	github.com/anacrolix/log v0.10.0
 	github.com/anacrolix/missinggo/v2 v2.5.2
 	github.com/anacrolix/tagflag v1.3.1-0.20210717093243-41ae76143afa
-	github.com/anacrolix/torrent v1.39.2-0.20211216050459-b6cc93c0bef0
+	github.com/anacrolix/torrent v1.39.2-0.20211223075557-89b8b7898042
 	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8
 	github.com/davecgh/go-spew v1.1.1
 	github.com/deckarep/golang-set v1.8.0
@@ -33,7 +33,7 @@ require (
 	github.com/StackExchange/wmi v0.0.0-20190523213315-cbe66965904d // indirect
 	github.com/anacrolix/chansync v0.3.0 // indirect
 	github.com/anacrolix/confluence v1.9.0 // indirect
-	github.com/anacrolix/dht/v2 v2.13.1-0.20211209181115-6ae2bd446b12 // indirect
+	github.com/anacrolix/dht/v2 v2.14.1-0.20211220010335-4062f7927abf // indirect
 	github.com/anacrolix/go-libutp v1.1.0 // indirect
 	github.com/anacrolix/missinggo v1.3.0 // indirect
 	github.com/anacrolix/missinggo/perf v1.0.0 // indirect
