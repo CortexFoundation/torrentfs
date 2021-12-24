@@ -3,7 +3,7 @@ module github.com/CortexFoundation/torrentfs
 go 1.17
 
 require (
-	github.com/CortexFoundation/CortexTheseus v1.10.28-0.20211020062553-47875a4cb444
+	github.com/CortexFoundation/CortexTheseus v1.10.30-0.20211224025015-e679796cfa29
 	github.com/CortexFoundation/merkletree v0.0.0-20210226031755-94f6423532ee
 	github.com/allegro/bigcache/v3 v3.0.2-0.20211118104225-16df11e2ee38
 	github.com/anacrolix/envpprof v1.1.2-0.20210622065137-4accee5b7ac4
@@ -11,9 +11,10 @@ require (
 	github.com/anacrolix/log v0.10.0
 	github.com/anacrolix/missinggo/v2 v2.5.2
 	github.com/anacrolix/tagflag v1.3.1-0.20210717093243-41ae76143afa
-	github.com/anacrolix/torrent v1.39.2-0.20211216050459-b6cc93c0bef0
+	github.com/anacrolix/torrent v1.39.2-0.20211223215610-fc857d455766
 	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8
 	github.com/davecgh/go-spew v1.1.1
+	github.com/deckarep/golang-set v1.8.0
 	github.com/dustin/go-humanize v1.0.0
 	github.com/edsrzf/mmap-go v1.0.0
 	github.com/fsnotify/fsnotify v1.5.1
@@ -21,7 +22,6 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/hashicorp/golang-lru v0.5.5-0.20210104140557-80c98217689d
 	github.com/otiai10/copy v1.6.0
-	github.com/ucwong/golang-set v1.8.1-0.20200419153428-d7b0b1ac2d43
 	go.etcd.io/bbolt v1.3.7-0.20210702075620-b18879eb6c41
 	golang.org/x/time v0.0.0-20210723032227-1f47c861a9ac
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1
@@ -33,7 +33,7 @@ require (
 	github.com/StackExchange/wmi v0.0.0-20190523213315-cbe66965904d // indirect
 	github.com/anacrolix/chansync v0.3.0 // indirect
 	github.com/anacrolix/confluence v1.9.0 // indirect
-	github.com/anacrolix/dht/v2 v2.13.1-0.20211209181115-6ae2bd446b12 // indirect
+	github.com/anacrolix/dht/v2 v2.14.1-0.20211220010335-4062f7927abf // indirect
 	github.com/anacrolix/go-libutp v1.1.0 // indirect
 	github.com/anacrolix/missinggo v1.3.0 // indirect
 	github.com/anacrolix/missinggo/perf v1.0.0 // indirect
