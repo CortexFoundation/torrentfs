@@ -3,7 +3,7 @@ module github.com/CortexFoundation/torrentfs
 go 1.17
 
 require (
-	github.com/CortexFoundation/CortexTheseus v1.10.28-0.20211020062553-47875a4cb444
+	github.com/CortexFoundation/CortexTheseus v1.10.30-0.20211224025015-e679796cfa29
 	github.com/CortexFoundation/merkletree v0.0.0-20210226031755-94f6423532ee
 	github.com/allegro/bigcache/v3 v3.0.2-0.20211118104225-16df11e2ee38
 	github.com/anacrolix/envpprof v1.1.2-0.20210622065137-4accee5b7ac4
@@ -79,7 +79,6 @@ require (
 	github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7 // indirect
 	github.com/tklauser/go-sysconf v0.3.5 // indirect
 	github.com/tklauser/numcpus v0.2.2 // indirect
-	github.com/ucwong/golang-set v1.8.1-0.20200419153428-d7b0b1ac2d43 // indirect
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5 // indirect
 	golang.org/x/net v0.0.0-20210813160813-60bc85c4be6d // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
