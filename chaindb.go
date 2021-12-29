@@ -607,7 +607,7 @@ func (fs *ChainDB) initID() error {
 
 func (fs *ChainDB) initBlockNumber() error {
 	return fs.db.Update(func(tx *bolt.Tx) error {
-		buk, err := tx.CreateBucketIfNotExists([]byte(CUR_BLOCK_NUM + fs.version))
+		buk, err := tx.CreateBucketIfNotExists([]byte(CUR_BLOCK_NUM_ + fs.version))
 		if err != nil {
 			return err
 		}
