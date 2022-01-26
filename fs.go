@@ -54,6 +54,7 @@ type TorrentFS struct {
 	nasCounter uint64
 
 	received uint64
+	sent     uint64
 }
 
 func (t *TorrentFS) storage() *TorrentManager {
@@ -124,6 +125,7 @@ func New(config *Config, cache, compress, listen bool) (*TorrentFS, error) {
 					"metrics":    inst.NasCounter(),
 					"neighbours": len(inst.peers),
 					"received":   inst.received,
+					"sent":       inst.sent,
 				},
 			}
 		},
