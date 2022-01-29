@@ -70,6 +70,7 @@ func (peer *Peer) Info() *PeerInfo {
 func (peer *Peer) start() error {
 	peer.wg.Add(1)
 	go peer.update()
+	peer.wg.Add(1)
 	go peer.calling()
 	return nil
 }
@@ -171,6 +172,7 @@ func (peer *Peer) broadcast() error {
 }
 
 func (peer *Peer) calling() error {
+	defer peer.wg.Done()
 	//peer.msgChan <- "hello"
 	for {
 		select {
