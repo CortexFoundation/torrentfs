@@ -171,11 +171,11 @@ func (peer *Peer) broadcast() error {
 }
 
 func (peer *Peer) calling() error {
-	log.Info("syncSending started ...")
+	peer.msgChan <- int(1)
 	for {
 		select {
 		case msg := <-peer.msgChan:
-			log.Info("Msg sending", "msg", msg)
+			log.Info("Msg sending", "msg", msg, "id", peer.id)
 			if err := p2p.Send(peer.ws, msgCode, &msg); err != nil {
 				return err
 			}
