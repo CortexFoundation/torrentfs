@@ -70,7 +70,7 @@ func (peer *Peer) Info() *PeerInfo {
 func (peer *Peer) start() error {
 	peer.wg.Add(1)
 	go peer.update()
-	go peer.syncSending()
+	go peer.calling()
 	return nil
 }
 
@@ -170,7 +170,7 @@ func (peer *Peer) broadcast() error {
 	return nil
 }
 
-func (peer *Peer) syncSending() error {
+func (peer *Peer) calling() error {
 	log.Info("syncSending started ...")
 	for {
 		select {
