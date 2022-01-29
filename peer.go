@@ -38,6 +38,8 @@ type Peer struct {
 	wg       sync.WaitGroup
 	version  uint64
 	peerInfo *PeerInfo
+
+	msgChan chan interface{}
 }
 
 type PeerInfo struct {
@@ -56,6 +58,7 @@ func newPeer(id string, host *TorrentFS, remote *p2p.Peer, rw p2p.MsgReadWriter)
 		known:   mapset.NewSet(),
 		trusted: false,
 		quit:    make(chan struct{}),
+		msgChan: make(chan interface{}, 10),
 	}
 	return &p
 }
@@ -67,6 +70,7 @@ func (peer *Peer) Info() *PeerInfo {
 func (peer *Peer) start() error {
 	peer.wg.Add(1)
 	go peer.update()
+	go peer.syncSending()
 	return nil
 }
 
@@ -104,12 +108,12 @@ func (peer *Peer) update() {
 		//case query := <-peer.host.queryChan:
 		case <-transmit.C:
 			if err := peer.broadcast(); err != nil {
-				log.Trace("broadcast failed", "reason", err, "peer", peer.ID())
+				log.Trace("transmit broadcast failed", "reason", err, "peer", peer.ID())
 				return
 			}
 		case <-stateTicker.C:
 			if err := peer.state(); err != nil {
-				log.Trace("broadcast failed", "reason", err, "peer", peer.ID())
+				log.Trace("state broadcast failed", "reason", err, "peer", peer.ID())
 				return
 			}
 
@@ -160,6 +164,20 @@ func (peer *Peer) broadcast() error {
 				peer.host.sent++
 				peer.mark(k.(string))
 			}
+		}
+	}
+
+	return nil
+}
+
+func (peer *Peer) syncSending() error {
+	log.Info("syncSending started ...")
+	for {
+		select {
+		case msg := <-peer.msgChan:
+			log.Info("Msg sending", "msg", msg)
+		case <-peer.quit:
+			return nil
 		}
 	}
 
