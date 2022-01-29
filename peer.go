@@ -176,6 +176,9 @@ func (peer *Peer) syncSending() error {
 		select {
 		case msg := <-peer.msgChan:
 			log.Info("Msg sending", "msg", msg)
+			if err := p2p.Send(peer.ws, msgCode, &msg); err != nil {
+				return err
+			}
 		case <-peer.quit:
 			return nil
 		}
