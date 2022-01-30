@@ -49,6 +49,10 @@ type PeerInfo struct {
 	Leafs  uint64      `json:"leafs"`
 }
 
+type MsgInfo struct {
+	Desc string `json:"desc"`
+}
+
 func newPeer(id string, host *TorrentFS, remote *p2p.Peer, rw p2p.MsgReadWriter) *Peer {
 	p := Peer{
 		id:      id,
@@ -173,7 +177,7 @@ func (peer *Peer) broadcast() error {
 
 func (peer *Peer) calling() error {
 	defer peer.wg.Done()
-	//peer.msgChan <- "hello"
+	//peer.msgChan <- MsgInfo{Desc: "hello"}
 	for {
 		select {
 		case msg := <-peer.msgChan:

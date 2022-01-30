@@ -234,12 +234,14 @@ func (tfs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 				}
 			}
 		case msgCode:
-			/*var info string
-			if err := packet.Decode(&info); err != nil {
-				log.Warn("failed to decode msg, peer will be disconnected", "peer", p.peer.ID(), "err", err)
-				return errors.New("invalid msg")
+			if ProtocolVersion == 3 {
+				var info *MsgInfo
+				if err := packet.Decode(&info); err != nil {
+					log.Warn("failed to decode msg, peer will be disconnected", "peer", p.peer.ID(), "err", err)
+					return errors.New("invalid msg")
+				}
+				log.Warn("Nas 3 testing", "msgCode", msgCode, "package", info.Desc)
 			}
-			log.Warn("Nas 3 testing", "msgCode", msgCode, "package", info)*/
 		default:
 			log.Warn("Encounter package code", "code", packet.Code)
 			return errors.New("invalid code")
