@@ -175,7 +175,7 @@ func (peer *Peer) broadcast() error {
 	return nil
 }
 
-func (peer *Peer) calling() error {
+func (peer *Peer) calling() {
 	defer peer.wg.Done()
 	//peer.msgChan <- MsgInfo{Desc: "hello"}
 	for {
@@ -183,15 +183,13 @@ func (peer *Peer) calling() error {
 		case msg := <-peer.msgChan:
 			if err := p2p.Send(peer.ws, msgCode, &msg); err != nil {
 				log.Warn("Msg sending failed", "msg", msg, "id", peer.id, "err", err)
-				return err
+				return
 			}
 			log.Info("Msg sending", "msg", msg, "id", peer.id)
 		case <-peer.quit:
-			return nil
+			return
 		}
 	}
-
-	return nil
 }
 
 func (peer *Peer) handshake() error {
