@@ -175,7 +175,7 @@ func (peer *Peer) broadcast() error {
 	return nil
 }
 
-func (peer *Peer) call(msg MsgInfo) {
+func (peer *Peer) call(msg interface{}) {
 	peer.msgChan <- msg
 }
 
