@@ -175,9 +175,12 @@ func (peer *Peer) broadcast() error {
 	return nil
 }
 
+func (peer *Peer) call(msg MsgInfo) {
+	peer.msgChan <- msg
+}
+
 func (peer *Peer) calling() {
 	defer peer.wg.Done()
-	//peer.msgChan <- MsgInfo{Desc: "hello"}
 	for {
 		select {
 		case msg := <-peer.msgChan:
