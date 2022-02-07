@@ -172,9 +172,9 @@ func (peer *Peer) broadcast() error {
 		}
 	}
 
-	for k, _ := range peer.host.FullSeed() {
-		// TODO
-	}
+	//for k, _ := range peer.host.FullSeed() {
+	// TODO
+	//}
 
 	return nil
 }
