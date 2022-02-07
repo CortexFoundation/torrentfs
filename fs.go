@@ -105,6 +105,8 @@ func New(config *Config, cache, compress, listen bool) (*TorrentFS, error) {
 	inst.nasCache, _ = lru.New(25)
 	inst.queryCache, _ = lru.New(25)
 
+	inst.scoreTable = make(map[string]int)
+
 	inst.protocol = p2p.Protocol{
 		Name:    ProtocolName,
 		Version: uint(ProtocolVersion),
@@ -129,8 +131,8 @@ func New(config *Config, cache, compress, listen bool) (*TorrentFS, error) {
 					"neighbours": len(inst.peers),
 					"received":   inst.received,
 					"sent":       inst.sent,
-					"score":      inst.scoreTable,
 				},
+				"score": inst.scoreTable,
 			}
 		},
 		PeerInfo: func(id enode.ID) interface{} {
@@ -240,7 +242,11 @@ func (tfs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 
 					if info.Size == 0 {
 						// TODO score
-						tfs.scoreTable[info.Hash]++
+						if _, ok := tfs.scoreTable[info.Hash]; !ok {
+							tfs.scoreTable[info.Hash] = 1
+						} else {
+							tfs.scoreTable[info.Hash]++
+						}
 					}
 				}
 			}
@@ -359,7 +365,7 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 		log.Warn("Not avaialble err in getFile", "err", err, "ret", ret, "ih", infohash, "progress", f)
 	} else {
 		// TODO zero means complete, score msg seeding
-		fs.nasCache.Add(infohash, 0)
+		fs.nasCache.Add(infohash, uint64(0))
 	}
 
 	return ret, err
