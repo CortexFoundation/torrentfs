@@ -268,7 +268,7 @@ func downloadErr(args []string, parent *tagflag.Parser) error {
 		clientConfig.DownloadRateLimiter = rate.NewLimiter(rate.Limit(flags.DownloadRate), 1<<20)
 	}
 	if flags.Quiet {
-		clientConfig.Logger = log.Discard
+		//clientConfig.Logger = log.Discard
 	}
 
 	var stop missinggo.SynchronizedEvent
