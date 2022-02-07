@@ -55,6 +55,9 @@ type TorrentFS struct {
 
 	received uint64
 	sent     uint64
+
+	// global file hash & score
+	scoreTable map[string]int
 }
 
 func (t *TorrentFS) storage() *TorrentManager {
@@ -126,6 +129,7 @@ func New(config *Config, cache, compress, listen bool) (*TorrentFS, error) {
 					"neighbours": len(inst.peers),
 					"received":   inst.received,
 					"sent":       inst.sent,
+					"score":      inst.scoreTable,
 				},
 			}
 		},
@@ -210,7 +214,7 @@ func (tfs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 			}
 			p.peerInfo = info
 		case queryCode:
-			if ProtocolVersion > 1 && tfs.config.Mode == LAZY {
+			if ProtocolVersion >= 3 {
 				var info *Query
 				if err := packet.Decode(&info); err != nil {
 					log.Warn("failed to decode msg, peer will be disconnected", "peer", p.peer.ID(), "err", err)
@@ -218,19 +222,26 @@ func (tfs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 				}
 				if suc := tfs.queryCache.Contains(info.Hash); !suc {
 					log.Info("Nas msg received", "ih", info.Hash, "size", common.StorageSize(float64(info.Size)))
-					if progress, e := tfs.chain().GetTorrent(info.Hash); e == nil {
-						if progress >= info.Size {
-							if err := tfs.storage().Search(context.Background(), info.Hash, info.Size, nil); err != nil {
-								log.Error("Nas 2.0 error", "err", err)
-								return err
+					if tfs.config.Mode == LAZY { // if local nas is lazy, wake up
+						if progress, e := tfs.chain().GetTorrent(info.Hash); e == nil {
+							if progress >= info.Size {
+								if err := tfs.storage().Search(context.Background(), info.Hash, info.Size, nil); err != nil {
+									log.Error("Nas 2.0 error", "err", err)
+									return err
+								}
 							}
+						} else {
+							//TODO
+							// log.Error("Local unregister file", "ih", info.Hash, "err", e)
 						}
-					} else {
-						//TODO
-						// log.Error("Local unregister file", "ih", info.Hash, "err", e)
+						tfs.nasCounter++
+						tfs.queryCache.Add(info.Hash, info.Size)
 					}
-					tfs.nasCounter++
-					tfs.queryCache.Add(info.Hash, info.Size)
+
+					if info.Size == 0 {
+						// TODO score
+						scoreTable[info.Hash]++
+					}
 				}
 			}
 		case msgCode:
@@ -346,6 +357,9 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 
 	if err != nil {
 		log.Warn("Not avaialble err in getFile", "err", err, "ret", ret, "ih", infohash, "progress", f)
+	} else {
+		// TODO zero means complete, score msg seeding
+		fs.nasCache.Add(infohash, 0)
 	}
 
 	return ret, err
@@ -513,6 +527,10 @@ func (fs *TorrentFS) LocalPort() int {
 
 func (fs *TorrentFS) Congress() int {
 	return fs.storage().Congress()
+}
+
+func (fs *TorrentFS) FullSeed() map[string]*Torrent {
+	return fs.storage().FullSeed()
 }
 
 func (fs *TorrentFS) Candidate() int {
