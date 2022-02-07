@@ -44,7 +44,7 @@ import (
 	lru "github.com/hashicorp/golang-lru"
 	"golang.org/x/time/rate"
 
-	xlog "github.com/anacrolix/log"
+	//xlog "github.com/anacrolix/log"
 	"github.com/anacrolix/torrent"
 	"github.com/anacrolix/torrent/metainfo"
 	"github.com/anacrolix/torrent/mmap_span"
@@ -568,7 +568,7 @@ func NewTorrentManager(config *Config, fsid uint64, cache, compress bool) (*Torr
 
 	cfg.ListenPort = config.Port
 	if config.Quiet {
-		cfg.Logger = xlog.Discard
+		//cfg.Logger = xlog.Discard
 	}
 	//cfg.Debug = true
 	cfg.DropDuplicatePeerIds = true
