@@ -359,14 +359,14 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 		return nil, err
 	}
 
-	ret, f, err := fs.storage().getFile(infohash, subpath)
+	ret, progress, err := fs.storage().getFile(infohash, subpath)
 
 	if err != nil {
-		log.Warn("Not avaialble err in getFile", "err", err, "ret", ret, "ih", infohash, "progress", f)
+		log.Warn("Not avaialble err in getFile", "err", err, "ret", ret, "ih", infohash, "progress", progress)
 		// TODO
-		if f > 0 {
+		if progress > 0 {
 			// TODO downloading
-		} else if f == 0 {
+		} else if progress == 0 {
 			// TODO not boot
 		}
 	} else {
