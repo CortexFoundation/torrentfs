@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/CortexFoundation/CortexTheseus v1.10.30-0.20211224025015-e679796cfa29
 	github.com/CortexFoundation/merkletree v0.0.0-20210226031755-94f6423532ee
-	github.com/allegro/bigcache/v3 v3.0.2-0.20211118104225-16df11e2ee38
+	github.com/allegro/bigcache/v3 v3.0.2-0.20211203094859-77bbae442c22
 	github.com/anacrolix/envpprof v1.1.2-0.20210622065137-4accee5b7ac4
 	github.com/anacrolix/fuse v0.2.0
 	github.com/anacrolix/log v0.10.1-0.20220123034749-3920702c17f8
@@ -22,7 +22,7 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/hashicorp/golang-lru v0.5.5-0.20210104140557-80c98217689d
 	github.com/otiai10/copy v1.6.0
-	go.etcd.io/bbolt v1.3.7-0.20210702075620-b18879eb6c41
+	go.etcd.io/bbolt v1.3.7-0.20220130032806-d5db64bdbfde
 	golang.org/x/time v0.0.0-20210723032227-1f47c861a9ac
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1
 	gopkg.in/urfave/cli.v1 v1.20.0
