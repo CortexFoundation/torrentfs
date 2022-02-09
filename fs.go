@@ -363,8 +363,14 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 
 	if err != nil {
 		log.Warn("Not avaialble err in getFile", "err", err, "ret", ret, "ih", infohash, "progress", f)
+		// TODO
+		if f > 0 {
+			// TODO downloading
+		} else if f == 0 {
+			// TODO not boot
+		}
 	} else {
-		// TODO zero means complete, score msg seeding
+		// TODO zero means complete locally, score msg seeding
 		fs.nasCache.Add(infohash, uint64(0))
 	}
 
