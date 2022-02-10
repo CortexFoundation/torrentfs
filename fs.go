@@ -240,7 +240,7 @@ func (tfs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 						tfs.queryCache.Add(info.Hash, info.Size)
 					}
 
-					if info.Size == 0 
+					if info.Size == 0 {
 						// TODO check
 						// TODO score
 						if _, ok := tfs.scoreTable[info.Hash]; !ok {
