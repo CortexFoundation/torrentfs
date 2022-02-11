@@ -511,6 +511,12 @@ func (fs *TorrentFS) Download(ctx context.Context, ih string, request uint64) er
 		}
 	}
 
+	if _, ok := fs.scoreTable[ih]; !ok {
+		fs.scoreTable[ih] = 1
+	} else {
+		fs.scoreTable[ih]++
+	}
+
 	//for k, _ := range GoodFiles {
 	//	status, _ := fs.Status(ctx, k)
 	//	log.Info("Torrent status", "ih", k, "status", status)
