@@ -374,6 +374,12 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 	} else {
 		// TODO zero means complete locally, score msg seeding
 		fs.nasCache.Add(infohash, uint64(0))
+
+		if _, ok := fs.scoreTable[infohash]; !ok {
+			fs.scoreTable[infohash] = 1
+		} else {
+			fs.scoreTable[infohash]++
+		}
 	}
 
 	return ret, err
@@ -511,11 +517,11 @@ func (fs *TorrentFS) Download(ctx context.Context, ih string, request uint64) er
 		}
 	}
 
-	if _, ok := fs.scoreTable[ih]; !ok {
-		fs.scoreTable[ih] = 1
-	} else {
-		fs.scoreTable[ih]++
-	}
+	//if _, ok := fs.scoreTable[ih]; !ok {
+	//	fs.scoreTable[ih] = 1
+	//} else {
+	//	fs.scoreTable[ih]++
+	//}
 
 	//for k, _ := range GoodFiles {
 	//	status, _ := fs.Status(ctx, k)
