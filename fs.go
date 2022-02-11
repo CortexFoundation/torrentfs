@@ -224,7 +224,8 @@ func (tfs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 				}
 				if suc := tfs.queryCache.Contains(info.Hash); !suc {
 					log.Info("Nas msg received", "ih", info.Hash, "size", common.StorageSize(float64(info.Size)))
-					if tfs.config.Mode == LAZY { // if local nas is lazy, wake up
+
+					if info.Size > 0 && tfs.config.Mode == LAZY { // if local nas is lazy, wake up
 						if progress, e := tfs.chain().GetTorrent(info.Hash); e == nil {
 							if progress >= info.Size {
 								if err := tfs.storage().Search(context.Background(), info.Hash, info.Size, nil); err != nil {
