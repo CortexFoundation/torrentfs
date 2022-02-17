@@ -3,7 +3,7 @@ module github.com/CortexFoundation/torrentfs
 go 1.17
 
 require (
-	github.com/CortexFoundation/CortexTheseus v1.10.30-0.20211224025015-e679796cfa29
+	github.com/CortexFoundation/CortexTheseus v1.10.30-0.20220217082539-bd872fff3285
 	github.com/CortexFoundation/merkletree v0.0.0-20210226031755-94f6423532ee
 	github.com/allegro/bigcache/v3 v3.0.2-0.20211203094859-77bbae442c22
 	github.com/anacrolix/envpprof v1.1.2-0.20210622065137-4accee5b7ac4
@@ -18,7 +18,7 @@ require (
 	github.com/dustin/go-humanize v1.0.0
 	github.com/edsrzf/mmap-go v1.0.0
 	github.com/fsnotify/fsnotify v1.5.1
-	github.com/golang/snappy v0.0.4
+	github.com/golang/snappy v0.0.5-0.20220116011046-fa5810519dcb
 	github.com/google/uuid v1.3.0
 	github.com/hashicorp/golang-lru v0.5.5-0.20210104140557-80c98217689d
 	github.com/otiai10/copy v1.6.0
