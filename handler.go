@@ -709,6 +709,8 @@ func (tm *TorrentManager) seedingLoop() {
 					tm.maxSeedTask++
 					tm.graceSeeding(tm.slot)
 				}
+
+				// TODO notify neighbors
 			}
 		case <-tm.closeAll:
 			log.Info("Seeding loop closed")
@@ -1296,6 +1298,10 @@ func (tm *TorrentManager) LocalPort() int {
 
 func (tm *TorrentManager) Congress() int {
 	return len(tm.seedingTorrents)
+}
+
+func (tm *TorrentManager) FullSeed() map[string]*Torrent {
+	return tm.seedingTorrents
 }
 
 func (tm *TorrentManager) Candidate() int {
