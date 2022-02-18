@@ -3,7 +3,7 @@ module github.com/CortexFoundation/torrentfs
 go 1.17
 
 require (
-	github.com/CortexFoundation/CortexTheseus v1.10.30-0.20211224025015-e679796cfa29
+	github.com/CortexFoundation/CortexTheseus v1.10.30-0.20220217082539-bd872fff3285
 	github.com/CortexFoundation/merkletree v0.0.0-20210226031755-94f6423532ee
 	github.com/allegro/bigcache/v3 v3.0.2-0.20211203094859-77bbae442c22
 	github.com/anacrolix/envpprof v1.1.2-0.20210622065137-4accee5b7ac4
@@ -11,14 +11,14 @@ require (
 	github.com/anacrolix/log v0.10.1-0.20220123034749-3920702c17f8
 	github.com/anacrolix/missinggo/v2 v2.5.2
 	github.com/anacrolix/tagflag v1.3.1-0.20210717093243-41ae76143afa
-	github.com/anacrolix/torrent v1.40.2-0.20220209031243-6fbcfe0695d8
+	github.com/anacrolix/torrent v1.40.2-0.20220215051832-7d41b9b21cee
 	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8
 	github.com/davecgh/go-spew v1.1.1
 	github.com/deckarep/golang-set v1.8.0
 	github.com/dustin/go-humanize v1.0.0
 	github.com/edsrzf/mmap-go v1.0.0
 	github.com/fsnotify/fsnotify v1.5.1
-	github.com/golang/snappy v0.0.4
+	github.com/golang/snappy v0.0.5-0.20220116011046-fa5810519dcb
 	github.com/google/uuid v1.3.0
 	github.com/hashicorp/golang-lru v0.5.5-0.20210104140557-80c98217689d
 	github.com/otiai10/copy v1.6.0
@@ -34,7 +34,7 @@ require (
 	github.com/anacrolix/chansync v0.3.0 // indirect
 	github.com/anacrolix/confluence v1.9.0 // indirect
 	github.com/anacrolix/dht/v2 v2.15.2-0.20220123034220-0538803801cb // indirect
-	github.com/anacrolix/go-libutp v1.1.0 // indirect
+	github.com/anacrolix/go-libutp v1.2.0 // indirect
 	github.com/anacrolix/missinggo v1.3.0 // indirect
 	github.com/anacrolix/missinggo/perf v1.0.0 // indirect
 	github.com/anacrolix/mmsg v1.0.0 // indirect

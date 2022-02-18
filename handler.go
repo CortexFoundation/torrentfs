@@ -1127,6 +1127,8 @@ func (tm *TorrentManager) dropSeeding(slot int) error {
 			}
 			t.Torrent.SetMaxEstablishedConns(t.currentConns)
 			log.Debug("Drop seeding invoke", "ih", ih, "index", i, "group", s, "slot", slot, "len", len(tm.seedingTorrents), "max", tm.maxSeedTask, "peers", t.currentConns, "cited", t.cited)
+			//t.Drop()
+			//delete(tm.seedingTorrents, ih)
 		}
 		i++
 	}
@@ -1153,6 +1155,8 @@ func (tm *TorrentManager) graceSeeding(slot int) error {
 			}
 			t.Torrent.SetMaxEstablishedConns(t.currentConns)
 			log.Debug("Grace seeding invoke", "ih", ih, "index", i, "group", s, "slot", slot, "len", len(tm.seedingTorrents), "max", tm.maxSeedTask, "peers", t.currentConns, "cited", t.cited)
+			//t.Drop()
+			//delete(tm.seedingTorrents, ih)
 		}
 		i++
 	}
