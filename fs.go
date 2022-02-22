@@ -58,6 +58,11 @@ type TorrentFS struct {
 
 	// global file hash & score
 	scoreTable map[string]int
+
+	seedingNotify chan string
+	closeAll      chan struct{}
+	wg            sync.WaitGroup
+	once          sync.Once
 }
 
 func (t *TorrentFS) storage() *TorrentManager {
@@ -89,7 +94,22 @@ func New(config *Config, cache, compress, listen bool) (*TorrentFS, error) {
 		return inst, nil
 	}
 
-	monitor, moErr := NewMonitor(config, cache, compress, listen)
+	db, fsErr := NewChainDB(config)
+	if fsErr != nil {
+		log.Error("file storage failed", "err", fsErr)
+		return nil, fsErr
+	}
+	log.Info("File storage initialized")
+
+	_seedingNotify := make(chan string, 25)
+	handler, err := NewTorrentManager(config, db.ID(), cache, compress, _seedingNotify)
+	if err != nil || handler == nil {
+		log.Error("fs manager failed")
+		return nil, errors.New("fs download manager initialise failed")
+	}
+	log.Info("Fs manager initialized")
+
+	monitor, moErr := NewMonitor(config, cache, compress, listen, db, handler)
 	if moErr != nil {
 		log.Error("Failed create monitor")
 		return nil, moErr
@@ -106,6 +126,7 @@ func New(config *Config, cache, compress, listen bool) (*TorrentFS, error) {
 	inst.queryCache, _ = lru.New(25)
 
 	inst.scoreTable = make(map[string]int)
+	inst.seedingNotify = _seedingNotify
 
 	inst.protocol = p2p.Protocol{
 		Name:    ProtocolName,
@@ -159,11 +180,42 @@ func New(config *Config, cache, compress, listen bool) (*TorrentFS, error) {
 		},
 	}
 
+	inst.closeAll = make(chan struct{})
+
+	inst.wg.Add(1)
+	go inst.listen()
+
 	return inst, nil
+}
+
+func (tfs *TorrentFS) listen() {
+	defer tfs.wg.Done()
+	for {
+		select {
+		case s := <-tfs.seedingNotify:
+			//log.Warn("Seeding notify !!!", "ih", s)
+			tfs.nasCache.Add(s, uint64(0))
+		case <-tfs.closeAll:
+			return
+		}
+	}
 }
 
 func (tfs *TorrentFS) MaxMessageSize() uint32 {
 	return DefaultMaxMessageSize
+}
+
+func (tfs *TorrentFS) find(ih string) (*Peer, error) {
+	for s, p := range tfs.peers {
+		if p.seeding.Contains(ih) {
+			// TODO
+			log.Debug("Seed found !!!", "from", s, "ih", ih)
+			return p, nil
+		}
+	}
+
+	log.Debug("Seed not found !!!", "neighbors", len(tfs.peers), "ih", ih)
+	return nil, nil
 }
 
 func (tfs *TorrentFS) HandlePeer(peer *p2p.Peer, rw p2p.MsgReadWriter) error {
@@ -223,7 +275,7 @@ func (tfs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 					return errors.New("invalid msg")
 				}
 				if suc := tfs.queryCache.Contains(info.Hash); !suc {
-					log.Info("Nas msg received", "ih", info.Hash, "size", common.StorageSize(float64(info.Size)))
+					log.Debug("Nas msg received", "ih", info.Hash, "size", common.StorageSize(float64(info.Size)))
 
 					if info.Size > 0 && tfs.config.Mode == LAZY { // if local nas is lazy, wake up
 						if progress, e := tfs.chain().GetTorrent(info.Hash); e == nil {
@@ -249,6 +301,9 @@ func (tfs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 						} else {
 							tfs.scoreTable[info.Hash]++
 						}
+
+						// TODO peer seed update
+						p.seen(info.Hash)
 					}
 				}
 			}
@@ -306,6 +361,15 @@ func (tfs *TorrentFS) Start(server *p2p.Server) (err error) {
 // Stop stops the data collection thread and the connection listener of the dashboard.
 // Implements the node.Service interface.
 func (tfs *TorrentFS) Stop() error {
+	//if tfs.closeAll != nil {
+	tfs.once.Do(func() {
+		close(tfs.closeAll)
+	})
+
+	tfs.wg.Wait()
+	//}
+	//tfs.closeAll = nil
+
 	if tfs == nil || tfs.monitor == nil {
 		return nil
 	}
@@ -358,6 +422,7 @@ func (fs *TorrentFS) available(ctx context.Context, infohash string, rawSize uin
 
 func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSize uint64, subpath string) ([]byte, error) {
 	if ok, err := fs.available(ctx, infohash, rawSize); err != nil || !ok {
+		fs.find(infohash)
 		return nil, err
 	}
 
@@ -373,7 +438,7 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 		}
 	} else {
 		// TODO zero means complete locally, score msg broadcast
-		fs.nasCache.Add(infohash, uint64(0))
+		//fs.nasCache.Add(infohash, uint64(0))
 
 		//if _, ok := fs.scoreTable[infohash]; !ok {
 		//	fs.scoreTable[infohash] = 1
@@ -509,6 +574,8 @@ func (fs *TorrentFS) Download(ctx context.Context, ih string, request uint64) er
 	if err != nil {
 		return err
 	}
+
+	//fs.find(ih)
 
 	if update {
 		log.Debug("Search in fs download", "ih", ih, "request", p)
