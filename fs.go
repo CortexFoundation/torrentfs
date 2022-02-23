@@ -277,7 +277,7 @@ func (tfs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 				if suc := tfs.queryCache.Contains(info.Hash); !suc {
 					log.Debug("Nas msg received", "ih", info.Hash, "size", common.StorageSize(float64(info.Size)))
 
-					if info.Size > 0 && (tfs.config.Mode == LAZY || tfs.config.Mode == DEV) { // if local nas is lazy, wake up
+					if info.Size > 0 && tfs.config.Mode == LAZY { // if local nas is lazy, wake up
 						if progress, e := tfs.chain().GetTorrent(info.Hash); e == nil {
 							if progress >= info.Size {
 								if err := tfs.storage().Search(context.Background(), info.Hash, info.Size, nil); err != nil {
@@ -285,14 +285,17 @@ func (tfs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 									return err
 								}
 								// TODO
+
 								tfs.nasCache.Add(info.Hash, uint64(0))
 							}
-						} else {
-							//TODO
-							// log.Error("Local unregister file", "ih", info.Hash, "err", e)
 						}
 						tfs.nasCounter++
 						tfs.queryCache.Add(info.Hash, info.Size)
+					}
+					if info.Size > 0 && tfs.config.Mode == DEV {
+						if ok, err := tfs.available(context.Background(), info.Hash, info.Size); ok && err == nil {
+							tfs.nasCache.Add(info.Hash, uint64(0))
+						}
 					}
 
 					if info.Size == 0 {
@@ -389,7 +392,7 @@ func (tfs *TorrentFS) Stop() error {
 func (fs *TorrentFS) available(ctx context.Context, infohash string, rawSize uint64) (bool, error) {
 	ret, f, cost, err := fs.storage().available(infohash, rawSize)
 
-	if fs.config.Mode == LAZY {
+	if fs.config.Mode == LAZY || fs.config.Mode == DEV {
 		if errors.Is(err, ErrInactiveTorrent) {
 			if progress, e := fs.chain().GetTorrent(infohash); e == nil {
 				log.Debug("Lazy mode, restarting", "ih", infohash, "request", progress)
@@ -426,7 +429,7 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 				// TODO
 				log.Warn("Seed found from neighbors", "id", p.id, "ih", infohash, "size", rawSize)
 			} else {
-				log.Warn("Seed not found from neighbors", "ih", infohash, "size", rawSize)
+				log.Warn("Seed not found from neighbors", "ih", infohash, "size", rawSize, "peers", len(fs.peers))
 			}
 		}
 		return nil, err
