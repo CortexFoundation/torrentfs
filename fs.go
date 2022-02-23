@@ -193,7 +193,6 @@ func (tfs *TorrentFS) listen() {
 	for {
 		select {
 		case s := <-tfs.seedingNotify:
-			//log.Warn("Seeding notify !!!", "ih", s)
 			tfs.nasCache.Add(s, uint64(0))
 		case <-tfs.closeAll:
 			return
@@ -346,7 +345,7 @@ func (tfs *TorrentFS) Version() uint {
 // Start starts the data collection thread and the listening server of the dashboard.
 // Implements the node.Service interface.
 func (tfs *TorrentFS) Start(server *p2p.Server) (err error) {
-	log.Info("Started nas v.2.0", "config", tfs, "mode", tfs.config.Mode)
+	log.Info("Started nas", "config", tfs, "mode", tfs.config.Mode, "version", ProtocolVersion)
 	if tfs == nil || tfs.monitor == nil {
 		return
 	}
@@ -361,14 +360,11 @@ func (tfs *TorrentFS) Start(server *p2p.Server) (err error) {
 // Stop stops the data collection thread and the connection listener of the dashboard.
 // Implements the node.Service interface.
 func (tfs *TorrentFS) Stop() error {
-	//if tfs.closeAll != nil {
 	tfs.once.Do(func() {
 		close(tfs.closeAll)
 	})
 
 	tfs.wg.Wait()
-	//}
-	//tfs.closeAll = nil
 
 	if tfs == nil || tfs.monitor == nil {
 		return nil
@@ -422,7 +418,12 @@ func (fs *TorrentFS) available(ctx context.Context, infohash string, rawSize uin
 
 func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSize uint64, subpath string) ([]byte, error) {
 	if ok, err := fs.available(ctx, infohash, rawSize); err != nil || !ok {
-		//fs.find(infohash)
+		if fs.config.Mode == DEV {
+			if p, err := fs.find(infohash); err == nil {
+				// TODO
+				log.Warn("Seed found from neighbors", "id", p.id, "ih", infohash, "size", rawSize)
+			}
+		}
 		return nil, err
 	}
 
