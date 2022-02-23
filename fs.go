@@ -422,7 +422,7 @@ func (fs *TorrentFS) available(ctx context.Context, infohash string, rawSize uin
 
 func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSize uint64, subpath string) ([]byte, error) {
 	if ok, err := fs.available(ctx, infohash, rawSize); err != nil || !ok {
-		fs.find(infohash)
+		//fs.find(infohash)
 		return nil, err
 	}
 
