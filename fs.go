@@ -273,16 +273,19 @@ func (tfs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 					log.Warn("failed to decode msg, peer will be disconnected", "peer", p.peer.ID(), "err", err)
 					return errors.New("invalid msg")
 				}
+
 				if suc := tfs.queryCache.Contains(info.Hash); !suc {
 					log.Debug("Nas msg received", "ih", info.Hash, "size", common.StorageSize(float64(info.Size)))
 
-					if info.Size > 0 && tfs.config.Mode == LAZY { // if local nas is lazy, wake up
+					if info.Size > 0 && (tfs.config.Mode == LAZY || tfs.config.Mode == DEV) { // if local nas is lazy, wake up
 						if progress, e := tfs.chain().GetTorrent(info.Hash); e == nil {
 							if progress >= info.Size {
 								if err := tfs.storage().Search(context.Background(), info.Hash, info.Size, nil); err != nil {
 									log.Error("Nas 2.0 error", "err", err)
 									return err
 								}
+								// TODO
+								tfs.nasCache.Add(info.Hash, uint64(0))
 							}
 						} else {
 							//TODO
