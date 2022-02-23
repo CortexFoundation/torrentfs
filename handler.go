@@ -729,7 +729,7 @@ func (tm *TorrentManager) seedingLoop() {
 func (tm *TorrentManager) init() error {
 	log.Debug("Chain files init", "files", len(GoodFiles))
 
-	if tm.mode == LAZY {
+	if tm.mode == LAZY || tm.mode == DEV {
 		tm.Simulate()
 	}
 
