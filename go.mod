@@ -11,7 +11,7 @@ require (
 	github.com/anacrolix/log v0.10.1-0.20220123034749-3920702c17f8
 	github.com/anacrolix/missinggo/v2 v2.5.2
 	github.com/anacrolix/tagflag v1.3.1-0.20210717093243-41ae76143afa
-	github.com/anacrolix/torrent v1.41.1-0.20220223070352-09df09596dad
+	github.com/anacrolix/torrent v1.41.1-0.20220301235119-a450bbe6b2cb
 	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8
 	github.com/davecgh/go-spew v1.1.1
 	github.com/deckarep/golang-set v1.8.0
@@ -22,7 +22,7 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/hashicorp/golang-lru v0.5.5-0.20210104140557-80c98217689d
 	github.com/otiai10/copy v1.6.0
-	go.etcd.io/bbolt v1.3.7-0.20220130032806-d5db64bdbfde
+	go.etcd.io/bbolt v1.3.7-0.20220226045046-fd5535f71f48
 	golang.org/x/time v0.0.0-20210723032227-1f47c861a9ac
 	golang.org/x/tools v0.1.0
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1
