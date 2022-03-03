@@ -279,6 +279,10 @@ func (tfs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 					return errors.New("invalid msg")
 				}
 
+				if !common.IsHexAddress(info.Hash) {
+					return errors.New("invalid address")
+				}
+
 				if suc := tfs.queryCache.Contains(info.Hash); !suc {
 					log.Debug("Nas msg received", "ih", info.Hash, "size", common.StorageSize(float64(info.Size)))
 
@@ -314,10 +318,11 @@ func (tfs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 						//} else {
 						//	tfs.scoreTable[info.Hash]++
 						//}
-						tfs.score(info.Hash)
+						if ok := tfs.score(info.Hash); ok {
 
-						// TODO peer seed update
-						p.seen(info.Hash)
+							// TODO peer seed update
+							p.seen(info.Hash)
+						}
 					}
 				}
 			}
@@ -338,12 +343,18 @@ func (tfs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 	}
 }
 
-func (tfs *TorrentFS) score(ih string) {
+func (tfs *TorrentFS) score(ih string) bool {
+	if !common.IsHexAddress(ih) {
+		return false
+	}
+
 	if _, ok := tfs.scoreTable[ih]; !ok {
 		tfs.scoreTable[ih] = 1
 	} else {
 		tfs.scoreTable[ih]++
 	}
+
+	return true
 }
 
 // Protocols implements the node.Service interface.
@@ -407,12 +418,24 @@ func (tfs *TorrentFS) Stop() error {
 	return nil
 }
 
-func (fs *TorrentFS) query(infohash string, rawSize uint64) {
+func (fs *TorrentFS) query(infohash string, rawSize uint64) bool {
+	if !common.IsHexAddress(infohash) {
+		return false
+	}
+
 	fs.nasCache.Add(infohash, rawSize)
+
+	return true
 }
 
-func (fs *TorrentFS) notify(infohash string) {
+func (fs *TorrentFS) notify(infohash string) bool {
+	if !common.IsHexAddress(infohash) {
+		return false
+	}
+
 	fs.nasCache.Add(infohash, SEED_SIG)
+
+	return true
 }
 
 // Available is used to check the file status
