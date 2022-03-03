@@ -38,6 +38,10 @@ import (
 	//"time"
 )
 
+const (
+	SEED_SIG uint64 = 0
+)
+
 // TorrentFS contains the torrent file system internals.
 type TorrentFS struct {
 	protocol p2p.Protocol // Protocol description and parameters
@@ -408,7 +412,7 @@ func (fs *TorrentFS) query(infohash string, rawSize uint64) {
 }
 
 func (fs *TorrentFS) notify(infohash string) {
-	fs.nasCache.Add(infohash, uint64(0))
+	fs.nasCache.Add(infohash, SEED_SIG)
 }
 
 // Available is used to check the file status
