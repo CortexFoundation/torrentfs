@@ -193,7 +193,8 @@ func (tfs *TorrentFS) listen() {
 	for {
 		select {
 		case s := <-tfs.seedingNotify:
-			tfs.nasCache.Add(s, uint64(0))
+			//tfs.nasCache.Add(s, uint64(0))
+			tfs.notify(s)
 		case <-tfs.closeAll:
 			return
 		}
@@ -286,26 +287,30 @@ func (tfs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 								}
 								// TODO
 
-								tfs.nasCache.Add(info.Hash, uint64(0))
+								//tfs.nasCache.Add(info.Hash, uint64(0))
+								tfs.notify(info.Hash)
 							}
 						}
 						tfs.nasCounter++
 						tfs.queryCache.Add(info.Hash, info.Size)
 					}
+
 					if info.Size > 0 && tfs.config.Mode == DEV {
 						if ok, err := tfs.available(context.Background(), info.Hash, info.Size); ok && err == nil {
-							tfs.nasCache.Add(info.Hash, uint64(0))
+							//tfs.nasCache.Add(info.Hash, uint64(0))
+							tfs.notify(info.Hash)
 						}
 					}
 
 					if info.Size == 0 {
 						// TODO check
 						// TODO score
-						if _, ok := tfs.scoreTable[info.Hash]; !ok {
-							tfs.scoreTable[info.Hash] = 1
-						} else {
-							tfs.scoreTable[info.Hash]++
-						}
+						//if _, ok := tfs.scoreTable[info.Hash]; !ok {
+						//	tfs.scoreTable[info.Hash] = 1
+						//} else {
+						//	tfs.scoreTable[info.Hash]++
+						//}
+						tfs.score(info.Hash)
 
 						// TODO peer seed update
 						p.seen(info.Hash)
@@ -326,6 +331,14 @@ func (tfs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 			return errors.New("invalid code")
 		}
 		packet.Discard()
+	}
+}
+
+func (tfs *TorrentFS) score(ih string) {
+	if _, ok := tfs.scoreTable[ih]; !ok {
+		tfs.scoreTable[ih] = 1
+	} else {
+		tfs.scoreTable[ih]++
 	}
 }
 
@@ -355,6 +368,7 @@ func (tfs *TorrentFS) Start(server *p2p.Server) (err error) {
 	if tfs == nil || tfs.monitor == nil {
 		return
 	}
+
 	err = tfs.monitor.Start()
 	if err != nil {
 		return
@@ -369,6 +383,7 @@ func (tfs *TorrentFS) Stop() error {
 	if tfs == nil || tfs.monitor == nil {
 		return nil
 	}
+
 	tfs.once.Do(func() {
 		close(tfs.closeAll)
 	})
@@ -386,6 +401,14 @@ func (tfs *TorrentFS) Stop() error {
 		tfs.queryCache.Purge()
 	}
 	return nil
+}
+
+func (fs *TorrentFS) request(infohash string, rawSize uint64) {
+	fs.nasCache.Add(infohash, rawSize)
+}
+
+func (fs *TorrentFS) notify(infohash string) {
+	fs.nasCache.Add(infohash, uint64(0))
 }
 
 // Available is used to check the file status
@@ -412,7 +435,8 @@ func (fs *TorrentFS) available(ctx context.Context, infohash string, rawSize uin
 						speed = float64(f) / t
 					}
 					log.Info("Nas 2.0 query", "ih", infohash, "raw", common.StorageSize(float64(rawSize)), "finish", f, "cost", common.PrettyDuration(cost), "speed", common.StorageSize(speed), "peers", len(fs.peers), "cache", fs.nasCache.Len(), "err", err)
-					fs.nasCache.Add(infohash, rawSize)
+					//fs.nasCache.Add(infohash, rawSize)
+					fs.request(infohash, rawSize)
 				}
 			}
 
