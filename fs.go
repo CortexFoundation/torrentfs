@@ -403,7 +403,7 @@ func (tfs *TorrentFS) Stop() error {
 	return nil
 }
 
-func (fs *TorrentFS) request(infohash string, rawSize uint64) {
+func (fs *TorrentFS) query(infohash string, rawSize uint64) {
 	fs.nasCache.Add(infohash, rawSize)
 }
 
@@ -436,7 +436,7 @@ func (fs *TorrentFS) available(ctx context.Context, infohash string, rawSize uin
 					}
 					log.Info("Nas 2.0 query", "ih", infohash, "raw", common.StorageSize(float64(rawSize)), "finish", f, "cost", common.PrettyDuration(cost), "speed", common.StorageSize(speed), "peers", len(fs.peers), "cache", fs.nasCache.Len(), "err", err)
 					//fs.nasCache.Add(infohash, rawSize)
-					fs.request(infohash, rawSize)
+					fs.query(infohash, rawSize)
 				}
 			}
 
