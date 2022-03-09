@@ -55,7 +55,7 @@ func ScaleBar(from, to, sum int) string {
 	t := to / per
 
 	bar := ""
-	for i := ScaleBarLen; i > 0; i-- {
+	for i := 0; i < ScaleBarLen; i++ {
 		if i > t {
 			bar = bar + " "
 		} else if i < f {
