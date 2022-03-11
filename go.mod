@@ -8,10 +8,10 @@ require (
 	github.com/allegro/bigcache/v3 v3.0.2-0.20211203094859-77bbae442c22
 	github.com/anacrolix/envpprof v1.1.2-0.20210622065137-4accee5b7ac4
 	github.com/anacrolix/fuse v0.2.0
-	github.com/anacrolix/log v0.10.1-0.20220123034749-3920702c17f8
+	github.com/anacrolix/log v0.13.1
 	github.com/anacrolix/missinggo/v2 v2.5.2
 	github.com/anacrolix/tagflag v1.3.1-0.20210717093243-41ae76143afa
-	github.com/anacrolix/torrent v1.41.1-0.20220309095754-9ac5ce70de27
+	github.com/anacrolix/torrent v1.41.1-0.20220311030531-ec2b1b2073df
 	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8
 	github.com/davecgh/go-spew v1.1.1
 	github.com/deckarep/golang-set v1.8.0
