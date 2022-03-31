@@ -201,8 +201,8 @@ github.com/anacrolix/torrent v1.15.1-0.20200619022403-dd51e99b88cc/go.mod h1:wuo
 github.com/anacrolix/torrent v1.15.1-0.20200715061614-dd906f8fa72e/go.mod h1:XWo/fJN1oKgcjgxM+pUZpvalHfqHDs27BY5mBZjIQWo=
 github.com/anacrolix/torrent v1.18.1-0.20201121024423-388e6899a15b/go.mod h1:nhOLTTTOcr5WnvNKJzHGKzyz5D8mujPIgdbRU2818v8=
 github.com/anacrolix/torrent v1.21.0/go.mod h1:3/BQux1sn5l887GdTw7AYSAmaZn+e7AXAZWFCsqh1bA=
-github.com/anacrolix/torrent v1.41.1-0.20220317221550-dd1ca6f51475 h1:LBeZSu0qlU2EmEUsH4RcP4tkd2EQMMtzKOGklp+3k/8=
-github.com/anacrolix/torrent v1.41.1-0.20220317221550-dd1ca6f51475/go.mod h1:9YxokHPeQC3JbnO13I9iV229poiBU5iGZG0i8adSSDg=
+github.com/anacrolix/torrent v1.41.1-0.20220331060436-a22150ab611e h1:UvfPFuC8F1kOsnDJ4OkAwOJyHfJR8UK0XVae46oGKAQ=
+github.com/anacrolix/torrent v1.41.1-0.20220331060436-a22150ab611e/go.mod h1:9YxokHPeQC3JbnO13I9iV229poiBU5iGZG0i8adSSDg=
 github.com/anacrolix/upnp v0.1.1/go.mod h1:LXsbsp5h+WGN7YR+0A7iVXm5BL1LYryDev1zuJMWYQo=
 github.com/anacrolix/upnp v0.1.2-0.20200416075019-5e9378ed1425/go.mod h1:Pz94W3kl8rf+wxH3IbCa9Sq+DTJr8OSbV2Q3/y51vYs=
 github.com/anacrolix/upnp v0.1.3-0.20220123035249-922794e51c96 h1:QAVZ3pN/J4/UziniAhJR2OZ9Ox5kOY2053tBbbqUPYA=
