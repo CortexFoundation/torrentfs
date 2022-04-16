@@ -379,10 +379,11 @@ func (tfs *TorrentFS) Version() uint {
 // Start starts the data collection thread and the listening server of the dashboard.
 // Implements the node.Service interface.
 func (tfs *TorrentFS) Start(server *p2p.Server) (err error) {
-	log.Info("Started nas", "config", tfs, "mode", tfs.config.Mode, "version", ProtocolVersion)
 	if tfs == nil || tfs.monitor == nil {
+		log.Warn("Storage fs init failed", "fs", tfs)
 		return
 	}
+	log.Info("Started nas", "config", tfs, "mode", tfs.config.Mode, "version", ProtocolVersion)
 
 	err = tfs.monitor.Start()
 	if err != nil {
