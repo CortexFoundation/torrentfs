@@ -46,7 +46,7 @@ func run(conf *Config) error {
 	conf.tfs = fs
 
 	glogger := log.NewGlogHandler(log.StreamHandler(os.Stderr, log.TerminalFormat(true)))
-	glogger.Verbosity(log.LvlInfo)
+	glogger.Verbosity(log.LvlDebug)
 	glogger.Vmodule("")
 	log.Root().SetHandler(glogger)
 
