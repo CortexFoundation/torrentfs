@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"sync"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/CortexFoundation/CortexTheseus/log"
@@ -14,7 +15,6 @@ import (
 )
 
 type Config struct {
-	wg  sync.WaitGroup
 	tfs *t.TorrentFS
 }
 
@@ -47,20 +47,16 @@ func run(conf *Config) error {
 	glogger.Verbosity(log.Lvl(4))
 	log.Root().SetHandler(glogger)
 
-	//log.Root().SetHandler(log.LvlFilterHandler(log.LvlInfo, log.StreamHandler(os.Stderr, log.TerminalFormat(true))))
-
-	/*	conf.wg.Add(1)
-		go func() {
-			defer conf.wg.Done()
-			fs.Start(nil)
-		}()
-	*/
-
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", conf.handler)
 	http.ListenAndServe("127.0.0.1:8080", mux)
 
-	conf.wg.Wait()
+	var c = make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+	<-c
+
+	fs.Stop()
+
 	return nil
 }
 
