@@ -39,6 +39,8 @@ func run(conf *Config) error {
 
 	fmt.Println(err)
 
+	log.Root().SetHandler(log.LvlFilterHandler(log.LvlInfo, log.StreamHandler(os.Stderr, log.TerminalFormat(true))))
+
 	conf.wg.Add(1)
 	go func() {
 		defer conf.wg.Done()
