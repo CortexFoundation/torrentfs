@@ -97,3 +97,4 @@ main
 *.torrent
 *.swp
 .torrent.db
+.data

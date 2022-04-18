@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 	"sync"
 
@@ -30,6 +31,10 @@ func main() {
 }
 
 func run(conf *Config) error {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", handler)
+	go http.ListenAndServe("127.0.0.1:8080", mux)
+
 	config := &torrentfs.DefaultConfig
 	config.DataDir = ".data"
 	fs, err := torrentfs.New(config, true, false, false)
@@ -49,4 +54,19 @@ func run(conf *Config) error {
 
 	conf.wg.Wait()
 	return nil
+}
+
+func handler(w http.ResponseWriter, r *http.Request) {
+	fmt.Printf("%v, %v, %v\n", r.URL, r.Method, r.URL.Path)
+	res := "OK"
+	//uri := r.URL.Path
+	switch r.Method {
+	case "GET":
+		//res = Get(uri)
+	case "POST":
+		// TODO
+	default:
+		res = "method not found"
+	}
+	fmt.Fprintf(w, res)
 }
