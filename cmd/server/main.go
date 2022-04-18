@@ -39,6 +39,7 @@ func run(conf *Config) error {
 	fs, err := t.New(config, true, false, false)
 	if err != nil {
 		log.Error("err", "e", err)
+		return err
 	}
 
 	conf.tfs = fs
