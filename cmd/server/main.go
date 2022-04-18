@@ -35,17 +35,19 @@ func main() {
 
 func run(conf *Config) error {
 	config := &t.DefaultConfig
-	config.DataDir = ".data"
+	config.DataDir = ".storage"
 	fs, err := t.New(config, true, false, false)
 	if err != nil {
 		log.Error("err", "e", err)
 		return err
 	}
+	defer fs.Stop()
 
 	conf.tfs = fs
 
-	glogger := log.NewGlogHandler(log.StreamHandler(os.Stderr, log.TerminalFormat(false)))
-	glogger.Verbosity(log.Lvl(4))
+	glogger := log.NewGlogHandler(log.StreamHandler(os.Stderr, log.TerminalFormat(true)))
+	glogger.Verbosity(log.LvlInfo)
+	glogger.Vmodule("")
 	log.Root().SetHandler(glogger)
 
 	mux := http.NewServeMux()
@@ -55,8 +57,6 @@ func run(conf *Config) error {
 	var c = make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 	<-c
-
-	fs.Stop()
 
 	return nil
 }
@@ -74,7 +74,9 @@ func (conf *Config) handler(w http.ResponseWriter, r *http.Request) {
 		ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 		defer cancel()
 		err := conf.tfs.Download(ctx, q.Get("hash"), 1000000000)
-		fmt.Println(err)
+		if err != nil {
+			log.Error("err", "e", err)
+		}
 	default:
 		res = "method not found"
 	}

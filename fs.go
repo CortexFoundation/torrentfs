@@ -397,6 +397,7 @@ func (tfs *TorrentFS) Start(server *p2p.Server) (err error) {
 // Implements the node.Service interface.
 func (tfs *TorrentFS) Stop() error {
 	if tfs == nil || tfs.monitor == nil {
+		log.Info("Cortex fs engine is already stopped")
 		return nil
 	}
 
@@ -416,6 +417,7 @@ func (tfs *TorrentFS) Stop() error {
 	if tfs.queryCache != nil {
 		tfs.queryCache.Purge()
 	}
+	log.Info("Cortex fs engine stopped")
 	return nil
 }
 
