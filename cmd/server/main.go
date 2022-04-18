@@ -1,18 +1,21 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"os"
 	"sync"
+	"time"
 
 	"github.com/CortexFoundation/CortexTheseus/log"
-	"github.com/CortexFoundation/torrentfs"
+	t "github.com/CortexFoundation/torrentfs"
 	cli "gopkg.in/urfave/cli.v1"
 )
 
 type Config struct {
-	wg sync.WaitGroup
+	wg  sync.WaitGroup
+	tfs *t.TorrentFS
 }
 
 func main() {
@@ -31,40 +34,50 @@ func main() {
 }
 
 func run(conf *Config) error {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", handler)
-	go http.ListenAndServe("127.0.0.1:8080", mux)
-
-	config := &torrentfs.DefaultConfig
+	config := &t.DefaultConfig
 	config.DataDir = ".data"
-	fs, err := torrentfs.New(config, true, false, false)
+	fs, err := t.New(config, true, false, false)
 	if err != nil {
 		log.Error("err", "e", err)
 	}
 
-	fmt.Println(err)
+	conf.tfs = fs
 
-	log.Root().SetHandler(log.LvlFilterHandler(log.LvlInfo, log.StreamHandler(os.Stderr, log.TerminalFormat(true))))
+	glogger := log.NewGlogHandler(log.StreamHandler(os.Stderr, log.TerminalFormat(false)))
+	glogger.Verbosity(log.Lvl(4))
+	log.Root().SetHandler(glogger)
 
-	conf.wg.Add(1)
-	go func() {
-		defer conf.wg.Done()
-		fs.Start(nil)
-	}()
+	//log.Root().SetHandler(log.LvlFilterHandler(log.LvlInfo, log.StreamHandler(os.Stderr, log.TerminalFormat(true))))
+
+	/*	conf.wg.Add(1)
+		go func() {
+			defer conf.wg.Done()
+			fs.Start(nil)
+		}()
+	*/
+
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", conf.handler)
+	http.ListenAndServe("127.0.0.1:8080", mux)
 
 	conf.wg.Wait()
 	return nil
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Printf("%v, %v, %v\n", r.URL, r.Method, r.URL.Path)
+func (conf *Config) handler(w http.ResponseWriter, r *http.Request) {
+	//fmt.Printf("%v, %v, %v\n", r.URL, r.Method, r.URL.Path)
 	res := "OK"
 	//uri := r.URL.Path
+	q := r.URL.Query()
 	switch r.Method {
 	case "GET":
 		//res = Get(uri)
 	case "POST":
 		// TODO
+		ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+		defer cancel()
+		err := conf.tfs.Download(ctx, q.Get("hash"), 1000000000)
+		fmt.Println(err)
 	default:
 		res = "method not found"
 	}
