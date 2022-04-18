@@ -76,6 +76,7 @@ func (conf *Config) handler(w http.ResponseWriter, r *http.Request) {
 		err := conf.tfs.Download(ctx, q.Get("hash"), 1000000000)
 		if err != nil {
 			log.Error("err", "e", err)
+			res = err.Error()
 		}
 	default:
 		res = "method not found"
