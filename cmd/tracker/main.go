@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	cli "gopkg.in/urfave/cli.v1"
+	cli "github.com/urfave/cli/v2"
 	"net/http"
 	"os"
 	"time"

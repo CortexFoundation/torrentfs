@@ -11,7 +11,7 @@ import (
 
 	"github.com/CortexFoundation/CortexTheseus/log"
 	t "github.com/CortexFoundation/torrentfs"
-	cli "gopkg.in/urfave/cli.v1"
+	cli "github.com/urfave/cli/v2"
 )
 
 type Config struct {
@@ -34,11 +34,11 @@ func main() {
 	}
 
 	app.Flags = []cli.Flag{
-		StorageFlag,
+		&StorageFlag,
 	}
 
 	app.Action = func(ctx *cli.Context) error {
-		conf.dir = ctx.GlobalString(StorageFlag.Name)
+		conf.dir = ctx.String(StorageFlag.Name)
 		err := run(&conf)
 		return err
 	}
