@@ -84,7 +84,7 @@ func (conf *Config) handler(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Query()
 	switch r.Method {
 	case "GET":
-		//res = Get(uri)
+		res = "GET NOT SUPPORT"
 	case "POST":
 		// TODO
 		ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
