@@ -16,14 +16,29 @@ import (
 
 type Config struct {
 	tfs *t.TorrentFS
+	dir string
 }
 
-func main() {
-	var conf Config
-	app := cli.NewApp()
-	app.Flags = []cli.Flag{}
+var (
+	conf Config
+)
 
-	app.Action = func(c *cli.Context) error {
+func main() {
+
+	app := cli.NewApp()
+
+	StorageFlag := cli.StringFlag{
+		Name:  "storage",
+		Usage: "Data storage directory",
+		Value: ".storage",
+	}
+
+	app.Flags = []cli.Flag{
+		StorageFlag,
+	}
+
+	app.Action = func(ctx *cli.Context) error {
+		conf.dir = ctx.GlobalString(StorageFlag.Name)
 		err := run(&conf)
 		return err
 	}
@@ -35,7 +50,7 @@ func main() {
 
 func run(conf *Config) error {
 	config := &t.DefaultConfig
-	config.DataDir = ".storage"
+	config.DataDir = conf.dir
 	config.Mode = t.LAZY
 	fs, err := t.New(config, true, false, false)
 	if err != nil {
