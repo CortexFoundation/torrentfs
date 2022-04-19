@@ -681,6 +681,10 @@ func (fs *TorrentFS) LocalPort() int {
 	return fs.storage().LocalPort()
 }
 
+func (fs *TorrentFS) Simulate() {
+	fs.storage().Simulate()
+}
+
 func (fs *TorrentFS) Congress() int {
 	return fs.storage().Congress()
 }

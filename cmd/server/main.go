@@ -36,6 +36,7 @@ func main() {
 func run(conf *Config) error {
 	config := &t.DefaultConfig
 	config.DataDir = ".storage"
+	config.Mode = t.LAZY
 	fs, err := t.New(config, true, false, false)
 	if err != nil {
 		log.Error("err", "e", err)
