@@ -78,9 +78,7 @@ func run(conf *Config) error {
 }
 
 func (conf *Config) handler(w http.ResponseWriter, r *http.Request) {
-	//fmt.Printf("%v, %v, %v\n", r.URL, r.Method, r.URL.Path)
 	res := "OK"
-	//uri := r.URL.Path
 	q := r.URL.Query()
 	switch r.Method {
 	case "GET":
