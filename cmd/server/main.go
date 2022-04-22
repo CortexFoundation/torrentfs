@@ -15,8 +15,9 @@ import (
 )
 
 type Config struct {
-	tfs *t.TorrentFS
-	dir string
+	tfs  *t.TorrentFS
+	dir  string
+	port string
 }
 
 var (
@@ -33,12 +34,20 @@ func main() {
 		Value: ".storage",
 	}
 
+	PortFlag := cli.StringFlag{
+		Name:  "port",
+		Usage: "Listen port",
+		Value: "8080",
+	}
+
 	app.Flags = []cli.Flag{
 		&StorageFlag,
+		&PortFlag,
 	}
 
 	app.Action = func(ctx *cli.Context) error {
 		conf.dir = ctx.String(StorageFlag.Name)
+		conf.port = ctx.String(PortFlag.Name)
 		err := run(&conf)
 		return err
 	}
@@ -68,7 +77,7 @@ func run(conf *Config) error {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", conf.handler)
-	http.ListenAndServe("127.0.0.1:8080", mux)
+	http.ListenAndServe("127.0.0.1:"+conf.port, mux)
 
 	var c = make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
@@ -78,9 +87,7 @@ func run(conf *Config) error {
 }
 
 func (conf *Config) handler(w http.ResponseWriter, r *http.Request) {
-	//fmt.Printf("%v, %v, %v\n", r.URL, r.Method, r.URL.Path)
 	res := "OK"
-	//uri := r.URL.Path
 	q := r.URL.Query()
 	switch r.Method {
 	case "GET":
