@@ -11,6 +11,7 @@ import (
 
 	"github.com/CortexFoundation/CortexTheseus/log"
 	t "github.com/CortexFoundation/torrentfs"
+	"github.com/CortexFoundation/torrentfs/params"
 	cli "github.com/urfave/cli/v2"
 )
 
@@ -60,7 +61,7 @@ func main() {
 func run(conf *Config) error {
 	config := &t.DefaultConfig
 	config.DataDir = conf.dir
-	config.Mode = t.LAZY
+	config.Mode = params.LAZY
 	fs, err := t.New(config, true, false, false)
 	if err != nil {
 		log.Error("err", "e", err)
