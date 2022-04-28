@@ -5,15 +5,15 @@ go 1.18
 require (
 	github.com/CortexFoundation/CortexTheseus v1.10.30-0.20220219031648-66b3480bf2d3
 	github.com/CortexFoundation/merkletree v0.0.0-20210226031755-94f6423532ee
-	github.com/allegro/bigcache/v3 v3.0.2-0.20211203094859-77bbae442c22
+	github.com/allegro/bigcache/v3 v3.0.3-0.20220421114657-bec16b063491
 	github.com/anacrolix/envpprof v1.2.1
 	github.com/anacrolix/fuse v0.2.0
 	github.com/anacrolix/log v0.13.1
 	github.com/anacrolix/missinggo/v2 v2.5.4-0.20220317032254-8c5ea4947a0b
 	github.com/anacrolix/tagflag v1.3.1-0.20210717093243-41ae76143afa
-	github.com/anacrolix/torrent v1.42.1-0.20220414090245-529d97b5eb65
+	github.com/anacrolix/torrent v1.42.1-0.20220426005912-5bcd5d1b135a
 	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8
-	github.com/davecgh/go-spew v1.1.1
+	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/deckarep/golang-set v1.8.0
 	github.com/dustin/go-humanize v1.0.0
 	github.com/edsrzf/mmap-go v1.0.0
@@ -25,7 +25,7 @@ require (
 	github.com/urfave/cli/v2 v2.4.0
 	go.etcd.io/bbolt v1.3.7-0.20220226045046-fd5535f71f48
 	golang.org/x/time v0.0.0-20210723032227-1f47c861a9ac
-	golang.org/x/tools v0.1.0
+	golang.org/x/tools v0.1.11-0.20220422201124-fa7afc95f23e
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1
 )
 
@@ -84,7 +84,7 @@ require (
 	github.com/tklauser/go-sysconf v0.3.5 // indirect
 	github.com/tklauser/numcpus v0.2.2 // indirect
 	golang.org/x/crypto v0.0.0-20220131195533-30dcbda58838 // indirect
-	golang.org/x/mod v0.3.0 // indirect
+	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 // indirect
 	golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
 	golang.org/x/sys v0.0.0-20211216021012-1d35b9e2eb4e // indirect
