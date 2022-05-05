@@ -12,6 +12,9 @@ import (
 	"github.com/CortexFoundation/CortexTheseus/log"
 	t "github.com/CortexFoundation/torrentfs"
 	"github.com/CortexFoundation/torrentfs/params"
+	xprometheus "github.com/anacrolix/missinggo/v2/prometheus"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	cli "github.com/urfave/cli/v2"
 )
 
@@ -76,8 +79,11 @@ func run(conf *Config) error {
 	glogger.Vmodule("")
 	log.Root().SetHandler(glogger)
 
+	prometheus.MustRegister(xprometheus.NewExpvarCollector())
+
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", conf.handler)
+	mux.Handle("/metrics", promhttp.Handler())
 	http.ListenAndServe("127.0.0.1:"+conf.port, mux)
 
 	var c = make(chan os.Signal, 1)
