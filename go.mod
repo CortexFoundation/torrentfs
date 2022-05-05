@@ -8,7 +8,7 @@ require (
 	github.com/allegro/bigcache/v3 v3.0.3-0.20220421114657-bec16b063491
 	github.com/anacrolix/envpprof v1.2.1
 	github.com/anacrolix/fuse v0.2.0
-	github.com/anacrolix/log v0.13.1
+	github.com/anacrolix/log v0.13.2-0.20220427063716-a4894bb521c6
 	github.com/anacrolix/missinggo/v2 v2.7.0
 	github.com/anacrolix/tagflag v1.3.1-0.20210717093243-41ae76143afa
 	github.com/anacrolix/torrent v1.25.1
