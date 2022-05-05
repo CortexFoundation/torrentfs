@@ -51,6 +51,7 @@ require (
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bits-and-blooms/bitset v1.2.0 // indirect
 	github.com/btcsuite/btcd/btcec/v2 v2.1.4-0.20220413172512-bf64c8bdbbbf // indirect
+	github.com/btcsuite/btcd/chaincfg/chainhash v1.0.2-0.20220428234604-a86222c92d7d // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.1 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.1 // indirect
