@@ -63,8 +63,8 @@ github.com/CortexFoundation/CortexTheseus v1.10.3-0.20200624034846-46f8f368cbee/
 github.com/CortexFoundation/CortexTheseus v1.10.3-0.20200704025058-f0885ec2bd83/go.mod h1:++9X1TLZ+XbAFxrQO5Cl9T/5/OW6JaLlvVnDsEH0qkA=
 github.com/CortexFoundation/CortexTheseus v1.10.8/go.mod h1:BxMcNBe5UuA9WWMLBdHP5JqpFKyCBZza+6FLSMx7Nhk=
 github.com/CortexFoundation/CortexTheseus v1.10.17/go.mod h1:BwFbjqs4a31m8WC/lqlE0WTc/7q+xX1Abjrtvw+fpoI=
-github.com/CortexFoundation/CortexTheseus v1.10.31-0.20220504104048-3bc39925508b h1:N9flNdS1NY4cBe0QbD6Bry51n2JaG49MXVhFyB7c+2g=
-github.com/CortexFoundation/CortexTheseus v1.10.31-0.20220504104048-3bc39925508b/go.mod h1:YEqiCVeI4GTnUDrnJwIUTP2kUVqpF24E9lSpFphG+vk=
+github.com/CortexFoundation/CortexTheseus v1.10.30-0.20220506162148-d4081057bdf7 h1:YCuEuS/1LLhovfLiS0DL1SMNILeevidAvImFsACE6LI=
+github.com/CortexFoundation/CortexTheseus v1.10.30-0.20220506162148-d4081057bdf7/go.mod h1:vdFxFWzKObz5hWJy3RGddJIrlDvYUKJFJxF8gbzsga4=
 github.com/CortexFoundation/cvm-runtime v0.0.0-20210119064759-82917ece736a/go.mod h1:oLEQaJbHT0SAIVjY90BYPYVikGylXHrPyf1yTPS7HZg=
 github.com/CortexFoundation/inference v0.0.0-20210119065113-cfd300c22e86/go.mod h1:uioLPDl9WVs5BELuGw1SNzrsLYNDfjmzb25q4wTpHLk=
 github.com/CortexFoundation/merkletree v0.0.0-20210226031755-94f6423532ee h1:jfpPt8Ii/jb4FbANNMZ2jhTofPN2HBNh1fwn8mc7P+E=

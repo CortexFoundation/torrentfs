@@ -3,7 +3,7 @@ module github.com/CortexFoundation/torrentfs
 go 1.18
 
 require (
-	github.com/CortexFoundation/CortexTheseus v1.10.31-0.20220504104048-3bc39925508b
+	github.com/CortexFoundation/CortexTheseus v1.10.30-0.20220506162148-d4081057bdf7
 	github.com/CortexFoundation/merkletree v0.0.0-20210226031755-94f6423532ee
 	github.com/allegro/bigcache/v3 v3.0.3-0.20220421114657-bec16b063491
 	github.com/anacrolix/envpprof v1.2.1
