@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/CortexFoundation/CortexTheseus v1.10.30-0.20220506162148-d4081057bdf7
 	github.com/CortexFoundation/merkletree v0.0.0-20210226031755-94f6423532ee
-	github.com/allegro/bigcache/v3 v3.0.3-0.20220421114657-bec16b063491
+	github.com/allegro/bigcache/v3 v3.0.3-0.20220509113442-0b306aa0178f
 	github.com/anacrolix/envpprof v1.2.1
 	github.com/anacrolix/fuse v0.2.0
 	github.com/anacrolix/log v0.13.2-0.20220427063716-a4894bb521c6
@@ -51,7 +51,6 @@ require (
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bits-and-blooms/bitset v1.2.0 // indirect
 	github.com/btcsuite/btcd/btcec/v2 v2.2.0 // indirect
-	github.com/btcsuite/btcd/chaincfg/chainhash v1.0.2-0.20220428234604-a86222c92d7d // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.1 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.1 // indirect
