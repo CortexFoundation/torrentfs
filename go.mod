@@ -21,7 +21,7 @@ require (
 	github.com/golang/snappy v0.0.5-0.20220116011046-fa5810519dcb
 	github.com/google/uuid v1.3.0
 	github.com/hashicorp/golang-lru v0.5.5-0.20210104140557-80c98217689d
-	github.com/otiai10/copy v1.7.0
+	github.com/otiai10/copy v1.7.1-0.20220511062925-528e2c97a037
 	github.com/prometheus/client_golang v1.12.1
 	github.com/urfave/cli/v2 v2.6.0
 	go.etcd.io/bbolt v1.3.7-0.20220226045046-fd5535f71f48
