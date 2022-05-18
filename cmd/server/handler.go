@@ -42,26 +42,32 @@ func (conf *Config) SeedHandler(w http.ResponseWriter, r *http.Request) {
 	case "GET":
 		res = "GET NOT SUPPORT"
 	case "POST":
-		path, err := os.Getwd()
+		//path, err := os.Getwd()
+		path := "/share"
+		err := os.MkdirAll(filepath.Dir(path), 0777) //os.FileMode(os.ModePerm))
 		if err != nil {
-			res = "seeding path failed"
+			log.Error("Mkdir failed", "path", path)
+			return
+		}
+		//if err != nil {
+		//res = "seeding path failed"
+		//} else {
+		ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+		defer cancel()
+		name := q.Get("file")
+		match, _ := regexp.MatchString(`^[0-9A-Za-z._-]*$`, name)
+		if name == "torrent" || !match || strings.Contains(name, "/") || strings.Contains(name, "\\") {
+			log.Error("invalid file name", "name", name)
+			res = "invalid file name pattern"
 		} else {
-			ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
-			defer cancel()
-			name := q.Get("file")
-			match, _ := regexp.MatchString(`^[0-9A-Za-z._-]*$`, name)
-			if name == "torrent" || !match || strings.Contains(name, "/") || strings.Contains(name, "\\") {
-				log.Error("invalid file name", "name", name)
-				res = "invalid file name pattern"
-			} else {
-				file := filepath.Join(path, name)
-				log.Info("Seeding path", "root", path, "file", file)
-				if _, err := conf.tfs.SeedingLocal(ctx, file, false); err != nil {
-					log.Error("err", "e", err)
-					res = err.Error()
-				}
+			file := filepath.Join(path, name)
+			log.Info("Seeding path", "root", path, "file", file)
+			if _, err := conf.tfs.SeedingLocal(ctx, file, false); err != nil {
+				log.Error("err", "e", err)
+				res = err.Error()
 			}
 		}
+		//}
 	default:
 		res = "method not found"
 	}
