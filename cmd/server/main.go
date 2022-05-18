@@ -132,17 +132,18 @@ func (conf *Config) SeedHandler(w http.ResponseWriter, r *http.Request) {
 			ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 			defer cancel()
 			name := q.Get("file")
-			if strings.Contains(name, "/") {
-				res = "file name with invalid char"
-			} else {
-				file := filepath.Join(path, name)
-				log.Info("Seeding path", "root", path, "file", file)
-				_, err := conf.tfs.SeedingLocal(ctx, file, false)
-				if err != nil {
-					log.Error("err", "e", err)
-					res = err.Error()
-				}
+			name = strings.Replace(name, "/", "", -1)
+			//	if strings.Contains(name, "/") {
+			//		res = "file name with invalid char"
+			//	} else {
+			file := filepath.Join(path, name)
+			log.Info("Seeding path", "root", path, "file", file)
+			_, err := conf.tfs.SeedingLocal(ctx, file, false)
+			if err != nil {
+				log.Error("err", "e", err)
+				res = err.Error()
 			}
+			//	}
 		}
 	default:
 		res = "method not found"
