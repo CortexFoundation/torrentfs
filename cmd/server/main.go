@@ -125,7 +125,7 @@ func (conf *Config) SeedHandler(w http.ResponseWriter, r *http.Request) {
 		// TODO
 		ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 		defer cancel()
-		_, err := conf.tfs.SeedingLocal(ctx, q.Get("path"), true)
+		_, err := conf.tfs.SeedingLocal(ctx, q.Get("path"), false)
 		if err != nil {
 			log.Error("err", "e", err)
 			res = err.Error()

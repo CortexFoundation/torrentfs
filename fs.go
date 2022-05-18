@@ -517,6 +517,7 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 // load files, default mode is copyMode, linkMode
 // will limit user's operations for original files
 func (fs *TorrentFS) SeedingLocal(ctx context.Context, filePath string, isLinkMode bool) (infoHash string, err error) {
+	fileMode := false
 	// 1. check folder exist
 	if _, err = os.Stat(filePath); err != nil {
 		return
@@ -548,14 +549,18 @@ func (fs *TorrentFS) SeedingLocal(ctx context.Context, filePath string, isLinkMo
 	var dataInfo os.FileInfo
 	dataPath := filepath.Join(filePath, "data")
 	if dataInfo, err = os.Stat(dataPath); err != nil {
-		return
-	} else {
-		validFlag := iterateForValidFile(filePath, dataInfo)
-		if !validFlag {
-			err = errors.New("SeedingLocal: Empty Seeding Data!")
-			log.Error("SeedingLocal", "check", err.Error(), "path", dataPath)
+		dataPath = filepath.Join(filePath, "")
+		if dataInfo, err = os.Stat(dataPath); err != nil {
+			log.Error("Load data failed", "dataPath", dataPath)
 			return
 		}
+		fileMode = true
+	}
+	validFlag := iterateForValidFile(filePath, dataInfo)
+	if !validFlag {
+		err = errors.New("SeedingLocal: Empty Seeding Data!")
+		log.Error("SeedingLocal", "check", err.Error(), "path", dataPath, "name", dataInfo.Name())
+		return
 	}
 
 	// 3. generate torrent file, rewrite if exists
@@ -572,7 +577,11 @@ func (fs *TorrentFS) SeedingLocal(ctx context.Context, filePath string, isLinkMo
 	}
 
 	var fileTorrent *os.File
-	fileTorrent, err = os.OpenFile(filepath.Join(filePath, "torrent"), os.O_CREATE|os.O_WRONLY, 0644)
+	torrentPath := filepath.Join(filePath, "torrent")
+	if fileMode {
+		torrentPath = filepath.Join("", "torrent")
+	}
+	fileTorrent, err = os.OpenFile(torrentPath, os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		return
 	}
@@ -586,9 +595,34 @@ func (fs *TorrentFS) SeedingLocal(ctx context.Context, filePath string, isLinkMo
 	infoHash = strings.TrimPrefix(strings.ToLower(ih.Hex()), common.Prefix)
 	linkDst := filepath.Join(fs.storage().TmpDataDir, infoHash)
 	if !isLinkMode {
-		err = Copy.Copy(filePath, linkDst)
+		if !fileMode {
+			err = Copy.Copy(filePath, linkDst)
+		} else {
+			err = os.MkdirAll(filepath.Dir(linkDst), 0777) //os.FileMode(os.ModePerm))
+			if err != nil {
+				log.Error("Mkdir failed", "path", linkDst)
+				return
+			}
+
+			err = Copy.Copy(filePath, filepath.Join(linkDst, dataInfo.Name()))
+			if err != nil {
+				log.Error("Mkdir failed", "filePath", filePath, "path", linkDst)
+				return
+			}
+			log.Info("Torrent copy", "torrentPath", torrentPath, "linkDst", linkDst)
+			err = Copy.Copy(torrentPath, filepath.Join(linkDst, "torrent"))
+			if err != nil {
+				log.Error("Mkdir failed", "torrentPath", torrentPath, "path", linkDst)
+				return
+			}
+
+		}
 	} else {
 
+		if fileMode {
+			//TODO
+			return
+		}
 		// check if symbol link exist
 		if _, err = os.Stat(linkDst); err == nil {
 			// choice-1: original symbol link exists, cover it. (passed)
