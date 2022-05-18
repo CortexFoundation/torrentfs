@@ -49,7 +49,6 @@ func (conf *Config) SeedHandler(w http.ResponseWriter, r *http.Request) {
 			ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 			defer cancel()
 			name := q.Get("file")
-			//name = strings.Replace(name, "/", "", -1)
 			match, _ := regexp.MatchString(`^[0-9A-Za-z._-]*$`, name)
 			if name == "torrent" || !match || strings.Contains(name, "/") || strings.Contains(name, "\\") {
 				log.Error("invalid file name", "name", name)
@@ -57,8 +56,7 @@ func (conf *Config) SeedHandler(w http.ResponseWriter, r *http.Request) {
 			} else {
 				file := filepath.Join(path, name)
 				log.Info("Seeding path", "root", path, "file", file)
-				_, err := conf.tfs.SeedingLocal(ctx, file, false)
-				if err != nil {
+				if _, err := conf.tfs.SeedingLocal(ctx, file, false); err != nil {
 					log.Error("err", "e", err)
 					res = err.Error()
 				}

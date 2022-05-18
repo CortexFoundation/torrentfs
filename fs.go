@@ -35,7 +35,6 @@ import (
 	"github.com/anacrolix/torrent/metainfo"
 	lru "github.com/hashicorp/golang-lru"
 	cp "github.com/otiai10/copy"
-	//"time"
 )
 
 const (
