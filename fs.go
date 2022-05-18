@@ -34,7 +34,7 @@ import (
 	"github.com/anacrolix/torrent/bencode"
 	"github.com/anacrolix/torrent/metainfo"
 	lru "github.com/hashicorp/golang-lru"
-	Copy "github.com/otiai10/copy"
+	cp "github.com/otiai10/copy"
 	//"time"
 )
 
@@ -597,7 +597,7 @@ func (fs *TorrentFS) SeedingLocal(ctx context.Context, filePath string, isLinkMo
 	linkDst := filepath.Join(fs.storage().TmpDataDir, infoHash)
 	if !isLinkMode {
 		if !fileMode {
-			err = Copy.Copy(filePath, linkDst)
+			err = cp.Copy(filePath, linkDst)
 		} else {
 			err = os.MkdirAll(filepath.Dir(linkDst), 0777) //os.FileMode(os.ModePerm))
 			if err != nil {
@@ -605,13 +605,13 @@ func (fs *TorrentFS) SeedingLocal(ctx context.Context, filePath string, isLinkMo
 				return
 			}
 
-			err = Copy.Copy(filePath, filepath.Join(linkDst, dataInfo.Name()))
+			err = cp.Copy(filePath, filepath.Join(linkDst, dataInfo.Name()))
 			if err != nil {
 				log.Error("Mkdir failed", "filePath", filePath, "path", linkDst)
 				return
 			}
 			log.Info("Torrent copy", "torrentPath", torrentPath, "linkDst", linkDst)
-			err = Copy.Copy(torrentPath, filepath.Join(linkDst, "torrent"))
+			err = cp.Copy(torrentPath, filepath.Join(linkDst, "torrent"))
 			if err != nil {
 				log.Error("Mkdir failed", "torrentPath", torrentPath, "path", linkDst)
 				return
