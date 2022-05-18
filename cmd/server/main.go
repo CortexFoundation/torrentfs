@@ -82,7 +82,8 @@ func run(conf *Config) error {
 	prometheus.MustRegister(xprometheus.NewExpvarCollector())
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", conf.handler)
+	mux.HandleFunc("/download", conf.DownloadHandler)
+	mux.HandleFunc("/seed", conf.SeedHandler)
 	mux.Handle("/metrics", promhttp.Handler())
 	http.ListenAndServe("127.0.0.1:"+conf.port, mux)
 
@@ -93,7 +94,7 @@ func run(conf *Config) error {
 	return nil
 }
 
-func (conf *Config) handler(w http.ResponseWriter, r *http.Request) {
+func (conf *Config) DownloadHandler(w http.ResponseWriter, r *http.Request) {
 	res := "OK"
 	q := r.URL.Query()
 	switch r.Method {
@@ -104,6 +105,27 @@ func (conf *Config) handler(w http.ResponseWriter, r *http.Request) {
 		ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 		defer cancel()
 		err := conf.tfs.Download(ctx, q.Get("hash"), 1000000000)
+		if err != nil {
+			log.Error("err", "e", err)
+			res = err.Error()
+		}
+	default:
+		res = "method not found"
+	}
+	fmt.Fprintf(w, res)
+}
+
+func (conf *Config) SeedHandler(w http.ResponseWriter, r *http.Request) {
+	res := "OK"
+	q := r.URL.Query()
+	switch r.Method {
+	case "GET":
+		res = "GET NOT SUPPORT"
+	case "POST":
+		// TODO
+		ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+		defer cancel()
+		_, err := conf.tfs.SeedingLocal(ctx, q.Get("path"), true)
 		if err != nil {
 			log.Error("err", "e", err)
 			res = err.Error()
