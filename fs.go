@@ -531,6 +531,7 @@ func (fs *TorrentFS) SeedingLocal(ctx context.Context, filePath string, isLinkMo
 		if dataInfo.IsDir() {
 			dirFp, _ := os.Open(filePath)
 			if fInfos, err := dirFp.Readdir(0); err != nil {
+				log.Error("Read dir failed", "filePath", filePath, "err", err)
 				return false
 			} else {
 				for _, v := range fInfos {

@@ -50,8 +50,8 @@ func (conf *Config) SeedHandler(w http.ResponseWriter, r *http.Request) {
 			defer cancel()
 			name := q.Get("file")
 			//name = strings.Replace(name, "/", "", -1)
-			match, _ := regexp.MatchString(`^[0-9A-Za-z._]*$`, name)
-			if !match || strings.Count(name, ".") > 1 || strings.Contains(name, "/") || strings.Contains(name, "\\") {
+			match, _ := regexp.MatchString(`^[0-9A-Za-z._-]*$`, name)
+			if name == "torrent" || !match || strings.Contains(name, "/") || strings.Contains(name, "\\") {
 				log.Error("invalid file name", "name", name)
 				res = "invalid file name pattern"
 			} else {
