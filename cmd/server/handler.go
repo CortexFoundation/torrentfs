@@ -44,8 +44,7 @@ func (conf *Config) SeedHandler(w http.ResponseWriter, r *http.Request) {
 	case "POST":
 		//path, err := os.Getwd()
 		path := "/share"
-		err := os.MkdirAll(filepath.Dir(path), 0777) //os.FileMode(os.ModePerm))
-		if err != nil {
+		if err := os.MkdirAll(filepath.Dir(path), 0777); err != nil {
 			log.Error("Mkdir failed", "path", path, "err", err)
 			res = err.Error()
 			return
