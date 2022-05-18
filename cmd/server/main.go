@@ -133,9 +133,9 @@ func (conf *Config) SeedHandler(w http.ResponseWriter, r *http.Request) {
 			ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 			defer cancel()
 			name := q.Get("file")
-			name = strings.Replace(name, "/", "", -1)
+			//name = strings.Replace(name, "/", "", -1)
 			match, _ := regexp.MatchString(`^[0-9A-Za-z._]*$`, name)
-			if !match || strings.Count(name, ".") > 1 {
+			if !match || strings.Count(name, ".") > 1 || strings.Contains(name, "/") || strings.Contains(name, "\\") {
 				log.Error("invalid file name", "name", name)
 				res = "invalid file name pattern"
 			} else {
