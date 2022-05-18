@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"syscall"
 	"time"
@@ -119,12 +120,12 @@ func (conf *Config) DownloadHandler(w http.ResponseWriter, r *http.Request) {
 
 func (conf *Config) SeedHandler(w http.ResponseWriter, r *http.Request) {
 	res := "OK"
+
 	q := r.URL.Query()
 	switch r.Method {
 	case "GET":
 		res = "GET NOT SUPPORT"
 	case "POST":
-		// TODO
 		path, err := os.Getwd()
 		if err != nil {
 			res = "seeding path failed"
@@ -133,17 +134,19 @@ func (conf *Config) SeedHandler(w http.ResponseWriter, r *http.Request) {
 			defer cancel()
 			name := q.Get("file")
 			name = strings.Replace(name, "/", "", -1)
-			//	if strings.Contains(name, "/") {
-			//		res = "file name with invalid char"
-			//	} else {
-			file := filepath.Join(path, name)
-			log.Info("Seeding path", "root", path, "file", file)
-			_, err := conf.tfs.SeedingLocal(ctx, file, false)
-			if err != nil {
-				log.Error("err", "e", err)
-				res = err.Error()
+			match, _ := regexp.MatchString(`^[0-9A-Za-z._]*$`, name)
+			if !match || strings.Count(name, ".") > 1 {
+				log.Error("invalid file name", "name", name)
+				res = "invalid file name pattern"
+			} else {
+				file := filepath.Join(path, name)
+				log.Info("Seeding path", "root", path, "file", file)
+				_, err := conf.tfs.SeedingLocal(ctx, file, false)
+				if err != nil {
+					log.Error("err", "e", err)
+					res = err.Error()
+				}
 			}
-			//	}
 		}
 	default:
 		res = "method not found"

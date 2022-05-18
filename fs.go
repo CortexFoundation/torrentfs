@@ -559,7 +559,7 @@ func (fs *TorrentFS) SeedingLocal(ctx context.Context, filePath string, isLinkMo
 	validFlag := iterateForValidFile(filePath, dataInfo)
 	if !validFlag {
 		err = errors.New("SeedingLocal: Empty Seeding Data!")
-		log.Error("SeedingLocal", "check", err.Error(), "path", dataPath, "name", dataInfo.Name())
+		log.Error("SeedingLocal", "check", err.Error(), "path", dataPath, "name", dataInfo.Name(), "fileMode", fileMode)
 		return
 	}
 
