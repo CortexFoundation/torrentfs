@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"path/filepath"
+	"strings"
 	"syscall"
 	"time"
 
@@ -123,12 +125,24 @@ func (conf *Config) SeedHandler(w http.ResponseWriter, r *http.Request) {
 		res = "GET NOT SUPPORT"
 	case "POST":
 		// TODO
-		ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
-		defer cancel()
-		_, err := conf.tfs.SeedingLocal(ctx, q.Get("path"), false)
+		path, err := os.Getwd()
 		if err != nil {
-			log.Error("err", "e", err)
-			res = err.Error()
+			res = "seeding path failed"
+		} else {
+			ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+			defer cancel()
+			name := q.Get("file")
+			if strings.Contains(name, "/") {
+				res = "file name with invalid char"
+			} else {
+				file := filepath.Join(path, name)
+				log.Info("Seeding path", "root", path, "file", file)
+				_, err := conf.tfs.SeedingLocal(ctx, file, false)
+				if err != nil {
+					log.Error("err", "e", err)
+					res = err.Error()
+				}
+			}
 		}
 	default:
 		res = "method not found"
