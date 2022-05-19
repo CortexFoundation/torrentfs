@@ -62,6 +62,9 @@ func run(conf *Config) error {
 	config := &t.DefaultConfig
 	config.DataDir = conf.dir
 	config.Mode = params.LAZY
+
+	config.DisableUTP = false
+
 	fs, err := t.New(config, true, false, false)
 	if err != nil {
 		log.Error("err", "e", err)
