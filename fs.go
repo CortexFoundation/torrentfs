@@ -516,7 +516,6 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 // load files, default mode is copyMode, linkMode
 // will limit user's operations for original files
 func (fs *TorrentFS) SeedingLocal(ctx context.Context, filePath string, isLinkMode bool) (infoHash string, err error) {
-	fileMode := false
 	// 1. check folder exist
 	if _, err = os.Stat(filePath); err != nil {
 		return
@@ -546,7 +545,10 @@ func (fs *TorrentFS) SeedingLocal(ctx context.Context, filePath string, isLinkMo
 		return false
 	}
 
-	var dataInfo os.FileInfo
+	var (
+		dataInfo os.FileInfo
+		fileMode bool = false
+	)
 	dataPath := filepath.Join(filePath, "data")
 	if dataInfo, err = os.Stat(dataPath); err != nil {
 		dataPath = filepath.Join(filePath, "")
