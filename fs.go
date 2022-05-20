@@ -578,11 +578,12 @@ func (fs *TorrentFS) SeedingLocal(ctx context.Context, filePath string, isLinkMo
 		return
 	}
 
-	var fileTorrent *os.File
 	torrentPath := filepath.Join(filePath, "torrent")
 	if fileMode {
 		torrentPath = filepath.Join("", "torrent")
 	}
+
+	var fileTorrent *os.File
 	fileTorrent, err = os.OpenFile(torrentPath, os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		return
