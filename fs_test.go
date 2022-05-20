@@ -18,6 +18,7 @@ package torrentfs
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"testing"
 	"time"
@@ -30,6 +31,7 @@ func TestLocal(t *testing.T) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	fs.Start(nil)
 	defer fs.Stop()
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
@@ -38,4 +40,13 @@ func TestLocal(t *testing.T) {
 		log.Fatal("failed to get file")
 	}
 
+}
+
+func TestInfoHash(t *testing.T) {
+
+	hash, err := Hash("testdata/torrent")
+	if len(hash) == 0 || err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(hash)
 }

@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/CortexFoundation/CortexTheseus/log"
+	common "github.com/CortexFoundation/torrentfs"
 )
 
 const (
@@ -92,9 +93,26 @@ func (conf *Config) ListHandler(w http.ResponseWriter, r *http.Request) {
 			res = err.Error()
 		}
 
+		var path string
 		for _, file := range files {
-			//fmt.Println(file.Name(), file.IsDir())
-			res += file.Name() + "\n"
+			if file.IsDir() {
+				continue
+			}
+
+			if file.Type() == os.ModeSymlink {
+				continue
+			}
+			//if ok, err := common.IsDirectory(WORKSPACE + file.Name()); ok || err == nil {
+			//	log.Error("Dir failed", "err", err , "ok", ok, "path", WORKSPACE + file.Name())
+			//	continue
+			//}
+			path = WORKSPACE + file.Name()
+			h, err := common.Hash(path)
+			if len(h) == 0 || err != nil {
+				log.Error("Hash failed", "path", path, "err", err)
+				continue
+			}
+			res += file.Name() + "     " + h + "\n"
 		}
 	default:
 		res = "method not found"
