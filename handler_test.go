@@ -43,3 +43,20 @@ func TestGetFile(t *testing.T) {
 	}
 	fmt.Println("file", file[:20])
 }
+
+func TestLocal(t *testing.T) {
+	DefaultConfig.DataDir = "data"
+	DefaultConfig.Port = 0
+	fs, err := New(&DefaultConfig, true, false, false)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer fs.Stop()
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+
+	if _, err := fs.SeedingLocal(ctx, "torrent.go", false); err != nil {
+		log.Fatal("failed to get file")
+	}
+
+}

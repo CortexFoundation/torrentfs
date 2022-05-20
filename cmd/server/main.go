@@ -84,6 +84,8 @@ func run(conf *Config) error {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/download", conf.DownloadHandler)
 	mux.HandleFunc("/seed", conf.SeedHandler)
+	mux.HandleFunc("/list", conf.ListHandler)
+
 	mux.Handle("/metrics", promhttp.Handler())
 	http.ListenAndServe("127.0.0.1:"+conf.port, mux)
 

@@ -4,13 +4,17 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	//"os"
+	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
 	"time"
 
 	"github.com/CortexFoundation/CortexTheseus/log"
+)
+
+const (
+	WORKSPACE = "/share/"
 )
 
 func (conf *Config) DownloadHandler(w http.ResponseWriter, r *http.Request) {
@@ -56,7 +60,7 @@ func (conf *Config) SeedHandler(w http.ResponseWriter, r *http.Request) {
 			log.Error("invalid file name", "name", name)
 			res = "invalid file name pattern"
 		} else {
-			path := "/share"
+			path := WORKSPACE
 			file := filepath.Join(path, name)
 
 			log.Info("Seeding path", "root", path, "file", file, "name", name)
@@ -70,6 +74,28 @@ func (conf *Config) SeedHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		//}
+	default:
+		res = "method not found"
+	}
+	fmt.Fprintf(w, res)
+}
+
+func (conf *Config) ListHandler(w http.ResponseWriter, r *http.Request) {
+	res := ""
+	//q := r.URL.Query()
+	switch r.Method {
+	case "GET":
+		res = "GET NOT SUPPORT"
+	case "POST":
+		files, err := os.ReadDir(WORKSPACE)
+		if err != nil {
+			res = err.Error()
+		}
+
+		for _, file := range files {
+			//fmt.Println(file.Name(), file.IsDir())
+			res += file.Name() + "\n"
+		}
 	default:
 		res = "method not found"
 	}
