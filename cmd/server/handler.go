@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	//"strconv"
 	"strings"
 	"time"
 
@@ -69,9 +70,11 @@ func (conf *Config) SeedHandler(w http.ResponseWriter, r *http.Request) {
 			ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 			defer cancel()
 
-			if _, err := conf.tfs.SeedingLocal(ctx, file, false); err != nil {
+			if ih, err := conf.tfs.SeedingLocal(ctx, file, false); err != nil {
 				log.Error("err", "e", err)
 				res = err.Error()
+			} else {
+				res = ih
 			}
 		}
 		//}
@@ -119,3 +122,31 @@ func (conf *Config) ListHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Fprintf(w, res)
 }
+
+/*func (conf *Config) FetchHandler(w http.ResponseWriter, r *http.Request) {
+	res := "OK"
+	q := r.URL.Query()
+	switch r.Method {
+	case "GET":
+		res = "GET NOT SUPPORT"
+	case "POST":
+		ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+		defer cancel()
+		n, err := strconv.ParseInt(q.Get("size"), 10, 64)
+		if err != nil {
+			fmt.Printf("%d of type %T", n, n)
+			res = "size failed"
+		} else {
+			_, err := conf.tfs.GetFileWithSize(ctx, q.Get("hash"), uint64(n), q.Get("subpath"))
+			if err != nil {
+				log.Error("err", "e", err)
+				res = err.Error()
+			} else {
+				//res = string(ret[:])
+			}
+		}
+	default:
+		res = "method not found"
+	}
+	fmt.Fprintf(w, res)
+}*/

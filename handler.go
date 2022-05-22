@@ -1267,6 +1267,9 @@ func (tm *TorrentManager) getFile(infohash, subpath string) ([]byte, uint64, err
 		tm.fileLock.Lock()
 		defer tm.fileLock.Unlock()
 		diskReadMeter.Mark(1)
+
+		log.Debug("Get File", "dir", tm.DataDir, "key", key)
+
 		data, err := os.ReadFile(filepath.Join(tm.DataDir, key))
 
 		//data final verification

@@ -86,6 +86,9 @@ func run(conf *Config) error {
 	mux.HandleFunc("/seed", conf.SeedHandler)
 	mux.HandleFunc("/list", conf.ListHandler)
 
+	fileServer := http.FileServer(http.Dir("./.storage/"))
+	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
+
 	mux.Handle("/metrics", promhttp.Handler())
 	http.ListenAndServe("127.0.0.1:"+conf.port, mux)
 

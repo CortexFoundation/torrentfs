@@ -476,6 +476,7 @@ func (fs *TorrentFS) available(ctx context.Context, infohash string, rawSize uin
 }
 
 func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSize uint64, subpath string) ([]byte, error) {
+	log.Debug("Get file with size", "ih", infohash, "size", rawSize, "path", subpath)
 	if ok, err := fs.available(ctx, infohash, rawSize); err != nil || !ok {
 		if fs.config.Mode == params.DEV {
 			if p, err := fs.find(infohash); err == nil && p != nil {
@@ -485,7 +486,10 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 				log.Warn("Seed not found from neighbors", "ih", infohash, "size", rawSize, "peers", len(fs.peers))
 			}
 		}
+		log.Error("File is not available", "err", err)
 		return nil, err
+	} else {
+		log.Debug("File available", "ih", infohash, "size", rawSize, "path", subpath, "available", ok)
 	}
 
 	ret, progress, err := fs.storage().getFile(infohash, subpath)
@@ -507,6 +511,7 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 		//} else {
 		//	fs.scoreTable[infohash]++
 		//}
+		log.Info("todo")
 	}
 
 	return ret, err
