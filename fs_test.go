@@ -43,8 +43,7 @@ func TestLocal(t *testing.T) {
 }
 
 func TestInfoHash(t *testing.T) {
-
-	hash, err := Hash("testdata/torrent")
+	hash, err := Hash("testdata/data")
 	if len(hash) == 0 || err != nil {
 		log.Fatal(err)
 	}
