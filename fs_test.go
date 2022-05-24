@@ -33,6 +33,7 @@ func TestLocal(t *testing.T) {
 		log.Fatal(err)
 	}
 	fs.Start(nil)
+	fs.Simulate()
 	defer fs.Stop()
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
@@ -40,7 +41,7 @@ func TestLocal(t *testing.T) {
 	if _, err := fs.SeedingLocal(ctx, "torrent.go", false); err != nil {
 		log.Fatal("failed to get file")
 	}
-
+	time.Sleep(5 * time.Second)
 }
 
 func TestInfoHash(t *testing.T) {
