@@ -25,8 +25,9 @@ import (
 )
 
 func TestLocal(t *testing.T) {
-	DefaultConfig.DataDir = "data"
+	DefaultConfig.DataDir = "testdata"
 	DefaultConfig.Port = 0
+	DefaultConfig.Mode = "DEV"
 	fs, err := New(&DefaultConfig, true, false, false)
 	if err != nil {
 		log.Fatal(err)
