@@ -24,22 +24,30 @@ import (
 	"time"
 )
 
-func TestGetFile(t *testing.T) {
+func TestLocal(t *testing.T) {
 	DefaultConfig.DataDir = "testdata"
 	DefaultConfig.Port = 0
-	ih := "aea5584d0cd3865e90c80eace3bfcb062473d966"
-	fmt.Println(DefaultConfig)
-	tm, _ := NewTorrentManager(&DefaultConfig, 1, false, false, nil)
-	tm.Simulate()
-	tm.Start()
-	tm.Search(context.Background(), ih, 0, nil)
-	defer tm.Close()
-	time.Sleep(5 * time.Second)
-	a, _, _, _ := tm.available(ih, 100000000)
-	fmt.Println("available", a)
-	file, _, _ := tm.getFile(ih, "data")
-	if file == nil {
+	DefaultConfig.Mode = "DEV"
+	fs, err := New(&DefaultConfig, true, false, false)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fs.Start(nil)
+	fs.Simulate()
+	defer fs.Stop()
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+
+	if _, err := fs.SeedingLocal(ctx, "torrent.go", false); err != nil {
 		log.Fatal("failed to get file")
 	}
-	fmt.Println("file", file[:20])
+	time.Sleep(5 * time.Second)
+}
+
+func TestInfoHash(t *testing.T) {
+	hash, err := Hash("testdata/data")
+	if len(hash) == 0 || err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(hash)
 }

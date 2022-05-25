@@ -1,13 +1,10 @@
 package main
 
 import (
-	"context"
-	"fmt"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
 	"github.com/CortexFoundation/CortexTheseus/log"
 	t "github.com/CortexFoundation/torrentfs"
@@ -65,6 +62,9 @@ func run(conf *Config) error {
 	config := &t.DefaultConfig
 	config.DataDir = conf.dir
 	config.Mode = params.LAZY
+
+	config.DisableUTP = false
+
 	fs, err := t.New(config, true, false, false)
 	if err != nil {
 		log.Error("err", "e", err)
@@ -82,7 +82,13 @@ func run(conf *Config) error {
 	prometheus.MustRegister(xprometheus.NewExpvarCollector())
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", conf.handler)
+	mux.HandleFunc("/download", conf.DownloadHandler)
+	mux.HandleFunc("/seed", conf.SeedHandler)
+	mux.HandleFunc("/list", conf.ListHandler)
+
+	fileServer := http.FileServer(http.Dir("./.storage/"))
+	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
+
 	mux.Handle("/metrics", promhttp.Handler())
 	http.ListenAndServe("127.0.0.1:"+conf.port, mux)
 
@@ -91,25 +97,4 @@ func run(conf *Config) error {
 	<-c
 
 	return nil
-}
-
-func (conf *Config) handler(w http.ResponseWriter, r *http.Request) {
-	res := "OK"
-	q := r.URL.Query()
-	switch r.Method {
-	case "GET":
-		res = "GET NOT SUPPORT"
-	case "POST":
-		// TODO
-		ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
-		defer cancel()
-		err := conf.tfs.Download(ctx, q.Get("hash"), 1000000000)
-		if err != nil {
-			log.Error("err", "e", err)
-			res = err.Error()
-		}
-	default:
-		res = "method not found"
-	}
-	fmt.Fprintf(w, res)
 }
