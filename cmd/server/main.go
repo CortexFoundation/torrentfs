@@ -90,7 +90,13 @@ func run(conf *Config) error {
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
 	mux.Handle("/metrics", promhttp.Handler())
-	http.ListenAndServe("127.0.0.1:"+conf.port, mux)
+
+	log.Info("Server started", "port", conf.port)
+
+	if err := http.ListenAndServe("127.0.0.1:"+conf.port, mux); err != nil {
+		log.Error("Failed to start server", "err", err)
+		return err
+	}
 
 	var c = make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
