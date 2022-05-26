@@ -103,3 +103,5 @@ require (
 	google.golang.org/protobuf v1.28.1-0.20220412060553-8a7ba0762cb3 // indirect
 	gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce // indirect
 )
+
+require gopkg.in/yaml.v3 v3.0.0 // indirect
