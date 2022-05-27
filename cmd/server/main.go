@@ -12,6 +12,7 @@ import (
 	xprometheus "github.com/anacrolix/missinggo/v2/prometheus"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/ucwong/golang-kv"
 	cli "github.com/urfave/cli/v2"
 )
 
@@ -19,6 +20,7 @@ type Config struct {
 	tfs  *t.TorrentFS
 	dir  string
 	port string
+	db   kv.Bucket
 }
 
 var (
@@ -49,6 +51,11 @@ func main() {
 	app.Action = func(ctx *cli.Context) error {
 		conf.dir = ctx.String(StorageFlag.Name)
 		conf.port = ctx.String(PortFlag.Name)
+		conf.db = kv.Badger("")
+		if conf.db != nil {
+			defer conf.db.Close()
+		}
+
 		err := run(&conf)
 		return err
 	}
