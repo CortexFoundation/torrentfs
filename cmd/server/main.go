@@ -62,7 +62,9 @@ func main() {
 }
 
 func run(conf *Config) error {
-	conf.db = kv.Badger("")
+	//conf.db = kv.Badger("")
+	//conf.db = kv.Bolt("")
+	conf.db = kv.LevelDB("")
 	if conf.db != nil {
 		defer conf.db.Close()
 	}
@@ -100,8 +102,8 @@ func run(conf *Config) error {
 	mux.Handle("/metrics", promhttp.Handler())
 
 	log.Info("Server started", "port", conf.port)
-	//ret := conf.db.Prefix([]byte("s:"))
-	ret := conf.db.Scan()
+	ret := conf.db.Prefix([]byte("s:"))
+	//ret := conf.db.Scan()
 	log.Info("db length", "len", len(ret))
 	for _, v := range ret {
 		log.Info("Seeding file", "ih", string(v))
