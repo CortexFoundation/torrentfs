@@ -104,3 +104,4 @@ testdata
 .badger
 .bolt
 .leveldb
+.golang-kv
