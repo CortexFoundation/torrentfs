@@ -486,7 +486,7 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 				log.Warn("Seed not found from neighbors", "ih", infohash, "size", rawSize, "peers", len(fs.peers))
 			}
 		}
-		log.Error("File is not available", "err", err)
+		//log.Error("File is not available", "err", err)
 		return nil, err
 	} else {
 		log.Debug("File available", "ih", infohash, "size", rawSize, "path", subpath, "available", ok)
