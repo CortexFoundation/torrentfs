@@ -110,11 +110,17 @@ func (conf *Config) ListHandler(w http.ResponseWriter, r *http.Request) {
 			//	log.Error("Dir failed", "err", err , "ok", ok, "path", WORKSPACE + file.Name())
 			//	continue
 			//}
+			var h string
 			path = WORKSPACE + file.Name()
-			h, err := common.Hash(path)
-			if len(h) == 0 || err != nil {
-				log.Error("Hash failed", "path", path, "err", err)
-				continue
+			if b := conf.db.Get([]byte(file.Name())); b != nil {
+				h = string(b)
+			} else {
+				h, err = common.Hash(path)
+				if len(h) == 0 || err != nil {
+					log.Error("Hash failed", "path", path, "err", err)
+					continue
+				}
+				conf.db.Set([]byte(file.Name()), []byte(h))
 			}
 			res += file.Name() + "     " + h + "\n"
 		}
