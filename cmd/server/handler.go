@@ -75,7 +75,7 @@ func (conf *Config) SeedHandler(w http.ResponseWriter, r *http.Request) {
 				res = err.Error()
 			} else {
 				res = ih
-				conf.db.Set([]byte(ih), []byte(""))
+				conf.db.Set([]byte("s:"+ih), []byte(ih))
 			}
 		}
 		//}

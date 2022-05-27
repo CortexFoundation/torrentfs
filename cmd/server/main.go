@@ -51,10 +51,6 @@ func main() {
 	app.Action = func(ctx *cli.Context) error {
 		conf.dir = ctx.String(StorageFlag.Name)
 		conf.port = ctx.String(PortFlag.Name)
-		conf.db = kv.Badger("")
-		if conf.db != nil {
-			defer conf.db.Close()
-		}
 
 		err := run(&conf)
 		return err
@@ -66,6 +62,11 @@ func main() {
 }
 
 func run(conf *Config) error {
+	conf.db = kv.Badger("")
+	if conf.db != nil {
+		defer conf.db.Close()
+	}
+
 	config := &t.DefaultConfig
 	config.DataDir = conf.dir
 	config.Mode = params.LAZY
@@ -99,6 +100,12 @@ func run(conf *Config) error {
 	mux.Handle("/metrics", promhttp.Handler())
 
 	log.Info("Server started", "port", conf.port)
+	//ret := conf.db.Prefix([]byte("s:"))
+	ret := conf.db.Scan()
+	log.Info("db length", "len", len(ret))
+	for _, v := range ret {
+		log.Info("Seeding file", "ih", string(v))
+	}
 
 	if err := http.ListenAndServe("127.0.0.1:"+conf.port, mux); err != nil {
 		log.Error("Failed to start server", "err", err)
