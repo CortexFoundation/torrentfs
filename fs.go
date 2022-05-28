@@ -407,7 +407,9 @@ func (tfs *TorrentFS) Stop() error {
 	tfs.wg.Wait()
 
 	// Wait until every goroutine terminates.
+	tfs.monitor.lock.Lock()
 	tfs.monitor.stop()
+	tfs.monitor.lock.Unlock()
 
 	if tfs.nasCache != nil {
 		tfs.nasCache.Purge()
