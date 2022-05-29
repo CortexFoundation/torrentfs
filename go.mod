@@ -23,7 +23,7 @@ require (
 	github.com/hashicorp/golang-lru v0.5.5-0.20210104140557-80c98217689d
 	github.com/otiai10/copy v1.7.1-0.20220511062925-528e2c97a037
 	github.com/prometheus/client_golang v1.12.1
-	github.com/ucwong/golang-kv v1.0.4-0.20220527152117-65488bd3c400
+	github.com/ucwong/golang-kv v1.0.4-0.20220529051058-b79944473d15
 	github.com/urfave/cli/v2 v2.6.0
 	go.etcd.io/bbolt v1.3.7-0.20220226045046-fd5535f71f48
 	golang.org/x/time v0.0.0-20220411224347-583f2d630306

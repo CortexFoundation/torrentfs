@@ -529,8 +529,8 @@ github.com/tklauser/numcpus v0.4.0 h1:E53Dm1HjH1/R2/aoCtXtPgzmElmn51aOkhCFSuZq//
 github.com/tklauser/numcpus v0.4.0/go.mod h1:1+UI3pD8NW14VMwdgJNJ1ESk2UnwhAnz5hMwiKKqXCQ=
 github.com/tv42/httpunix v0.0.0-20191220191345-2ba4b9c3382c h1:u6SKchux2yDvFQnDHS3lPnIRmfVJ5Sxy3ao2SIdysLQ=
 github.com/tv42/httpunix v0.0.0-20191220191345-2ba4b9c3382c/go.mod h1:hzIxponao9Kjc7aWznkXaL4U4TWaDSs8zcsY4Ka08nM=
-github.com/ucwong/golang-kv v1.0.4-0.20220527152117-65488bd3c400 h1:+AIr/PXAzaLEO1mZduq5DldSechvQEkH+O3BLrx4kbA=
-github.com/ucwong/golang-kv v1.0.4-0.20220527152117-65488bd3c400/go.mod h1:K6r0PNDSjyzO59LuVDOtOisZgI2h7cxpkwUW8iahh4w=
+github.com/ucwong/golang-kv v1.0.4-0.20220529051058-b79944473d15 h1:W3O4F6FlXzZEPqzdvJzepwFPOMSwV6++U2lTgIAPo8w=
+github.com/ucwong/golang-kv v1.0.4-0.20220529051058-b79944473d15/go.mod h1:K6r0PNDSjyzO59LuVDOtOisZgI2h7cxpkwUW8iahh4w=
 github.com/ugorji/go/codec v0.0.0-20181204163529-d75b2dcb6bc8/go.mod h1:VFNgLljTbGfSG7qAOspJ7OScBnGdDN/yBr0sguwnwf0=
 github.com/urfave/cli/v2 v2.6.0 h1:yj2Drkflh8X/zUrkWlWlUjZYHyWN7WMmpVxyxXIUyv8=
 github.com/urfave/cli/v2 v2.6.0/go.mod h1:oDzoM7pVwz6wHn5ogWgFUU1s4VJayeQS+aEZDqXIEJs=
