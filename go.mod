@@ -23,6 +23,7 @@ require (
 	github.com/hashicorp/golang-lru v0.5.5-0.20210104140557-80c98217689d
 	github.com/otiai10/copy v1.7.1-0.20220511062925-528e2c97a037
 	github.com/prometheus/client_golang v1.12.1
+	github.com/ucwong/golang-kv v1.0.4-0.20220529051058-b79944473d15
 	github.com/urfave/cli/v2 v2.6.0
 	go.etcd.io/bbolt v1.3.7-0.20220226045046-fd5535f71f48
 	golang.org/x/time v0.0.0-20220411224347-583f2d630306
@@ -97,11 +98,23 @@ require (
 	golang.org/x/crypto v0.0.0-20220507011949-2cf3adece122 // indirect
 	golang.org/x/exp v0.0.0-20220428152302-39d4317da171 // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 // indirect
-	golang.org/x/net v0.0.0-20220425223048-2871e0cb64e4 // indirect
+	golang.org/x/net v0.0.0-20220526153639-5463443f8c37 // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
-	golang.org/x/sys v0.0.0-20220503163025-988cb79eb6c6 // indirect
+	golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a // indirect
 	google.golang.org/protobuf v1.28.1-0.20220412060553-8a7ba0762cb3 // indirect
 	gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce // indirect
 )
 
-require gopkg.in/yaml.v3 v3.0.0 // indirect
+require (
+	github.com/cespare/xxhash v1.1.0 // indirect
+	github.com/dgraph-io/badger/v3 v3.0.0-20220429165824-bc74fea7d03b // indirect
+	github.com/dgraph-io/ristretto v0.1.0 // indirect
+	github.com/gogo/protobuf v1.3.2 // indirect
+	github.com/golang/glog v1.0.0 // indirect
+	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
+	github.com/google/flatbuffers v2.0.6+incompatible // indirect
+	github.com/imkira/go-ttlmap v2.0.0+incompatible // indirect
+	github.com/klauspost/compress v1.15.5 // indirect
+	go.opencensus.io v0.23.0 // indirect
+	gopkg.in/yaml.v3 v3.0.0 // indirect
+)
