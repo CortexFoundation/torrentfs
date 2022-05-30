@@ -1096,15 +1096,16 @@ func (tm *TorrentManager) activeLoop() {
 				}
 
 				if t.bytesCompleted < t.bytesLimitation && !t.isBoosting {
-					tm.wg.Add(1)
-					go func() {
-						defer tm.wg.Done()
+					//tm.wg.Add(1)
+					//go func() {
+					//	defer tm.wg.Done()
 
-						t.lock.Lock()
-						t.Run(tm.slot)
-						t.lock.Unlock()
-					}()
+					t.lock.Lock()
+					t.Run(tm.slot)
+					//t.lock.Unlock()
+					//}()
 					active_running++
+					t.lock.Unlock()
 				}
 			}
 
