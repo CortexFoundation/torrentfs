@@ -698,11 +698,11 @@ func (tm *TorrentManager) seedingLoop() {
 				}()
 			}
 
-			if !tm.simulate {
-				/*if len(tm.seedingTorrents) == int(tm.good) {
-					close(tm.initCh)
-				}*/
-			}
+			//if !tm.simulate {
+			/*if len(tm.seedingTorrents) == int(tm.good) {
+				close(tm.initCh)
+			}*/
+			//}
 
 			if s {
 				//if active, ok := GoodFiles[t.InfoHash()]; tm.cache && ok && active {
