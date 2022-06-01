@@ -320,8 +320,6 @@ github.com/huandu/xstrings v1.3.2/go.mod h1:y5/lhBue+AyNmUVz9RLU9xbLR0o4KIIExikq
 github.com/huin/goupnp v1.0.4-0.20220329063618-5d0813cf5531 h1:5imnKV1eZBJEyZXhkCzG1TTUvxKzOExurQtSUIsY300=
 github.com/huin/goupnp v1.0.4-0.20220329063618-5d0813cf5531/go.mod h1:gnGPsThkYa7bFi/KWmEysQRf48l2dvR5bxr2OFckNX8=
 github.com/ianlancetaylor/demangle v0.0.0-20181102032728-5e5cf60278f6/go.mod h1:aSSvb/t6k1mPoxDqO4vJh6VOCGPwU4O0C2/Eqndh1Sc=
-github.com/imkira/go-ttlmap v2.0.0+incompatible h1:U0HKc010vF8qEQY4pvmZ7QLRSOpV4i87DKRngNHsqb0=
-github.com/imkira/go-ttlmap v2.0.0+incompatible/go.mod h1:O+nQkEb7vlapbVn5HZ3m4FItjV+qNG3GY9W/sb3l7aw=
 github.com/inconshreveable/mousetrap v1.0.0/go.mod h1:PxqpIevigyE2G7u3NXJIT2ANytuPF1OarO4DADm73n8=
 github.com/jackpal/go-nat-pmp v1.0.2 h1:KzKSgb7qkJvOUTqYl9/Hg/me3pWgBmERKrTGD7BdWus=
 github.com/jackpal/go-nat-pmp v1.0.2/go.mod h1:QPH045xvCAeXUZOxsnwmrtiCoxIr9eob+4orBN1SBKc=
@@ -529,8 +527,10 @@ github.com/tklauser/numcpus v0.4.0 h1:E53Dm1HjH1/R2/aoCtXtPgzmElmn51aOkhCFSuZq//
 github.com/tklauser/numcpus v0.4.0/go.mod h1:1+UI3pD8NW14VMwdgJNJ1ESk2UnwhAnz5hMwiKKqXCQ=
 github.com/tv42/httpunix v0.0.0-20191220191345-2ba4b9c3382c h1:u6SKchux2yDvFQnDHS3lPnIRmfVJ5Sxy3ao2SIdysLQ=
 github.com/tv42/httpunix v0.0.0-20191220191345-2ba4b9c3382c/go.mod h1:hzIxponao9Kjc7aWznkXaL4U4TWaDSs8zcsY4Ka08nM=
-github.com/ucwong/golang-kv v1.0.4-0.20220529051058-b79944473d15 h1:W3O4F6FlXzZEPqzdvJzepwFPOMSwV6++U2lTgIAPo8w=
-github.com/ucwong/golang-kv v1.0.4-0.20220529051058-b79944473d15/go.mod h1:K6r0PNDSjyzO59LuVDOtOisZgI2h7cxpkwUW8iahh4w=
+github.com/ucwong/go-ttlmap v1.0.2-0.20220531032643-ca9a390e2189 h1:5ilN5VAio+ZptXyuvum+iwdcYwxqtHlj0IabkzRQCe4=
+github.com/ucwong/go-ttlmap v1.0.2-0.20220531032643-ca9a390e2189/go.mod h1:f/uteIwsxpgNDjF4DAupetPvl9iL18owVCFCaQ67OEE=
+github.com/ucwong/golang-kv v1.0.5-0.20220531071813-b8bff677234d h1:pLGgRx1S7QlyGHtir4wswfiEnbIrUqtzEcv7vaTiWYs=
+github.com/ucwong/golang-kv v1.0.5-0.20220531071813-b8bff677234d/go.mod h1:S9nS5J3DbGGHep/ySwhhrMpvUh0iMd8S7E4ZajS89NU=
 github.com/ugorji/go/codec v0.0.0-20181204163529-d75b2dcb6bc8/go.mod h1:VFNgLljTbGfSG7qAOspJ7OScBnGdDN/yBr0sguwnwf0=
 github.com/urfave/cli/v2 v2.6.0 h1:yj2Drkflh8X/zUrkWlWlUjZYHyWN7WMmpVxyxXIUyv8=
 github.com/urfave/cli/v2 v2.6.0/go.mod h1:oDzoM7pVwz6wHn5ogWgFUU1s4VJayeQS+aEZDqXIEJs=
