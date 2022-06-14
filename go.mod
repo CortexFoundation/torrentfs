@@ -11,7 +11,7 @@ require (
 	github.com/anacrolix/log v0.13.2-0.20220427063716-a4894bb521c6
 	github.com/anacrolix/missinggo/v2 v2.7.0
 	github.com/anacrolix/tagflag v1.3.1-0.20210717093243-41ae76143afa
-	github.com/anacrolix/torrent v1.44.0
+	github.com/anacrolix/torrent v1.44.1-0.20220614060243-0158a830f5b6
 	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/deckarep/golang-set v1.8.0
@@ -23,12 +23,12 @@ require (
 	github.com/hashicorp/golang-lru v0.5.5-0.20210104140557-80c98217689d
 	github.com/otiai10/copy v1.7.1-0.20220511062925-528e2c97a037
 	github.com/prometheus/client_golang v1.12.1
-	github.com/ucwong/golang-kv v1.0.5-0.20220531071813-b8bff677234d
+	github.com/ucwong/golang-kv v1.0.5-0.20220613103205-167c7e049af6
 	github.com/urfave/cli/v2 v2.6.0
 	go.etcd.io/bbolt v1.3.7-0.20220226045046-fd5535f71f48
 	golang.org/x/time v0.0.0-20220411224347-583f2d630306
 	golang.org/x/tools v0.1.11-0.20220422201124-fa7afc95f23e
-	golang.org/x/xerrors v0.0.0-20220411194840-2f41105eb62f
+	golang.org/x/xerrors v0.0.0-20220517211312-f3a8303e98df
 )
 
 require (
@@ -90,7 +90,7 @@ require (
 	github.com/rs/dnscache v0.0.0-20211102005908-e0241e321417 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/shirou/gopsutil v3.21.11+incompatible // indirect
-	github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7 // indirect
+	github.com/syndtr/goleveldb v1.0.1-0.20220613043529-9ab5d34ac1d8 // indirect
 	github.com/tidwall/btree v0.7.2-0.20211211132910-4215444137fc // indirect
 	github.com/tklauser/go-sysconf v0.3.10 // indirect
 	github.com/tklauser/numcpus v0.4.0 // indirect
@@ -98,7 +98,7 @@ require (
 	golang.org/x/crypto v0.0.0-20220507011949-2cf3adece122 // indirect
 	golang.org/x/exp v0.0.0-20220428152302-39d4317da171 // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 // indirect
-	golang.org/x/net v0.0.0-20220526153639-5463443f8c37 // indirect
+	golang.org/x/net v0.0.0-20220607020251-c690dde0001d // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
 	golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a // indirect
 	google.golang.org/protobuf v1.28.1-0.20220412060553-8a7ba0762cb3 // indirect
@@ -107,14 +107,13 @@ require (
 
 require (
 	github.com/cespare/xxhash v1.1.0 // indirect
-	github.com/dgraph-io/badger/v3 v3.0.0-20220429165824-bc74fea7d03b // indirect
+	github.com/dgraph-io/badger/v3 v3.0.0-20220610215550-82b00f27e382 // indirect
 	github.com/dgraph-io/ristretto v0.1.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/glog v1.0.0 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/google/flatbuffers v2.0.6+incompatible // indirect
 	github.com/klauspost/compress v1.15.5 // indirect
-	github.com/ucwong/go-ttlmap v1.0.2-0.20220531032643-ca9a390e2189 // indirect
+	github.com/ucwong/go-ttlmap v1.0.2-0.20220531033718-59436cfae99c // indirect
 	go.opencensus.io v0.23.0 // indirect
-	gopkg.in/yaml.v3 v3.0.0 // indirect
 )
