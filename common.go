@@ -16,6 +16,11 @@
 
 package torrentfs
 
+/*
+  #cgo LDFLAGS: -L./ -lmath -lstdc++
+  #include "./c/math.c"
+*/
+import "C"
 import (
 	"github.com/CortexFoundation/CortexTheseus/common"
 	"github.com/anacrolix/torrent/bencode"
@@ -87,9 +92,12 @@ func max(as ...int64) int64 {
 func maxInt(as ...int) int {
 	ret := as[0]
 	for _, a := range as[1:] {
-		if a > ret {
-			ret = a
-		}
+		//if a > ret {
+		//	ret = a
+		//}
+		aC := C.int(a)
+		bC := C.int(ret)
+		ret = int(C.max(aC, bC))
 	}
 	return ret
 }

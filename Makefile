@@ -12,6 +12,8 @@ ifeq ($(OS), Darwin)
 endif
 
 all:
+	gcc -c -o math.o c/math.c
+	ar rcs libmath.a *.o
 	mkdir -p $(GOBIN)
 	go build -v -o $(GOBIN)/torrent cmd/torrent/*.go
 	go build -v -o $(GOBIN)/torrent-create cmd/torrent-create/*.go
@@ -20,7 +22,10 @@ all:
 	go build -v -o $(GOBIN)/server cmd/server/*.go
 clean:
 	go clean -cache
-	rm -rf $(GOBIN)/*
+	rm -rf $(GOBIN)/* *.o *.so *.a
+lib:
+	gcc -c -o math.o c/math.c
+	ar rcs libmath.a *.o
 format:
 	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "*/generated/*" | xargs gofmt -w -s
 test:
