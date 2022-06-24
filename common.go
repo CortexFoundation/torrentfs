@@ -17,7 +17,7 @@
 package torrentfs
 
 /*
-  #cgo LDFLAGS: -L./ -lmath -lstdc++
+  //#cgo LDFLAGS: -L./ -lmath -lstdc++
   #include "./c/math.c"
 */
 import "C"
