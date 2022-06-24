@@ -13,7 +13,7 @@ endif
 
 all:
 	gcc -c -o math.o c/math.c
-	ar rcs math.a *.o
+	ar rcs libmath.a *.o
 	mkdir -p $(GOBIN)
 	go build -v -o $(GOBIN)/torrent cmd/torrent/*.go
 	go build -v -o $(GOBIN)/torrent-create cmd/torrent-create/*.go
