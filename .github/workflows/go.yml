@@ -46,6 +46,7 @@ jobs:
 
     - name: Codecov
       run: |
+        make lib
         go test -v ./... -coverprofile=coverage.txt -covermode=atomic --race
         if [ -f coverage.txt ]; then
             bash <(curl -s https://codecov.io/bash)
