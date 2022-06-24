@@ -11,9 +11,7 @@ endif
 ifeq ($(OS), Darwin)
 endif
 
-all:
-	gcc -c -o math.o c/math.c
-	ar rcs libmath.a *.o
+all: lib
 	mkdir -p $(GOBIN)
 	go build -v -o $(GOBIN)/torrent cmd/torrent/*.go
 	go build -v -o $(GOBIN)/torrent-create cmd/torrent-create/*.go
