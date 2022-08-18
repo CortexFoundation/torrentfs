@@ -1,6 +1,6 @@
 module github.com/CortexFoundation/torrentfs
 
-go 1.18
+go 1.19
 
 require (
 	github.com/CortexFoundation/CortexTheseus v1.10.30-0.20220506162148-d4081057bdf7
