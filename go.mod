@@ -23,7 +23,7 @@ require (
 	github.com/hashicorp/golang-lru v0.5.5-0.20210104140557-80c98217689d
 	github.com/otiai10/copy v1.7.1-0.20220511062925-528e2c97a037
 	github.com/prometheus/client_golang v1.13.0
-	github.com/ucwong/golang-kv v1.0.5
+	github.com/ucwong/golang-kv v1.0.7
 	github.com/urfave/cli/v2 v2.11.2
 	go.etcd.io/bbolt v1.3.7-0.20220226045046-fd5535f71f48
 	golang.org/x/time v0.0.0-20220722155302-e5dcc9cfc0b9
@@ -36,7 +36,7 @@ require (
 	github.com/RoaringBitmap/roaring v1.2.1 // indirect
 	github.com/ajwerner/btree v0.0.0-20211221152037-f427b3e689c0 // indirect
 	github.com/anacrolix/chansync v0.3.0 // indirect
-	github.com/anacrolix/dht/v2 v2.18.0 // indirect
+	github.com/anacrolix/dht/v2 v2.18.1 // indirect
 	github.com/anacrolix/generics v0.0.0-20220618083756-f99e35403a60 // indirect
 	github.com/anacrolix/go-libutp v1.2.0 // indirect
 	github.com/anacrolix/missinggo v1.3.0 // indirect
@@ -91,28 +91,28 @@ require (
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/shirou/gopsutil v3.21.11+incompatible // indirect
 	github.com/syndtr/goleveldb v1.0.1-0.20220721030215-126854af5e6d // indirect
-	github.com/tidwall/btree v1.4.1 // indirect
+	github.com/tidwall/btree v1.4.2 // indirect
 	github.com/tklauser/go-sysconf v0.3.10 // indirect
 	github.com/tklauser/numcpus v0.5.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
 	golang.org/x/crypto v0.0.0-20220817201139-bc19a97f63c8 // indirect
-	golang.org/x/exp v0.0.0-20220722155223-a9213eeb770e // indirect
+	golang.org/x/exp v0.0.0-20220823124025-807a23277127 // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 // indirect
-	golang.org/x/net v0.0.0-20220812174116-3211cb980234 // indirect
-	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4 // indirect
-	golang.org/x/sys v0.0.0-20220817070843-5a390386f1f2 // indirect
+	golang.org/x/net v0.0.0-20220822230855-b0a4917ee28c // indirect
+	golang.org/x/sync v0.0.0-20220819030929-7fc1605a5dde // indirect
+	golang.org/x/sys v0.0.0-20220818161305-2296e01440c6 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce // indirect
 )
 
 require (
 	github.com/alecthomas/atomic v0.1.0-alpha2 // indirect
-	github.com/dgraph-io/badger/v3 v3.0.0-20220623163930-7d159dd923ac // indirect
+	github.com/dgraph-io/badger/v3 v3.0.0-20220802162129-2de177900e3c // indirect
 	github.com/dgraph-io/ristretto v0.1.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/glog v1.0.0 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
-	github.com/google/flatbuffers v2.0.6+incompatible // indirect
+	github.com/google/flatbuffers v2.0.7+incompatible // indirect
 	github.com/klauspost/compress v1.15.9 // indirect
 	github.com/ucwong/go-ttlmap v1.0.2-0.20220531033718-59436cfae99c // indirect
 	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
