@@ -8,10 +8,10 @@ require (
 	github.com/allegro/bigcache/v3 v3.0.3-0.20220614095342-7c2932edbec2
 	github.com/anacrolix/envpprof v1.2.1
 	github.com/anacrolix/fuse v0.2.0
-	github.com/anacrolix/log v0.13.2-0.20220427063716-a4894bb521c6
+	github.com/anacrolix/log v0.13.2-0.20220711050817-613cb738ef30
 	github.com/anacrolix/missinggo/v2 v2.7.0
 	github.com/anacrolix/tagflag v1.3.1-0.20210717093243-41ae76143afa
-	github.com/anacrolix/torrent v1.46.1-0.20220808053819-61302332cfc5
+	github.com/anacrolix/torrent v1.46.1-0.20220831010947-648acc0120a4
 	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/deckarep/golang-set v1.8.0
@@ -109,6 +109,8 @@ require (
 	github.com/alecthomas/atomic v0.1.0-alpha2 // indirect
 	github.com/dgraph-io/badger/v3 v3.0.0-20220802162129-2de177900e3c // indirect
 	github.com/dgraph-io/ristretto v0.1.0 // indirect
+	github.com/go-logr/logr v1.2.3 // indirect
+	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/glog v1.0.0 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
@@ -117,4 +119,6 @@ require (
 	github.com/ucwong/go-ttlmap v1.0.2-0.20220531033718-59436cfae99c // indirect
 	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
 	go.opencensus.io v0.23.0 // indirect
+	go.opentelemetry.io/otel v1.8.0 // indirect
+	go.opentelemetry.io/otel/trace v1.8.0 // indirect
 )
