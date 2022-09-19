@@ -18,8 +18,10 @@ package wormhole
 
 import (
 	"github.com/CortexFoundation/CortexTheseus/log"
+
 	mapset "github.com/deckarep/golang-set"
 	resty "github.com/go-resty/resty/v2"
+
 	"time"
 )
 
@@ -39,7 +41,6 @@ func Tunnel(hash string) error {
 		if _, err := client.R().Post(worm + hash); err != nil {
 			log.Error("Wormhole err", "err", err, "worm", worm, "hash", hash)
 		}
-
 	}
 
 	return nil
