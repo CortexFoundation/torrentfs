@@ -561,17 +561,14 @@ func (tm *TorrentManager) addInfoHash(ih string, BytesRequested int64, ch chan b
 	return nil
 }
 
-func (tm *TorrentManager) updateInfoHash(t *Torrent, BytesRequested int64) bool {
+func (tm *TorrentManager) updateInfoHash(t *Torrent, BytesRequested int64) {
 	t.lock.Lock()
 	defer t.lock.Unlock()
 	if t.bytesRequested < BytesRequested {
 		t.bytesRequested = BytesRequested
 		t.bytesLimitation = tm.getLimitation(BytesRequested)
-	} else {
-		return false
 	}
 	updateMeter.Mark(1)
-	return true
 }
 
 func NewTorrentManager(config *Config, fsid uint64, cache, compress bool, notify chan string) (*TorrentManager, error) {
