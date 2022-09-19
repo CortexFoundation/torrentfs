@@ -304,7 +304,7 @@ func (tm *TorrentManager) dropAll() {
 func (tm *TorrentManager) commit(ctx context.Context, hex string, request uint64, ch chan bool) error {
 	log.Debug("Commit task", "ih", hex, "request", request, "ch", ch)
 
-	if !server {
+	/*if !server {
 		tm.wg.Add(1)
 		go func() {
 			defer tm.wg.Done()
@@ -313,7 +313,7 @@ func (tm *TorrentManager) commit(ctx context.Context, hex string, request uint64
 				log.Error("Wormhole error", "err", err)
 			}
 		}()
-	}
+	}*/
 
 	task := types.FlowControlMeta{
 		InfoHash:       hex,
@@ -439,6 +439,17 @@ func (tm *TorrentManager) addInfoHash(ih string, BytesRequested int64, ch chan b
 		return nil
 	}
 
+	if !server {
+		tm.wg.Add(1)
+		go func() {
+			defer tm.wg.Done()
+			err := wormhole.Tunnel(ih)
+			if err != nil {
+				log.Error("Wormhole error", "err", err)
+			}
+		}()
+	}
+
 	tmpTorrentPath := filepath.Join(tm.TmpDataDir, ih, "torrent")
 	seedTorrentPath := filepath.Join(tm.DataDir, ih, "torrent")
 
@@ -550,14 +561,17 @@ func (tm *TorrentManager) addInfoHash(ih string, BytesRequested int64, ch chan b
 	return nil
 }
 
-func (tm *TorrentManager) updateInfoHash(t *Torrent, BytesRequested int64) {
+func (tm *TorrentManager) updateInfoHash(t *Torrent, BytesRequested int64) bool {
 	t.lock.Lock()
 	defer t.lock.Unlock()
 	if t.bytesRequested < BytesRequested {
 		t.bytesRequested = BytesRequested
 		t.bytesLimitation = tm.getLimitation(BytesRequested)
+	} else {
+		return false
 	}
 	updateMeter.Mark(1)
+	return true
 }
 
 func NewTorrentManager(config *Config, fsid uint64, cache, compress bool, notify chan string) (*TorrentManager, error) {
