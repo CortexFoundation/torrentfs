@@ -40,7 +40,7 @@ func main() {
 	PortFlag := cli.StringFlag{
 		Name:  "port",
 		Usage: "Listen port",
-		Value: "8080",
+		Value: "7882",
 	}
 
 	app.Flags = []cli.Flag{
@@ -71,7 +71,9 @@ func run(conf *Config) error {
 
 	config := &t.DefaultConfig
 	config.DataDir = conf.dir
-	config.Mode = params.LAZY
+	config.Mode = params.FULL
+	config.Port = 0
+	config.Server = true
 
 	config.DisableUTP = false
 
@@ -80,6 +82,7 @@ func run(conf *Config) error {
 		log.Error("err", "e", err)
 		return err
 	}
+	//fs.Start(nil)
 	defer fs.Stop()
 
 	conf.tfs = fs
@@ -93,6 +96,7 @@ func run(conf *Config) error {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/download", conf.DownloadHandler)
+	mux.HandleFunc("/tunnel", conf.DownloadHandler)
 	mux.HandleFunc("/seed", conf.SeedHandler)
 	mux.HandleFunc("/list", conf.ListHandler)
 

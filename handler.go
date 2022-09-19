@@ -38,6 +38,7 @@ import (
 	"github.com/CortexFoundation/torrentfs/compress"
 	"github.com/CortexFoundation/torrentfs/params"
 	"github.com/CortexFoundation/torrentfs/types"
+	"github.com/CortexFoundation/torrentfs/wormhole"
 
 	"github.com/allegro/bigcache/v3"
 	"github.com/bradfitz/iter"
@@ -71,9 +72,10 @@ const (
 )
 
 var (
-	getfileMeter   = metrics.NewRegisteredMeter("torrent/getfile/call", nil)
-	availableMeter = metrics.NewRegisteredMeter("torrent/available/call", nil)
-	diskReadMeter  = metrics.NewRegisteredMeter("torrent/disk/read", nil)
+	server         bool = false
+	getfileMeter        = metrics.NewRegisteredMeter("torrent/getfile/call", nil)
+	availableMeter      = metrics.NewRegisteredMeter("torrent/available/call", nil)
+	diskReadMeter       = metrics.NewRegisteredMeter("torrent/disk/read", nil)
 
 	downloadMeter = metrics.NewRegisteredMeter("torrent/download/call", nil)
 	updateMeter   = metrics.NewRegisteredMeter("torrent/update/call", nil)
@@ -301,6 +303,18 @@ func (tm *TorrentManager) dropAll() {
 
 func (tm *TorrentManager) commit(ctx context.Context, hex string, request uint64, ch chan bool) error {
 	log.Debug("Commit task", "ih", hex, "request", request, "ch", ch)
+
+	if !server {
+		tm.wg.Add(1)
+		go func() {
+			defer tm.wg.Done()
+			err := wormhole.Tunnel(hex)
+			if err != nil {
+				log.Error("Wormhole error", "err", err)
+			}
+		}()
+	}
+
 	task := types.FlowControlMeta{
 		InfoHash:       hex,
 		BytesRequested: request,
@@ -547,6 +561,8 @@ func (tm *TorrentManager) updateInfoHash(t *Torrent, BytesRequested int64) {
 }
 
 func NewTorrentManager(config *Config, fsid uint64, cache, compress bool, notify chan string) (*TorrentManager, error) {
+	server = config.Server
+
 	cfg := torrent.NewDefaultClientConfig()
 	cfg.DisableUTP = config.DisableUTP
 	cfg.NoDHT = config.DisableDHT
