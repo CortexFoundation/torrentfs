@@ -228,9 +228,9 @@ func mainExitCode() int {
 	cfg.DropDuplicatePeerIds = true
 	cfg.EstablishedConnsPerTorrent = 1
 	cfg.HalfOpenConnsPerTorrent = 1
-	cfg.DisableUTP = true
+	cfg.DisableUTP = false
 	cfg.DisableTCP = false
-	cfg.NoDHT = true
+	cfg.NoDHT = false
 	client, err := torrent.NewClient(cfg)
 	if err != nil {
 		log.Print(err)
