@@ -74,6 +74,7 @@ func run(conf *Config) error {
 	config.Mode = params.FULL
 	config.Port = 0
 	config.Server = true
+	config.Wormhole = false
 
 	config.DisableUTP = false
 

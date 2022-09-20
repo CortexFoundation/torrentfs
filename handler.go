@@ -73,6 +73,7 @@ const (
 
 var (
 	server         bool = false
+	worm           bool = false
 	getfileMeter        = metrics.NewRegisteredMeter("torrent/getfile/call", nil)
 	availableMeter      = metrics.NewRegisteredMeter("torrent/available/call", nil)
 	diskReadMeter       = metrics.NewRegisteredMeter("torrent/disk/read", nil)
@@ -439,7 +440,7 @@ func (tm *TorrentManager) addInfoHash(ih string, BytesRequested int64, ch chan b
 		return nil
 	}
 
-	if !server {
+	if !server && worm {
 		tm.wg.Add(1)
 		go func() {
 			defer tm.wg.Done()
@@ -1117,7 +1118,7 @@ func (tm *TorrentManager) activeLoop() {
 					}
 				}*/
 
-				if log_counter%300 == 0 && t.bytesCompleted > 0 {
+				if log_counter%300 == 0 && t.bytesCompleted >= 0 {
 					bar := ProgressBar(t.bytesCompleted, t.Torrent.Length(), "")
 					elapsed := time.Duration(mclock.Now()) - time.Duration(t.start)
 					log.Info(bar, "ih", ih, "complete", common.StorageSize(t.bytesCompleted), "limit", common.StorageSize(t.bytesLimitation), "total", common.StorageSize(t.Torrent.Length()), "seg", len(t.Torrent.PieceStateRuns()), "peers", t.currentConns, "max", t.Torrent.NumPieces(), "speed", common.StorageSize(float64(t.bytesCompleted*1000*1000*1000)/float64(elapsed)).String()+"/s", "elapsed", common.PrettyDuration(elapsed))
