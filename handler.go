@@ -574,6 +574,7 @@ func (tm *TorrentManager) updateInfoHash(t *Torrent, BytesRequested int64) {
 
 func NewTorrentManager(config *Config, fsid uint64, cache, compress bool, notify chan string) (*TorrentManager, error) {
 	server = config.Server
+	worm = config.Wormhole
 
 	cfg := torrent.NewDefaultClientConfig()
 	cfg.DisableUTP = config.DisableUTP
