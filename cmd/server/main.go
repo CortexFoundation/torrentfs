@@ -78,7 +78,7 @@ func run(conf *Config) error {
 
 	//config.DisableUTP = false
 
-	fs, err := t.New(config, true, false, false)
+	fs, err := t.New(config, false, false, false)
 	if err != nil {
 		log.Error("err", "e", err)
 		return err

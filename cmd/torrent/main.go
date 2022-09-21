@@ -181,6 +181,7 @@ var flags = struct {
 	Ipv4: true,
 	Ipv6: true,
 	Pex:  true,
+	Seed: true,
 }
 
 func stdoutAndStderrAreSameFile() bool {
