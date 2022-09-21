@@ -181,8 +181,8 @@ func (t *Torrent) Seed() bool {
 		return true
 	}
 	if t.currentConns <= t.minEstablishedConns {
-		t.setCurrentConns(t.maxEstablishedConns)
-		t.Torrent.SetMaxEstablishedConns(t.currentConns)
+		//t.setCurrentConns(t.maxEstablishedConns)
+		//t.Torrent.SetMaxEstablishedConns(t.currentConns)
 	}
 	if t.Torrent.Seeding() {
 		t.lock.Lock()

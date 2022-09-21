@@ -580,7 +580,7 @@ func NewTorrentManager(config *Config, fsid uint64, cache, compress bool, notify
 
 	cfg := torrent.NewDefaultClientConfig()
 	cfg.DisableUTP = config.DisableUTP
-	cfg.NoDHT = config.DisableDHT
+	cfg.NoDHT = true //config.DisableDHT
 	cfg.DisableTCP = config.DisableTCP
 	cfg.DisableIPv6 = config.DisableIPv6
 
@@ -597,16 +597,17 @@ func NewTorrentManager(config *Config, fsid uint64, cache, compress bool, notify
 	//cfg.DisableEncryption = true
 	//cfg.HTTPUserAgent = "Cortex"
 	cfg.Seed = true
+	//cfg.Debug=true
 
-	//cfg.EstablishedConnsPerTorrent = 25 //len(config.DefaultTrackers)
-	//cfg.HalfOpenConnsPerTorrent = 25
+	//cfg.EstablishedConnsPerTorrent = 10 //len(config.DefaultTrackers)
+	//cfg.HalfOpenConnsPerTorrent = 5
 
 	cfg.ListenPort = config.Port
 	if config.Quiet {
 		//cfg.Logger = xlog.Discard
 	}
 	//cfg.Debug = true
-	//cfg.DropDuplicatePeerIds = true
+	cfg.DropDuplicatePeerIds = true
 	//cfg.ListenHost = torrent.LoopbackListenHost
 	//cfg.DhtStartingNodes = dht.GlobalBootstrapAddrs //func() ([]dht.Addr, error) { return nil, nil }
 	cl, err := torrent.NewClient(cfg)
@@ -965,7 +966,7 @@ func (tm *TorrentManager) activeLoop() {
 					continue
 				}
 				if t.fast {
-					if log_counter%180 == 0 && t.bytesCompleted >= 0 {
+					if log_counter%60 == 0 && t.bytesCompleted >= 0 {
 						bar := ProgressBar(t.bytesCompleted, t.Torrent.Length(), "")
 						elapsed := time.Duration(mclock.Now()) - time.Duration(t.start)
 						log.Info(bar, "ih", ih, "complete", common.StorageSize(t.bytesCompleted), "limit", common.StorageSize(t.bytesLimitation), "total", common.StorageSize(t.Torrent.Length()), "seg", len(t.Torrent.PieceStateRuns()), "peers", t.currentConns, "max", t.Torrent.NumPieces(), "speed", common.StorageSize(float64(t.bytesCompleted*1000*1000*1000)/float64(elapsed)).String()+"/s", "elapsed", common.PrettyDuration(elapsed))
@@ -977,6 +978,8 @@ func (tm *TorrentManager) activeLoop() {
 						//actual_size +=  uint64(t.BytesCompleted() - t.bytesCompleted)
 						actual_counter++
 					}
+					t.bytesCompleted = t.BytesCompleted()
+					t.bytesMissing = t.BytesMissing()
 					if tm.getLimitation(t.bytesRequested) == t.bytesLimitation {
 						//log.Debug("continue", "ih", ih, "t.bytesLimitation", t.bytesLimitation, "t.bytesRequested", t.bytesRequested)
 						continue
@@ -1013,8 +1016,8 @@ func (tm *TorrentManager) activeLoop() {
 				}*/
 
 				//TODO
-				t.bytesCompleted = t.BytesCompleted()
-				t.bytesMissing = t.BytesMissing()
+				//t.bytesCompleted = t.BytesCompleted()
+				//t.bytesMissing = t.BytesMissing()
 
 				/*if t.BytesMissing() == 0 {
 					//tm.lock.Lock()
@@ -1112,7 +1115,7 @@ func (tm *TorrentManager) activeLoop() {
 				}
 			}
 
-			if counter >= 5*loops {
+			if counter >= 2*loops {
 				//if len(tm.seedingTorrents) < len(GoodFiles) && tm.mode != params.LAZY {
 				//log.Warn(ProgressBar(int64(len(tm.seedingTorrents)), int64(len(GoodFiles)), "Network scanning"), "mode", tm.mode, "ports", "40401,5008,40404", "seeding", len(tm.seedingTorrents), "expected", len(GoodFiles))
 				//} else {

@@ -76,7 +76,7 @@ func run(conf *Config) error {
 	config.Server = true
 	config.Wormhole = false
 
-	//config.DisableUTP = false
+	config.DisableUTP = false
 
 	fs, err := t.New(config, false, false, false)
 	if err != nil {
@@ -89,7 +89,7 @@ func run(conf *Config) error {
 	conf.tfs = fs
 
 	glogger := log.NewGlogHandler(log.StreamHandler(os.Stderr, log.TerminalFormat(true)))
-	glogger.Verbosity(log.LvlDebug)
+	glogger.Verbosity(log.LvlInfo)
 	glogger.Vmodule("")
 	log.Root().SetHandler(glogger)
 
