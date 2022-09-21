@@ -76,7 +76,7 @@ func run(conf *Config) error {
 	config.Server = true
 	config.Wormhole = false
 
-	config.DisableUTP = false
+	//config.DisableUTP = false
 
 	fs, err := t.New(config, false, false, false)
 	if err != nil {
