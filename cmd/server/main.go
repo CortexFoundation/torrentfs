@@ -62,9 +62,9 @@ func main() {
 }
 
 func run(conf *Config) error {
-	//conf.db = kv.Badger("")
+	conf.db = kv.Badger("")
 	//conf.db = kv.Bolt("")
-	conf.db = kv.LevelDB("")
+	//conf.db = kv.LevelDB("")
 	if conf.db != nil {
 		defer conf.db.Close()
 	}
