@@ -1027,10 +1027,18 @@ func (tm *TorrentManager) activeLoop() {
 				}
 				if t.fast {
 					if tm.getLimitation(t.bytesRequested) == t.bytesLimitation {
-
-						log.Info("continue", "ih", ih, "t.bytesLimitation", t.bytesLimitation, "t.bytesRequested", t.bytesRequested)
+						//log.Debug("continue", "ih", ih, "t.bytesLimitation", t.bytesLimitation, "t.bytesRequested", t.bytesRequested)
 						continue
 					}
+					if t.BytesCompleted() > t.bytesCompleted {
+						total_size += uint64(t.BytesCompleted() - t.bytesCompleted)
+						current_size += uint64(t.BytesCompleted() - t.bytesCompleted)
+						//actual_size +=  uint64(t.BytesCompleted() - t.bytesCompleted)
+						actual_counter++
+						active_running++
+					}
+				} else {
+					t.fast = true
 				}
 				//BytesRequested := int64(0)
 				//if _, ok := GoodFiles[t.InfoHash()]; ok {
@@ -1038,21 +1046,11 @@ func (tm *TorrentManager) activeLoop() {
 					t.lock.Lock()
 					t.bytesRequested = t.Length()
 					t.bytesLimitation = tm.getLimitation(t.bytesRequested)
-					t.fast = true
 					t.lock.Unlock()
 				} else {
 					if tm.mode == params.FULL {
 						t.bytesRequested = t.Length()
 						t.bytesLimitation = tm.getLimitation(t.bytesRequested)
-						t.fast = true
-					} else {
-						if t.bytesRequested >= t.Length() {
-							t.fast = true
-						} else {
-							if t.bytesRequested <= t.BytesCompleted()+block/2 {
-								t.fast = true
-							}
-						}
 					}
 				}
 
@@ -1064,12 +1062,11 @@ func (tm *TorrentManager) activeLoop() {
 					continue
 				}
 
-				if t.BytesCompleted() > t.bytesCompleted {
+				/*if t.BytesCompleted() > t.bytesCompleted {
 					total_size += uint64(t.BytesCompleted() - t.bytesCompleted)
 					current_size += uint64(t.BytesCompleted() - t.bytesCompleted)
-					//actual_size +=  uint64(t.BytesCompleted() - t.bytesCompleted)
 					actual_counter++
-				}
+				}*/
 
 				//TODO
 				t.bytesCompleted = t.BytesCompleted()
@@ -1166,7 +1163,7 @@ func (tm *TorrentManager) activeLoop() {
 					t.Run(tm.slot)
 					//t.lock.Unlock()
 					//}()
-					active_running++
+					//active_running++
 					t.lock.Unlock()
 				}
 			}
