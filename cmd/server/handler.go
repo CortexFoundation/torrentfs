@@ -28,7 +28,7 @@ func (conf *Config) DownloadHandler(w http.ResponseWriter, r *http.Request) {
 	case "POST":
 		ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 		defer cancel()
-		err := conf.tfs.Download(ctx, q.Get("hash"), 1000000000)
+		err := conf.tfs.Tunnel(ctx, q.Get("hash"))
 		if err != nil {
 			log.Error("err", "e", err)
 			res = err.Error()

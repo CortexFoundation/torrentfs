@@ -33,6 +33,7 @@ import (
 	"github.com/CortexFoundation/torrentfs/params"
 	"github.com/anacrolix/torrent/bencode"
 	"github.com/anacrolix/torrent/metainfo"
+	mapset "github.com/deckarep/golang-set"
 	lru "github.com/hashicorp/golang-lru"
 	cp "github.com/otiai10/copy"
 )
@@ -66,6 +67,7 @@ type TorrentFS struct {
 	closeAll      chan struct{}
 	wg            sync.WaitGroup
 	once          sync.Once
+	worm          mapset.Set
 }
 
 func (t *TorrentFS) storage() *TorrentManager {
@@ -131,6 +133,8 @@ func New(config *Config, cache, compress, listen bool) (*TorrentFS, error) {
 	inst.scoreTable = make(map[string]int)
 	inst.seedingNotify = _seedingNotify
 
+	inst.worm = mapset.NewSet()
+
 	inst.protocol = p2p.Protocol{
 		Name:    ProtocolName,
 		Version: uint(ProtocolVersion),
@@ -147,6 +151,7 @@ func New(config *Config, cache, compress, listen bool) (*TorrentFS, error) {
 					"root":           inst.chain().Root().Hex(),
 					"files":          inst.Congress(),
 					"active":         inst.Candidate(),
+					"nominee":        inst.Nominee(),
 					"leafs":          len(inst.chain().Blocks()),
 					"number":         monitor.currentNumber,
 					"maxMessageSize": inst.MaxMessageSize(),
@@ -163,7 +168,6 @@ func New(config *Config, cache, compress, listen bool) (*TorrentFS, error) {
 			inst.peerMu.Lock()
 			defer inst.peerMu.Unlock()
 			if p := inst.peers[fmt.Sprintf("%x", id[:8])]; p != nil {
-
 				if p.Info() != nil {
 					return map[string]interface{}{
 						"version": p.version,
@@ -675,6 +679,18 @@ func (fs *TorrentFS) ListAllTorrents(ctx context.Context) map[string]map[string]
 	return fs.storage().listAllTorrents()
 }
 
+func (fs *TorrentFS) Tunnel(ctx context.Context, ih string) error {
+	if !fs.worm.Contains(ih) {
+		fs.worm.Add(ih)
+	} else {
+		return nil
+	}
+	if err := fs.storage().Search(ctx, ih, 1000000000, nil); err != nil {
+		return err
+	}
+	return nil
+}
+
 // Download is used to download file with request
 func (fs *TorrentFS) Download(ctx context.Context, ih string, request uint64) error {
 	update, p, err := fs.chain().SetTorrent(ih, request)
@@ -747,4 +763,8 @@ func (fs *TorrentFS) NasCounter() uint64 {
 
 func (fs *TorrentFS) ScoreTabler() map[string]int {
 	return fs.scoreTable
+}
+
+func (fs *TorrentFS) Nominee() int {
+	return fs.storage().Nominee()
 }

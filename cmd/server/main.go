@@ -40,7 +40,7 @@ func main() {
 	PortFlag := cli.StringFlag{
 		Name:  "port",
 		Usage: "Listen port",
-		Value: "8080",
+		Value: "7882",
 	}
 
 	app.Flags = []cli.Flag{
@@ -62,30 +62,34 @@ func main() {
 }
 
 func run(conf *Config) error {
-	//conf.db = kv.Badger("")
+	conf.db = kv.Badger("")
 	//conf.db = kv.Bolt("")
-	conf.db = kv.LevelDB("")
+	//conf.db = kv.LevelDB("")
 	if conf.db != nil {
 		defer conf.db.Close()
 	}
 
 	config := &t.DefaultConfig
 	config.DataDir = conf.dir
-	config.Mode = params.LAZY
+	config.Mode = params.FULL
+	config.Port = 0
+	config.Server = true
+	config.Wormhole = false
 
-	config.DisableUTP = false
+	//config.DisableUTP = false
 
-	fs, err := t.New(config, true, false, false)
+	fs, err := t.New(config, false, false, false)
 	if err != nil {
 		log.Error("err", "e", err)
 		return err
 	}
+	//fs.Start(nil)
 	defer fs.Stop()
 
 	conf.tfs = fs
 
 	glogger := log.NewGlogHandler(log.StreamHandler(os.Stderr, log.TerminalFormat(true)))
-	glogger.Verbosity(log.LvlDebug)
+	glogger.Verbosity(log.LvlInfo)
 	glogger.Vmodule("")
 	log.Root().SetHandler(glogger)
 
@@ -93,6 +97,7 @@ func run(conf *Config) error {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/download", conf.DownloadHandler)
+	mux.HandleFunc("/tunnel", conf.DownloadHandler)
 	mux.HandleFunc("/seed", conf.SeedHandler)
 	mux.HandleFunc("/list", conf.ListHandler)
 
