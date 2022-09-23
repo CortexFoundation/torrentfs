@@ -172,10 +172,10 @@ var flags = struct {
 	UploadRate:   -1,
 	DownloadRate: -1,
 	Progress:     true,
-	Dht:          true,
+	Dht:          false,
 
 	TcpPeers:   true,
-	UtpPeers:   true,
+	UtpPeers:   false,
 	Webtorrent: true,
 
 	Ipv4: true,
