@@ -982,6 +982,7 @@ func (tm *TorrentManager) activeLoop() {
 						t.lock.Unlock()
 					}
 					t.fast = true
+					active_running++
 				}
 
 				if t.bytesRequested == 0 {
