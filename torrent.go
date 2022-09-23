@@ -230,9 +230,9 @@ func (t *Torrent) Run(slot int) {
 		limitPieces = t.Torrent.NumPieces()
 	}
 
-	if limitPieces <= t.maxPieces && t.status == torrentRunning {
-		return
-	}
+	//if limitPieces <= t.maxPieces && t.status == torrentRunning {
+	//	return
+	//}
 
 	//if t.fast {
 	if t.currentConns <= t.minEstablishedConns {
