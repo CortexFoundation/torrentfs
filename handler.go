@@ -936,6 +936,11 @@ func (tm *TorrentManager) activeLoop() {
 			log_counter++
 
 			for ih, t := range tm.activeTorrents {
+				if t.BytesCompleted() > t.bytesCompleted {
+					total_size += uint64(t.BytesCompleted() - t.bytesCompleted)
+					current_size += uint64(t.BytesCompleted() - t.bytesCompleted)
+					actual_counter++
+				}
 				if t.BytesMissing() == 0 {
 					//tm.lock.Lock()
 					if _, err := os.Stat(filepath.Join(tm.DataDir, ih)); err == nil {
@@ -976,12 +981,6 @@ func (tm *TorrentManager) activeLoop() {
 						log.Info(bar, "ih", ih, "complete", common.StorageSize(t.bytesCompleted), "limit", common.StorageSize(t.bytesLimitation), "total", common.StorageSize(t.Torrent.Length()), "seg", len(t.Torrent.PieceStateRuns()), "peers", t.currentConns, "max", t.Torrent.NumPieces(), "speed", common.StorageSize(float64(t.bytesCompleted*1000*1000*1000)/float64(elapsed)).String()+"/s", "elapsed", common.PrettyDuration(elapsed))
 					}
 					active_running++
-					if t.BytesCompleted() > t.bytesCompleted {
-						total_size += uint64(t.BytesCompleted() - t.bytesCompleted)
-						current_size += uint64(t.BytesCompleted() - t.bytesCompleted)
-						//actual_size +=  uint64(t.BytesCompleted() - t.bytesCompleted)
-						actual_counter++
-					}
 					t.bytesCompleted = t.BytesCompleted()
 					t.bytesMissing = t.BytesMissing()
 					if tm.getLimitation(t.bytesRequested) == t.bytesLimitation {
