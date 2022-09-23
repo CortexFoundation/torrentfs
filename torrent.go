@@ -280,10 +280,6 @@ func (t *Torrent) Running() bool {
 	return t.status == torrentRunning
 }
 
-func (t *Torrent) Finished() bool {
-	return t.bytesMissing == 0 && t.bytesRequested > 0 && t.bytesCompleted > 0
-}
-
 func (t *Torrent) Pending() bool {
 	return t.status == torrentPending
 }

@@ -963,12 +963,10 @@ func (tm *TorrentManager) activeLoop() {
 							}
 						}
 					}
-
 					continue
 				}
 
 				t.bytesCompleted = t.BytesCompleted()
-				t.bytesMissing = t.BytesMissing()
 				if t.fast {
 					if log_counter%60 == 0 && t.bytesCompleted >= 0 {
 						bar := ProgressBar(t.bytesCompleted, t.Torrent.Length(), "")
