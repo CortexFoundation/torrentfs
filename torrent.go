@@ -245,8 +245,8 @@ func (t *Torrent) Run(slot int) {
 	//		t.Torrent.SetMaxEstablishedConns(t.currentConns)
 	//	}
 	//}
-	t.status = torrentRunning
 	if limitPieces != t.maxPieces {
+		t.status = torrentRunning
 		t.maxPieces = limitPieces
 		t.download(limitPieces, slot)
 	}
