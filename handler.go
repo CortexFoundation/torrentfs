@@ -611,8 +611,8 @@ func NewTorrentManager(config *Config, fsid uint64, cache, compress bool, notify
 		//cfg.Logger = xlog.Discard
 	}
 	//cfg.Debug = true
-	cfg.DropDuplicatePeerIds = true
-	cfg.Bep20 = "cortex01"
+	//cfg.DropDuplicatePeerIds = true
+	cfg.Bep20 = "-COLA01-"
 	//id := strconv.FormatUint(fsid, 16)[0:14]
 	//cfg.PeerID = "cortex" + id
 	//cfg.ListenHost = torrent.LoopbackListenHost
