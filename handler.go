@@ -29,7 +29,7 @@ import (
 	"strings"
 	"sync"
 	//"sync/atomic"
-	"strconv"
+	//"strconv"
 	"time"
 
 	"github.com/CortexFoundation/CortexTheseus/common"
@@ -612,8 +612,9 @@ func NewTorrentManager(config *Config, fsid uint64, cache, compress bool, notify
 	}
 	//cfg.Debug = true
 	cfg.DropDuplicatePeerIds = true
-	id := strconv.FormatUint(fsid, 16)[0:14]
-	cfg.PeerID = "cortex" + id
+	cfg.Bep20 = "cortex01"
+	//id := strconv.FormatUint(fsid, 16)[0:14]
+	//cfg.PeerID = "cortex" + id
 	//cfg.ListenHost = torrent.LoopbackListenHost
 	//cfg.DhtStartingNodes = dht.GlobalBootstrapAddrs //func() ([]dht.Addr, error) { return nil, nil }
 	cl, err := torrent.NewClient(cfg)
