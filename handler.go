@@ -781,6 +781,10 @@ func (tm *TorrentManager) pendingLoop() {
 				select {
 				case <-t.GotInfo():
 					if err := t.WriteTorrent(); err == nil {
+						if IsGood(t.Torrent.InfoHash().HexString()) || tm.mode == params.FULL {
+							t.bytesRequested = t.Length()
+							t.bytesLimitation = tm.getLimitation(t.bytesRequested)
+						}
 						if len(tm.activeChan) < cap(tm.activeChan) {
 							delete(tm.pendingTorrents, t.Torrent.InfoHash().HexString())
 							tm.activeChan <- t
@@ -841,31 +845,18 @@ func (tm *TorrentManager) activeLoop() {
 					current_size += uint64(t.BytesCompleted() - t.bytesCompleted)
 					actual_counter++
 				}
+
 				if t.BytesMissing() == 0 {
 					tm.toSeed(ih, t)
 					continue
 				}
 
 				t.bytesCompleted = t.BytesCompleted()
-				if t.fast {
-					if log_counter%60 == 0 {
-						elapsed := time.Duration(mclock.Now()) - time.Duration(t.start)
-						log.Info(ProgressBar(t.bytesCompleted, t.Torrent.Length(), ""), "ih", ih, "complete", common.StorageSize(t.bytesCompleted), "limit", common.StorageSize(t.bytesLimitation), "total", common.StorageSize(t.Torrent.Length()), "want", t.maxPieces, "max", t.Torrent.NumPieces(), "speed", common.StorageSize(float64(t.bytesCompleted*1000*1000*1000)/float64(elapsed)).String()+"/s", "elapsed", common.PrettyDuration(elapsed))
-					}
-				} else {
-					if IsGood(t.InfoHash()) || tm.mode == params.FULL {
-						t.lock.Lock()
-						t.bytesRequested = t.Length()
-						t.bytesLimitation = tm.getLimitation(t.bytesRequested)
-						t.lock.Unlock()
-					}
-					t.fast = true
+				if log_counter%60 == 0 {
+					elapsed := time.Duration(mclock.Now()) - time.Duration(t.start)
+					log.Info(ProgressBar(t.bytesCompleted, t.Torrent.Length(), ""), "ih", ih, "complete", common.StorageSize(t.bytesCompleted), "limit", common.StorageSize(t.bytesLimitation), "total", common.StorageSize(t.Torrent.Length()), "want", t.maxPieces, "max", t.Torrent.NumPieces(), "speed", common.StorageSize(float64(t.bytesCompleted*1000*1000*1000)/float64(elapsed)).String()+"/s", "elapsed", common.PrettyDuration(elapsed))
 				}
 				active_running++
-
-				if t.bytesRequested == 0 {
-					continue
-				}
 
 				if t.bytesCompleted < t.bytesLimitation && !t.isBoosting {
 					t.lock.Lock()
