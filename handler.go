@@ -636,7 +636,7 @@ func (tm *TorrentManager) seedingLoop() {
 	for {
 		select {
 		case t := <-tm.seedingChan:
-			tm.seedingTorrents[t.Torrent.InfoHash().HexString()] = t
+			tm.seedingTorrents[t.infohash] = t
 
 			s := t.Seed()
 			if t.ch != nil {
@@ -773,7 +773,7 @@ func (tm *TorrentManager) pendingLoop() {
 	for {
 		select {
 		case t := <-tm.pendingChan:
-			tm.pendingTorrents[t.Torrent.InfoHash().HexString()] = t
+			tm.pendingTorrents[t.infohash] = t
 			tm.wg.Add(1)
 			go func() {
 				defer tm.wg.Done()
@@ -781,12 +781,12 @@ func (tm *TorrentManager) pendingLoop() {
 				select {
 				case <-t.GotInfo():
 					if err := t.WriteTorrent(); err == nil {
-						if IsGood(t.Torrent.InfoHash().HexString()) || tm.mode == params.FULL {
+						if IsGood(t.infohash) || tm.mode == params.FULL {
 							t.bytesRequested = t.Length()
 							t.bytesLimitation = tm.getLimitation(t.bytesRequested)
 						}
 						if len(tm.activeChan) < cap(tm.activeChan) {
-							delete(tm.pendingTorrents, t.Torrent.InfoHash().HexString())
+							delete(tm.pendingTorrents, t.infohash)
 							tm.activeChan <- t
 						}
 					}
@@ -833,7 +833,7 @@ func (tm *TorrentManager) activeLoop() {
 	for {
 		select {
 		case t := <-tm.activeChan:
-			tm.activeTorrents[t.Torrent.InfoHash().HexString()] = t
+			tm.activeTorrents[t.infohash] = t
 			timer.Reset(0)
 		case <-timer.C:
 			counter++
