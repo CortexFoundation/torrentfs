@@ -726,35 +726,22 @@ func (tm *TorrentManager) seedingLoop() {
 				}()
 			}
 
-			//if !tm.simulate {
-			/*if len(tm.seedingTorrents) == int(tm.good) {
-				close(tm.initCh)
-			}*/
-			//}
-
 			if s {
-				//if active, ok := GoodFiles[t.InfoHash()]; tm.cache && ok && active {
-				//	for _, file := range t.Files() {
-				//		log.Trace("Precache file", "ih", t.InfoHash(), "ok", ok, "active", active)
-				//		go tm.getFile(t.InfoHash(), file.Path())
-				//	}
-				//}
-				tm.hotCache.Add(t.Torrent.InfoHash(), true)
+				/*tm.hotCache.Add(t.Torrent.InfoHash(), true)
 				if len(tm.seedingTorrents) > params.LimitSeeding {
-					//tm.dropSeeding(tm.slot)
+					tm.dropSeeding(tm.slot)
 				} else if len(tm.seedingTorrents) > tm.maxSeedTask {
 					tm.maxSeedTask++
-					//tm.graceSeeding(tm.slot)
+					tm.graceSeeding(tm.slot)
 				}
 
-				// TODO notify neighbors
 				if tm.seedingNotify != nil {
 					tm.wg.Add(1)
 					go func() {
 						defer tm.wg.Done()
 						tm.seedingNotify <- t.InfoHash()
 					}()
-				}
+				}*/
 			}
 		case <-tm.closeAll:
 			log.Info("Seeding loop closed")
@@ -894,7 +881,6 @@ func (tm *TorrentManager) activeLoop() {
 	var total_size, current_size, log_counter, counter, actual_counter uint64 = 0, 0, 1, 1, 1
 	var active_running int
 	for {
-		//counter++
 		select {
 		case t := <-tm.activeChan:
 			tm.activeTorrents[t.Torrent.InfoHash().HexString()] = t
