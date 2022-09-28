@@ -807,15 +807,10 @@ func (tm *TorrentManager) toSeed(ih string, t *Torrent) {
 		delete(tm.activeTorrents, ih)
 		//}
 	} else {
-		err := os.Symlink(
+		if err := os.Symlink(
 			filepath.Join(defaultTmpPath, ih),
 			filepath.Join(tm.DataDir, ih),
-		)
-		if err != nil {
-			os.Remove(
-				filepath.Join(tm.DataDir, ih),
-			)
-		} else {
+		); err == nil {
 			//if len(tm.seedingChan) < cap(tm.seedingChan) {
 			tm.seedingChan <- t
 			delete(tm.activeTorrents, ih)
