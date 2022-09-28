@@ -50,7 +50,7 @@ type Torrent struct {
 	//isBoosting bool
 	fast  bool
 	start mclock.AbsTime
-	ch    chan bool
+	//ch    chan bool
 
 	lock sync.RWMutex
 }

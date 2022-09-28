@@ -235,7 +235,7 @@ func (tm *TorrentManager) getLimitation(value int64) int64 {
 	return ((value + block - 1) / block) * block
 }
 
-func (tm *TorrentManager) register(t *torrent.Torrent, requested int64, status int, ih string, ch chan bool) *Torrent {
+func (tm *TorrentManager) register(t *torrent.Torrent, requested int64, status int, ih string) *Torrent {
 	tt := &Torrent{
 		Torrent:             t,
 		maxEstablishedConns: tm.maxEstablishedConns,
@@ -255,9 +255,10 @@ func (tm *TorrentManager) register(t *torrent.Torrent, requested int64, status i
 		//isBoosting: false,
 		fast:  false,
 		start: 0,
-		ch:    ch,
 	}
-	tm.setTorrent(ih, tt)
+	tm.lock.Lock()
+	tm.torrents[ih] = tt
+	tm.lock.Unlock()
 
 	tm.pendingChan <- tt
 	return tt
@@ -270,12 +271,6 @@ func (tm *TorrentManager) getTorrent(ih string) *Torrent {
 		return torrent
 	}
 	return nil
-}
-
-func (tm *TorrentManager) setTorrent(ih string, t *Torrent) {
-	tm.lock.Lock()
-	tm.torrents[ih] = t
-	tm.lock.Unlock()
 }
 
 func (tm *TorrentManager) Close() error {
@@ -292,8 +287,8 @@ func (tm *TorrentManager) Close() error {
 	return nil
 }
 
-func (tm *TorrentManager) commit(ctx context.Context, hex string, request uint64, ch chan bool) error {
-	log.Debug("Commit task", "ih", hex, "request", request, "ch", ch)
+func (tm *TorrentManager) commit(ctx context.Context, hex string, request uint64) error {
+	//log.Debug("Commit task", "ih", hex, "request", request, "ch", ch)
 
 	/*if !server {
 		tm.wg.Add(1)
@@ -309,7 +304,6 @@ func (tm *TorrentManager) commit(ctx context.Context, hex string, request uint64
 	task := types.FlowControlMeta{
 		InfoHash:       hex,
 		BytesRequested: request,
-		Ch:             ch,
 	}
 	select {
 	case tm.taskChan <- task:
@@ -418,8 +412,7 @@ func (tm *TorrentManager) loadSpec(ih string, filePath string) *torrent.TorrentS
 	return spec
 }
 
-func (tm *TorrentManager) addInfoHash(ih string, bytesRequested int64, ch chan bool) *Torrent {
-	log.Debug("Add seed", "ih", ih, "bytes", bytesRequested, "ch", ch)
+func (tm *TorrentManager) addInfoHash(ih string, bytesRequested int64) *Torrent {
 	if t := tm.getTorrent(ih); t != nil {
 		tm.updateInfoHash(t, bytesRequested)
 		return t
@@ -473,7 +466,7 @@ func (tm *TorrentManager) addInfoHash(ih string, bytesRequested int64, ch chan b
 
 	if t, _, err := tm.client.AddTorrentSpec(spec); err == nil {
 		t.AddTrackers(tm.trackers)
-		return tm.register(t, bytesRequested, torrentPending, ih, ch)
+		return tm.register(t, bytesRequested, torrentPending, ih)
 	}
 
 	return nil
@@ -639,14 +632,6 @@ func (tm *TorrentManager) seedingLoop() {
 			tm.seedingTorrents[t.infohash] = t
 
 			s := t.Seed()
-			if t.ch != nil {
-				log.Warn("Torrent seeding ready for lazy", "ih", t.InfoHash())
-				tm.wg.Add(1)
-				go func() {
-					defer tm.wg.Done()
-					t.ch <- s
-				}()
-			}
 
 			if s {
 				/*tm.hotCache.Add(t.Torrent.InfoHash(), true)
@@ -682,7 +667,7 @@ func (tm *TorrentManager) init() error {
 	if !tm.simulate {
 		for k, ok := range GoodFiles {
 			if ok {
-				if err := tm.Search(context.Background(), k, 0, nil); err == nil {
+				if err := tm.Search(context.Background(), k, 0); err == nil {
 					tm.good++
 					//atomic.AddUint64(&tm.good, 1)
 				} else {
@@ -714,7 +699,7 @@ func (tm *TorrentManager) Simulate() {
 }
 
 // Search and donwload files from torrent
-func (tm *TorrentManager) Search(ctx context.Context, hex string, request uint64, ch chan bool) error {
+func (tm *TorrentManager) Search(ctx context.Context, hex string, request uint64) error {
 	if !common.IsHexAddress(hex) {
 		return errors.New("invalid infohash format")
 	}
@@ -739,7 +724,7 @@ func (tm *TorrentManager) Search(ctx context.Context, hex string, request uint64
 
 	downloadMeter.Mark(1)
 
-	return tm.commit(ctx, hex, request, ch)
+	return tm.commit(ctx, hex, request)
 }
 
 func (tm *TorrentManager) mainLoop() {
@@ -758,7 +743,7 @@ func (tm *TorrentManager) mainLoop() {
 				bytes = block
 			}
 
-			if t := tm.addInfoHash(meta.InfoHash, bytes, meta.Ch); t == nil {
+			if t := tm.addInfoHash(meta.InfoHash, bytes); t == nil {
 				log.Error("Seed [create] failed", "ih", meta.InfoHash, "request", bytes)
 				continue
 			}
