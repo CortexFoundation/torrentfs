@@ -245,17 +245,17 @@ func (tm *TorrentManager) register(t *torrent.Torrent, requested int64, status i
 		bytesLimitation:     tm.getLimitation(requested),
 		bytesCompleted:      0,
 		//bytesMissing:        0,
-		status:     status,
-		infohash:   ih,
-		filepath:   filepath.Join(tm.TmpDataDir, ih),
-		cited:      0,
-		weight:     1,
-		loop:       0,
-		maxPieces:  0,
-		isBoosting: false,
-		fast:       false,
-		start:      0,
-		ch:         ch,
+		status:   status,
+		infohash: ih,
+		filepath: filepath.Join(tm.TmpDataDir, ih),
+		//cited:      0,
+		//weight:     1,
+		//loop:       0,
+		maxPieces: 0,
+		//isBoosting: false,
+		fast:  false,
+		start: 0,
+		ch:    ch,
 	}
 	tm.setTorrent(ih, tt)
 
@@ -829,7 +829,6 @@ func (tm *TorrentManager) activeLoop() {
 		select {
 		case t := <-tm.activeChan:
 			tm.activeTorrents[t.infohash] = t
-			timer.Reset(0)
 		case <-timer.C:
 			counter++
 			log_counter++
@@ -853,7 +852,7 @@ func (tm *TorrentManager) activeLoop() {
 				}
 				active_running++
 
-				if t.bytesCompleted < t.bytesLimitation && !t.isBoosting {
+				if t.bytesCompleted < t.bytesLimitation { //&& !t.isBoosting {
 					t.lock.Lock()
 					t.Run(tm.slot)
 					t.lock.Unlock()
@@ -884,18 +883,18 @@ func (tm *TorrentManager) dropSeeding(slot int) error {
 				continue
 			}
 			if tm.hotCache.Contains(ih) {
-				log.Debug("Encounter active torrent", "ih", ih, "index", i, "group", s, "slot", slot, "len", len(tm.seedingTorrents), "max", tm.maxSeedTask, "peers", t.currentConns, "cited", t.cited)
+				log.Debug("Encounter active torrent", "ih", ih, "index", i, "group", s, "slot", slot, "len", len(tm.seedingTorrents), "max", tm.maxSeedTask, "peers", t.currentConns)
 				continue
 			}
 
 			if tm.mode == params.LAZY {
 				t.setCurrentConns(1)
-				log.Debug("Lazy mode dropped", "ih", ih, "seeding", len(tm.seedingTorrents), "torrents", len(tm.torrents), "max", tm.maxSeedTask, "peers", t.currentConns, "cited", t.cited)
+				log.Debug("Lazy mode dropped", "ih", ih, "seeding", len(tm.seedingTorrents), "torrents", len(tm.torrents), "max", tm.maxSeedTask, "peers", t.currentConns)
 			} else {
 				t.setCurrentConns(2)
 			}
 			t.Torrent.SetMaxEstablishedConns(t.currentConns)
-			log.Debug("Drop seeding invoke", "ih", ih, "index", i, "group", s, "slot", slot, "len", len(tm.seedingTorrents), "max", tm.maxSeedTask, "peers", t.currentConns, "cited", t.cited)
+			log.Debug("Drop seeding invoke", "ih", ih, "index", i, "group", s, "slot", slot, "len", len(tm.seedingTorrents), "max", tm.maxSeedTask, "peers", t.currentConns)
 		}
 		i++
 	}
@@ -912,7 +911,7 @@ func (tm *TorrentManager) graceSeeding(slot int) error {
 				continue
 			}
 			if tm.hotCache.Contains(ih) {
-				log.Debug("Encounter active torrent", "ih", ih, "index", i, "group", s, "slot", slot, "len", len(tm.seedingTorrents), "max", tm.maxSeedTask, "peers", t.currentConns, "cited", t.cited)
+				log.Debug("Encounter active torrent", "ih", ih, "index", i, "group", s, "slot", slot, "len", len(tm.seedingTorrents), "max", tm.maxSeedTask, "peers", t.currentConns)
 				continue
 			}
 			if tm.mode == params.LAZY {
@@ -921,7 +920,7 @@ func (tm *TorrentManager) graceSeeding(slot int) error {
 				t.setCurrentConns(t.minEstablishedConns)
 			}
 			t.Torrent.SetMaxEstablishedConns(t.currentConns)
-			log.Debug("Grace seeding invoke", "ih", ih, "index", i, "group", s, "slot", slot, "len", len(tm.seedingTorrents), "max", tm.maxSeedTask, "peers", t.currentConns, "cited", t.cited)
+			log.Debug("Grace seeding invoke", "ih", ih, "index", i, "group", s, "slot", slot, "len", len(tm.seedingTorrents), "max", tm.maxSeedTask, "peers", t.currentConns)
 		}
 		i++
 	}
