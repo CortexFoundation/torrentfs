@@ -239,7 +239,7 @@ func (tm *TorrentManager) register(t *torrent.Torrent, requested int64, status i
 	tt := &Torrent{
 		Torrent:             t,
 		maxEstablishedConns: tm.maxEstablishedConns,
-		minEstablishedConns: 5,
+		minEstablishedConns: 1,
 		currentConns:        tm.maxEstablishedConns,
 		bytesRequested:      requested,
 		bytesLimitation:     tm.getLimitation(requested),
@@ -634,12 +634,12 @@ func (tm *TorrentManager) seedingLoop() {
 			s := t.Seed()
 
 			if s {
-				/*tm.hotCache.Add(t.Torrent.InfoHash(), true)
+				tm.hotCache.Add(t.infohash, true)
 				if len(tm.seedingTorrents) > params.LimitSeeding {
-					tm.dropSeeding(tm.slot)
+					//tm.dropSeeding(tm.slot)
 				} else if len(tm.seedingTorrents) > tm.maxSeedTask {
 					tm.maxSeedTask++
-					tm.graceSeeding(tm.slot)
+					//tm.graceSeeding(tm.slot)
 				}
 
 				if tm.seedingNotify != nil {
@@ -648,7 +648,7 @@ func (tm *TorrentManager) seedingLoop() {
 						defer tm.wg.Done()
 						tm.seedingNotify <- t.InfoHash()
 					}()
-				}*/
+				}
 			}
 		case <-tm.closeAll:
 			log.Info("Seeding loop closed")

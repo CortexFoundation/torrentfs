@@ -17,7 +17,7 @@
 package torrentfs
 
 import (
-	"bytes"
+	//"bytes"
 	"os"
 	"path/filepath"
 	"sync"
@@ -27,8 +27,8 @@ import (
 	"github.com/CortexFoundation/CortexTheseus/common/mclock"
 	"github.com/CortexFoundation/CortexTheseus/log"
 	"github.com/anacrolix/torrent"
-	"github.com/anacrolix/torrent/metainfo"
-	"github.com/anacrolix/torrent/storage"
+	//"github.com/anacrolix/torrent/metainfo"
+	//"github.com/anacrolix/torrent/storage"
 )
 
 type Torrent struct {
@@ -64,63 +64,6 @@ func (t *Torrent) BytesLeft() int64 {
 
 func (t *Torrent) InfoHash() string {
 	return t.infohash
-}
-
-func (t *Torrent) ReloadFile(files []string, datas [][]byte, tm *TorrentManager) {
-	if len(files) > 1 {
-		err := os.MkdirAll(filepath.Dir(filepath.Join(t.filepath, "data")), 0777) //os.ModePerm)
-		if err != nil {
-			return
-		}
-	}
-	for i, filename := range files {
-		filePath := filepath.Join(t.filepath, filename)
-		f, err := os.OpenFile(filePath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0777)
-		if err != nil {
-			return
-		}
-		defer f.Close()
-		log.Debug("Write file (Boost mode)", "path", filePath)
-		if _, err := f.Write(datas[i]); err != nil {
-			log.Error("Error while write data file", "error", err)
-		}
-	}
-	mi, err := metainfo.LoadFromFile(filepath.Join(t.filepath, "torrent"))
-	if err != nil {
-		log.Error("Error while loading torrent", "Err", err)
-		return
-	}
-	spec := torrent.TorrentSpecFromMetaInfo(mi)
-	spec.Storage = storage.NewFile(t.filepath)
-	if torrent, _, err := tm.client.AddTorrentSpec(spec); err == nil {
-		t.Torrent = torrent
-	}
-}
-
-func (t *Torrent) ReloadTorrent(data []byte, tm *TorrentManager) error {
-
-	//err := os.Remove(filepath.Join(t.filepath, ".torrent.bolt.db"))
-	//if err != nil {
-	//	log.Warn("Remove path failed", "path", filepath.Join(t.filepath, ".torrent.bolt.db"), "err", err)
-	//}
-
-	buf := bytes.NewBuffer(data)
-	mi, err := metainfo.Load(buf)
-
-	if err != nil {
-		log.Error("Error while adding torrent", "Err", err)
-		return err
-	}
-	spec := torrent.TorrentSpecFromMetaInfo(mi)
-	//spec.Storage = storage.NewFile(t.filepath)
-	//spec.Trackers = nil
-	//t.Drop()
-	if torrent, _, err := tm.client.AddTorrentSpec(spec); err == nil {
-		t.Torrent = torrent
-	} else {
-		return err
-	}
-	return nil
 }
 
 func (t *Torrent) Ready() bool {
