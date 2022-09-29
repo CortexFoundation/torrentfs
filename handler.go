@@ -70,6 +70,8 @@ const (
 
 	torrentTypeOnChain = 0
 	torrentTypeLocal   = 1
+
+	TORRENT = "torrent"
 )
 
 var (
@@ -433,8 +435,8 @@ func (tm *TorrentManager) addInfoHash(ih string, bytesRequested int64) *Torrent 
 		}()
 	}
 
-	tmpTorrentPath := filepath.Join(tm.TmpDataDir, ih, "torrent")
-	seedTorrentPath := filepath.Join(tm.DataDir, ih, "torrent")
+	tmpTorrentPath := filepath.Join(tm.TmpDataDir, ih, TORRENT)
+	seedTorrentPath := filepath.Join(tm.DataDir, ih, TORRENT)
 
 	var spec *torrent.TorrentSpec
 

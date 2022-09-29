@@ -86,12 +86,12 @@ func (t *Torrent) Ready() bool {
 }
 
 func (t *Torrent) WriteTorrent() error {
-	if _, err := os.Stat(filepath.Join(t.filepath, "torrent")); err == nil {
+	if _, err := os.Stat(filepath.Join(t.filepath, TORRENT)); err == nil {
 		//t.Pause()
 		return nil
 	}
 
-	if f, err := os.OpenFile(filepath.Join(t.filepath, "torrent"), os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0777); err == nil {
+	if f, err := os.OpenFile(filepath.Join(t.filepath, TORRENT), os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0777); err == nil {
 		defer f.Close()
 		log.Debug("Write seed file", "path", t.filepath)
 		if err := t.Metainfo().Write(f); err == nil {
