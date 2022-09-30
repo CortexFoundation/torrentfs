@@ -747,7 +747,6 @@ func (tm *TorrentManager) mainLoop() {
 
 			if t := tm.addInfoHash(meta.InfoHash, bytes); t == nil {
 				log.Error("Seed [create] failed", "ih", meta.InfoHash, "request", bytes)
-				continue
 			}
 		case <-tm.closeAll:
 			return
