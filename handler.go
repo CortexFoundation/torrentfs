@@ -466,7 +466,10 @@ func (tm *TorrentManager) addInfoHash(ih string, bytesRequested int64) *Torrent 
 		}
 	}
 
-	if t, _, err := tm.client.AddTorrentSpec(spec); err == nil {
+	if t, n, err := tm.client.AddTorrentSpec(spec); err == nil {
+		if !n {
+			log.Warn("Try to add a dupliated torrent", "ih", ih)
+		}
 		t.AddTrackers(tm.trackers)
 		return tm.register(t, bytesRequested, torrentPending, ih)
 	}
@@ -759,7 +762,9 @@ func (tm *TorrentManager) pendingLoop() {
 	for {
 		select {
 		case t := <-tm.pendingChan:
+			tm.lock.Lock()
 			tm.pendingTorrents[t.infohash] = t
+			tm.lock.Unlock()
 			tm.wg.Add(1)
 			go func() {
 				defer tm.wg.Done()
@@ -773,7 +778,9 @@ func (tm *TorrentManager) pendingLoop() {
 						}
 						//if len(tm.activeChan) < cap(tm.activeChan) {
 						tm.activeChan <- t
+						tm.lock.Lock()
 						delete(tm.pendingTorrents, t.infohash)
+						tm.lock.Unlock()
 						//}
 					}
 				case <-t.Closed():
