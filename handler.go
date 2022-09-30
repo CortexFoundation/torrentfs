@@ -111,6 +111,7 @@ type TorrentManager struct {
 	seedingChan         chan *Torrent
 	activeChan          chan *Torrent
 	pendingChan         chan *Torrent
+	pendingRemoveChan   chan string
 	mode                string
 	boost               bool
 	id                  uint64
@@ -558,17 +559,18 @@ func NewTorrentManager(config *Config, fsid uint64, cache, compress bool, notify
 		boostFetcher:        NewBoostDataFetcher(config.BoostNodes),
 		closeAll:            make(chan struct{}),
 		//initCh:              make(chan struct{}),
-		simulate:       false,
-		taskChan:       make(chan interface{}, taskChanBuffer),
-		seedingChan:    make(chan *Torrent, torrentChanSize),
-		activeChan:     make(chan *Torrent, torrentChanSize),
-		pendingChan:    make(chan *Torrent, torrentChanSize),
-		mode:           config.Mode,
-		boost:          config.Boost,
-		id:             fsid,
-		slot:           int(fsid % bucket),
-		localSeedFiles: make(map[string]bool),
-		seedingNotify:  notify,
+		simulate:          false,
+		taskChan:          make(chan interface{}, taskChanBuffer),
+		seedingChan:       make(chan *Torrent, torrentChanSize),
+		activeChan:        make(chan *Torrent, torrentChanSize),
+		pendingChan:       make(chan *Torrent, torrentChanSize),
+		pendingRemoveChan: make(chan string, torrentChanSize),
+		mode:              config.Mode,
+		boost:             config.Boost,
+		id:                fsid,
+		slot:              int(fsid % bucket),
+		localSeedFiles:    make(map[string]bool),
+		seedingNotify:     notify,
 	}
 
 	if cache {
@@ -627,39 +629,6 @@ func (tm *TorrentManager) Start() (err error) {
 
 func (tm *TorrentManager) prepare() bool {
 	return true
-}
-
-func (tm *TorrentManager) seedingLoop() {
-	defer tm.wg.Done()
-	for {
-		select {
-		case t := <-tm.seedingChan:
-			tm.seedingTorrents[t.infohash] = t
-
-			s := t.Seed()
-
-			if s {
-				tm.hotCache.Add(t.infohash, true)
-				if len(tm.seedingTorrents) > params.LimitSeeding {
-					//tm.dropSeeding(tm.slot)
-				} else if len(tm.seedingTorrents) > tm.maxSeedTask {
-					tm.maxSeedTask++
-					//tm.graceSeeding(tm.slot)
-				}
-
-				if tm.seedingNotify != nil {
-					tm.wg.Add(1)
-					go func() {
-						defer tm.wg.Done()
-						tm.seedingNotify <- t.InfoHash()
-					}()
-				}
-			}
-		case <-tm.closeAll:
-			log.Info("Seeding loop closed")
-			return
-		}
-	}
 }
 
 func (tm *TorrentManager) init() error {
@@ -762,9 +731,7 @@ func (tm *TorrentManager) pendingLoop() {
 	for {
 		select {
 		case t := <-tm.pendingChan:
-			tm.lock.Lock()
 			tm.pendingTorrents[t.infohash] = t
-			tm.lock.Unlock()
 			tm.wg.Add(1)
 			go func() {
 				defer tm.wg.Done()
@@ -776,16 +743,14 @@ func (tm *TorrentManager) pendingLoop() {
 							t.bytesRequested = t.Length()
 							t.bytesLimitation = tm.getLimitation(t.bytesRequested)
 						}
-						//if len(tm.activeChan) < cap(tm.activeChan) {
 						tm.activeChan <- t
-						tm.lock.Lock()
-						delete(tm.pendingTorrents, t.infohash)
-						tm.lock.Unlock()
-						//}
+						tm.pendingRemoveChan <- t.infohash
 					}
 				case <-t.Closed():
 				}
 			}()
+		case i := <-tm.pendingRemoveChan:
+			delete(tm.pendingTorrents, i)
 		case <-tm.closeAll:
 			log.Info("Pending seed loop closed")
 			return
@@ -795,19 +760,15 @@ func (tm *TorrentManager) pendingLoop() {
 
 func (tm *TorrentManager) toSeed(ih string, t *Torrent) {
 	if _, err := os.Stat(filepath.Join(tm.DataDir, ih)); err == nil {
-		//if len(tm.seedingChan) < cap(tm.seedingChan) {
 		tm.seedingChan <- t
 		delete(tm.activeTorrents, ih)
-		//}
 	} else {
 		if err := os.Symlink(
 			filepath.Join(defaultTmpPath, ih),
 			filepath.Join(tm.DataDir, ih),
 		); err == nil {
-			//if len(tm.seedingChan) < cap(tm.seedingChan) {
 			tm.seedingChan <- t
 			delete(tm.activeTorrents, ih)
-			//}
 		}
 	}
 }
@@ -861,6 +822,39 @@ func (tm *TorrentManager) activeLoop() {
 			timer.Reset(time.Second * queryTimeInterval)
 		case <-tm.closeAll:
 			log.Info("Active seed loop closed")
+			return
+		}
+	}
+}
+
+func (tm *TorrentManager) seedingLoop() {
+	defer tm.wg.Done()
+	for {
+		select {
+		case t := <-tm.seedingChan:
+			tm.seedingTorrents[t.infohash] = t
+
+			s := t.Seed()
+
+			if s {
+				tm.hotCache.Add(t.infohash, true)
+				if len(tm.seedingTorrents) > params.LimitSeeding {
+					//tm.dropSeeding(tm.slot)
+				} else if len(tm.seedingTorrents) > tm.maxSeedTask {
+					tm.maxSeedTask++
+					//tm.graceSeeding(tm.slot)
+				}
+
+				if tm.seedingNotify != nil {
+					tm.wg.Add(1)
+					go func() {
+						defer tm.wg.Done()
+						tm.seedingNotify <- t.InfoHash()
+					}()
+				}
+			}
+		case <-tm.closeAll:
+			log.Info("Seeding loop closed")
 			return
 		}
 	}
