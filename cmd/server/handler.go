@@ -11,8 +11,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/CortexFoundation/CortexTheseus/common"
 	"github.com/CortexFoundation/CortexTheseus/log"
-	common "github.com/CortexFoundation/torrentfs"
+	fs "github.com/CortexFoundation/torrentfs"
 )
 
 const (
@@ -28,10 +29,15 @@ func (conf *Config) DownloadHandler(w http.ResponseWriter, r *http.Request) {
 	case "POST":
 		ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 		defer cancel()
-		err := conf.tfs.Tunnel(ctx, q.Get("hash"))
-		if err != nil {
-			log.Error("err", "e", err)
-			res = err.Error()
+		ih := q.Get("hash")
+		if !common.IsHexAddress(ih) {
+			res = "invalid hash"
+		} else {
+			err := conf.tfs.Tunnel(ctx, ih)
+			if err != nil {
+				log.Error("err", "e", err)
+				res = err.Error()
+			}
 		}
 	default:
 		res = "method not found"
@@ -115,7 +121,7 @@ func (conf *Config) ListHandler(w http.ResponseWriter, r *http.Request) {
 			if b := conf.db.Get([]byte(file.Name())); b != nil {
 				h = string(b)
 			} else {
-				h, err = common.Hash(path)
+				h, err = fs.Hash(path)
 				if len(h) == 0 || err != nil {
 					log.Error("Hash failed", "path", path, "err", err)
 					continue
