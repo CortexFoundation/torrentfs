@@ -51,6 +51,7 @@ import (
 	"github.com/anacrolix/torrent"
 	"github.com/anacrolix/torrent/metainfo"
 	"github.com/anacrolix/torrent/mmap_span"
+	pp "github.com/anacrolix/torrent/peer_protocol"
 	"github.com/anacrolix/torrent/storage"
 )
 
@@ -498,6 +499,7 @@ func NewTorrentManager(config *Config, fsid uint64, cache, compress bool, notify
 	cfg.DisableTCP = config.DisableTCP
 	cfg.DisableIPv6 = config.DisableIPv6
 
+	cfg.MinPeerExtensions.SetBit(pp.ExtensionBitFast, true)
 	//cfg.DisableWebtorrent = false
 	//cfg.DisablePEX = false
 	//cfg.DisableWebseeds = false
