@@ -738,8 +738,12 @@ func (tm *TorrentManager) pendingLoop() {
 			go func() {
 				defer tm.wg.Done()
 				t.start = mclock.Now()
+				log.Debug("Seeding ... ...", "ih", t.infohash)
+				ctx, cancel := context.WithTimeout(context.Background(), 300*time.Second)
+				defer cancel()
 				select {
 				case <-t.GotInfo():
+					log.Info("New seed added", "ih", t.infohash)
 					if err := t.WriteTorrent(); err == nil {
 						if IsGood(t.infohash) || tm.mode == params.FULL {
 							t.bytesRequested = t.Length()
@@ -749,6 +753,10 @@ func (tm *TorrentManager) pendingLoop() {
 						tm.pendingRemoveChan <- t.infohash
 					}
 				case <-t.Closed():
+				case <-ctx.Done():
+					log.Debug("Seed done!", "ih", t.infohash)
+					t.AddTrackers([][]string{params.GlobalTrackers})
+					tm.pendingChan <- t
 				}
 			}()
 		case i := <-tm.pendingRemoveChan:
