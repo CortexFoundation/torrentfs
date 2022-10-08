@@ -67,8 +67,8 @@ func (t *Torrent) InfoHash() string {
 }
 
 func (t *Torrent) Ready() bool {
-	t.lock.Lock()
-	defer t.lock.Unlock()
+	//t.lock.Lock()
+	//defer t.lock.Unlock()
 	if _, ok := BadFiles[t.InfoHash()]; ok {
 		return false
 	}
@@ -77,7 +77,7 @@ func (t *Torrent) Ready() bool {
 	//t.cited += 1
 	//t.lock.Unlock()
 
-	ret := t.IsSeeding()
+	ret := t.Seeding()
 	if !ret {
 		log.Debug("Not ready", "ih", t.InfoHash(), "status", t.status, "seed", t.Torrent.Seeding(), "seeding", torrentSeeding)
 	}
@@ -141,10 +141,6 @@ func (t *Torrent) Seed() bool {
 	}
 
 	return false
-}
-
-func (t *Torrent) IsSeeding() bool {
-	return t.status == torrentSeeding && t.Torrent.Seeding()
 }
 
 func (t *Torrent) Pause() {
