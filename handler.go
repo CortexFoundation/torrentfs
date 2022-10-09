@@ -824,7 +824,7 @@ func (tm *TorrentManager) activeLoop() {
 
 				if log_counter%60 == 0 {
 					elapsed := time.Duration(mclock.Now()) - time.Duration(t.start)
-					log.Info(ProgressBar(t.bytesCompleted, t.Torrent.Length(), ""), "ih", ih, "complete", common.StorageSize(t.bytesCompleted), "limit", common.StorageSize(t.bytesLimitation), "total", common.StorageSize(t.Torrent.Length()), "want", t.maxPieces, "max", t.Torrent.NumPieces(), "speed", common.StorageSize(float64(t.bytesCompleted*1000*1000*1000)/float64(elapsed)).String()+"/s", "elapsed", common.PrettyDuration(elapsed))
+					log.Debug(ProgressBar(t.bytesCompleted, t.Torrent.Length(), ""), "ih", ih, "complete", common.StorageSize(t.bytesCompleted), "limit", common.StorageSize(t.bytesLimitation), "total", common.StorageSize(t.Torrent.Length()), "want", t.maxPieces, "max", t.Torrent.NumPieces(), "speed", common.StorageSize(float64(t.bytesCompleted*1000*1000*1000)/float64(elapsed)).String()+"/s", "elapsed", common.PrettyDuration(elapsed))
 				}
 
 				if t.bytesCompleted < t.bytesLimitation { //&& !t.isBoosting {
