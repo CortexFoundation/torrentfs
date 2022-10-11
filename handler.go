@@ -768,7 +768,9 @@ func (tm *TorrentManager) pendingLoop() {
 					log.Info("Imported new seed", "ih", t.infohash, "elapsed", common.PrettyDuration(elapsed))
 					if b, err := bencode.Marshal(t.Torrent.Info()); err == nil {
 						log.Debug("Record full torrent in history", "ih", t.infohash, "info", len(b))
-						tm.badger.Set([]byte(t.infohash), b)
+						if tm.badger.Get([]byte(t.infohash)) == nil {
+							tm.badger.Set([]byte(t.infohash), b)
+						}
 					} else {
 						log.Error("meta info marshal failed", "ih", t.infohash, "err", err)
 					}
