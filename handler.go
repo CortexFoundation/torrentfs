@@ -453,8 +453,9 @@ func (tm *TorrentManager) addInfoHash(ih string, bytesRequested int64) *Torrent 
 	}
 
 	var spec *torrent.TorrentSpec
+	var v []byte
 
-	if v := tm.badger.Get([]byte(ih)); v == nil {
+	if v = tm.badger.Get([]byte(ih)); v == nil {
 		tmpTorrentPath := filepath.Join(tm.TmpDataDir, ih, TORRENT)
 		seedTorrentPath := filepath.Join(tm.DataDir, ih, TORRENT)
 
@@ -480,8 +481,9 @@ func (tm *TorrentManager) addInfoHash(ih string, bytesRequested int64) *Torrent 
 		}
 
 		spec = &torrent.TorrentSpec{
-			InfoHash: metainfo.NewHashFromHex(ih),
-			Storage:  storage.NewFile(tmpDataPath),
+			InfoHash:  metainfo.NewHashFromHex(ih),
+			Storage:   storage.NewFile(tmpDataPath),
+			InfoBytes: v,
 		}
 	}
 
