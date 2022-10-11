@@ -452,14 +452,13 @@ func (tm *TorrentManager) addInfoHash(ih string, bytesRequested int64) *Torrent 
 	)
 
 	if v = tm.badger.Get([]byte(ih)); v == nil {
-		tmpTorrentPath := filepath.Join(tm.TmpDataDir, ih, TORRENT)
 		seedTorrentPath := filepath.Join(tm.DataDir, ih, TORRENT)
-
 		if _, err := os.Stat(seedTorrentPath); err == nil {
 			spec = tm.loadSpec(ih, seedTorrentPath)
 		}
 
 		if spec == nil {
+			tmpTorrentPath := filepath.Join(tm.TmpDataDir, ih, TORRENT)
 			if _, err := os.Stat(tmpTorrentPath); err == nil {
 				spec = tm.loadSpec(ih, tmpTorrentPath)
 			}
