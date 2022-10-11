@@ -782,14 +782,15 @@ func (tm *TorrentManager) pendingLoop() {
 					} else {
 						log.Error("Meta info marshal failed", "ih", t.infohash, "err", err)
 					}
-					//if err := t.WriteTorrent(); err == nil {
-					if IsGood(t.infohash) || tm.mode == params.FULL {
-						t.bytesRequested = t.Length()
-						t.bytesLimitation = tm.getLimitation(t.bytesRequested)
+
+					if err := t.WriteTorrent(); err == nil {
+						if IsGood(t.infohash) || tm.mode == params.FULL {
+							t.bytesRequested = t.Length()
+							t.bytesLimitation = tm.getLimitation(t.bytesRequested)
+						}
+						tm.activeChan <- t
+						tm.pendingRemoveChan <- t.infohash
 					}
-					tm.activeChan <- t
-					tm.pendingRemoveChan <- t.infohash
-					//}
 				case <-t.Closed():
 				case <-ctx.Done():
 					//elapsed := time.Duration(mclock.Now()) - time.Duration(t.start)
