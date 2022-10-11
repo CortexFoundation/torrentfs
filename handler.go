@@ -49,10 +49,12 @@ import (
 
 	//xlog "github.com/anacrolix/log"
 	"github.com/anacrolix/torrent"
+	"github.com/anacrolix/torrent/bencode"
 	"github.com/anacrolix/torrent/metainfo"
 	"github.com/anacrolix/torrent/mmap_span"
 	pp "github.com/anacrolix/torrent/peer_protocol"
 	"github.com/anacrolix/torrent/storage"
+	"github.com/ucwong/golang-kv"
 )
 
 const (
@@ -138,6 +140,8 @@ type TorrentManager struct {
 
 	startOnce     sync.Once
 	seedingNotify chan string
+
+	badger kv.Bucket
 }
 
 // can only call by fs.go: 'SeedingLocal()'
@@ -240,6 +244,12 @@ func (tm *TorrentManager) getLimitation(value int64) int64 {
 }
 
 func (tm *TorrentManager) register(t *torrent.Torrent, requested int64, status int, ih string) *Torrent {
+	if t.Info() == nil {
+		if v := tm.badger.Get([]byte(ih)); v != nil {
+			t.SetInfoBytes(v)
+		}
+	}
+
 	tt := &Torrent{
 		Torrent:             t,
 		maxEstablishedConns: tm.maxEstablishedConns,
@@ -260,6 +270,7 @@ func (tm *TorrentManager) register(t *torrent.Torrent, requested int64, status i
 		fast:  false,
 		start: 0,
 	}
+
 	tm.lock.Lock()
 	tm.torrents[ih] = tt
 	tm.lock.Unlock()
@@ -284,6 +295,10 @@ func (tm *TorrentManager) Close() error {
 	tm.wg.Wait()
 	if tm.fileCache != nil {
 		tm.fileCache.Reset()
+	}
+
+	if tm.badger != nil {
+		tm.badger.Close()
 	}
 
 	tm.hotCache.Purge()
@@ -437,10 +452,10 @@ func (tm *TorrentManager) addInfoHash(ih string, bytesRequested int64) *Torrent 
 		}()
 	}
 
-	tmpTorrentPath := filepath.Join(tm.TmpDataDir, ih, TORRENT)
-	seedTorrentPath := filepath.Join(tm.DataDir, ih, TORRENT)
-
 	var spec *torrent.TorrentSpec
+
+	/*tmpTorrentPath := filepath.Join(tm.TmpDataDir, ih, TORRENT)
+	seedTorrentPath := filepath.Join(tm.DataDir, ih, TORRENT)
 
 	if _, err := os.Stat(seedTorrentPath); err == nil {
 		spec = tm.loadSpec(ih, seedTorrentPath)
@@ -450,7 +465,7 @@ func (tm *TorrentManager) addInfoHash(ih string, bytesRequested int64) *Torrent 
 		if _, err := os.Stat(tmpTorrentPath); err == nil {
 			spec = tm.loadSpec(ih, tmpTorrentPath)
 		}
-	}
+	}*/
 
 	if spec == nil {
 		tmpDataPath := filepath.Join(tm.TmpDataDir, ih)
@@ -573,6 +588,7 @@ func NewTorrentManager(config *Config, fsid uint64, cache, compress bool, notify
 		slot:              int(fsid % bucket),
 		localSeedFiles:    make(map[string]bool),
 		seedingNotify:     notify,
+		badger:            kv.Badger(config.DataDir),
 	}
 
 	if cache {
@@ -750,14 +766,14 @@ func (tm *TorrentManager) pendingLoop() {
 				case <-t.GotInfo():
 					elapsed := time.Duration(mclock.Now()) - time.Duration(t.start)
 					log.Info("Imported new seed", "ih", t.infohash, "elapsed", common.PrettyDuration(elapsed))
-					if err := t.WriteTorrent(); err == nil {
-						if IsGood(t.infohash) || tm.mode == params.FULL {
-							t.bytesRequested = t.Length()
-							t.bytesLimitation = tm.getLimitation(t.bytesRequested)
-						}
-						tm.activeChan <- t
-						tm.pendingRemoveChan <- t.infohash
+					//if err := t.WriteTorrent(); err == nil {
+					if IsGood(t.infohash) || tm.mode == params.FULL {
+						t.bytesRequested = t.Length()
+						t.bytesLimitation = tm.getLimitation(t.bytesRequested)
 					}
+					tm.activeChan <- t
+					tm.pendingRemoveChan <- t.infohash
+					//}
 				case <-t.Closed():
 				case <-ctx.Done():
 					//elapsed := time.Duration(mclock.Now()) - time.Duration(t.start)
@@ -828,9 +844,7 @@ func (tm *TorrentManager) activeLoop() {
 				}
 
 				if t.bytesCompleted < t.bytesLimitation { //&& !t.isBoosting {
-					t.lock.Lock()
 					t.Run(tm.slot)
-					t.lock.Unlock()
 				}
 			}
 
@@ -872,6 +886,21 @@ func (tm *TorrentManager) seedingLoop() {
 						tm.seedingNotify <- t.InfoHash()
 					}()
 				}
+
+				if b, err := bencode.Marshal(t.Torrent.Info()); err == nil {
+					log.Debug("Record full torrent in history", "ih", t.infohash, "info", len(b))
+					tm.badger.Set([]byte(t.infohash), b)
+				} else {
+					log.Error("meta info marshal failed", "ih", t.infohash, "err", err)
+				}
+
+				/*v := tm.badger.Get([]byte(t.infohash))
+				var actual metainfo.Info
+				if err := bencode.Unmarshal(v, &actual); err == nil {
+					log.Info("Full torrent in history", "info", len(v))
+				} else {
+					log.Warn("meta info unmarshal failed", "err", err)
+				}*/
 			}
 		case <-tm.closeAll:
 			log.Info("Seeding loop closed")
