@@ -780,7 +780,7 @@ func (tm *TorrentManager) pendingLoop() {
 							tm.badger.Set([]byte(t.infohash), b)
 						}
 					} else {
-						log.Error("meta info marshal failed", "ih", t.infohash, "err", err)
+						log.Error("Meta info marshal failed", "ih", t.infohash, "err", err)
 					}
 					//if err := t.WriteTorrent(); err == nil {
 					if IsGood(t.infohash) || tm.mode == params.FULL {
