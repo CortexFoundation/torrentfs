@@ -67,8 +67,8 @@ func (t *Torrent) InfoHash() string {
 }
 
 func (t *Torrent) Ready() bool {
-	t.lock.Lock()
-	defer t.lock.Unlock()
+	t.lock.RLock()
+	defer t.lock.RUnlock()
 	if _, ok := BadFiles[t.InfoHash()]; ok {
 		return false
 	}
