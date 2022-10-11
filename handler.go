@@ -244,12 +244,6 @@ func (tm *TorrentManager) getLimitation(value int64) int64 {
 }
 
 func (tm *TorrentManager) register(t *torrent.Torrent, requested int64, status int, ih string) *Torrent {
-	if t.Info() == nil {
-		if v := tm.badger.Get([]byte(ih)); v != nil {
-			t.SetInfoBytes(v)
-		}
-	}
-
 	tt := &Torrent{
 		Torrent:             t,
 		maxEstablishedConns: tm.maxEstablishedConns,
@@ -452,8 +446,10 @@ func (tm *TorrentManager) addInfoHash(ih string, bytesRequested int64) *Torrent 
 		}()
 	}
 
-	var spec *torrent.TorrentSpec
-	var v []byte
+	var (
+		spec *torrent.TorrentSpec
+		v    []byte
+	)
 
 	if v = tm.badger.Get([]byte(ih)); v == nil {
 		tmpTorrentPath := filepath.Join(tm.TmpDataDir, ih, TORRENT)
@@ -491,7 +487,15 @@ func (tm *TorrentManager) addInfoHash(ih string, bytesRequested int64) *Torrent 
 		if !n {
 			log.Warn("Try to add a dupliated torrent", "ih", ih)
 		}
+
 		t.AddTrackers(tm.trackers)
+
+		if t.Info() == nil {
+			if v := tm.badger.Get([]byte(ih)); v != nil {
+				t.SetInfoBytes(v)
+			}
+		}
+
 		return tm.register(t, bytesRequested, torrentPending, ih)
 	}
 
