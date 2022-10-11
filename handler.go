@@ -294,8 +294,9 @@ func (tm *TorrentManager) Close() error {
 	if tm.badger != nil {
 		tm.badger.Close()
 	}
-
-	tm.hotCache.Purge()
+	if tm.hotCache != nil {
+		tm.hotCache.Purge()
+	}
 	log.Info("Fs Download Manager Closed")
 	return nil
 }
