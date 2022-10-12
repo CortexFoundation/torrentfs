@@ -908,12 +908,16 @@ func (tm *TorrentManager) seedingLoop() {
 			}
 		case ih := <-tm.droppingChan:
 			if t := tm.getTorrent(ih); t != nil {
-				t.Torrent.Drop()
-				delete(tm.seedingTorrents, ih)
-				tm.lock.Lock()
-				delete(tm.torrents, ih)
-				tm.lock.Unlock()
-				log.Info("Seed has been dropped", "ih", ih)
+				if t.Ready() {
+					t.Torrent.Drop()
+					delete(tm.seedingTorrents, ih)
+					tm.lock.Lock()
+					delete(tm.torrents, ih)
+					tm.lock.Unlock()
+					log.Info("Seed has been dropped", "ih", ih)
+				} else {
+					log.Warn("Can't be dropped", "ih" ih, "status", t.status)
+				}
 			} else {
 				log.Warn("Drop seed not found", "ih", ih)
 			}
