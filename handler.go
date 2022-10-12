@@ -115,6 +115,7 @@ type TorrentManager struct {
 	activeChan          chan *Torrent
 	pendingChan         chan *Torrent
 	pendingRemoveChan   chan string
+	droppingChan        chan string
 	mode                string
 	boost               bool
 	id                  uint64
@@ -590,6 +591,7 @@ func NewTorrentManager(config *Config, fsid uint64, cache, compress bool, notify
 		activeChan:        make(chan *Torrent, torrentChanSize),
 		pendingChan:       make(chan *Torrent, torrentChanSize),
 		pendingRemoveChan: make(chan string, torrentChanSize),
+		droppingChan:      make(chan string, torrentChanSize),
 		mode:              config.Mode,
 		boost:             config.Boost,
 		id:                fsid,
@@ -903,27 +905,28 @@ func (tm *TorrentManager) seedingLoop() {
 						tm.seedingNotify <- t.InfoHash()
 					}()
 				}
-
-				/*if b, err := bencode.Marshal(t.Torrent.Info()); err == nil {
-					log.Debug("Record full torrent in history", "ih", t.infohash, "info", len(b))
-					tm.badger.Set([]byte(t.infohash), b)
-				} else {
-					log.Error("meta info marshal failed", "ih", t.infohash, "err", err)
-				}*/
-
-				/*v := tm.badger.Get([]byte(t.infohash))
-				var actual metainfo.Info
-				if err := bencode.Unmarshal(v, &actual); err == nil {
-					log.Info("Full torrent in history", "info", len(v))
-				} else {
-					log.Warn("meta info unmarshal failed", "err", err)
-				}*/
+			}
+		case ih := <-tm.droppingChan:
+			if t := tm.getTorrent(ih); t != nil {
+				t.Torrent.Drop()
+				delete(tm.seedingTorrents, ih)
+				tm.lock.Lock()
+				delete(tm.torrents, ih)
+				tm.lock.Unlock()
+				log.Info("Seed has been dropped", "ih", ih)
+			} else {
+				log.Warn("Drop seed not found", "ih", ih)
 			}
 		case <-tm.closeAll:
 			log.Info("Seeding loop closed")
 			return
 		}
 	}
+}
+
+func (tm *TorrentManager) Drop(ih string) error {
+	tm.droppingChan <- ih
+	return nil
 }
 
 func (tm *TorrentManager) dropSeeding(slot int) error {

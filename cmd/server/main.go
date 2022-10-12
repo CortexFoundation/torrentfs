@@ -62,6 +62,10 @@ func main() {
 }
 
 func run(conf *Config) error {
+	glogger := log.NewGlogHandler(log.StreamHandler(os.Stderr, log.TerminalFormat(true)))
+	glogger.Verbosity(log.LvlInfo)
+	glogger.Vmodule("")
+	log.Root().SetHandler(glogger)
 	conf.db = kv.Badger("")
 	//conf.db = kv.Bolt("")
 	//conf.db = kv.LevelDB("")
@@ -88,18 +92,14 @@ func run(conf *Config) error {
 
 	conf.tfs = fs
 
-	glogger := log.NewGlogHandler(log.StreamHandler(os.Stderr, log.TerminalFormat(true)))
-	glogger.Verbosity(log.LvlInfo)
-	glogger.Vmodule("")
-	log.Root().SetHandler(glogger)
-
 	prometheus.MustRegister(xprometheus.NewExpvarCollector())
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/download", conf.DownloadHandler)
-	mux.HandleFunc("/tunnel", conf.DownloadHandler)
+	mux.HandleFunc("/tunnel", conf.TunnelHandler)
 	mux.HandleFunc("/seed", conf.SeedHandler)
 	mux.HandleFunc("/list", conf.ListHandler)
+	mux.HandleFunc("/drop", conf.DropHandler)
 
 	fileServer := http.FileServer(http.Dir("./.storage/"))
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
@@ -107,12 +107,12 @@ func run(conf *Config) error {
 	mux.Handle("/metrics", promhttp.Handler())
 
 	log.Info("Server started", "port", conf.port)
-	ret := conf.db.Prefix([]byte("s:"))
+	//ret := conf.db.Prefix([]byte("s:"))
 	//ret := conf.db.Scan()
-	log.Info("db length", "len", len(ret))
-	for _, v := range ret {
-		log.Info("Seeding file", "ih", string(v))
-	}
+	//log.Info("db length", "len", len(ret))
+	//for _, v := range ret {
+	//	log.Info("Seeding file", "ih", string(v))
+	//}
 
 	if err := http.ListenAndServe("127.0.0.1:"+conf.port, mux); err != nil {
 		log.Error("Failed to start server", "err", err)
