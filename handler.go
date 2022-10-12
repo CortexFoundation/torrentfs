@@ -915,8 +915,6 @@ func (tm *TorrentManager) seedingLoop() {
 					delete(tm.torrents, ih)
 					tm.lock.Unlock()
 					log.Info("Seed has been dropped", "ih", ih)
-				} else {
-					log.Warn("Can't be dropped", "ih" ih, "status", t.status)
 				}
 			} else {
 				log.Warn("Drop seed not found", "ih", ih)
