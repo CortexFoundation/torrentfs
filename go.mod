@@ -21,7 +21,7 @@ require (
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/golang/snappy v0.0.5-0.20220116011046-fa5810519dcb
 	github.com/google/uuid v1.3.0
-	github.com/hashicorp/golang-lru v0.5.5-0.20221011183528-d4900dc688bf
+	github.com/hashicorp/golang-lru v0.5.5-0.20210104140557-80c98217689d
 	github.com/otiai10/copy v1.7.1-0.20220511062925-528e2c97a037
 	github.com/prometheus/client_golang v1.13.0
 	github.com/ucwong/golang-kv v1.0.10-0.20220911003714-51ffe42c65e6
