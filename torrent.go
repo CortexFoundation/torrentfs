@@ -78,7 +78,7 @@ func (t *Torrent) Ready() bool {
 	//t.cited += 1
 	//t.lock.Unlock()
 
-	ret := t.Seeding()
+	ret := t.IsSeeding()
 	if !ret {
 		log.Debug("Not ready", "ih", t.InfoHash(), "status", t.status, "seed", t.Torrent.Seeding(), "seeding", torrentSeeding)
 	}
@@ -142,6 +142,10 @@ func (t *Torrent) Seed() bool {
 	}
 
 	return false
+}
+
+func (t *Torrent) IsSeeding() bool {
+	return t.status == torrentSeeding && t.Torrent.Seeding()
 }
 
 func (t *Torrent) Pause() {
