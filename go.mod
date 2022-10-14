@@ -5,7 +5,6 @@ go 1.19
 require (
 	github.com/CortexFoundation/CortexTheseus v1.10.33
 	github.com/CortexFoundation/merkletree v0.0.0-20220419080543-2eafbafb777b
-	github.com/allegro/bigcache/v3 v3.0.3-0.20220614095342-7c2932edbec2
 	github.com/anacrolix/envpprof v1.2.1
 	github.com/anacrolix/fuse v0.2.0
 	github.com/anacrolix/log v0.13.2-0.20220711050817-613cb738ef30
