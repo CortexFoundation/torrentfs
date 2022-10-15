@@ -121,7 +121,7 @@ type TorrentManager struct {
 	id                  uint64
 	slot                int
 
-	fileLock sync.RWMutex
+	//fileLock sync.RWMutex
 	//fileCache *bigcache.BigCache
 	cache    bool
 	compress bool
@@ -823,8 +823,8 @@ func (tm *TorrentManager) pendingLoop() {
 }
 
 func (tm *TorrentManager) toSeed(ih string, t *Torrent) {
-	tm.fileLock.Lock()
-	defer tm.fileLock.Unlock()
+	t.lock.Lock()
+	defer t.lock.Unlock()
 	if _, err := os.Stat(filepath.Join(tm.DataDir, ih)); err == nil {
 		tm.seedingChan <- t
 		delete(tm.activeTorrents, ih)
@@ -841,7 +841,7 @@ func (tm *TorrentManager) toSeed(ih string, t *Torrent) {
 
 func (tm *TorrentManager) activeLoop() {
 	defer tm.wg.Done()
-	timer := time.NewTimer(time.Second * queryTimeInterval)
+	timer := time.NewTicker(time.Second * queryTimeInterval)
 	defer timer.Stop()
 	var total_size, current_size, log_counter, counter uint64 = 0, 0, 1, 1
 	for {
@@ -880,7 +880,7 @@ func (tm *TorrentManager) activeLoop() {
 				counter = 1
 				current_size = 0
 			}
-			timer.Reset(time.Second * queryTimeInterval)
+			//timer.Reset(time.Second * queryTimeInterval)
 		case <-tm.closeAll:
 			log.Info("Active seed loop closed")
 			return
@@ -1110,8 +1110,10 @@ func (tm *TorrentManager) getFile(infohash, subpath string) ([]byte, uint64, err
 		}
 	}*/
 
-	tm.fileLock.RLock()
-	defer tm.fileLock.RUnlock()
+	if t := tm.getTorrent(infohash); t != nil {
+		t.lock.RLock()
+		defer t.lock.RUnlock()
+	}
 	diskReadMeter.Mark(1)
 
 	log.Debug("Get File", "dir", tm.DataDir, "key", key)
