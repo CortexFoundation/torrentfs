@@ -20,6 +20,64 @@ const (
 	WORKSPACE = "/share/"
 )
 
+func (conf *Config) DropHandler(w http.ResponseWriter, r *http.Request) {
+	res := "OK"
+	q := r.URL.Query()
+	switch r.Method {
+	case "GET":
+		res = "GET NOT SUPPORT"
+	case "POST":
+		ih := q.Get("hash")
+		if !common.IsHexAddress(ih) {
+			res = "invalid hash"
+		} else {
+			err := conf.tfs.Drop(ih)
+			if err != nil {
+				log.Error("err", "e", err)
+				res = err.Error()
+			}
+		}
+	default:
+		res = "method not found"
+	}
+	fmt.Fprintf(w, res)
+}
+
+func (conf *Config) TunnelHandler(w http.ResponseWriter, r *http.Request) {
+	res := "OK"
+	q := r.URL.Query()
+	switch r.Method {
+	case "GET":
+		res = "GET NOT SUPPORT"
+	case "POST":
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+
+		ih := q.Get("hash")
+		if !common.IsHexAddress(ih) {
+			res = "invalid hash"
+		} else {
+			go func() {
+				timer := time.NewTicker(900 * time.Second)
+				defer timer.Stop()
+				err := conf.tfs.Tunnel(ctx, ih)
+				if err != nil {
+					log.Error("err", "e", err)
+					res = err.Error()
+				}
+
+				select {
+				case <-timer.C:
+					conf.tfs.Drop(ih)
+				}
+			}()
+		}
+	default:
+		res = "method not found"
+	}
+	fmt.Fprintf(w, res)
+}
+
 func (conf *Config) DownloadHandler(w http.ResponseWriter, r *http.Request) {
 	res := "OK"
 	q := r.URL.Query()
