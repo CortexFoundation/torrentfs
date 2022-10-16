@@ -20,8 +20,8 @@ var (
 		"udp://tracker.cortexlabs.ai:5008",
 		//"http://tracker.cortexlabs.ai:5008/announce",
 		//"http://tracker.openbittorrent.com:80/announce",
-		"udp://tracker.openbittorrent.com:6969/announce",
-		"udp://tracker.opentrackr.org:1337/announce",
+		//"udp://tracker.openbittorrent.com:6969/announce",
+		//"udp://tracker.opentrackr.org:1337/announce",
 	}
 
 	GlobalTrackers = []string{
@@ -40,4 +40,6 @@ var (
 	TorrentBoostNodes = []string{
 		"http://share.cortexlabs.ai:7881",
 	}
+
+	BestTrackerUrl = "https://raw.githubusercontent.com/ngosang/trackerslist/master/trackers_best.txt"
 )

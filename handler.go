@@ -638,7 +638,11 @@ func NewTorrentManager(config *Config, fsid uint64, cache, compress bool, notify
 		log.Debug("Tracker list", "trackers", config.DefaultTrackers)
 		torrentManager.trackers = [][]string{config.DefaultTrackers}
 	}
-	log.Debug("Fs client initialized", "config", config)
+	if global, err := wormhole.BestTrackers(); global != nil && err == nil {
+		torrentManager.trackers = append(torrentManager.trackers, global)
+	}
+
+	log.Debug("Fs client initialized", "config", config, "trackers", torrentManager.trackers)
 
 	return torrentManager, nil
 }
