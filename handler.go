@@ -793,8 +793,10 @@ func (tm *TorrentManager) pendingLoop() {
 
 					if err := t.WriteTorrent(); err == nil {
 						if IsGood(t.infohash) || tm.mode == params.FULL {
+							t.lock.Lock()
 							t.bytesRequested = t.Length()
-							t.bytesLimitation = tm.getLimitation(t.bytesRequested)
+							t.bytesLimitation = tm.getLimitation(t.Length())
+							t.lock.Unlock()
 						}
 						tm.activeChan <- t
 						tm.pendingRemoveChan <- t.infohash
@@ -822,7 +824,7 @@ func (tm *TorrentManager) pendingLoop() {
 	}
 }
 
-func (tm *TorrentManager) toSeed(ih string, t *Torrent) {
+func (tm *TorrentManager) finish(ih string, t *Torrent) {
 	t.lock.Lock()
 	defer t.lock.Unlock()
 	if _, err := os.Stat(filepath.Join(tm.DataDir, ih)); err == nil {
@@ -861,7 +863,7 @@ func (tm *TorrentManager) activeLoop() {
 				}
 
 				if t.BytesMissing() == 0 {
-					tm.toSeed(ih, t)
+					tm.finish(ih, t)
 					continue
 				}
 
