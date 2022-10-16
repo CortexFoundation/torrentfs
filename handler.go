@@ -44,7 +44,7 @@ import (
 	//"github.com/allegro/bigcache/v3"
 	"github.com/bradfitz/iter"
 	"github.com/edsrzf/mmap-go"
-	lru "github.com/hashicorp/golang-lru"
+	//lru "github.com/hashicorp/golang-lru"
 	//"golang.org/x/time/rate"
 
 	//xlog "github.com/anacrolix/log"
@@ -129,7 +129,7 @@ type TorrentManager struct {
 	metrics bool
 	Updates time.Duration
 
-	hotCache *lru.Cache
+	//hotCache *lru.Cache
 
 	// For manage torrents Seeding by SeedingLocal(), true/false means seeding/pause
 	localSeedLock  sync.RWMutex
@@ -299,9 +299,9 @@ func (tm *TorrentManager) Close() error {
 	if tm.badger != nil {
 		tm.badger.Close()
 	}
-	if tm.hotCache != nil {
-		tm.hotCache.Purge()
-	}
+	//if tm.hotCache != nil {
+	//	tm.hotCache.Purge()
+	//}
 	log.Info("Fs Download Manager Closed")
 	return nil
 }
@@ -630,9 +630,9 @@ func NewTorrentManager(config *Config, fsid uint64, cache, compress bool, notify
 
 	torrentManager.metrics = config.Metrics
 
-	hotSize := config.MaxSeedingNum/64 + 1
-	torrentManager.hotCache, _ = lru.New(hotSize)
-	log.Info("Hot cache created", "size", hotSize)
+	//hotSize := config.MaxSeedingNum/64 + 1
+	//torrentManager.hotCache, _ = lru.New(hotSize)
+	//log.Info("Hot cache created", "size", hotSize)
 
 	if len(config.DefaultTrackers) > 0 {
 		log.Debug("Tracker list", "trackers", config.DefaultTrackers)
@@ -825,8 +825,8 @@ func (tm *TorrentManager) pendingLoop() {
 }
 
 func (tm *TorrentManager) finish(ih string, t *Torrent) {
-	t.lock.Lock()
-	defer t.lock.Unlock()
+	//t.lock.Lock()
+	//defer t.lock.Unlock()
 	if _, err := os.Stat(filepath.Join(tm.DataDir, ih)); err == nil {
 		tm.seedingChan <- t
 		delete(tm.activeTorrents, ih)
@@ -878,7 +878,7 @@ func (tm *TorrentManager) activeLoop() {
 			}
 
 			if counter >= 2*loops {
-				log.Info("Fs status", "pending", len(tm.pendingTorrents), "downloading", len(tm.activeTorrents), "seeding", len(tm.seedingTorrents), "size", common.StorageSize(total_size), "speed_a", common.StorageSize(total_size/log_counter*queryTimeInterval).String()+"/s", "speed_b", common.StorageSize(current_size/counter*queryTimeInterval).String()+"/s", "metrics", common.PrettyDuration(tm.Updates), "hot", tm.hotCache.Len())
+				log.Info("Fs status", "pending", len(tm.pendingTorrents), "downloading", len(tm.activeTorrents), "seeding", len(tm.seedingTorrents), "size", common.StorageSize(total_size), "speed_a", common.StorageSize(total_size/log_counter*queryTimeInterval).String()+"/s", "speed_b", common.StorageSize(current_size/counter*queryTimeInterval).String()+"/s", "metrics", common.PrettyDuration(tm.Updates))
 				counter = 1
 				current_size = 0
 			}
@@ -900,7 +900,7 @@ func (tm *TorrentManager) seedingLoop() {
 			s := t.Seed()
 
 			if s {
-				tm.hotCache.Add(t.infohash, true)
+				//tm.hotCache.Add(t.infohash, true)
 				//if len(tm.seedingTorrents) > params.LimitSeeding {
 				//tm.dropSeeding(tm.slot)
 				//} else if len(tm.seedingTorrents) > tm.maxSeedTask {
@@ -1088,7 +1088,7 @@ func (tm *TorrentManager) getFile(infohash, subpath string) ([]byte, uint64, err
 	//		return nil, uint64(t.BytesCompleted()), ErrUnfinished
 	//	}
 
-	tm.hotCache.Add(infohash, true)
+	//tm.hotCache.Add(infohash, true)
 	//if t.currentConns < tm.maxEstablishedConns {
 	//t.setCurrentConns(tm.maxEstablishedConns)
 	//t.Torrent.SetMaxEstablishedConns(t.currentConns)
@@ -1112,10 +1112,10 @@ func (tm *TorrentManager) getFile(infohash, subpath string) ([]byte, uint64, err
 		}
 	}*/
 
-	if t := tm.getTorrent(infohash); t != nil {
-		t.lock.RLock()
-		defer t.lock.RUnlock()
-	}
+	//if t := tm.getTorrent(infohash); t != nil {
+	//	t.lock.RLock()
+	//	defer t.lock.RUnlock()
+	//}
 	diskReadMeter.Mark(1)
 
 	log.Debug("Get File", "dir", tm.DataDir, "key", key)
