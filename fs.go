@@ -193,8 +193,8 @@ func New(config *Config, cache, compress, listen bool) (*TorrentFS, error) {
 
 	inst.closeAll = make(chan struct{})
 
-	inst.wg.Add(1)
-	go inst.listen()
+	//inst.wg.Add(1)
+	//go inst.listen()
 
 	return inst, nil
 }
@@ -204,7 +204,6 @@ func (tfs *TorrentFS) listen() {
 	for {
 		select {
 		case s := <-tfs.seedingNotify:
-			//tfs.nasCache.Add(s, uint64(0))
 			tfs.notify(s)
 		case <-tfs.closeAll:
 			return
