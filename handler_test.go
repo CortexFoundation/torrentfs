@@ -30,7 +30,7 @@ func TestGetFile(t *testing.T) {
 	ih := "aea5584d0cd3865e90c80eace3bfcb062473d966"
 	fmt.Println(DefaultConfig)
 	tm, _ := NewTorrentManager(&DefaultConfig, 1, false, false, nil)
-	tm.Simulate()
+	//tm.Simulate()
 	tm.Start()
 	tm.Search(context.Background(), ih, 0)
 	defer tm.Close()
