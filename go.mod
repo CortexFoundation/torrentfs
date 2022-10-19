@@ -3,7 +3,7 @@ module github.com/CortexFoundation/torrentfs
 go 1.19
 
 require (
-	github.com/CortexFoundation/CortexTheseus v1.10.33
+	github.com/CortexFoundation/CortexTheseus v1.10.34-0.20221018001956-1b3539afd358
 	github.com/CortexFoundation/merkletree v0.0.0-20220419080543-2eafbafb777b
 	github.com/anacrolix/envpprof v1.2.1
 	github.com/anacrolix/fuse v0.2.0

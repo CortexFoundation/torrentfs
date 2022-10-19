@@ -39,8 +39,8 @@ dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7
 filippo.io/edwards25519 v1.0.0-rc.1 h1:m0VOOB23frXZvAOK44usCgLWvtsxIoMCTBGJZlpmGfU=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
-github.com/CortexFoundation/CortexTheseus v1.10.33 h1:jd+zdIpc82DlhPTk4dCb25+uocm6I40CvnYb+tP9MUw=
-github.com/CortexFoundation/CortexTheseus v1.10.33/go.mod h1:iazKqMrH2IcNCeonBPNL4fOxfascsaf+giODo4xpHcE=
+github.com/CortexFoundation/CortexTheseus v1.10.34-0.20221018001956-1b3539afd358 h1:SKAcQ2CecCdnH4+3zaIRM9L86GerwGNp7lcOFLaFbVw=
+github.com/CortexFoundation/CortexTheseus v1.10.34-0.20221018001956-1b3539afd358/go.mod h1:C+2/XvjXhuu41pw+xK3Wqig2x5LLf+CJJYgoMeQJjhc=
 github.com/CortexFoundation/merkletree v0.0.0-20220419080543-2eafbafb777b h1:84EYTDRCqOKGiyNh8OsWnmbYy3VfNLMXSJ14eGkFZSc=
 github.com/CortexFoundation/merkletree v0.0.0-20220419080543-2eafbafb777b/go.mod h1:rYhubiDNyw+T1ae3U1NJWHfzlPxP9AVjcwsTXt+l3hM=
 github.com/Julusian/godocdown v0.0.0-20170816220326-6d19f8ff2df8/go.mod h1:INZr5t32rG59/5xeltqoCJoNY7e5x/3xoY9WSWVWg74=
