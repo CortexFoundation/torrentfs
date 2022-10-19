@@ -205,7 +205,7 @@ func (tfs *TorrentFS) process() {
 	for {
 		select {
 		case k := <-tfs.seedingNotify:
-			tfs.query(k, 512)
+			tfs.query(k, 0)
 		case <-tfs.closeAll:
 			return
 		}
