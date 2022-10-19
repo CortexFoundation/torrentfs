@@ -291,9 +291,9 @@ func (tfs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 
 				if info.Size >= 0 {
 					if progress, e := tfs.chain().getTorrentProgress(info.Hash); e == nil {
-						log.Info("Nas msg received", "ih", info.Hash, "size", common.StorageSize(float64(info.Size)), "local", common.StorageSize(float64(progress)), "pid", p.id)
+						log.Debug("Nas msg received", "ih", info.Hash, "size", common.StorageSize(float64(info.Size)), "local", common.StorageSize(float64(progress)), "pid", p.id)
 						if err := tfs.storage().Search(context.Background(), info.Hash, progress); err != nil {
-							log.Error("Nas 2.0 error", "err", err)
+							log.Error("Nas "+ProtocolVersionStr+" error", "err", err)
 							return err
 						}
 					}
