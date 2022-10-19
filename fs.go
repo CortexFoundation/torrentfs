@@ -289,13 +289,7 @@ func (tfs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 					return errors.New("invalid address")
 				}
 
-				//if suc := tfs.queryCache.Contains(info.Hash); !suc {
-				//				log.Info("Nas msg received", "ih", info.Hash, "size", common.StorageSize(float64(info.Size)))
-
-				if info.Size > 0 { // if local nas is lazy, wake up
-					//switch tfs.config.Mode {
-					//case params.LAZY:
-					//tfs.localCheck(context.Background(), info.Hash, info.Size)
+				if info.Size >= 0 {
 					if progress, e := tfs.chain().getTorrentProgress(info.Hash); e == nil {
 						log.Info("Nas msg received", "ih", info.Hash, "size", common.StorageSize(float64(info.Size)), "local", common.StorageSize(float64(progress)), "pid", p.id)
 						if err := tfs.storage().Search(context.Background(), info.Hash, progress); err != nil {
@@ -303,34 +297,11 @@ func (tfs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 							return err
 						}
 					}
-					//case params.FULL:
-					//if err := tfs.storage().Search(context.Background(), info.Hash, info.Size); err != nil {
-					//	log.Error("Nas 2.0 error", "err", err)
-					//	return err
-					//}
-					//case params.DEV:
-					//default:
-					//}
 
 					tfs.nasCounter++
-					//tfs.queryCache.Add(info.Hash, info.Size)
+				} else {
+					// TODO
 				}
-
-				/*if suc := tfs.queryCache.Contains(info.Hash); !suc {
-					log.Debug("Nas msg received", "ih", info.Hash, "size", common.StorageSize(float64(info.Size)))
-					if info.Size > 0 && tfs.config.Mode == params.DEV {
-						if ok, err := tfs.localCheck(context.Background(), info.Hash, info.Size); ok && err == nil {
-							tfs.notify(info.Hash)
-						}
-					}
-
-					if info.Size == 0 {
-						if ok := tfs.score(info.Hash); ok {
-							p.seen(info.Hash)
-						}
-					}
-					tfs.queryCache.Add(info.Hash, info.Size)
-				}*/
 			}
 		case msgCode:
 			if ProtocolVersion > 4 {
@@ -454,11 +425,7 @@ func (fs *TorrentFS) query(ih string, rawSize uint64) bool {
 		return false
 	}
 
-	if rawSize > 0 {
-		fs.nasCache.Add(ih, rawSize)
-	} else {
-		return false
-	}
+	fs.nasCache.Add(ih, rawSize)
 
 	return true
 }
