@@ -279,7 +279,7 @@ func (tfs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 			return errors.New("oversized message received")
 		}
 
-		log.Debug("Nas "+ProtocolVersionStr+" package", "size", packet.Size)
+		log.Debug("Nas "+ProtocolVersionStr+" package", "size", packet.Size, "code", packet.Code)
 		tfs.received++
 
 		switch packet.Code {
