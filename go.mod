@@ -23,10 +23,10 @@ require (
 	github.com/hashicorp/golang-lru v0.5.5-0.20221011183528-d4900dc688bf
 	github.com/otiai10/copy v1.7.1-0.20220511062925-528e2c97a037
 	github.com/prometheus/client_golang v1.13.0
-	github.com/ucwong/go-ttlmap v1.0.2-0.20221020041159-efb52090cb4a
-	github.com/ucwong/golang-kv v1.0.10-0.20220911003714-51ffe42c65e6
+	github.com/ucwong/go-ttlmap v1.0.2-0.20221020075847-39ed53681163
+	github.com/ucwong/golang-kv v1.0.10-0.20221020174003-430ea14a471a
 	github.com/urfave/cli/v2 v2.17.1
-	go.etcd.io/bbolt v1.3.7-0.20220226045046-fd5535f71f48
+	go.etcd.io/bbolt v1.3.7-0.20221019093018-00cd6970d05b
 	golang.org/x/time v0.0.0-20220922220347-f3bd1da661af
 	golang.org/x/tools v0.1.13-0.20220812184215-3f9b119300de
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2
@@ -99,17 +99,18 @@ require (
 	golang.org/x/crypto v0.0.0-20220926161630-eccd6366d1be // indirect
 	golang.org/x/exp v0.0.0-20220930202632-ec3f01382ef9 // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 // indirect
-	golang.org/x/net v0.0.0-20220930213112-107f3e3c3b0b // indirect
+	golang.org/x/net v0.1.0 // indirect
 	golang.org/x/sync v0.0.0-20220929204114-8fcdb60fdcc0 // indirect
-	golang.org/x/sys v0.0.0-20220928140112-f11e5e49a4ec // indirect
+	golang.org/x/sys v0.1.0 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce // indirect
 )
 
 require (
 	github.com/alecthomas/atomic v0.1.0-alpha2 // indirect
-	github.com/dgraph-io/badger/v3 v3.0.0-20220802162129-2de177900e3c // indirect
-	github.com/dgraph-io/ristretto v0.1.0 // indirect
+	github.com/cespare/xxhash v1.1.0 // indirect
+	github.com/dgraph-io/badger/v3 v3.2103.3 // indirect
+	github.com/dgraph-io/ristretto v0.1.1 // indirect
 	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
