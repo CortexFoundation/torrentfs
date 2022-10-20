@@ -446,6 +446,7 @@ func (fs *TorrentFS) query(ih string, rawSize uint64) bool {
 	}
 
 	if rawSize > 0 {
+		log.Debug("Query added", "ih", ih, "size", rawSize)
 		fs.nasCache.Add(ih, rawSize)
 	} else {
 		return false
