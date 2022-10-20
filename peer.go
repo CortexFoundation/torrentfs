@@ -176,8 +176,6 @@ func (peer *Peer) broadcast() error {
 				peer.host.sent++
 				peer.mark(k.Interface().(string))
 			}
-		} else {
-			log.Warn("Message has been expired", "k", k.Interface().(string), "v", v.Value().(string))
 		}
 	}
 
