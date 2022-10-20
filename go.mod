@@ -23,6 +23,7 @@ require (
 	github.com/hashicorp/golang-lru v0.5.5-0.20221011183528-d4900dc688bf
 	github.com/otiai10/copy v1.7.1-0.20220511062925-528e2c97a037
 	github.com/prometheus/client_golang v1.13.0
+	github.com/ucwong/go-ttlmap v1.0.2-0.20221020041159-efb52090cb4a
 	github.com/ucwong/golang-kv v1.0.10-0.20220911003714-51ffe42c65e6
 	github.com/urfave/cli/v2 v2.17.1
 	go.etcd.io/bbolt v1.3.7-0.20220226045046-fd5535f71f48
@@ -116,7 +117,6 @@ require (
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/google/flatbuffers v22.9.29+incompatible // indirect
 	github.com/klauspost/compress v1.15.11 // indirect
-	github.com/ucwong/go-ttlmap v1.0.2-0.20220906034005-3632715c09cf // indirect
 	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
 	go.opencensus.io v0.23.0 // indirect
 	go.opentelemetry.io/otel v1.10.0 // indirect

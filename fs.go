@@ -24,7 +24,7 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
-	//"time"
+	"time"
 
 	"github.com/CortexFoundation/CortexTheseus/common"
 	"github.com/CortexFoundation/CortexTheseus/log"
@@ -37,6 +37,8 @@ import (
 	mapset "github.com/deckarep/golang-set"
 	lru "github.com/hashicorp/golang-lru"
 	cp "github.com/otiai10/copy"
+
+	"github.com/ucwong/go-ttlmap"
 )
 
 const (
@@ -69,6 +71,8 @@ type TorrentFS struct {
 	wg            sync.WaitGroup
 	once          sync.Once
 	worm          mapset.Set
+
+	msg *ttlmap.Map
 }
 
 func (t *TorrentFS) storage() *TorrentManager {
@@ -189,6 +193,18 @@ func New(config *Config, cache, compress, listen bool) (*TorrentFS, error) {
 			return nil
 		},
 	}
+
+	options := &ttlmap.Options{
+		InitialCapacity: 1024,
+		OnWillExpire: func(key string, item ttlmap.Item) {
+			fmt.Printf("expired: [%s=%v]\n", key, item.Value())
+		},
+		OnWillEvict: func(key string, item ttlmap.Item) {
+			fmt.Printf("evicted: [%s=%v]\n", key, item.Value())
+		},
+	}
+
+	inst.msg = ttlmap.New(options)
 
 	inst.closeAll = make(chan struct{})
 
@@ -429,6 +445,10 @@ func (tfs *TorrentFS) Stop() error {
 		tfs.nasCache.Purge()
 	}
 
+	if tfs.msg != nil {
+		tfs.msg.Drain()
+	}
+
 	//if tfs.queryCache != nil {
 	//	tfs.queryCache.Purge()
 	//}
@@ -441,13 +461,14 @@ func (fs *TorrentFS) query(ih string, rawSize uint64) bool {
 		return false
 	}
 
-	if suc := fs.nasCache.Contains(ih); suc {
+	if _, suc := fs.msg.Get(ih); suc == nil {
 		return false
 	}
 
 	if rawSize > 0 {
 		log.Debug("Query added", "ih", ih, "size", rawSize)
-		fs.nasCache.Add(ih, rawSize)
+		//fs.nasCache.Add(ih, rawSize)
+		fs.msg.Set(ih, ttlmap.NewItem(rawSize, ttlmap.WithTTL(60*time.Second)), nil)
 	} else {
 		return false
 	}
@@ -807,9 +828,9 @@ func (fs *TorrentFS) Nominee() int {
 	return fs.storage().Nominee()
 }
 
-func (fs *TorrentFS) Envelopes() *lru.Cache {
+func (fs *TorrentFS) Envelopes() *ttlmap.Map {
 	fs.peerMu.RLock()
 	defer fs.peerMu.RUnlock()
 
-	return fs.nasCache
+	return fs.msg
 }
