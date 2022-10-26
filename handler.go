@@ -65,11 +65,6 @@ const (
 	taskChanBuffer  = params.SyncBatch
 	torrentChanSize = 64
 
-	torrentPending = iota //2
-	torrentPaused
-	torrentRunning
-	torrentSeeding
-
 	block = int64(params.PER_UPLOAD_BYTES)
 	loops = 30
 
@@ -155,7 +150,7 @@ func (tm *TorrentManager) addLocalSeedFile(ih string) bool {
 	}
 	ih = strings.TrimPrefix(strings.ToLower(ih), common.Prefix)
 
-	if _, ok := GoodFiles[ih]; ok {
+	if _, ok := params.GoodFiles[ih]; ok {
 		return false
 	}
 
@@ -178,7 +173,7 @@ func (tm *TorrentManager) pauseLocalSeedFile(ih string) error {
 
 	if valid, ok := tm.localSeedFiles[ih]; !ok {
 		return errors.New(fmt.Sprintf("Not Local Seeding File<%s>", ih))
-	} else if _, ok := GoodFiles[ih]; ok {
+	} else if _, ok := params.GoodFiles[ih]; ok {
 		return errors.New(fmt.Sprintf("Cannot Pause On-Chain GoodFile<%s>", ih))
 	} else if !valid {
 		return errors.New(fmt.Sprintf("Local Seeding File Is Not Seeding<%s>", ih))
@@ -205,7 +200,7 @@ func (tm *TorrentManager) resumeLocalSeedFile(ih string) error {
 
 	if valid, ok := tm.localSeedFiles[ih]; !ok {
 		return errors.New(fmt.Sprintf("Not Local Seeding File<%s>", ih))
-	} else if _, ok := GoodFiles[ih]; ok {
+	} else if _, ok := params.GoodFiles[ih]; ok {
 		return errors.New(fmt.Sprintf("Cannot Operate On-Chain GoodFile<%s>", ih))
 	} else if valid {
 		return errors.New(fmt.Sprintf("Local Seeding File Is Already Seeding<%s>", ih))
@@ -668,7 +663,7 @@ func (tm *TorrentManager) prepare() bool {
 }
 
 func (tm *TorrentManager) init() error {
-	log.Debug("Chain files init", "files", len(GoodFiles))
+	log.Debug("Chain files init", "files", len(params.GoodFiles))
 
 	//if tm.mode == params.DEV || tm.mode == params.LAZY {
 	//	tm.Simulate()
@@ -716,7 +711,7 @@ func (tm *TorrentManager) Search(ctx context.Context, hex string, request uint64
 
 	hex = strings.TrimPrefix(strings.ToLower(hex), common.Prefix)
 
-	if IsBad(hex) {
+	if params.IsBad(hex) {
 		return nil
 	}
 
@@ -771,7 +766,7 @@ func (tm *TorrentManager) mainLoop() {
 		select {
 		case msg := <-tm.taskChan:
 			meta := msg.(types.FlowControlMeta)
-			if IsBad(meta.InfoHash) {
+			if params.IsBad(meta.InfoHash) {
 				continue
 			}
 
@@ -821,7 +816,7 @@ func (tm *TorrentManager) pendingLoop() {
 					}
 
 					if err := t.WriteTorrent(); err == nil {
-						if IsGood(t.infohash) || tm.mode == params.FULL {
+						if params.IsGood(t.infohash) || tm.mode == params.FULL {
 							t.lock.Lock()
 							t.bytesRequested = t.Length()
 							t.bytesLimitation = tm.getLimitation(t.Length())

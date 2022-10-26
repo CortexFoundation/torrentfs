@@ -402,7 +402,7 @@ func (tfs *TorrentFS) Start(server *p2p.Server) (err error) {
 		checkpoint := tfs.chain().GetRoot(395964)
 		//if len(torrents) == 0 {
 		if checkpoint == nil {
-			for k, ok := range GoodFiles {
+			for k, ok := range params.GoodFiles {
 				if ok {
 					if err := tfs.storage().Search(context.Background(), k, 0); err != nil {
 						return err
