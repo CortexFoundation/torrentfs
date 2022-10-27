@@ -22,13 +22,15 @@ import (
 	"log"
 	"testing"
 	"time"
+
+	"github.com/CortexFoundation/torrentfs/params"
 )
 
 func TestLocal(t *testing.T) {
-	DefaultConfig.DataDir = "testdata"
-	DefaultConfig.Port = 0
-	DefaultConfig.Mode = "DEV"
-	fs, err := New(&DefaultConfig, true, false, false)
+	params.DefaultConfig.DataDir = "testdata"
+	params.DefaultConfig.Port = 0
+	params.DefaultConfig.Mode = "DEV"
+	fs, err := New(&params.DefaultConfig, true, false, false)
 	if err != nil {
 		log.Fatal(err)
 	}
