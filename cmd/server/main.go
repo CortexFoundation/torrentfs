@@ -74,7 +74,7 @@ func run(conf *Config) error {
 		defer conf.db.Close()
 	}
 
-	config := &t.DefaultConfig
+	config := &params.DefaultConfig
 	config.DataDir = conf.dir
 	config.Mode = params.FULL
 	config.Port = 0

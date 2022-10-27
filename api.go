@@ -18,11 +18,12 @@ package torrentfs
 
 import (
 	"context"
+	"github.com/CortexFoundation/torrentfs/params"
 	"time"
 )
 
 func (api *PublicTorrentAPI) Version(ctx context.Context) string {
-	return ProtocolVersionStr
+	return params.ProtocolVersionStr
 }
 
 type PublicTorrentAPI struct {

@@ -510,7 +510,7 @@ func (tm *TorrentManager) updateInfoHash(t *Torrent, bytesRequested int64) {
 	updateMeter.Mark(1)
 }
 
-func NewTorrentManager(config *Config, fsid uint64, cache, compress bool, notify chan string) (*TorrentManager, error) {
+func NewTorrentManager(config *params.Config, fsid uint64, cache, compress bool, notify chan string) (*TorrentManager, error) {
 	server = config.Server
 	worm = config.Wormhole
 
@@ -558,7 +558,7 @@ func NewTorrentManager(config *Config, fsid uint64, cache, compress bool, notify
 
 	log.Info("Listening local", "port", cl.LocalPort())
 
-	tmpFilePath := filepath.Join(config.DataDir, defaultTmpPath)
+	tmpFilePath := filepath.Join(config.DataDir, params.DefaultTmpPath)
 
 	if _, err := os.Stat(tmpFilePath); err != nil {
 		err = os.MkdirAll(filepath.Dir(tmpFilePath), 0777) //os.FileMode(os.ModePerm))
@@ -856,7 +856,7 @@ func (tm *TorrentManager) finish(ih string, t *Torrent) {
 		delete(tm.activeTorrents, ih)
 	} else {
 		if err := os.Symlink(
-			filepath.Join(defaultTmpPath, ih),
+			filepath.Join(params.DefaultTmpPath, ih),
 			filepath.Join(tm.DataDir, ih),
 		); err == nil {
 			tm.seedingChan <- t
@@ -867,7 +867,7 @@ func (tm *TorrentManager) finish(ih string, t *Torrent) {
 
 func (tm *TorrentManager) activeLoop() {
 	defer tm.wg.Done()
-	timer := time.NewTicker(time.Second * queryTimeInterval)
+	timer := time.NewTicker(time.Second * params.QueryTimeInterval)
 	defer timer.Stop()
 	var total_size, current_size, log_counter, counter uint64 = 0, 0, 1, 1
 	for {
@@ -902,7 +902,7 @@ func (tm *TorrentManager) activeLoop() {
 			}
 
 			if counter >= 2*loops {
-				log.Info("Fs status", "pending", len(tm.pendingTorrents), "downloading", len(tm.activeTorrents), "seeding", len(tm.seedingTorrents), "size", common.StorageSize(total_size), "speed_a", common.StorageSize(total_size/log_counter*queryTimeInterval).String()+"/s", "speed_b", common.StorageSize(current_size/counter*queryTimeInterval).String()+"/s", "metrics", common.PrettyDuration(tm.Updates))
+				log.Info("Fs status", "pending", len(tm.pendingTorrents), "downloading", len(tm.activeTorrents), "seeding", len(tm.seedingTorrents), "size", common.StorageSize(total_size), "speed_a", common.StorageSize(total_size/log_counter*params.QueryTimeInterval).String()+"/s", "speed_b", common.StorageSize(current_size/counter*params.QueryTimeInterval).String()+"/s", "metrics", common.PrettyDuration(tm.Updates))
 				counter = 1
 				current_size = 0
 			}
