@@ -494,10 +494,10 @@ func (m *Monitor) parseBlockTorrentInfo(b *types.Block) (bool, error) {
 						m.download(file.Meta.InfoHash, bytesRequested)
 					}
 				}
-			}
 
-			record = true
-			final = append(final, tx)
+				record = true
+				final = append(final, tx)
+			}
 		}
 		if len(final) > 0 && len(final) < len(b.Txs) {
 			log.Debug("Final txs layout", "total", len(b.Txs), "final", len(final), "num", b.Number, "txs", m.fs.Txs())
