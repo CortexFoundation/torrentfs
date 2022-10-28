@@ -154,10 +154,10 @@ func New(config *params.Config, cache, compress, listen bool) (*TorrentFS, error
 		Version: uint(params.ProtocolVersion),
 		Length:  params.NumberOfMessageCodes,
 		Run:     inst.HandlePeer,
-		NodeInfo: func() interface{} {
-			return map[string]interface{}{
+		NodeInfo: func() any {
+			return map[string]any{
 				"version": params.ProtocolVersion,
-				"status": map[string]interface{}{
+				"status": map[string]any{
 					"dht":            !config.DisableDHT,
 					"tcp":            !config.DisableTCP,
 					"utp":            !config.DisableUTP,
@@ -178,12 +178,12 @@ func New(config *params.Config, cache, compress, listen bool) (*TorrentFS, error
 				"score": inst.scoreTable,
 			}
 		},
-		PeerInfo: func(id enode.ID) interface{} {
+		PeerInfo: func(id enode.ID) any {
 			inst.peerMu.RLock()
 			defer inst.peerMu.RUnlock()
 			if p := inst.peers[fmt.Sprintf("%x", id[:8])]; p != nil {
 				if p.Info() != nil {
-					return map[string]interface{}{
+					return map[string]any{
 						"version": p.version,
 						"listen":  p.Info().Listen,
 						"root":    p.Info().Root.Hex(),
@@ -192,7 +192,7 @@ func New(config *params.Config, cache, compress, listen bool) (*TorrentFS, error
 					}
 				} else {
 
-					return map[string]interface{}{
+					return map[string]any{
 						"version": p.version,
 					}
 				}
