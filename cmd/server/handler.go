@@ -13,7 +13,7 @@ import (
 
 	"github.com/CortexFoundation/CortexTheseus/common"
 	"github.com/CortexFoundation/CortexTheseus/log"
-	fs "github.com/CortexFoundation/torrentfs"
+	"github.com/CortexFoundation/torrentfs/backend"
 )
 
 const (
@@ -179,7 +179,7 @@ func (conf *Config) ListHandler(w http.ResponseWriter, r *http.Request) {
 			if b := conf.db.Get([]byte(file.Name())); b != nil {
 				h = string(b)
 			} else {
-				h, err = fs.Hash(path)
+				h, err = backend.Hash(path)
 				if len(h) == 0 || err != nil {
 					log.Error("Hash failed", "path", path, "err", err)
 					continue

@@ -23,13 +23,14 @@ import (
 	"testing"
 	"time"
 
+	"github.com/CortexFoundation/torrentfs/backend"
 	"github.com/CortexFoundation/torrentfs/params"
 )
 
 func TestLocal(t *testing.T) {
 	params.DefaultConfig.DataDir = "testdata"
 	params.DefaultConfig.Port = 0
-	params.DefaultConfig.Mode = "DEV"
+	params.DefaultConfig.Mode = "LAZY"
 	fs, err := New(&params.DefaultConfig, true, false, false)
 	if err != nil {
 		log.Fatal(err)
@@ -40,14 +41,14 @@ func TestLocal(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
-	if _, err := fs.SeedingLocal(ctx, "torrent.go", false); err != nil {
-		log.Fatal("failed to get file")
+	if _, err := fs.SeedingLocal(ctx, "fs.go", false); err != nil {
+		log.Fatal("failed to seed local file")
 	}
 	time.Sleep(10 * time.Second)
 }
 
 func TestInfoHash(t *testing.T) {
-	hash, err := Hash("testdata/data")
+	hash, err := backend.Hash("testdata/data")
 	if len(hash) == 0 || err != nil {
 		log.Fatal(err)
 	}
