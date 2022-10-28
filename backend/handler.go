@@ -746,7 +746,7 @@ func (tm *TorrentManager) commit(ctx context.Context, hex string, request uint64
 	        }()
 	}*/
 
-	task := types.FlowControlMeta{
+	task := types.BitsFlow{
 		InfoHash:       hex,
 		BytesRequested: request,
 	}
@@ -765,7 +765,7 @@ func (tm *TorrentManager) mainLoop() {
 	for {
 		select {
 		case msg := <-tm.taskChan:
-			meta := msg.(types.FlowControlMeta)
+			meta := msg.(types.BitsFlow)
 			if params.IsBad(meta.InfoHash) {
 				continue
 			}

@@ -181,7 +181,7 @@ func (m *Monitor) loadHistory() error {
 
 func (m *Monitor) download(k string, v uint64) {
 	if m.mode != params.LAZY {
-		task := types.FlowControlMeta{
+		task := types.BitsFlow{
 			InfoHash:       k,
 			BytesRequested: v,
 		}

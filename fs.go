@@ -240,7 +240,7 @@ func (tfs *TorrentFS) listen() {
 	for {
 		select {
 		case msg := <-tfs.callback:
-			meta := msg.(types.FlowControlMeta)
+			meta := msg.(types.BitsFlow)
 			tfs.download(context.Background(), meta.InfoHash, meta.BytesRequested)
 		case <-tfs.closeAll:
 			return
