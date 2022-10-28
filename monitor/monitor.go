@@ -164,11 +164,8 @@ func (m *Monitor) loadHistory() error {
 			//if err := GetStorage().Download(context.Background(), k, v); err != nil {
 			//	return err
 			//}
-			task := types.FlowControlMeta{
-				InfoHash:       k,
-				BytesRequested: v,
-			}
-			m.callback <- task
+
+			m.download(k, v)
 		}
 	}
 
@@ -180,6 +177,16 @@ func (m *Monitor) loadHistory() error {
 	}
 
 	return nil
+}
+
+func (m *Monitor) download(k string, v uint64) {
+	if m.mode != params.LAZY {
+		task := types.FlowControlMeta{
+			InfoHash:       k,
+			BytesRequested: v,
+		}
+		m.callback <- task
+	}
 }
 
 func (m *Monitor) indexCheck() error {
@@ -244,11 +251,7 @@ func (m *Monitor) indexInit() error {
 		//	}
 		//}
 
-		task := types.FlowControlMeta{
-			InfoHash:       file.Meta.InfoHash,
-			BytesRequested: bytesRequested,
-		}
-		m.callback <- task
+		m.download(file.Meta.InfoHash, bytesRequested)
 		if file.LeftSize == 0 {
 			seed++
 		} else if file.Meta.RawSize == file.LeftSize && file.LeftSize > 0 {
@@ -419,11 +422,8 @@ func (m *Monitor) parseFileMeta(tx *types.Transaction, meta *types.FileMeta, b *
 		//GetStorage().Download(context.Background(), meta.InfoHash, 0)
 		//	}
 		//}
-		task := types.FlowControlMeta{
-			InfoHash:       meta.InfoHash,
-			BytesRequested: 0,
-		}
-		m.callback <- task
+
+		m.download(meta.InfoHash, 0)
 	}
 	return nil
 }
@@ -491,11 +491,7 @@ func (m *Monitor) parseBlockTorrentInfo(b *types.Block) (bool, error) {
 						//	BytesRequested: bytesRequested,
 						//})
 
-						task := types.FlowControlMeta{
-							InfoHash:       file.Meta.InfoHash,
-							BytesRequested: bytesRequested,
-						}
-						m.callback <- task
+						m.download(file.Meta.InfoHash, bytesRequested)
 					}
 				}
 			}
