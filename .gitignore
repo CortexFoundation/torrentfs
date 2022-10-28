@@ -106,3 +106,6 @@ testdata/*
 .bolt
 .leveldb
 .golang-kv
+.vlog
+*.file.bolt.db
+*.golang-kv*
