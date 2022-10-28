@@ -29,6 +29,7 @@ import (
 func TestGetFile(t *testing.T) {
 	params.DefaultConfig.DataDir = "testdata"
 	params.DefaultConfig.Port = 0
+	params.DefaultConfig.Mode = "LAZY"
 	ih := "aea5584d0cd3865e90c80eace3bfcb062473d966"
 	fmt.Println(params.DefaultConfig)
 	tm, _ := NewTorrentManager(&params.DefaultConfig, 1, false, false, nil)
@@ -36,10 +37,10 @@ func TestGetFile(t *testing.T) {
 	tm.Start()
 	tm.Search(context.Background(), ih, 0)
 	defer tm.Close()
-	time.Sleep(5 * time.Second)
-	a, _, _, _ := tm.available(ih, 100000000)
+	time.Sleep(30 * time.Second)
+	a, _, _, _ := tm.Available(ih, 100000000)
 	fmt.Println("available", a)
-	file, _, _ := tm.getFile(ih, "data")
+	file, _, _ := tm.GetFile(ih, "data")
 	if file == nil {
 		log.Fatal("failed to get file")
 	}
