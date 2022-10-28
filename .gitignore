@@ -101,6 +101,7 @@ main
 .storage
 torrent
 testdata
+testdata/*
 .badger
 .bolt
 .leveldb
