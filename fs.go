@@ -126,7 +126,7 @@ func New(config *params.Config, cache, compress, listen bool) (*TorrentFS, error
 	}
 	log.Info("Fs manager initialized")
 
-	_callback := make(chan any)
+	_callback := make(chan any, 32)
 	monitor, moErr := monitor.New(config, cache, compress, listen, db, handler, _callback)
 	if moErr != nil {
 		log.Error("Failed create monitor")
