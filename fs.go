@@ -29,7 +29,9 @@ import (
 	"github.com/CortexFoundation/CortexTheseus/common"
 	"github.com/CortexFoundation/CortexTheseus/log"
 	"github.com/CortexFoundation/CortexTheseus/p2p"
+	//"github.com/CortexFoundation/CortexTheseus/p2p/dnsdisc"
 	"github.com/CortexFoundation/CortexTheseus/p2p/enode"
+	//params1 "github.com/CortexFoundation/CortexTheseus/params"
 	"github.com/CortexFoundation/CortexTheseus/rpc"
 	"github.com/CortexFoundation/torrentfs/backend"
 	"github.com/CortexFoundation/torrentfs/monitor"
@@ -200,6 +202,16 @@ func New(config *params.Config, cache, compress, listen bool) (*TorrentFS, error
 			return nil
 		},
 	}
+
+	//add dns discovery
+	/*if inst.protocol.DialCandidates == nil {
+		log.Info("Nas dial candidates", "version", params.ProtocolVersion)
+		client := dnsdisc.NewClient(dnsdisc.Config{})
+		s, err := client.NewIterator([]string{params1.KnownDNSNetwork(params1.MainnetGenesisHash, "all")}...)
+		if err == nil {
+			inst.protocol.DialCandidates = s
+		}
+	}*/
 
 	options := &ttlmap.Options{
 		InitialCapacity: 1024,
