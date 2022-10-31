@@ -45,10 +45,10 @@ type Peer struct {
 }
 
 type PeerInfo struct {
-	listen uint64      `json:"listen"`
-	root   common.Hash `json:"root"` // SHA3 hash of the peer's best owned block
-	files  uint64      `json:"files"`
-	leafs  uint64      `json:"leafs"`
+	listen uint64
+	root   common.Hash
+	files  uint64
+	leafs  uint64
 }
 
 func (p *PeerInfo) Listen() uint64 {
@@ -68,7 +68,7 @@ func (p *PeerInfo) Leafs() uint64 {
 }
 
 type MsgInfo struct {
-	desc string `json:"desc"`
+	desc string
 }
 
 func (m *MsgInfo) Desc() string {
@@ -163,8 +163,8 @@ func (peer *Peer) state() error {
 }
 
 type Query struct {
-	hash string `json:"hash"`
-	size uint64 `json:"size"`
+	hash string
+	size uint64
 }
 
 func (q *Query) Hash() string {
