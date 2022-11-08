@@ -249,7 +249,7 @@ func downloadErr(args []string, parent *tagflag.Parser) error {
 	clientConfig.PublicIp6 = flags.PublicIP
 	clientConfig.DisablePEX = !flags.Pex
 	clientConfig.DisableWebtorrent = !flags.Webtorrent
-	clientConfig.Bep20 = "-COLA01-"
+	clientConfig.Bep20 = params.ClientVersion //"-COLA01-"
 	if flags.PackedBlocklist != "" {
 		blocklist, err := iplist.MMapPackedFile(flags.PackedBlocklist)
 		if err != nil {
