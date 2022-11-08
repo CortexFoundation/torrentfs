@@ -268,9 +268,7 @@ func (tm *TorrentManager) register(t *torrent.Torrent, requested int64, status i
 		start: 0,
 	}
 
-	tm.lock.Lock()
-	tm.torrents[ih] = tt
-	tm.lock.Unlock()
+	tm.setTorrent(ih, tt)
 
 	tm.pendingChan <- tt
 	return tt
@@ -283,6 +281,20 @@ func (tm *TorrentManager) getTorrent(ih string) *Torrent {
 		return torrent
 	}
 	return nil
+}
+
+func (tm *TorrentManager) setTorrent(ih string, t *Torrent) {
+	tm.lock.Lock()
+	defer tm.lock.Unlock()
+
+	tm.torrents[ih] = t
+}
+
+func (tm *TorrentManager) removeTorrent(ih string) {
+	tm.lock.Lock()
+	defer tm.lock.Unlock()
+
+	delete(tm.torrents, ih)
 }
 
 func (tm *TorrentManager) Close() error {
@@ -985,9 +997,9 @@ func (tm *TorrentManager) seedingLoop() {
 			if t := tm.getTorrent(ih); t != nil && t.Ready() {
 				t.Torrent.Drop()
 				delete(tm.seedingTorrents, ih)
-				tm.lock.Lock()
-				delete(tm.torrents, ih)
-				tm.lock.Unlock()
+
+				tm.removeTorrent(ih)
+
 				log.Info("Seed has been dropped", "ih", ih, "cited", t.cited)
 			} else {
 				log.Warn("Drop seed not found", "ih", ih)
