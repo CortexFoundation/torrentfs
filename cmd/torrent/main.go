@@ -32,6 +32,7 @@ import (
 var (
 	trackers = [][]string{
 		params.MainnetTrackers,
+		params.GlobalTrackers,
 	}
 )
 
@@ -181,7 +182,7 @@ var flags = struct {
 	Ipv4: true,
 	Ipv6: true,
 	Pex:  true,
-	Seed: true,
+	Seed: false,
 }
 
 func stdoutAndStderrAreSameFile() bool {
@@ -248,6 +249,7 @@ func downloadErr(args []string, parent *tagflag.Parser) error {
 	clientConfig.PublicIp6 = flags.PublicIP
 	clientConfig.DisablePEX = !flags.Pex
 	clientConfig.DisableWebtorrent = !flags.Webtorrent
+	clientConfig.Bep20 = "-COLA01-"
 	if flags.PackedBlocklist != "" {
 		blocklist, err := iplist.MMapPackedFile(flags.PackedBlocklist)
 		if err != nil {
