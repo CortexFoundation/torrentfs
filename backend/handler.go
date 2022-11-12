@@ -885,7 +885,40 @@ func (tm *TorrentManager) activeLoop() {
 	for {
 		select {
 		case t := <-tm.activeChan:
+			t.status = torrentRunning
 			tm.activeTorrents[t.infohash] = t
+			n := tm.blockCaculate(t.Torrent.BytesCompleted() + t.Torrent.BytesMissing())
+			if n < 10 {
+				n = 10
+			}
+			tm.wg.Add(1)
+			go func(i string, n int64) {
+				defer tm.wg.Done()
+				timer := time.NewTicker(time.Duration(n) * time.Minute)
+				defer timer.Stop()
+				for {
+					select {
+					case <-timer.C:
+						if t := tm.getTorrent(i); t != nil { //&& t.Ready() {
+							if t.cited <= 0 {
+								tm.droppingChan <- i
+								return
+							} else {
+								t.lock.Lock()
+								t.cited--
+								t.lock.Unlock()
+								log.Info("Seed cited has been decreased", "ih", i, "cited", t.cited, "n", n, "status", t.status)
+							}
+						} else {
+							log.Warn("Seed broken", "ih", i, "cited", t.cited, "n", n, "status", t.status)
+							return
+						}
+					case <-tm.closeAll:
+						return
+
+					}
+				}
+			}(t.infohash, n)
 		case <-timer.C:
 			counter++
 			log_counter++
@@ -960,47 +993,21 @@ func (tm *TorrentManager) seedingLoop() {
 						tm.seedingNotify <- t.InfoHash()
 					}()
 				}
-
-				//if tm.mode == params.LAZY {
-				n := tm.blockCaculate(t.Torrent.BytesCompleted())
-				if n < 10 {
-					n = 10
-				}
-				tm.wg.Add(1)
-				go func(i string, n int64) {
-					defer tm.wg.Done()
-					timer := time.NewTicker(time.Duration(n) * time.Minute)
-					defer timer.Stop()
-					for {
-						select {
-						case <-timer.C:
-							if t := tm.getTorrent(i); t != nil && t.Ready() {
-								if t.cited <= 0 {
-									tm.droppingChan <- i
-									return
-								} else {
-									t.cited--
-									log.Info("Seed cited has been decreased", "ih", i, "cited", t.cited, "n", n)
-								}
-							} else {
-								log.Warn("Seed broken", "ih", i, "cited", t.cited, "n", n)
-								return
-							}
-						case <-tm.closeAll:
-							return
-
-						}
-					}
-				}(t.infohash, n)
 			}
 		case ih := <-tm.droppingChan:
-			if t := tm.getTorrent(ih); t != nil && t.Ready() {
+			if t := tm.getTorrent(ih); t != nil { //&& t.Ready() {
 				t.Torrent.Drop()
-				delete(tm.seedingTorrents, ih)
+				if t.status == torrentRunning {
+					delete(tm.activeTorrents, ih)
+				}
+
+				if t.status == torrentSeeding {
+					delete(tm.seedingTorrents, ih)
+				}
 
 				tm.removeTorrent(ih)
 
-				log.Info("Seed has been dropped", "ih", ih, "cited", t.cited)
+				log.Info("Seed has been dropped", "ih", ih, "cited", t.cited, "status", t.status)
 			} else {
 				log.Warn("Drop seed not found", "ih", ih)
 			}
