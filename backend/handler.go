@@ -800,8 +800,8 @@ func (tm *TorrentManager) pendingLoop() {
 	defer tm.wg.Done()
 	//timer := time.NewTimer(time.Second * 60)
 	//defer timer.Stop()
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
+	//ctx, cancel := context.WithCancel(context.Background())
+	//defer cancel()
 	for {
 		select {
 		case t := <-tm.pendingChan:
@@ -812,8 +812,8 @@ func (tm *TorrentManager) pendingLoop() {
 				if t.start == 0 {
 					t.start = mclock.Now()
 				}
-				log.Debug("Seeding ... ...", "ih", t.infohash)
-				//ctx, _ := context.WithTimeout(context.Background(), 300*time.Second)
+				ctx, cancel := context.WithTimeout(context.Background(), 10*time.Minute)
+				defer cancel()
 				select {
 				case <-t.GotInfo():
 					elapsed := time.Duration(mclock.Now()) - time.Duration(t.start)
@@ -838,7 +838,9 @@ func (tm *TorrentManager) pendingLoop() {
 						tm.pendingRemoveChan <- t.infohash
 					}
 				case <-t.Closed():
+				case <-tm.closeAll:
 				case <-ctx.Done():
+					tm.droppingChan <- t.infohash
 					//elapsed := time.Duration(mclock.Now()) - time.Duration(t.start)
 					//log.Debug("Pending seed", "ih", t.infohash, "elapsed", common.PrettyDuration(elapsed))
 					//t.AddTrackers([][]string{params.GlobalTrackers})
@@ -996,7 +998,10 @@ func (tm *TorrentManager) seedingLoop() {
 		case ih := <-tm.droppingChan:
 			if t := tm.getTorrent(ih); t != nil { //&& t.Ready() {
 				t.Torrent.Drop()
-				if t.status == torrentRunning {
+				if t.status == torrentPending {
+					delete(tm.pendingTorrents, ih)
+				}
+				if t.status == torrentRunning || t.status == torrentPaused {
 					delete(tm.activeTorrents, ih)
 				}
 
