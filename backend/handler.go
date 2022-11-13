@@ -915,7 +915,6 @@ func (tm *TorrentManager) activeLoop() {
 						}
 					case <-tm.closeAll:
 						return
-
 					}
 				}
 			}(t.infohash, n)
