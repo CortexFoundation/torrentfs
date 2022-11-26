@@ -827,7 +827,7 @@ func (tm *TorrentManager) pendingLoop() {
 						}
 					} else {
 						log.Error("Meta info marshal failed", "ih", t.infohash, "err", err)
-						tm.droppingChan <- t.infohash
+						tm.Drop(t.infohash)
 						return
 					}
 
@@ -842,12 +842,12 @@ func (tm *TorrentManager) pendingLoop() {
 						tm.pendingRemoveChan <- t.infohash
 					} else {
 						log.Error("Write torrent info to file failed", "ih", t.infohash, "err", err)
-						tm.droppingChan <- t.infohash
+						tm.Drop(t.infohash)
 					}
 				case <-t.Closed():
 				case <-tm.closeAll:
 				case <-ctx.Done():
-					tm.droppingChan <- t.infohash
+					tm.Drop(t.infohash)
 				}
 			}()
 		case i := <-tm.pendingRemoveChan:
@@ -906,7 +906,7 @@ func (tm *TorrentManager) activeLoop() {
 					case <-timer.C:
 						if t := tm.getTorrent(i); t != nil { //&& t.Ready() {
 							if t.cited <= 0 {
-								tm.droppingChan <- i
+								tm.Drop(i)
 								return
 							} else {
 								t.lock.Lock()
