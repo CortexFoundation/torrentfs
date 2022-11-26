@@ -655,6 +655,8 @@ func NewTorrentManager(config *params.Config, fsid uint64, cache, compress bool,
 func (tm *TorrentManager) Start() (err error) {
 	tm.startOnce.Do(func() {
 		tm.wg.Add(1)
+		go tm.droppingLoop()
+		tm.wg.Add(1)
 		go tm.seedingLoop()
 		tm.wg.Add(1)
 		go tm.activeLoop()
@@ -996,6 +998,17 @@ func (tm *TorrentManager) seedingLoop() {
 					}()
 				}
 			}
+		case <-tm.closeAll:
+			log.Info("Seeding loop closed")
+			return
+		}
+	}
+}
+
+func (tm *TorrentManager) droppingLoop() {
+	defer tm.wg.Done()
+	for {
+		select {
 		case ih := <-tm.droppingChan:
 			if t := tm.getTorrent(ih); t != nil { //&& t.Ready() {
 				t.Torrent.Drop()
@@ -1017,7 +1030,7 @@ func (tm *TorrentManager) seedingLoop() {
 				log.Warn("Drop seed not found", "ih", ih)
 			}
 		case <-tm.closeAll:
-			log.Info("Seeding loop closed")
+			log.Info("Dropping loop closed")
 			return
 		}
 	}
