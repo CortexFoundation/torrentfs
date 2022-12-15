@@ -481,8 +481,8 @@ func (m *Monitor) parseBlockTorrentInfo(b *types.Block) (bool, error) {
 	if record {
 		m.fs.AddBlock(b)
 	}
-	elapsed := time.Duration(mclock.Now()) - time.Duration(start)
 	if len(b.Txs) > 0 {
+		elapsed := time.Duration(mclock.Now()) - time.Duration(start)
 		log.Trace("Transactions scanning", "count", len(b.Txs), "number", b.Number, "elapsed", common.PrettyDuration(elapsed))
 	}
 	return record, nil
