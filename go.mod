@@ -23,10 +23,10 @@ require (
 	github.com/hashicorp/golang-lru v0.5.5-0.20221011183528-d4900dc688bf
 	github.com/otiai10/copy v1.9.0
 	github.com/prometheus/client_golang v1.14.0
-	github.com/ucwong/go-ttlmap v1.0.2-0.20221020075847-39ed53681163
-	github.com/ucwong/golang-kv v1.0.10
+	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
+	github.com/ucwong/golang-kv v1.0.11-0.20221218193204-6a3ac3eb063a
 	github.com/urfave/cli/v2 v2.23.6
-	go.etcd.io/bbolt v1.3.7-0.20221019093018-00cd6970d05b
+	go.etcd.io/bbolt v1.3.7-0.20221218121708-bad964e85037
 	golang.org/x/time v0.3.0
 	golang.org/x/tools v0.3.0
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2
@@ -99,7 +99,7 @@ require (
 	golang.org/x/crypto v0.3.0 // indirect
 	golang.org/x/exp v0.0.0-20221205204356-47842c84f3db // indirect
 	golang.org/x/mod v0.7.0 // indirect
-	golang.org/x/net v0.3.0 // indirect
+	golang.org/x/net v0.4.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
 	golang.org/x/sys v0.3.0 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
@@ -117,7 +117,7 @@ require (
 	github.com/golang/glog v1.0.0 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/google/flatbuffers v22.11.23+incompatible // indirect
-	github.com/klauspost/compress v1.15.12 // indirect
+	github.com/klauspost/compress v1.15.13 // indirect
 	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	go.opentelemetry.io/otel v1.11.2 // indirect
