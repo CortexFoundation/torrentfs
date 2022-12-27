@@ -483,7 +483,7 @@ func (fs *TorrentFS) query(ih string, rawSize uint64) bool {
 	if rawSize > 0 {
 		log.Debug("Query added", "ih", ih, "size", rawSize)
 		//fs.nasCache.Add(ih, rawSize)
-		if len(tfs.peers) > 0 {
+		if len(fs.peers) > 0 {
 			fs.msg.Set(ih, ttlmap.NewItem(rawSize, ttlmap.WithTTL(60*time.Second)), nil)
 		} else {
 			log.Warn("No neighbors found, try a longger ttl")
