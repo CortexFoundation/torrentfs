@@ -516,15 +516,15 @@ func (fs *TorrentFS) localCheck(ctx context.Context, infohash string, rawSize ui
 	case errors.Is(err, backend.ErrInactiveTorrent):
 		if progress, e := fs.progress(infohash); e == nil {
 			//fs.seedingNotify <- infohash
-			fs.wg.Add(1)
-			go func() {
-				defer fs.wg.Done()
-				fs.callback <- types.NewBitsFlow(infohash, progress)
-				/*s := fs.query(infohash, progress)
-				if s {
-					log.Debug("Nas "+params.ProtocolVersionStr+", restarting", "ih", infohash, "request", common.StorageSize(float64(progress)), "queue", fs.msg.Len(), "peers", len(fs.peers))
-				}*/
-			}()
+			//fs.wg.Add(1)
+			//go func() {
+			//	defer fs.wg.Done()
+			fs.callback <- types.NewBitsFlow(infohash, progress)
+			/*s := fs.query(infohash, progress)
+			if s {
+				log.Debug("Nas "+params.ProtocolVersionStr+", restarting", "ih", infohash, "request", common.StorageSize(float64(progress)), "queue", fs.msg.Len(), "peers", len(fs.peers))
+			}*/
+			//}()
 			//if e := fs.storage().Search(ctx, infohash, progress); e == nil {
 			//	log.Debug("Torrent wake up", "ih", infohash, "progress", progress, "available", ret, "raw", rawSize, "err", err)
 			//}
@@ -539,15 +539,15 @@ func (fs *TorrentFS) localCheck(ctx context.Context, infohash string, rawSize ui
 			//	speed = float64(f) / t
 			//}
 			//fs.seedingNotify <- infohash
-			fs.wg.Add(1)
-			go func() {
-				defer fs.wg.Done()
-				fs.callback <- types.NewBitsFlow(infohash, progress)
-				/*s := fs.query(infohash, progress)
-				if s {
-					log.Debug("Nas "+params.ProtocolVersionStr+" query", "ih", infohash, "raw", common.StorageSize(float64(rawSize)), "finish", f, "cost", common.PrettyDuration(cost), "speed", common.StorageSize(speed), "peers", len(fs.peers), "cache", fs.nasCache.Len(), "err", err, "queue", fs.msg.Len(), "peers", len(fs.peers))
-				}*/
-			}()
+			//fs.wg.Add(1)
+			//go func() {
+			//	defer fs.wg.Done()
+			fs.callback <- types.NewBitsFlow(infohash, progress)
+			/*s := fs.query(infohash, progress)
+			if s {
+				log.Debug("Nas "+params.ProtocolVersionStr+" query", "ih", infohash, "raw", common.StorageSize(float64(rawSize)), "finish", f, "cost", common.PrettyDuration(cost), "speed", common.StorageSize(speed), "peers", len(fs.peers), "cache", fs.nasCache.Len(), "err", err, "queue", fs.msg.Len(), "peers", len(fs.peers))
+			}*/
+			//}()
 
 			log.Debug("Torrent sync downloading", "ih", infohash, "available", ret, "raw", rawSize, "finish", f, "err", err)
 		}
