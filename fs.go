@@ -71,11 +71,11 @@ type TorrentFS struct {
 	// global file hash & score
 	scoreTable map[string]int
 
-	seedingNotify chan string
-	closeAll      chan struct{}
-	wg            sync.WaitGroup
-	once          sync.Once
-	worm          mapset.Set[string]
+	//seedingNotify chan string
+	closeAll chan struct{}
+	wg       sync.WaitGroup
+	once     sync.Once
+	worm     mapset.Set[string]
 
 	msg *ttlmap.Map
 
@@ -128,7 +128,7 @@ func New(config *params.Config, cache, compress, listen bool) (*TorrentFS, error
 	}
 	log.Info("Fs manager initialized")
 
-	_callback := make(chan any, 32)
+	_callback := make(chan any, 64)
 	monitor, moErr := monitor.New(config, cache, compress, listen, db, handler, _callback)
 	if moErr != nil {
 		log.Error("Failed create monitor")
@@ -147,7 +147,7 @@ func New(config *params.Config, cache, compress, listen bool) (*TorrentFS, error
 	//inst.queryCache, _ = lru.New(25)
 
 	inst.scoreTable = make(map[string]int)
-	inst.seedingNotify = make(chan string, 32)
+	//inst.seedingNotify = make(chan string, 32)
 
 	inst.worm = mapset.NewSet[string]()
 
@@ -429,13 +429,18 @@ func (tfs *TorrentFS) Start(server *p2p.Server) (err error) {
 					//}
 
 					//tfs.query(k, 1024*1024*1024)
-					tfs.callback <- types.NewBitsFlow(k, 1024*1024*1024)
+					//tfs.callback <- types.NewBitsFlow(k, 1024*1024*1024)
+					tfs.bitsflow(k, 1024*1024*1024)
 					//tfs.seedingNotify <- k
 				}
 			}
 		}
 	}
 	return
+}
+
+func (fs *TorrentFS) bitsflow(ih string, size uint64) {
+	fs.callback <- types.NewBitsFlow(ih, size)
 }
 
 // Stop stops the data collection thread and the connection listener of the dashboard.
@@ -509,50 +514,12 @@ func (fs *TorrentFS) notify(infohash string) bool {
 
 // Available is used to check the file status
 func (fs *TorrentFS) localCheck(ctx context.Context, infohash string, rawSize uint64) (bool, error) {
-	ret, f, _, err := fs.storage().Available(infohash, rawSize)
-
-	//if fs.config.Mode == params.LAZY {
-	switch {
-	case errors.Is(err, backend.ErrInactiveTorrent):
+	ret, _, _, err := fs.storage().Available(infohash, rawSize)
+	if err != nil {
 		if progress, e := fs.progress(infohash); e == nil {
-			//fs.seedingNotify <- infohash
-			//fs.wg.Add(1)
-			//go func() {
-			//	defer fs.wg.Done()
-			fs.callback <- types.NewBitsFlow(infohash, progress)
-			/*s := fs.query(infohash, progress)
-			if s {
-				log.Debug("Nas "+params.ProtocolVersionStr+", restarting", "ih", infohash, "request", common.StorageSize(float64(progress)), "queue", fs.msg.Len(), "peers", len(fs.peers))
-			}*/
-			//}()
-			//if e := fs.storage().Search(ctx, infohash, progress); e == nil {
-			//	log.Debug("Torrent wake up", "ih", infohash, "progress", progress, "available", ret, "raw", rawSize, "err", err)
-			//}
-		} else {
-			log.Warn("Try to read unregister file", "ih", infohash, "size", common.StorageSize(float64(rawSize)), "err", e)
-		}
-	case errors.Is(err, backend.ErrUnfinished) || errors.Is(err, backend.ErrTorrentNotFound):
-		if progress, e := fs.progress(infohash); e == nil {
-			//var speed float64
-			//if cost > 0 {
-			//	t := float64(cost) / (1000 * 1000 * 1000)
-			//	speed = float64(f) / t
-			//}
-			//fs.seedingNotify <- infohash
-			//fs.wg.Add(1)
-			//go func() {
-			//	defer fs.wg.Done()
-			fs.callback <- types.NewBitsFlow(infohash, progress)
-			/*s := fs.query(infohash, progress)
-			if s {
-				log.Debug("Nas "+params.ProtocolVersionStr+" query", "ih", infohash, "raw", common.StorageSize(float64(rawSize)), "finish", f, "cost", common.PrettyDuration(cost), "speed", common.StorageSize(speed), "peers", len(fs.peers), "cache", fs.nasCache.Len(), "err", err, "queue", fs.msg.Len(), "peers", len(fs.peers))
-			}*/
-			//}()
-
-			log.Debug("Torrent sync downloading", "ih", infohash, "available", ret, "raw", rawSize, "finish", f, "err", err)
+			fs.bitsflow(infohash, progress)
 		}
 	}
-	//}
 	return ret, err
 }
 
