@@ -767,26 +767,25 @@ func (fs *TorrentFS) Drop(ih string) error {
 // Download is used to download file with request
 func (fs *TorrentFS) download(ctx context.Context, ih string, request uint64) error {
 	ih = strings.ToLower(ih)
-	update, p, err := fs.chain().SetTorrentProgress(ih, request)
+	_, p, err := fs.chain().SetTorrentProgress(ih, request)
 	if err != nil {
 		return err
 	}
 
 	//fs.find(ih)
-	if update {
-		//fs.seedingNotify <- ih
-		fs.wg.Add(1)
-		go func() {
-			defer fs.wg.Done()
-			s := fs.query(ih, p)
-			if s {
-				log.Info("Nas "+params.ProtocolVersionStr+" tunnel", "ih", ih, "request", common.StorageSize(float64(p)), "queue", fs.msg.Len(), "peers", len(fs.peers))
-			}
-		}()
-
-		if err := fs.storage().Search(ctx, ih, p); err != nil {
-			return err
+	//if update {
+	//fs.seedingNotify <- ih
+	fs.wg.Add(1)
+	go func() {
+		defer fs.wg.Done()
+		s := fs.query(ih, p)
+		if s {
+			log.Info("Nas "+params.ProtocolVersionStr+" tunnel", "ih", ih, "request", common.StorageSize(float64(p)), "queue", fs.msg.Len(), "peers", len(fs.peers))
 		}
+	}()
+	//}
+	if err := fs.storage().Search(ctx, ih, p); err != nil {
+		return err
 	}
 
 	//if _, ok := fs.scoreTable[ih]; !ok {
