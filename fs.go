@@ -39,7 +39,7 @@ import (
 	"github.com/CortexFoundation/torrentfs/types"
 	"github.com/anacrolix/torrent/bencode"
 	"github.com/anacrolix/torrent/metainfo"
-	mapset "github.com/deckarep/golang-set/v2"
+	//mapset "github.com/deckarep/golang-set/v2"
 	lru "github.com/hashicorp/golang-lru"
 	cp "github.com/otiai10/copy"
 
