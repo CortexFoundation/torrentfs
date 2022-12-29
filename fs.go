@@ -75,7 +75,7 @@ type TorrentFS struct {
 	closeAll chan struct{}
 	wg       sync.WaitGroup
 	once     sync.Once
-	worm     mapset.Set[string]
+	//worm     mapset.Set[string]
 
 	msg *ttlmap.Map
 
@@ -149,7 +149,7 @@ func New(config *params.Config, cache, compress, listen bool) (*TorrentFS, error
 	inst.scoreTable = make(map[string]int)
 	//inst.seedingNotify = make(chan string, 32)
 
-	inst.worm = mapset.NewSet[string]()
+	//inst.worm = mapset.NewSet[string]()
 
 	inst.protocol = p2p.Protocol{
 		Name:    params.ProtocolName,
