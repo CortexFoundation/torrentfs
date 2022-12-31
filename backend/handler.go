@@ -519,8 +519,9 @@ func (tm *TorrentManager) updateInfoHash(t *Torrent, bytesRequested int64) {
 		t.bytesRequested = bytesRequested
 		t.bytesLimitation = tm.getLimitation(bytesRequested)
 	} else {
-		//t.cited += 1
+		//if atomic.LoadInt64(&t.cited) < 10 {
 		atomic.AddInt64(&t.cited, 1)
+		//}
 	}
 	updateMeter.Mark(1)
 }
@@ -912,9 +913,6 @@ func (tm *TorrentManager) activeLoop() {
 								tm.Drop(i)
 								return
 							} else {
-								//t.lock.Lock()
-								//t.cited--
-								//t.lock.Unlock()
 								atomic.AddInt64(&t.cited, -1)
 								log.Info("Seed cited has been decreased", "ih", i, "cited", t.cited, "n", n, "status", t.status)
 							}
