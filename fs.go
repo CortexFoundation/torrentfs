@@ -747,7 +747,7 @@ func (fs *TorrentFS) download(ctx context.Context, ih string, request uint64) er
 		defer fs.wg.Done()
 		s := fs.query(ih, p)
 		if s {
-			log.Info("Nas "+params.ProtocolVersionStr+" tunnel", "ih", ih, "request", common.StorageSize(float64(p)), "queue", fs.msg.Len(), "peers", len(fs.peers))
+			log.Debug("Nas "+params.ProtocolVersionStr+" tunnel", "ih", ih, "request", common.StorageSize(float64(p)), "queue", fs.msg.Len(), "peers", len(fs.peers))
 		}
 	}()
 	//}

@@ -519,9 +519,7 @@ func (tm *TorrentManager) updateInfoHash(t *Torrent, bytesRequested int64) {
 		t.bytesRequested = bytesRequested
 		t.bytesLimitation = tm.getLimitation(bytesRequested)
 	} else {
-		//if atomic.LoadInt64(&t.cited) < 10 {
 		atomic.AddInt64(&t.cited, 1)
-		//}
 	}
 	updateMeter.Mark(1)
 }
