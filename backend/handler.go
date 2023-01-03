@@ -265,7 +265,7 @@ func (tm *TorrentManager) register(t *torrent.Torrent, requested int64, status i
 		maxPieces: 0,
 		//isBoosting: false,
 		fast:  false,
-		start: 0,
+		start: mclock.Now(),
 	}
 
 	tm.setTorrent(ih, tt)
@@ -519,7 +519,6 @@ func (tm *TorrentManager) updateInfoHash(t *Torrent, bytesRequested int64) {
 		t.bytesRequested = bytesRequested
 		t.bytesLimitation = tm.getLimitation(bytesRequested)
 	} else {
-		//t.cited += 1
 		atomic.AddInt64(&t.cited, 1)
 	}
 	updateMeter.Mark(1)
@@ -812,17 +811,17 @@ func (tm *TorrentManager) pendingLoop() {
 		case t := <-tm.pendingChan:
 			tm.pendingTorrents[t.infohash] = t
 			tm.wg.Add(1)
-			go func() {
+			go func(t *Torrent) {
 				defer tm.wg.Done()
-				if t.start == 0 {
-					t.start = mclock.Now()
-				}
+				//if t.start == 0 {
+				//	t.start = mclock.Now()
+				//}
 				ctx, cancel := context.WithTimeout(context.Background(), 15*time.Minute)
 				defer cancel()
 				select {
 				case <-t.GotInfo():
 					elapsed := time.Duration(mclock.Now()) - time.Duration(t.start)
-					log.Debug("Imported new seed", "ih", t.infohash, "elapsed", common.PrettyDuration(elapsed))
+					log.Info("Imported new seed", "ih", t.infohash, "elapsed", common.PrettyDuration(elapsed), "n", len(tm.pendingTorrents))
 					if b, err := bencode.Marshal(t.Torrent.Info()); err == nil {
 						log.Debug("Record full torrent in history", "ih", t.infohash, "info", len(b))
 						if tm.badger != nil && tm.badger.Get([]byte(t.infohash)) == nil {
@@ -852,7 +851,7 @@ func (tm *TorrentManager) pendingLoop() {
 				case <-ctx.Done():
 					tm.Drop(t.infohash)
 				}
-			}()
+			}(t)
 		case i := <-tm.pendingRemoveChan:
 			delete(tm.pendingTorrents, i)
 		//case <-timer.C:
@@ -912,9 +911,6 @@ func (tm *TorrentManager) activeLoop() {
 								tm.Drop(i)
 								return
 							} else {
-								//t.lock.Lock()
-								//t.cited--
-								//t.lock.Unlock()
 								atomic.AddInt64(&t.cited, -1)
 								log.Info("Seed cited has been decreased", "ih", i, "cited", t.cited, "n", n, "status", t.status)
 							}

@@ -489,12 +489,7 @@ func (fs *TorrentFS) query(ih string, rawSize uint64) bool {
 	if rawSize > 0 {
 		log.Debug("Query added", "ih", ih, "size", rawSize)
 		//fs.nasCache.Add(ih, rawSize)
-		if len(fs.peers) > 0 {
-			fs.msg.Set(ih, ttlmap.NewItem(rawSize, ttlmap.WithTTL(60*time.Second)), nil)
-		} else {
-			//log.Warn("No neighbors found, try a longger ttl")
-			fs.msg.Set(ih, ttlmap.NewItem(rawSize, ttlmap.WithTTL(180*time.Second)), nil)
-		}
+		fs.msg.Set(ih, ttlmap.NewItem(rawSize, ttlmap.WithTTL(60*time.Second)), nil)
 	} else {
 		return false
 	}
@@ -747,7 +742,7 @@ func (fs *TorrentFS) download(ctx context.Context, ih string, request uint64) er
 		defer fs.wg.Done()
 		s := fs.query(ih, p)
 		if s {
-			log.Info("Nas "+params.ProtocolVersionStr+" tunnel", "ih", ih, "request", common.StorageSize(float64(p)), "queue", fs.msg.Len(), "peers", len(fs.peers))
+			log.Debug("Nas "+params.ProtocolVersionStr+" tunnel", "ih", ih, "request", common.StorageSize(float64(p)), "queue", fs.msg.Len(), "peers", len(fs.peers))
 		}
 	}()
 	//}
