@@ -265,7 +265,7 @@ func (tm *TorrentManager) register(t *torrent.Torrent, requested int64, status i
 		maxPieces: 0,
 		//isBoosting: false,
 		fast:  false,
-		start: 0,
+		start: mclock.Now(),
 	}
 
 	tm.setTorrent(ih, tt)
@@ -813,9 +813,9 @@ func (tm *TorrentManager) pendingLoop() {
 			tm.wg.Add(1)
 			go func(t *Torrent) {
 				defer tm.wg.Done()
-				if t.start == 0 {
-					t.start = mclock.Now()
-				}
+				//if t.start == 0 {
+				//	t.start = mclock.Now()
+				//}
 				ctx, cancel := context.WithTimeout(context.Background(), 15*time.Minute)
 				defer cancel()
 				select {
