@@ -811,7 +811,7 @@ func (tm *TorrentManager) pendingLoop() {
 		case t := <-tm.pendingChan:
 			tm.pendingTorrents[t.infohash] = t
 			tm.wg.Add(1)
-			go func() {
+			go func(t *Torrent) {
 				defer tm.wg.Done()
 				if t.start == 0 {
 					t.start = mclock.Now()
@@ -821,7 +821,7 @@ func (tm *TorrentManager) pendingLoop() {
 				select {
 				case <-t.GotInfo():
 					elapsed := time.Duration(mclock.Now()) - time.Duration(t.start)
-					log.Debug("Imported new seed", "ih", t.infohash, "elapsed", common.PrettyDuration(elapsed))
+					log.Info("Imported new seed", "ih", t.infohash, "elapsed", common.PrettyDuration(elapsed))
 					if b, err := bencode.Marshal(t.Torrent.Info()); err == nil {
 						log.Debug("Record full torrent in history", "ih", t.infohash, "info", len(b))
 						if tm.badger != nil && tm.badger.Get([]byte(t.infohash)) == nil {
@@ -851,7 +851,7 @@ func (tm *TorrentManager) pendingLoop() {
 				case <-ctx.Done():
 					tm.Drop(t.infohash)
 				}
-			}()
+			}(t)
 		case i := <-tm.pendingRemoveChan:
 			delete(tm.pendingTorrents, i)
 		//case <-timer.C:
