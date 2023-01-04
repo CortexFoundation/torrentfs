@@ -548,6 +548,8 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 		return nil, err
 	} else {
 		log.Debug("Get File directly", "ih", infohash, "size", rawSize, "path", subpath, "ret", len(ret))
+		//TODO t0 file
+		fs.score(infohash)
 		return ret, nil
 	}
 }

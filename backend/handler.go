@@ -998,6 +998,7 @@ func (tm *TorrentManager) seedingLoop() {
 						tm.seedingNotify <- t.InfoHash()
 					}()
 				}*/
+				// TODO t1 file
 			}
 		case <-tm.closeAll:
 			log.Info("Seeding loop closed")
