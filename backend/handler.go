@@ -72,6 +72,8 @@ const (
 	torrentTypeLocal   = 1
 
 	TORRENT = "torrent"
+
+	SEED_PRE = "s-"
 )
 
 var (
@@ -441,7 +443,7 @@ func (tm *TorrentManager) addInfoHash(ih string, bytesRequested int64) *Torrent 
 	)
 
 	if tm.badger != nil {
-		if v = tm.badger.Get([]byte(ih)); v == nil {
+		if v = tm.badger.Get([]byte("s-" + ih)); v == nil {
 			seedTorrentPath := filepath.Join(tm.DataDir, ih, TORRENT)
 			if _, err := os.Stat(seedTorrentPath); err == nil {
 				spec = tm.loadSpec(ih, seedTorrentPath)
@@ -485,7 +487,7 @@ func (tm *TorrentManager) addInfoHash(ih string, bytesRequested int64) *Torrent 
 		}
 
 		if t.Info() == nil && tm.badger != nil {
-			if v := tm.badger.Get([]byte(ih)); v != nil {
+			if v := tm.badger.Get([]byte("s-" + ih)); v != nil {
 				t.SetInfoBytes(v)
 			}
 		}
@@ -824,8 +826,8 @@ func (tm *TorrentManager) pendingLoop() {
 					log.Info("Imported new seed", "ih", t.infohash, "elapsed", common.PrettyDuration(elapsed), "n", len(tm.pendingTorrents))
 					if b, err := bencode.Marshal(t.Torrent.Info()); err == nil {
 						log.Debug("Record full torrent in history", "ih", t.infohash, "info", len(b))
-						if tm.badger != nil && tm.badger.Get([]byte(t.infohash)) == nil {
-							tm.badger.Set([]byte(t.infohash), b)
+						if tm.badger != nil && tm.badger.Get([]byte("s-"+t.infohash)) == nil {
+							tm.badger.Set([]byte("s-"+t.infohash), b)
 						}
 					} else {
 						log.Error("Meta info marshal failed", "ih", t.infohash, "err", err)
