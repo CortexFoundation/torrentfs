@@ -32,7 +32,7 @@ func TestGetFile(t *testing.T) {
 	params.DefaultConfig.Mode = "LAZY"
 	ih := "aea5584d0cd3865e90c80eace3bfcb062473d966"
 	fmt.Println(params.DefaultConfig)
-	tm, _ := NewTorrentManager(&params.DefaultConfig, 1, false, false, nil)
+	tm, _ := NewTorrentManager(&params.DefaultConfig, 1, false, false)
 	//tm.Simulate()
 	tm.Start()
 	tm.Search(context.Background(), ih, 0)

@@ -137,8 +137,8 @@ type TorrentManager struct {
 	//simulate bool
 	//good     uint64
 
-	startOnce     sync.Once
-	seedingNotify chan string
+	startOnce sync.Once
+	//seedingNotify chan string
 
 	badger kv.Bucket
 }
@@ -524,7 +524,7 @@ func (tm *TorrentManager) updateInfoHash(t *Torrent, bytesRequested int64) {
 	updateMeter.Mark(1)
 }
 
-func NewTorrentManager(config *params.Config, fsid uint64, cache, compress bool, notify chan string) (*TorrentManager, error) {
+func NewTorrentManager(config *params.Config, fsid uint64, cache, compress bool) (*TorrentManager, error) {
 	server = config.Server
 	worm = config.Wormhole
 
@@ -608,8 +608,8 @@ func NewTorrentManager(config *params.Config, fsid uint64, cache, compress bool,
 		id:             fsid,
 		slot:           int(fsid % bucket),
 		localSeedFiles: make(map[string]bool),
-		seedingNotify:  notify,
-		badger:         kv.Badger(config.DataDir),
+		//seedingNotify:  notify,
+		badger: kv.Badger(config.DataDir),
 	}
 
 	if cache {
@@ -989,13 +989,13 @@ func (tm *TorrentManager) seedingLoop() {
 				//tm.graceSeeding(tm.slot)
 				//}
 
-				if tm.seedingNotify != nil {
+				/*if tm.seedingNotify != nil {
 					tm.wg.Add(1)
 					go func() {
 						defer tm.wg.Done()
 						tm.seedingNotify <- t.InfoHash()
 					}()
-				}
+				}*/
 			}
 		case <-tm.closeAll:
 			log.Info("Seeding loop closed")
