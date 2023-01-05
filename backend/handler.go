@@ -517,6 +517,10 @@ func (tm *TorrentManager) updateColaList() {
 	tm.colaList = wormhole.ColaList()
 }
 
+func (tm *TorrentManager) ColaList() mapset.Set[string] {
+	return tm.colaList
+}
+
 func (tm *TorrentManager) GlobalTrackers() [][]string {
 	tm.lock.RLock()
 	defer tm.lock.RUnlock()
@@ -834,8 +838,8 @@ func (tm *TorrentManager) pendingLoop() {
 				defer cancel()
 				select {
 				case <-t.GotInfo():
-					elapsed := time.Duration(mclock.Now()) - time.Duration(t.start)
-					log.Info("Imported new seed", "ih", t.infohash, "elapsed", common.PrettyDuration(elapsed), "n", len(tm.pendingTorrents))
+					//elapsed := time.Duration(mclock.Now()) - time.Duration(t.start)
+					//log.Info("Imported new seed", "ih", t.infohash, "elapsed", common.PrettyDuration(elapsed), "n", len(tm.pendingTorrents))
 					if b, err := bencode.Marshal(t.Torrent.Info()); err == nil {
 						log.Debug("Record full torrent in history", "ih", t.infohash, "info", len(b))
 						if tm.badger != nil && tm.badger.Get([]byte(SEED_PRE+t.infohash)) == nil {
