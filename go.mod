@@ -3,7 +3,7 @@ module github.com/CortexFoundation/torrentfs
 go 1.19
 
 require (
-	github.com/CortexFoundation/CortexTheseus v1.10.37
+	github.com/CortexFoundation/CortexTheseus v1.10.34
 	github.com/CortexFoundation/merkletree v0.0.0-20221028235943-b8196eb55fbc
 	github.com/anacrolix/envpprof v1.2.1
 	github.com/anacrolix/fuse v0.2.0
@@ -24,9 +24,9 @@ require (
 	github.com/otiai10/copy v1.9.0
 	github.com/prometheus/client_golang v1.14.0
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
-	github.com/ucwong/golang-kv v1.0.11
+	github.com/ucwong/golang-kv v1.0.10-0.20230105033646-4c4f378896bb
 	github.com/urfave/cli/v2 v2.23.6
-	go.etcd.io/bbolt v1.3.7-0.20221229101948-b654ce922133
+	go.etcd.io/bbolt v1.3.7-0.20230104224628-a938f006091f
 	golang.org/x/time v0.3.0
 	golang.org/x/tools v0.4.0
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2
@@ -109,6 +109,7 @@ require (
 require (
 	github.com/alecthomas/atomic v0.1.0-alpha2 // indirect
 	github.com/cespare/xxhash v1.1.0 // indirect
+	github.com/deckarep/golang-set v1.8.0 // indirect
 	github.com/dgraph-io/badger/v3 v3.2103.5 // indirect
 	github.com/dgraph-io/ristretto v0.1.1 // indirect
 	github.com/go-logr/logr v1.2.3 // indirect
