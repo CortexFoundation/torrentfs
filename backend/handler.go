@@ -108,18 +108,18 @@ type TorrentManager struct {
 	trackers            [][]string
 	globalTrackers      [][]string
 	//boostFetcher        *BoostDataFetcher
-	DataDir           string
-	TmpDataDir        string
-	closeAll          chan struct{}
-	taskChan          chan any
-	lock              sync.RWMutex
-	wg                sync.WaitGroup
-	seedingChan       chan *Torrent
-	activeChan        chan *Torrent
-	pendingChan       chan *Torrent
+	DataDir     string
+	TmpDataDir  string
+	closeAll    chan struct{}
+	taskChan    chan any
+	lock        sync.RWMutex
+	wg          sync.WaitGroup
+	seedingChan chan *Torrent
+	activeChan  chan *Torrent
+	pendingChan chan *Torrent
 	//pendingRemoveChan chan string
-	droppingChan      chan string
-	mode              string
+	droppingChan chan string
+	mode         string
 	//boost               bool
 	id   uint64
 	slot int
@@ -620,13 +620,13 @@ func NewTorrentManager(config *params.Config, fsid uint64, cache, compress bool)
 		closeAll: make(chan struct{}),
 		//initCh:              make(chan struct{}),
 		//simulate:          false,
-		taskChan:          make(chan any, taskChanBuffer),
-		seedingChan:       make(chan *Torrent, torrentChanSize),
-		activeChan:        make(chan *Torrent, torrentChanSize),
-		pendingChan:       make(chan *Torrent, torrentChanSize),
+		taskChan:    make(chan any, taskChanBuffer),
+		seedingChan: make(chan *Torrent, torrentChanSize),
+		activeChan:  make(chan *Torrent, torrentChanSize),
+		pendingChan: make(chan *Torrent, torrentChanSize),
 		//pendingRemoveChan: make(chan string, torrentChanSize),
-		droppingChan:      make(chan string, 1),
-		mode:              config.Mode,
+		droppingChan: make(chan string, 1),
+		mode:         config.Mode,
 		//boost:             config.Boost,
 		id:             fsid,
 		slot:           int(fsid % bucket),
@@ -845,6 +845,7 @@ func (tm *TorrentManager) pendingLoop() {
 				defer cancel()
 				select {
 				case <-t.GotInfo():
+					t.VerifyData()
 					//elapsed := time.Duration(mclock.Now()) - time.Duration(t.start)
 					//log.Info("Imported new seed", "ih", t.infohash, "elapsed", common.PrettyDuration(elapsed), "n", len(tm.pendingTorrents))
 					if b, err := bencode.Marshal(t.Torrent.Info()); err == nil {
