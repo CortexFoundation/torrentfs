@@ -47,9 +47,12 @@ import (
 	"github.com/bradfitz/iter"
 	"github.com/edsrzf/mmap-go"
 	//lru "github.com/hashicorp/golang-lru"
+
+	//mapset "github.com/deckarep/golang-set/v2"
 	//"golang.org/x/time/rate"
 
 	//xlog "github.com/anacrolix/log"
+	//"github.com/anacrolix/missinggo/v2/filecache"
 	"github.com/anacrolix/torrent"
 	"github.com/anacrolix/torrent/bencode"
 	"github.com/anacrolix/torrent/metainfo"
@@ -143,6 +146,8 @@ type TorrentManager struct {
 	//seedingNotify chan string
 
 	badger kv.Bucket
+
+	//colaList mapset.Set[string]
 }
 
 // can only call by fs.go: 'SeedingLocal()'
@@ -407,9 +412,9 @@ func (tm *TorrentManager) loadSpec(ih string, filePath string) *torrent.TorrentS
 	}
 
 	if useExistDir {
-		spec.Storage = storage.NewFile(ExistDir)
+		spec.Storage = storage.NewMMap(ExistDir) //storage.NewFile(ExistDir)
 	} else {
-		spec.Storage = storage.NewFile(TmpDir)
+		spec.Storage = storage.NewMMap(TmpDir)
 	}
 	spec.Trackers = nil
 
@@ -470,7 +475,7 @@ func (tm *TorrentManager) addInfoHash(ih string, bytesRequested int64) *Torrent 
 
 		spec = &torrent.TorrentSpec{
 			InfoHash:  metainfo.NewHashFromHex(ih),
-			Storage:   storage.NewFile(tmpDataPath),
+			Storage:   storage.NewMMap(tmpDataPath),
 			InfoBytes: v,
 		}
 	}
@@ -506,6 +511,16 @@ func (tm *TorrentManager) updateGlobalTrackers() {
 		log.Info("Global trackers update", "size", len(global), "cap", wormhole.CAP)
 	}
 }
+
+/*func (tm *TorrentManager) updateColaList() {
+	tm.lock.Lock()
+	defer tm.lock.Unlock()
+	tm.colaList = wormhole.ColaList()
+}
+
+func (tm *TorrentManager) ColaList() mapset.Set[string] {
+	return tm.colaList
+}*/
 
 func (tm *TorrentManager) GlobalTrackers() [][]string {
 	tm.lock.RLock()
@@ -545,6 +560,14 @@ func NewTorrentManager(config *params.Config, fsid uint64, cache, compress bool)
 	//cfg.DisableWebtorrent = false
 	//cfg.HeaderObfuscationPolicy.Preferred = true
 	//cfg.HeaderObfuscationPolicy.RequirePreferred = true
+
+	/*fc, err := filecache.NewCache(config.DataDir)
+	if err != nil {
+		return nil, err
+	}
+	cfg.DefaultStorage = storage.NewResourcePieces(fc.AsResourceProvider())*/
+
+	cfg.DefaultStorage = storage.NewMMap(config.DataDir)
 
 	cfg.DataDir = config.DataDir
 	//cfg.DisableEncryption = true
@@ -650,6 +673,8 @@ func NewTorrentManager(config *params.Config, fsid uint64, cache, compress bool)
 	//if global, err := wormhole.BestTrackers(); global != nil && err == nil {
 	//	torrentManager.globalTrackers = [][]string{global}
 	//}
+
+	//torrentManager.updateColaList()
 
 	log.Debug("Fs client initialized", "config", config, "trackers", torrentManager.trackers)
 
@@ -789,9 +814,9 @@ func (tm *TorrentManager) mainLoop() {
 			}
 
 			bytes = int64(meta.Request())
-			if bytes == 0 {
-				bytes = block
-			}
+			//if bytes == 0 && tm.mode != params.LAZY {
+			//	bytes = block
+			//}
 
 			if t := tm.addInfoHash(meta.InfoHash(), bytes); t == nil {
 				log.Error("Seed [create] failed", "ih", meta.InfoHash(), "request", bytes)
@@ -822,8 +847,9 @@ func (tm *TorrentManager) pendingLoop() {
 				defer cancel()
 				select {
 				case <-t.GotInfo():
-					elapsed := time.Duration(mclock.Now()) - time.Duration(t.start)
-					log.Info("Imported new seed", "ih", t.infohash, "elapsed", common.PrettyDuration(elapsed), "n", len(tm.pendingTorrents))
+					t.VerifyData()
+					//elapsed := time.Duration(mclock.Now()) - time.Duration(t.start)
+					//log.Info("Imported new seed", "ih", t.infohash, "elapsed", common.PrettyDuration(elapsed), "n", len(tm.pendingTorrents))
 					if b, err := bencode.Marshal(t.Torrent.Info()); err == nil {
 						log.Debug("Record full torrent in history", "ih", t.infohash, "info", len(b))
 						if tm.badger != nil && tm.badger.Get([]byte(SEED_PRE+t.infohash)) == nil {
@@ -836,7 +862,7 @@ func (tm *TorrentManager) pendingLoop() {
 					}
 
 					if err := t.WriteTorrent(); err == nil {
-						if params.IsGood(t.infohash) || tm.mode == params.FULL {
+						if params.IsGood(t.infohash) || tm.mode == params.FULL { //|| tm.colaList.Contains(t.infohash) {
 							t.lock.Lock()
 							t.bytesRequested = t.Length()
 							t.bytesLimitation = tm.getLimitation(t.Length())
