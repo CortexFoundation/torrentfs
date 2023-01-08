@@ -412,9 +412,9 @@ func (tm *TorrentManager) loadSpec(ih string, filePath string) *torrent.TorrentS
 	}
 
 	if useExistDir {
-		spec.Storage = storage.NewFile(ExistDir)
+		spec.Storage = storage.NewMMap(ExistDir) //storage.NewFile(ExistDir)
 	} else {
-		spec.Storage = storage.NewFile(TmpDir)
+		spec.Storage = storage.NewMMap(TmpDir)
 	}
 	spec.Trackers = nil
 
@@ -475,7 +475,7 @@ func (tm *TorrentManager) addInfoHash(ih string, bytesRequested int64) *Torrent 
 
 		spec = &torrent.TorrentSpec{
 			InfoHash:  metainfo.NewHashFromHex(ih),
-			Storage:   storage.NewFile(tmpDataPath),
+			Storage:   storage.NewMMap(tmpDataPath),
 			InfoBytes: v,
 		}
 	}
