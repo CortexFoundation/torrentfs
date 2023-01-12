@@ -473,8 +473,8 @@ github.com/tv42/httpunix v0.0.0-20191220191345-2ba4b9c3382c h1:u6SKchux2yDvFQnDH
 github.com/tv42/httpunix v0.0.0-20191220191345-2ba4b9c3382c/go.mod h1:hzIxponao9Kjc7aWznkXaL4U4TWaDSs8zcsY4Ka08nM=
 github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb h1:dVZH3AH9f7zB3VBmsjn25B7lfcAyMP4QxdFYTrfj7tg=
 github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb/go.mod h1:3yswsBsVuwsOjDvFfC5Na9XSEf4HC7mj3W3g6jvSY/s=
-github.com/ucwong/golang-kv v1.0.10-0.20230105033646-4c4f378896bb h1:Fr620KQ5Y9/Q59U30oUZjgjsL1u5z2RULA35943CYlI=
-github.com/ucwong/golang-kv v1.0.10-0.20230105033646-4c4f378896bb/go.mod h1:I09na1vWK800VZjwJbXaGhnEnpfJ175niTFc0QxXLto=
+github.com/ucwong/golang-kv v1.0.12-0.20230112191055-2808f1e1483d h1:DvYeS4dby4ves75SFIMhBQn9bn/SLMxAOLAuHoneW4c=
+github.com/ucwong/golang-kv v1.0.12-0.20230112191055-2808f1e1483d/go.mod h1:MO/hO8bg1P7roeodqQkTwpNP+x97mrvnaf5lKLApeb4=
 github.com/ugorji/go/codec v0.0.0-20181204163529-d75b2dcb6bc8/go.mod h1:VFNgLljTbGfSG7qAOspJ7OScBnGdDN/yBr0sguwnwf0=
 github.com/urfave/cli/v2 v2.23.6 h1:iWmtKD+prGo1nKUtLO0Wg4z9esfBM4rAV4QRLQiEmJ4=
 github.com/urfave/cli/v2 v2.23.6/go.mod h1:GHupkWPMM0M/sj1a2b4wUrWBPzazNrIjouW6fmdJLxc=
@@ -488,8 +488,8 @@ github.com/yuin/goldmark v1.2.1/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9dec
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=
 github.com/yusufpapurcu/wmi v1.2.2 h1:KBNDSne4vP5mbSWnJbO+51IMOXJB67QiYCSBrubbPRg=
 github.com/yusufpapurcu/wmi v1.2.2/go.mod h1:SBZ9tNy3G9/m5Oi98Zks0QjeHVDvuK0qfxQmPyzfmi0=
-go.etcd.io/bbolt v1.3.7-0.20230104224628-a938f006091f h1:RoGgfgbW1yxywLHCks9ZoRJph3f23qfH2vx+If27lIc=
-go.etcd.io/bbolt v1.3.7-0.20230104224628-a938f006091f/go.mod h1:Yxk11oTBO/W0QJKzUfJkynfKOarHCmIrvDVLIrSN4Fc=
+go.etcd.io/bbolt v1.3.7-0.20230111114935-ad85400db2f3 h1:o0nwq+Cs9x/07Czbdd6D3X5gaWXggUTulCsODW4fmyw=
+go.etcd.io/bbolt v1.3.7-0.20230111114935-ad85400db2f3/go.mod h1:Yxk11oTBO/W0QJKzUfJkynfKOarHCmIrvDVLIrSN4Fc=
 go.opencensus.io v0.20.1/go.mod h1:6WKK9ahsWS3RSO+PY9ZHZUfv2irvY6gN279GOPZjmmk=
 go.opencensus.io v0.20.2/go.mod h1:6WKK9ahsWS3RSO+PY9ZHZUfv2irvY6gN279GOPZjmmk=
 go.opencensus.io v0.22.3/go.mod h1:yxeiOL68Rb0Xd1ddK5vPZ/oVn4vY4Ynel7k9FzqtOIw=
