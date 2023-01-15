@@ -339,14 +339,16 @@ func (fs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 				}
 
 				if info.Size > 0 {
-					if progress, e := fs.progress(info.Hash); e == nil {
-						log.Debug("Nas msg received", "ih", info.Hash, "size", common.StorageSize(float64(info.Size)), "local", common.StorageSize(float64(progress)), "pid", p.id, "queue", fs.msg.Len(), "peers", len(fs.peers))
-						if err := fs.storage().Search(context.Background(), info.Hash, progress); err != nil {
-							log.Error("Nas "+params.ProtocolVersionStr+" error", "err", err)
-							return err
+					if _, err := fs.msg.Get(info.Hash); err != nil {
+						if progress, e := fs.progress(info.Hash); e == nil {
+							log.Debug("Nas msg received", "ih", info.Hash, "size", common.StorageSize(float64(info.Size)), "local", common.StorageSize(float64(progress)), "pid", p.id, "queue", fs.msg.Len(), "peers", len(fs.peers))
+							if err := fs.storage().Search(context.Background(), info.Hash, progress); err != nil {
+								log.Error("Nas "+params.ProtocolVersionStr+" error", "err", err)
+								return err
+							}
 						}
+						fs.nasCounter++
 					}
-					fs.nasCounter++
 				}
 			}
 		case params.MsgCode:
@@ -548,7 +550,6 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 		return nil, err
 	} else {
 		log.Debug("Get File directly", "ih", infohash, "size", rawSize, "path", subpath, "ret", len(ret))
-		//TODO t0 file
 		//fs.score(infohash)
 		return ret, nil
 	}
