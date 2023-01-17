@@ -851,7 +851,7 @@ func (tm *TorrentManager) pendingLoop() {
 				defer cancel()
 				select {
 				case <-t.GotInfo():
-					t.VerifyData()
+					//t.VerifyData()
 					//elapsed := time.Duration(mclock.Now()) - time.Duration(t.start)
 					//log.Info("Imported new seed", "ih", t.infohash, "elapsed", common.PrettyDuration(elapsed), "n", len(tm.pendingTorrents))
 					if b, err := bencode.Marshal(t.Torrent.Info()); err == nil {
