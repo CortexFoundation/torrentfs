@@ -23,6 +23,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"net"
 	//"math"
 	"os"
 	"path/filepath"
@@ -535,11 +536,16 @@ func (tm *TorrentManager) GlobalTrackers() [][]string {
 }
 
 func (tm *TorrentManager) updateInfoHash(t *Torrent, bytesRequested int64) {
-	t.lock.Lock()
-	defer t.lock.Unlock()
-	if t.bytesRequested < bytesRequested {
+	//t.lock.Lock()
+	//defer t.lock.Unlock()
+	if t.status != torrentSeeding && t.bytesRequested < bytesRequested {
+		if bytesRequested > t.Length() {
+			bytesRequested = t.Length()
+		}
+		t.lock.Lock()
 		t.bytesRequested = bytesRequested
 		t.bytesLimitation = tm.getLimitation(bytesRequested)
+		t.lock.Unlock()
 	} else {
 		atomic.AddInt64(&t.cited, 1)
 	}
@@ -556,10 +562,11 @@ func NewTorrentManager(config *params.Config, fsid uint64, cache, compress bool)
 	cfg.DisableTCP = config.DisableTCP
 	cfg.DisableIPv6 = config.DisableIPv6
 
-	if blocklist, err := iplist.MMapPackedFile("packed-blocklist"); err != nil {
-		log.Warn("black list load err", "err", err)
-	} else {
-		//defer blocklist.Close()
+	cfg.IPBlocklist = iplist.New([]iplist.Range{
+		iplist.Range{First: net.ParseIP("10.0.0.1"), Last: net.ParseIP("10.0.0.255")}})
+
+	if blocklist, err := iplist.MMapPackedFile("packed-blocklist"); err == nil {
+		log.Info("Block list loaded")
 		cfg.IPBlocklist = blocklist
 	}
 
@@ -867,6 +874,13 @@ func (tm *TorrentManager) pendingLoop() {
 						t.bytesRequested = t.Length()
 						t.bytesLimitation = tm.getLimitation(t.Length())
 						t.lock.Unlock()
+					} else {
+						if t.bytesRequested > t.Length() {
+							t.lock.Lock()
+							t.bytesRequested = t.Length()
+							t.bytesLimitation = tm.getLimitation(t.Length())
+							t.lock.Unlock()
+						}
 					}
 					tm.activeChan <- t
 					tm.pendingRemoveChan <- t.infohash
