@@ -538,18 +538,16 @@ func (tm *TorrentManager) GlobalTrackers() [][]string {
 func (tm *TorrentManager) updateInfoHash(t *Torrent, bytesRequested int64) {
 	//t.lock.Lock()
 	//defer t.lock.Unlock()
-	if t.status != torrentSeeding {
-		if t.bytesRequested < bytesRequested {
-			if bytesRequested > t.Length() {
-				bytesRequested = t.Length()
-			}
-			t.lock.Lock()
-			t.bytesRequested = bytesRequested
-			t.bytesLimitation = tm.getLimitation(bytesRequested)
-			t.lock.Unlock()
-		} else {
-			atomic.AddInt64(&t.cited, 1)
+	if t.status != torrentSeeding && t.bytesRequested < bytesRequested {
+		if bytesRequested > t.Length() {
+			bytesRequested = t.Length()
 		}
+		t.lock.Lock()
+		t.bytesRequested = bytesRequested
+		t.bytesLimitation = tm.getLimitation(bytesRequested)
+		t.lock.Unlock()
+	} else {
+		atomic.AddInt64(&t.cited, 1)
 	}
 	updateMeter.Mark(1)
 }
