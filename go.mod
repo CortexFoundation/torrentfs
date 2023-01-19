@@ -24,9 +24,9 @@ require (
 	github.com/otiai10/copy v1.9.0
 	github.com/prometheus/client_golang v1.14.0
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
-	github.com/ucwong/golang-kv v1.0.10-0.20230118045946-b7d68d5a4bc6
+	github.com/ucwong/golang-kv v1.0.10-0.20230119194614-d04587236cec
 	github.com/urfave/cli/v2 v2.23.6
-	go.etcd.io/bbolt v1.3.7-0.20230118001253-8c794d23aa46
+	go.etcd.io/bbolt v1.3.7-0.20230119182115-774edab6231c
 	golang.org/x/time v0.3.0
 	golang.org/x/tools v0.4.0
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2
