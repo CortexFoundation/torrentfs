@@ -1137,24 +1137,14 @@ func (tm *TorrentManager) Available(ih string, rawSize uint64) (bool, uint64, mc
 		return false, 0, 0, ErrInactiveTorrent
 	} else {
 		if !t.Ready() {
-			//if torrent.ch != nil {
-			//	<-torrent.ch
-			//	if torrent.Ready() {
-			//		return torrent.BytesCompleted() <= int64(rawSize), nil
-			//	}
-			//}
 			if t.Torrent.Info() == nil {
-				return false, uint64(t.BytesCompleted()), 0, ErrTorrentNotFound
+				return false, 0, 0, ErrTorrentNotFound
 			}
 			return false, uint64(t.BytesCompleted()), mclock.Now() - t.start, ErrUnfinished
 		}
 
 		// TODO
 		ok := t.BytesCompleted() <= int64(rawSize)
-		//if t.currentConns <= 1 && ok {
-		//	t.currentConns = tm.maxEstablishedConns
-		//	t.Torrent.SetMaxEstablishedConns(tm.maxEstablishedConns)
-		//}
 
 		return ok, uint64(t.BytesCompleted()), mclock.Now() - t.start, nil
 	}
@@ -1181,7 +1171,7 @@ func (tm *TorrentManager) GetFile(infohash, subpath string) ([]byte, uint64, err
 	if t := tm.getTorrent(infohash); t != nil {
 		if !t.Ready() {
 			//log.Error("Unavailable file, waiting", "ih", infohash, "subpath", subpath, "status", t.status, "p", t.BytesCompleted())
-			return nil, uint64(t.BytesCompleted()), ErrUnfinished
+			return nil, 0, ErrUnfinished
 		}
 
 		// Data protection when torrent is active
