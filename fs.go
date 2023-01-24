@@ -512,6 +512,7 @@ func (fs *TorrentFS) sub(ih string, rawSize uint64) bool {
 	if rawSize > 0 {
 		log.Debug("Query added", "ih", ih, "size", rawSize)
 		//fs.nasCache.Add(ih, rawSize)
+		// TODO waiting if no neighbors found
 		fs.tunnel.Set(ih, ttlmap.NewItem(rawSize, ttlmap.WithTTL(60*time.Second)), nil)
 	} else {
 		return false
