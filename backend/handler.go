@@ -313,7 +313,12 @@ func (tm *TorrentManager) removeTorrent(t *Torrent) {
 	t.lock.Lock()
 	defer t.lock.Unlock()
 
+	//t.status = torrentSleeping
+	//tm.torrents[ih] = t
+
 	delete(tm.torrents, t.infohash)
+
+	t.Torrent.Drop()
 }
 
 func (tm *TorrentManager) Close() error {
@@ -1037,7 +1042,6 @@ func (tm *TorrentManager) droppingLoop() {
 		select {
 		case ih := <-tm.droppingChan:
 			if t := tm.getTorrent(ih); t != nil { //&& t.Ready() {
-				t.Torrent.Drop()
 				if t.status == torrentPending {
 					delete(tm.pendingTorrents, ih)
 				}
