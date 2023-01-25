@@ -316,6 +316,16 @@ func (tm *TorrentManager) removeTorrent(t *Torrent) {
 	//t.status = torrentSleeping
 	//tm.torrents[ih] = t
 
+	if t.status == torrentPending {
+		delete(tm.pendingTorrents, t.infohash)
+	}
+	if t.status == torrentRunning || t.status == torrentPaused {
+		delete(tm.activeTorrents, t.infohash)
+	}
+	if t.status == torrentSeeding {
+		delete(tm.seedingTorrents, t.infohash)
+	}
+
 	delete(tm.torrents, t.infohash)
 
 	t.Torrent.Drop()
@@ -1042,7 +1052,7 @@ func (tm *TorrentManager) droppingLoop() {
 		select {
 		case ih := <-tm.droppingChan:
 			if t := tm.getTorrent(ih); t != nil { //&& t.Ready() {
-				if t.status == torrentPending {
+				/*if t.status == torrentPending {
 					delete(tm.pendingTorrents, ih)
 				}
 				if t.status == torrentRunning || t.status == torrentPaused {
@@ -1050,7 +1060,7 @@ func (tm *TorrentManager) droppingLoop() {
 				}
 				if t.status == torrentSeeding {
 					delete(tm.seedingTorrents, ih)
-				}
+				}*/
 
 				tm.removeTorrent(t)
 
