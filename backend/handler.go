@@ -313,6 +313,8 @@ func (tm *TorrentManager) removeTorrent(t *Torrent) {
 	t.lock.Lock()
 	defer t.lock.Unlock()
 
+	defer t.Torrent.Drop()
+
 	//t.status = torrentSleeping
 	//tm.torrents[ih] = t
 
@@ -327,8 +329,6 @@ func (tm *TorrentManager) removeTorrent(t *Torrent) {
 	}
 
 	delete(tm.torrents, t.infohash)
-
-	t.Torrent.Drop()
 }
 
 func (tm *TorrentManager) Close() error {
