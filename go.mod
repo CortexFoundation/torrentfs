@@ -10,7 +10,7 @@ require (
 	github.com/anacrolix/log v0.13.2-0.20221123232138-02e2764801c3
 	github.com/anacrolix/missinggo/v2 v2.7.1
 	github.com/anacrolix/tagflag v1.3.1-0.20210717093243-41ae76143afa
-	github.com/anacrolix/torrent v1.48.1-0.20230103142631-c20f73d53e9f
+	github.com/anacrolix/torrent v1.48.1-0.20230123215249-d47739db0c59
 	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/deckarep/golang-set/v2 v2.1.0
@@ -34,8 +34,9 @@ require (
 
 require (
 	crawshaw.io/sqlite v0.3.3-0.20220618202545-d1964889ea3c // indirect
-	github.com/RoaringBitmap/roaring v1.2.1 // indirect
+	github.com/RoaringBitmap/roaring v1.2.3 // indirect
 	github.com/ajwerner/btree v0.0.0-20211221152037-f427b3e689c0 // indirect
+	github.com/alecthomas/atomic v0.1.0-alpha2 // indirect
 	github.com/anacrolix/chansync v0.3.0 // indirect
 	github.com/anacrolix/dht/v2 v2.19.2
 	github.com/anacrolix/generics v0.0.0-20221221005542-ac1d5b02b8a3 // indirect
@@ -53,17 +54,28 @@ require (
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bits-and-blooms/bitset v1.4.0 // indirect
 	github.com/btcsuite/btcd/btcec/v2 v2.3.2 // indirect
+	github.com/cespare/xxhash v1.1.0 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
+	github.com/deckarep/golang-set v1.8.0 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.1.0 // indirect
+	github.com/dgraph-io/badger/v3 v3.2103.5 // indirect
+	github.com/dgraph-io/ristretto v0.1.1 // indirect
+	github.com/go-logr/logr v1.2.3 // indirect
+	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/go-stack/stack v1.8.1 // indirect
+	github.com/gogo/protobuf v1.3.2 // indirect
+	github.com/golang/glog v1.0.0 // indirect
+	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/btree v1.1.2 // indirect
+	github.com/google/flatbuffers v22.11.23+incompatible // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/huandu/xstrings v1.4.0 // indirect
 	github.com/huin/goupnp v1.0.4-0.20220613170603-23b555710578 // indirect
 	github.com/jackpal/go-nat-pmp v1.0.2 // indirect
+	github.com/klauspost/compress v1.15.13 // indirect
 	github.com/lispad/go-generics-tools v1.1.0 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.4 // indirect
 	github.com/mschoch/smat v0.2.0 // indirect
@@ -95,7 +107,11 @@ require (
 	github.com/tidwall/btree v1.6.0 // indirect
 	github.com/tklauser/go-sysconf v0.3.11 // indirect
 	github.com/tklauser/numcpus v0.6.0 // indirect
+	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
+	go.opencensus.io v0.24.0 // indirect
+	go.opentelemetry.io/otel v1.11.2 // indirect
+	go.opentelemetry.io/otel/trace v1.11.2 // indirect
 	golang.org/x/crypto v0.4.0 // indirect
 	golang.org/x/exp v0.0.0-20221217163422-3c43f8badb15 // indirect
 	golang.org/x/mod v0.7.0 // indirect
@@ -104,25 +120,6 @@ require (
 	golang.org/x/sys v0.3.0 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce // indirect
-)
-
-require (
-	github.com/alecthomas/atomic v0.1.0-alpha2 // indirect
-	github.com/cespare/xxhash v1.1.0 // indirect
-	github.com/deckarep/golang-set v1.8.0 // indirect
-	github.com/dgraph-io/badger/v3 v3.2103.5 // indirect
-	github.com/dgraph-io/ristretto v0.1.1 // indirect
-	github.com/go-logr/logr v1.2.3 // indirect
-	github.com/go-logr/stdr v1.2.2 // indirect
-	github.com/gogo/protobuf v1.3.2 // indirect
-	github.com/golang/glog v1.0.0 // indirect
-	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
-	github.com/google/flatbuffers v22.11.23+incompatible // indirect
-	github.com/klauspost/compress v1.15.13 // indirect
-	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
-	go.opencensus.io v0.24.0 // indirect
-	go.opentelemetry.io/otel v1.11.2 // indirect
-	go.opentelemetry.io/otel/trace v1.11.2 // indirect
 )
 
 replace github.com/benbjohnson/immutable v0.4.0 => github.com/benbjohnson/immutable v0.3.0
