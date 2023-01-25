@@ -535,7 +535,7 @@ func (fs *TorrentFS) notify(infohash string) bool {
 // Available is used to check the file status
 func (fs *TorrentFS) available(ctx context.Context, infohash string, rawSize uint64) (bool, error) {
 	ret, _, _, err := fs.storage().Available(infohash, rawSize)
-	if err == ErrInactiveTorrent {
+	if err == backend.ErrInactiveTorrent {
 		if progress, e := fs.progress(infohash); e == nil {
 			fs.bitsflow(infohash, progress)
 		}
