@@ -318,12 +318,12 @@ func (tm *TorrentManager) removeTorrent(t *Torrent) {
 
 	if t.status == torrentPending {
 		delete(tm.pendingTorrents, t.infohash)
-	}
-	if t.status == torrentRunning || t.status == torrentPaused {
+	} else if t.status == torrentRunning || t.status == torrentPaused {
 		delete(tm.activeTorrents, t.infohash)
-	}
-	if t.status == torrentSeeding {
+	} else if t.status == torrentSeeding {
 		delete(tm.seedingTorrents, t.infohash)
+	} else {
+		log.Warn("Unknown status", "ih", t.infohash, "status", t.status)
 	}
 
 	delete(tm.torrents, t.infohash)
