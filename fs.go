@@ -338,24 +338,13 @@ func (fs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 					return errors.New("invalid address")
 				}
 
-				fs.wg.Add(1)
-				go func() {
-					defer fs.wg.Done()
-					fs.pub(info.Hash, info.Size)
-				}()
-
-				/*if info.Size > 0 {
-					if _, err := fs.tunnel.Get(info.Hash); err != nil {
-						if progress, e := fs.progress(info.Hash); e == nil {
-							log.Debug("Nas msg received", "ih", info.Hash, "size", common.StorageSize(float64(info.Size)), "local", common.StorageSize(float64(progress)), "pid", p.id, "queue", fs.tunnel.Len(), "peers", len(fs.peers))
-							if err := fs.storage().Search(context.Background(), info.Hash, progress); err != nil {
-								log.Error("Nas "+params.ProtocolVersionStr+" error", "err", err)
-								return err
-							}
-						}
-						fs.nasCounter++
-					}
-				}*/
+				if info.Size > 0 {
+					fs.wg.Add(1)
+					go func() {
+						defer fs.wg.Done()
+						fs.pub(info.Hash)
+					}()
+				}
 			}
 		case params.MsgCode:
 			if params.ProtocolVersion > 4 {
@@ -376,20 +365,6 @@ func (fs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 
 func (fs *TorrentFS) progress(ih string) (uint64, error) {
 	return fs.chain().GetTorrentProgress(ih)
-}
-
-func (fs *TorrentFS) pub(ih string, size uint64) {
-	if size > 0 {
-		if _, err := fs.tunnel.Get(ih); err != nil {
-			if progress, e := fs.progress(ih); e == nil {
-				if err := fs.storage().Search(context.Background(), ih, progress); err != nil {
-					log.Error("Nas "+params.ProtocolVersionStr+" error", "err", err)
-					//return err
-				}
-			}
-			//fs.nasCounter++
-		}
-	}
 }
 
 func (fs *TorrentFS) score(ih string) bool {
@@ -512,8 +487,6 @@ func (fs *TorrentFS) sub(ih string, rawSize uint64) bool {
 
 	if rawSize > 0 {
 		log.Debug("Query added", "ih", ih, "size", rawSize)
-		//fs.nasCache.Add(ih, rawSize)
-		// TODO waiting if no neighbors found
 		fs.tunnel.Set(ih, ttlmap.NewItem(rawSize, ttlmap.WithTTL(60*time.Second)), nil)
 	} else {
 		return false
@@ -533,21 +506,33 @@ func (fs *TorrentFS) notify(infohash string) bool {
 }
 
 // Available is used to check the file status
-func (fs *TorrentFS) available(ctx context.Context, infohash string, rawSize uint64) (bool, error) {
+func (fs *TorrentFS) available(infohash string, rawSize uint64) (bool, error) {
 	ret, _, _, err := fs.storage().Available(infohash, rawSize)
 	if err == backend.ErrInactiveTorrent {
-		if progress, e := fs.progress(infohash); e == nil {
-			fs.bitsflow(infohash, progress)
-		}
+		fs.pub(infohash)
 	}
 	return ret, err
+}
+
+func (fs *TorrentFS) pub(ih string) {
+	if _, err := fs.tunnel.Get(ih); err != nil {
+		if progress, e := fs.progress(ih); e == nil {
+			//if local {
+			//	if err := fs.storage().Search(context.Background(), ih, progress); err != nil {
+			//		log.Error("Nas "+params.ProtocolVersionStr+" error", "err", err)
+			//	}
+			//} else {
+			fs.bitsflow(ih, progress)
+			//}
+		}
+	}
 }
 
 func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSize uint64, subpath string) ([]byte, error) {
 	log.Debug("Get file with size", "ih", infohash, "size", rawSize, "path", subpath)
 	if ret, _, err := fs.storage().GetFile(infohash, subpath); err != nil {
 		// local file not found
-		if ok, err := fs.available(ctx, infohash, rawSize); err != nil || !ok {
+		if ok, err := fs.available(infohash, rawSize); err != nil || !ok {
 			log.Debug("Get file failed", "ih", infohash, "size", rawSize, "path", subpath, "err", err)
 			//return nil, err
 		}
@@ -741,9 +726,6 @@ func (fs *TorrentFS) download(ctx context.Context, ih string, request uint64) er
 		return err
 	}
 
-	//fs.find(ih)
-	//if update {
-	//fs.seedingNotify <- ih
 	fs.wg.Add(1)
 	go func() {
 		defer fs.wg.Done()
@@ -752,21 +734,11 @@ func (fs *TorrentFS) download(ctx context.Context, ih string, request uint64) er
 			log.Debug("Nas "+params.ProtocolVersionStr+" tunnel", "ih", ih, "request", common.StorageSize(float64(p)), "queue", fs.tunnel.Len(), "peers", len(fs.peers))
 		}
 	}()
-	//}
+
+	// local search
 	if err := fs.storage().Search(ctx, ih, p); err != nil {
 		return err
 	}
-
-	//if _, ok := fs.scoreTable[ih]; !ok {
-	//	fs.scoreTable[ih] = 1
-	//} else {
-	//	fs.scoreTable[ih]++
-	//}
-
-	//for k, _ := range GoodFiles {
-	//	status, _ := fs.Status(ctx, k)
-	//	log.Info("Torrent status", "ih", k, "status", status)
-	//}
 
 	return nil
 }
