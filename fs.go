@@ -535,7 +535,7 @@ func (fs *TorrentFS) notify(infohash string) bool {
 // Available is used to check the file status
 func (fs *TorrentFS) available(ctx context.Context, infohash string, rawSize uint64) (bool, error) {
 	ret, _, _, err := fs.storage().Available(infohash, rawSize)
-	if err != nil {
+	if err == ErrInactiveTorrent {
 		if progress, e := fs.progress(infohash); e == nil {
 			fs.bitsflow(infohash, progress)
 		}
@@ -545,35 +545,16 @@ func (fs *TorrentFS) available(ctx context.Context, infohash string, rawSize uin
 
 func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSize uint64, subpath string) ([]byte, error) {
 	log.Debug("Get file with size", "ih", infohash, "size", rawSize, "path", subpath)
-	//fs.wg.Add(1)
-	//go func() {
-	///	defer fs.wg.Done()
-	//if ok, err := fs.available(ctx, infohash, rawSize); err != nil || !ok {
-	//	return nil, err
-	//}
-	//}()
-
-	/*if !fs.worm.Contains(infohash) {
-		timer := time.NewTicker(1 * time.Second)
-		defer timer.Stop()
-		select {
-		case <-timer.C:
-		case <-ctx.Done():
-		}
-	} else {
-		fs.worm.Add(infohash)
-	}*/
-
 	if ret, _, err := fs.storage().GetFile(infohash, subpath); err != nil {
-		//log.Warn("Get file failed", "ih", infohash, "size", rawSize, "path", subpath, "err", err)
+		// local file not found
 		if ok, err := fs.available(ctx, infohash, rawSize); err != nil || !ok {
 			log.Debug("Get file failed", "ih", infohash, "size", rawSize, "path", subpath, "err", err)
-			return nil, err
+			//return nil, err
 		}
+
 		return nil, err
 	} else {
 		log.Debug("Get File directly", "ih", infohash, "size", rawSize, "path", subpath, "ret", len(ret))
-		//fs.score(infohash)
 		return ret, nil
 	}
 }
