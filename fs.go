@@ -339,11 +339,7 @@ func (fs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 				}
 
 				if info.Size > 0 {
-					fs.wg.Add(1)
-					go func() {
-						defer fs.wg.Done()
-						fs.active(info.Hash, info.Size)
-					}()
+					fs.active(info.Hash, info.Size)
 				}
 			}
 		case params.MsgCode:
@@ -522,10 +518,11 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 	log.Debug("Get file with size", "ih", infohash, "size", rawSize, "path", subpath)
 	if ret, _, err := fs.storage().GetFile(infohash, subpath); err != nil {
 		// local file not found
-		if ok, err := fs.active(infohash, rawSize); err != nil || !ok {
-			log.Debug("Get file failed", "ih", infohash, "size", rawSize, "path", subpath, "err", err)
-			//return nil, err
-		}
+		//if ok, err := fs.active(infohash, rawSize); err != nil || !ok {
+		//	log.Debug("Get file failed", "ih", infohash, "size", rawSize, "path", subpath, "err", err)
+		//}
+
+		fs.active(infohash, rawSize)
 
 		return nil, err
 	} else {
