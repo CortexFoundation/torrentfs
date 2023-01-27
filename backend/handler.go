@@ -836,7 +836,6 @@ func (tm *TorrentManager) commit(ctx context.Context, hex string, request uint64
 
 func (tm *TorrentManager) mainLoop() {
 	defer tm.wg.Done()
-	var bytes int64
 	for {
 		select {
 		case msg := <-tm.taskChan:
@@ -845,13 +844,8 @@ func (tm *TorrentManager) mainLoop() {
 				continue
 			}
 
-			bytes = int64(meta.Request())
-			//if bytes == 0 && tm.mode != params.LAZY {
-			//	bytes = block
-			//}
-
-			if t := tm.addInfoHash(meta.InfoHash(), bytes); t == nil {
-				log.Error("Seed [create] failed", "ih", meta.InfoHash(), "request", bytes)
+			if t := tm.addInfoHash(meta.InfoHash(), int64(meta.Request())); t == nil {
+				log.Error("Seed [create] failed", "ih", meta.InfoHash(), "request", meta.Request())
 			}
 		case <-tm.closeAll:
 			return
@@ -1019,6 +1013,7 @@ func (tm *TorrentManager) activeLoop() {
 					defer tm.wg.Done()
 					tm.updateGlobalTrackers()
 				}()
+				log_counter = 1
 			}
 			//timer.Reset(time.Second * queryTimeInterval)
 		case <-tm.closeAll:
