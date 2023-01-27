@@ -862,7 +862,11 @@ func (tm *TorrentManager) pendingLoop() {
 			tm.wg.Add(1)
 			go func(t *Torrent) {
 				defer tm.wg.Done()
-				ctx, cancel := context.WithTimeout(context.Background(), 15*time.Minute)
+				timeout := 15
+				if tm.mode == params.FULL {
+					timeout *= 2
+				}
+				ctx, cancel := context.WithTimeout(context.Background(), time.Duration(timeout)*time.Minute)
 				defer cancel()
 				select {
 				case <-t.GotInfo():
@@ -948,6 +952,10 @@ func (tm *TorrentManager) activeLoop() {
 			n := tm.blockCaculate(t.Torrent.Length())
 			if n < 10 {
 				n += 10
+			}
+
+			if tm.mode == params.FULL {
+				n *= 2
 			}
 
 			// TODO n random salt
