@@ -71,8 +71,8 @@ import (
 const (
 	bucket          = params.Bucket //it is best size is 1/3 full nodes
 	group           = params.Group
-	taskChanBuffer  = params.SyncBatch
-	torrentChanSize = 64
+	taskChanBuffer  = 1 //params.SyncBatch
+	torrentChanSize = 1
 
 	block = int64(params.PER_UPLOAD_BYTES)
 	loops = 30
