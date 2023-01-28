@@ -862,11 +862,11 @@ func (tm *TorrentManager) pendingLoop() {
 			tm.wg.Add(1)
 			go func(t *Torrent) {
 				defer tm.wg.Done()
-				timeout := 15
+				var timeout time.Duration = 15
 				if tm.mode == params.FULL {
 					timeout *= 2
 				}
-				ctx, cancel := context.WithTimeout(context.Background(), time.Duration(timeout)*time.Minute)
+				ctx, cancel := context.WithTimeout(context.Background(), timeout*time.Minute)
 				defer cancel()
 				select {
 				case <-t.GotInfo():
