@@ -727,9 +727,7 @@ func (fs *TorrentFS) download(ctx context.Context, ih string, request uint64) er
 
 func (fs *TorrentFS) Download(ctx context.Context, ih string, request uint64) error {
 	//return fs.download(ctx, ih, request)
-	fs.bitsflow(ctx, ih, request)
-
-	return nil
+	return fs.bitsflow(ctx, ih, request)
 }
 
 func (fs *TorrentFS) Status(ctx context.Context, ih string) (int, error) {
