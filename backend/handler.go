@@ -966,7 +966,7 @@ func (tm *TorrentManager) activeLoop() {
 	defer tm.wg.Done()
 	timer := time.NewTicker(time.Second * params.QueryTimeInterval)
 	defer timer.Stop()
-	var total_size, current_size, log_counter, counter uint64 = 0, 0, 1, 1
+	var log_counter, counter uint64 = 1, 1
 	for {
 		select {
 		case t := <-tm.activeChan:
@@ -1016,8 +1016,8 @@ func (tm *TorrentManager) activeLoop() {
 
 			for ih, t := range tm.activeTorrents {
 				if t.BytesCompleted() > t.bytesCompleted {
-					total_size += uint64(t.BytesCompleted() - t.bytesCompleted)
-					current_size += uint64(t.BytesCompleted() - t.bytesCompleted)
+					//total_size += uint64(t.BytesCompleted() - t.bytesCompleted)
+					//current_size += uint64(t.BytesCompleted() - t.bytesCompleted)
 					t.bytesCompleted = t.BytesCompleted()
 				}
 
@@ -1037,9 +1037,10 @@ func (tm *TorrentManager) activeLoop() {
 			}
 
 			if counter >= 2*loops {
-				log.Info("Fs status", "pending", len(tm.pendingTorrents), "downloading", len(tm.activeTorrents), "seeding", len(tm.seedingTorrents), "size", common.StorageSize(total_size), "speed_a", common.StorageSize(total_size/log_counter*params.QueryTimeInterval).String()+"/s", "speed_b", common.StorageSize(current_size/counter*params.QueryTimeInterval).String()+"/s", "metrics", common.PrettyDuration(tm.Updates))
+				//log.Info("Fs status", "pending", len(tm.pendingTorrents), "downloading", len(tm.activeTorrents), "seeding", len(tm.seedingTorrents), "size", common.StorageSize(total_size), "speed_a", common.StorageSize(total_size/log_counter*params.QueryTimeInterval).String()+"/s", "speed_b", common.StorageSize(current_size/counter*params.QueryTimeInterval).String()+"/s", "metrics", common.PrettyDuration(tm.Updates))
+				log.Info("Fs status", "pending", len(tm.pendingTorrents), "downloading", len(tm.activeTorrents), "seeding", len(tm.seedingTorrents), "metrics", common.PrettyDuration(tm.Updates))
 				counter = 1
-				current_size = 0
+				//current_size = 0
 			}
 
 			if log_counter%(3600*24) == 0 {
