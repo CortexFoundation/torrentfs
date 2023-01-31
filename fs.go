@@ -114,25 +114,25 @@ func New(config *params.Config, cache, compress, listen bool) (*TorrentFS, error
 		return inst, nil
 	}
 
-	db, fsErr := backend.NewChainDB(config)
-	if fsErr != nil {
-		log.Error("file storage failed", "err", fsErr)
-		return nil, fsErr
+	db, err := backend.NewChainDB(config)
+	if err != nil {
+		log.Error("file storage failed", "err", err)
+		return nil, err
 	}
 	log.Info("File storage initialized")
 
 	handler, err := backend.NewTorrentManager(config, db.ID(), cache, compress)
 	if err != nil || handler == nil {
-		log.Error("fs manager failed")
+		log.Error("fs manager failed", "err", err)
 		return nil, errors.New("fs download manager initialise failed")
 	}
 	log.Info("Fs manager initialized")
 
 	_callback := make(chan any, 1)
-	monitor, moErr := monitor.New(config, cache, compress, listen, db, handler, _callback)
-	if moErr != nil {
-		log.Error("Failed create monitor")
-		return nil, moErr
+	monitor, err := monitor.New(config, cache, compress, listen, db, handler, _callback)
+	if err != nil {
+		log.Error("Failed create monitor", "err", err)
+		return nil, err
 	}
 
 	inst = &TorrentFS{
