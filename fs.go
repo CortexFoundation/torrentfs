@@ -257,6 +257,7 @@ func (fs *TorrentFS) listen() {
 				fs.download(context.Background(), meta.InfoHash(), meta.Request())
 			}
 		case <-fs.closeAll:
+			log.Info("Bitsflow listener stop")
 			return
 		}
 	}
@@ -318,7 +319,7 @@ func (fs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 		}
 
 		log.Debug("Nas "+params.ProtocolVersionStr+" package", "size", packet.Size, "code", packet.Code)
-		fs.received++
+		//fs.received++
 
 		switch packet.Code {
 		case params.StatusCode:
