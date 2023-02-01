@@ -271,7 +271,7 @@ func mainExitCode() int {
 						spec := torrent.TorrentSpecFromMetaInfo(mi)
 						ih := spec.InfoHash
 						//spec.Trackers = append(spec.Trackers, params.MainnetTrackers)
-						spec.Trackers = [][]string{params.MainnetTrackers}
+						spec.Trackers = [][]string{params.MainnetTrackers, params.GlobalTrackers}
 
 						spec.Storage = storage.NewFile(filePath)
 						t, _, err := client.AddTorrentSpec(spec)

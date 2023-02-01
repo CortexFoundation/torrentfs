@@ -24,10 +24,11 @@ var (
 func main() {
 	log.SetFlags(log.Flags() | log.Lshortfile)
 	var args struct {
-		AnnounceList      []string `name:"a" help:"extra announce-list tier entry"`
-		EmptyAnnounceList bool     `name:"n" help:"exclude default announce-list entries"`
-		Comment           string   `name:"t" help:"comment"`
-		CreatedBy         string   `name:"c" help:"created by"`
+		AnnounceList      []string      `name:"a" help:"extra announce-list tier entry"`
+		EmptyAnnounceList bool          `name:"n" help:"exclude default announce-list entries"`
+		Comment           string        `name:"t" help:"comment"`
+		CreatedBy         string        `name:"c" help:"created by"`
+		PieceLength       tagflag.Bytes `name:"p" help:"piece size"`
 		tagflag.StartPos
 		Root string
 	}
@@ -47,9 +48,11 @@ func main() {
 	}
 	if len(args.CreatedBy) > 0 {
 		mi.CreatedBy = args.CreatedBy
+	} else {
+		mi.CreatedBy = "github.com/CortexFoundation/torrentfs"
 	}
 	info := metainfo.Info{
-		PieceLength: 256 * 1024,
+		PieceLength: args.PieceLength.Int64(),
 	}
 	err := info.BuildFromFilePath(args.Root)
 	if err != nil {
