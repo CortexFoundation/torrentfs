@@ -41,14 +41,14 @@ make
 ```
 #### Load info hash from torrent file
 ```
-./torrent-magnet < test-torrent
+./build/bin/torrent-magnet < test-torrent
 magnet:?xt=urn:btih:ddf8aa34644457093909776eb997060aa8fa3295&dn=data&tr=udp%3A%2F%2Ftracker.cortexlabs.ai%3A5008
 ```
 #### Seed file to dht
-```./seeding -dataDir=testdata/data```
+```./build/bin/seeding -dataDir=testdata/data```
 #### Download file
 ```
-./torrent download 'infohash:ddf8aa34644457093909776eb997060aa8fa3295'
+./build/bin/torrent download 'infohash:ddf8aa34644457093909776eb997060aa8fa3295'
 ls -alt data && md5sum data && cat data
 ```
 # Special thanks
