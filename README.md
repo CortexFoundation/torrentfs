@@ -46,9 +46,9 @@ magnet:?xt=urn:btih:9de12178a50a80f59ee1cb20470da7d57b05de42&dn=data&tr=udp%3A%2
 ```
 #### Seed file to dht
 ```
-mkdir -p mnt/9de12178a50a80f59ee1cb20470da7d57b05de42
+mkdir -p mnt/9de12178a50a80f59ee1cb20470da7d57b05de42/data
 cp test-torrent mnt/9de12178a50a80f59ee1cb20470da7d57b05de42/torrent
-cp -r testdata/data/* mnt/9de12178a50a80f59ee1cb20470da7d57b05de42
+cp -r testdata/data/* mnt/9de12178a50a80f59ee1cb20470da7d57b05de42/data
 ./build/bin/seeding -dataDir=mnt
 ```
 #### Download file
