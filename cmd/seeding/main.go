@@ -261,6 +261,7 @@ func mainExitCode() int {
 			case Added:
 				if ev.FilePath != "" {
 					filePath := ev.FilePath
+					log.Printf("path %s", filePath)
 					torrentPath := filepath.Join(filePath, "torrent")
 					if _, err := os.Stat(torrentPath); err == nil {
 						mi, err := metainfo.LoadFromFile(torrentPath)
