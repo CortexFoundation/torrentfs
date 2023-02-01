@@ -37,7 +37,7 @@ make
 ```
 #### Create torrent file
 ```
-./build/bin/torrent-create testdata/data -pieceLength=4096 > test-torrent
+./build/bin/torrent-create testdata/data -p=4096 > test-torrent
 ```
 #### Load info hash from torrent file
 ```
