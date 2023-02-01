@@ -47,7 +47,7 @@ magnet:?xt=urn:btih:ddf8aa34644457093909776eb997060aa8fa3295&dn=data&tr=udp%3A%2
 #### Seed file to dht
 ```
 mkdir -p mnt/ddf8aa34644457093909776eb997060aa8fa3295
-cp -r testdata/data/* mnt
+cp -r testdata/data/* mnt/ddf8aa34644457093909776eb997060aa8fa3295
 ./build/bin/seeding -dataDir=mnt
 ```
 #### Download file
