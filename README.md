@@ -37,25 +37,25 @@ make
 ```
 #### Create torrent file
 ```
-./build/bin/torrent-create testdata/data -p=4096 > test-torrent
+./build/bin/torrent-create test/data -p=4096 > test-torrent
 ```
 #### Load info hash from torrent file
 ```
 ./build/bin/torrent-magnet < test-torrent
 ```
 ```
-magnet:?xt=urn:btih:9de12178a50a80f59ee1cb20470da7d57b05de42&dn=data&tr=udp%3A%2F%2Ftracker.cortexlabs.ai%3A5008
+magnet:?xt=urn:btih:91b709fdeaadd7dbb3c798fad493ac73e1c60d7c&dn=data&tr=udp%3A%2F%2Ftracker.cortexlabs.ai%3A5008
 ```
 #### Seed file to dht
 ```
-mkdir -p mnt/9de12178a50a80f59ee1cb20470da7d57b05de42/data
-cp test-torrent mnt/9de12178a50a80f59ee1cb20470da7d57b05de42/torrent
-cp -r testdata/data/* mnt/9de12178a50a80f59ee1cb20470da7d57b05de42/data
+mkdir -p mnt/91b709fdeaadd7dbb3c798fad493ac73e1c60d7c/data
+cp test-torrent mnt/91b709fdeaadd7dbb3c798fad493ac73e1c60d7c/torrent
+cp -r testdata/data/* mnt/91b709fdeaadd7dbb3c798fad493ac73e1c60d7c/data
 ./build/bin/seeding -dataDir=mnt
 ```
 #### Download file
 ```
-./build/bin/torrent download 'infohash:9de12178a50a80f59ee1cb20470da7d57b05de42'
+./build/bin/torrent download 'infohash:91b709fdeaadd7dbb3c798fad493ac73e1c60d7c'
 ls -alt data && md5sum data && cat data
 ```
 # Special thanks
