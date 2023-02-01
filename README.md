@@ -42,6 +42,8 @@ make
 #### Load info hash from torrent file
 ```
 ./build/bin/torrent-magnet < test-torrent
+```
+```
 magnet:?xt=urn:btih:9de12178a50a80f59ee1cb20470da7d57b05de42&dn=data&tr=udp%3A%2F%2Ftracker.cortexlabs.ai%3A5008
 ```
 #### Seed file to dht
