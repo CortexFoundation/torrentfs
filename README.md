@@ -45,7 +45,11 @@ make
 magnet:?xt=urn:btih:ddf8aa34644457093909776eb997060aa8fa3295&dn=data&tr=udp%3A%2F%2Ftracker.cortexlabs.ai%3A5008
 ```
 #### Seed file to dht
-```./build/bin/seeding -dataDir=testdata/data```
+```
+mkdir -p mnt/ddf8aa34644457093909776eb997060aa8fa3295
+cp -r testdata/data/* mnt
+./build/bin/seeding -dataDir=mnt
+```
 #### Download file
 ```
 ./build/bin/torrent download 'infohash:ddf8aa34644457093909776eb997060aa8fa3295'
