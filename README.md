@@ -32,27 +32,23 @@ downloaded ALL the torrents !!!!!!!!!!!!!!!!!!!
 
 ## How to use
 ```
-cd build/bin
-mkdir -p mnt/0803be8fc7309d155dfcee65a92a6254bd55a3d2
-echo "Hello torrent" > mnt/0803be8fc7309d155dfcee65a92a6254bd55a3d2/data
+cd torrentfs
+make
 ```
 #### Create torrent file
 ```
-./torrent-create mnt/0803be8fc7309d155dfcee65a92a6254bd55a3d2/data > mnt/0803be8fc7309d155dfcee65a92a6254bd55a3d2/torrent
+./build/bin/torrent-create testdata/data > test-torrent
 ```
 #### Load info hash from torrent file
 ```
-./torrent-magnet < mnt/0803be8fc7309d155dfcee65a92a6254bd55a3d2/torrent
-tree mnt
-0803be8fc7309d155dfcee65a92a6254bd55a3d2
-├── data
-└── torrent
+./torrent-magnet < test-torrent
+magnet:?xt=urn:btih:ddf8aa34644457093909776eb997060aa8fa3295&dn=data&tr=udp%3A%2F%2Ftracker.cortexlabs.ai%3A5008
 ```
 #### Seed file to dht
-```./seeding -dataDir=mnt```
+```./seeding -dataDir=testdata/data```
 #### Download file
 ```
-./torrent download 'infohash:0803be8fc7309d155dfcee65a92a6254bd55a3d2'
+./torrent download 'infohash:ddf8aa34644457093909776eb997060aa8fa3295'
 ls -alt data && md5sum data && cat data
 ```
 # Special thanks
