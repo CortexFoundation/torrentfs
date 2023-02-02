@@ -36,7 +36,7 @@ downloaded ALL the torrents !!!!!!!!!!!!!!!!!!!
 cd torrentfs
 make
 ```
-#### Create torrent file
+#### Create torrent file by 4k pieces
 ```
 ./build/bin/torrent-create test/data -p=4096 > test-torrent
 ```
