@@ -1,6 +1,7 @@
-## torrentfs is a elastic file system, you can pull or push any files by following torrentfs protocol anywhere, anytime
+## Torrentfs
 
-# Independent HTTP Service for file seeding
+Torrentfs is a elastic file system, you can pull or push any files by following torrentfs protocol anywhere, anytime
+
 ## Server running
 https://github.com/CortexFoundation/torrentfs/pull/216
 ## Seeding or Sharing
