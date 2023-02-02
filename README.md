@@ -6,14 +6,9 @@ Torrentfs is a elastic file system, you can pull or push any files by following 
 ```
 go get github.com/CortexFoundation/torrentfs
 ```
-## Build
-```
-https://github.com/CortexFoundation/torrentfs.git
-cd torrentfs
-make
-```
 ## How to use
 ```
+https://github.com/CortexFoundation/torrentfs.git
 cd torrentfs
 make
 ```
