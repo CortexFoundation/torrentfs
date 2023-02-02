@@ -51,6 +51,9 @@ func main() {
 	} else {
 		mi.CreatedBy = "github.com/CortexFoundation/torrentfs"
 	}
+	if args.PieceLength.Int64() == 0 {
+		args.PieceLength = 4096
+	}
 	info := metainfo.Info{
 		PieceLength: args.PieceLength.Int64(),
 	}
