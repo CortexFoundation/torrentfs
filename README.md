@@ -44,9 +44,7 @@ make
 ```
 ./build/bin/torrent-magnet < test-torrent
 ```
-
 magnet:?xt=urn:btih:91b709fdeaadd7dbb3c798fad493ac73e1c60d7c&dn=data&tr=udp%3A%2F%2Ftracker.cortexlabs.ai%3A5008
-
 #### Seed file to dht
 ```
 mkdir -p mnt/91b709fdeaadd7dbb3c798fad493ac73e1c60d7c/data
@@ -57,7 +55,6 @@ cp -r testdata/data/* mnt/91b709fdeaadd7dbb3c798fad493ac73e1c60d7c/data
 #### Download file
 ```
 ./build/bin/torrent download 'infohash:91b709fdeaadd7dbb3c798fad493ac73e1c60d7c'
-ls -alt data && md5sum data && cat data
 ```
 # Special thanks
 
