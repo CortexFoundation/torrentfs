@@ -6,11 +6,6 @@ Torrentfs is a elastic file system, you can pull or push any files by following 
 https://github.com/CortexFoundation/torrentfs/pull/216
 ## Seeding or Sharing
 https://github.com/CortexFoundation/torrentfs/pull/224
-
-# P2P file system of cortex full node
-![image](https://user-images.githubusercontent.com/22344498/118778205-6ef75f00-b8bc-11eb-880e-17b5bea66814.png)
-
-
 ## Import
 ```
 go get github.com/CortexFoundation/torrentfs
