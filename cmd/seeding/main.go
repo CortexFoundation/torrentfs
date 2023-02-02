@@ -261,6 +261,7 @@ func mainExitCode() int {
 			case Added:
 				if ev.FilePath != "" {
 					filePath := ev.FilePath
+					log.Printf("path %s", filePath)
 					torrentPath := filepath.Join(filePath, "torrent")
 					if _, err := os.Stat(torrentPath); err == nil {
 						mi, err := metainfo.LoadFromFile(torrentPath)
@@ -271,7 +272,7 @@ func mainExitCode() int {
 						spec := torrent.TorrentSpecFromMetaInfo(mi)
 						ih := spec.InfoHash
 						//spec.Trackers = append(spec.Trackers, params.MainnetTrackers)
-						spec.Trackers = [][]string{params.MainnetTrackers}
+						spec.Trackers = [][]string{params.MainnetTrackers, params.GlobalTrackers}
 
 						spec.Storage = storage.NewFile(filePath)
 						t, _, err := client.AddTorrentSpec(spec)

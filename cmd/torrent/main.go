@@ -241,7 +241,7 @@ func downloadErr(args []string, parent *tagflag.Parser) error {
 	clientConfig.DisableIPv4 = !flags.Ipv4
 	clientConfig.DisableIPv6 = !flags.Ipv6
 	clientConfig.DisableAcceptRateLimiting = true
-	clientConfig.NoDHT = !flags.Dht
+	clientConfig.NoDHT = false
 	clientConfig.Debug = flags.Debug
 	clientConfig.Seed = flags.Seed
 	clientConfig.ListenPort = 0
