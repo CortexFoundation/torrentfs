@@ -280,7 +280,7 @@ func (tm *TorrentManager) register(t *torrent.Torrent, requested int64, status i
 		//loop:       0,
 		maxPieces: 0,
 		//isBoosting: false,
-		fast:  false,
+		//fast:  false,
 		start: mclock.Now(),
 	}
 
