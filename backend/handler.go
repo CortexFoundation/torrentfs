@@ -966,7 +966,7 @@ func (tm *TorrentManager) activeLoop() {
 	defer tm.wg.Done()
 	timer := time.NewTicker(time.Second * params.QueryTimeInterval)
 	defer timer.Stop()
-	var log_counter uint64 = 1
+	var log_counter int = 1
 	for {
 		select {
 		case t := <-tm.activeChan:
