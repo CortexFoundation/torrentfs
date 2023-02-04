@@ -80,6 +80,7 @@ func run(conf *Config) error {
 	config.Port = 0
 	config.Server = true
 	config.Wormhole = false
+	config.Quiet = false
 
 	//config.DisableUTP = false
 
