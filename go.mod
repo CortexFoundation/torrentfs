@@ -10,12 +10,12 @@ require (
 	github.com/anacrolix/log v0.13.2-0.20221123232138-02e2764801c3
 	github.com/anacrolix/missinggo/v2 v2.7.1
 	github.com/anacrolix/tagflag v1.3.1-0.20210717093243-41ae76143afa
-	github.com/anacrolix/torrent v1.48.1-0.20230123215249-d47739db0c59
+	github.com/anacrolix/torrent v1.48.1-0.20230130214106-5a185c45c08c
 	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/deckarep/golang-set/v2 v2.1.0
 	github.com/dustin/go-humanize v1.0.0
-	github.com/edsrzf/mmap-go v1.1.0
+	github.com/edsrzf/mmap-go v1.1.1-0.20220903035803-8e5d0fe06024
 	github.com/fsnotify/fsnotify v1.6.0
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/golang/snappy v0.0.5-0.20220116011046-fa5810519dcb
@@ -31,6 +31,8 @@ require (
 	golang.org/x/tools v0.4.0
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2
 )
+
+require github.com/elliotchance/orderedmap v1.4.0 // indirect
 
 require (
 	crawshaw.io/sqlite v0.3.3-0.20220618202545-d1964889ea3c // indirect
