@@ -67,6 +67,8 @@ import (
 	"github.com/anacrolix/dht/v2"
 	"github.com/anacrolix/dht/v2/int160"
 	peer_store "github.com/anacrolix/dht/v2/peer-store"
+
+	"github.com/gokyle/filecache"
 )
 
 const (
@@ -158,6 +160,8 @@ type TorrentManager struct {
 	badger kv.Bucket
 
 	//colaList mapset.Set[string]
+
+	fc *filecache.FileCache
 }
 
 // can only call by fs.go: 'SeedingLocal()'
@@ -356,6 +360,12 @@ func (tm *TorrentManager) Close() error {
 	//if tm.hotCache != nil {
 	//	tm.hotCache.Purge()
 	//}
+
+	if tm.fc != nil {
+		tm.lock.Lock()
+		defer tm.lock.Unlock()
+		tm.fc.Stop()
+	}
 	log.Info("Fs Download Manager Closed")
 	return nil
 }
@@ -702,6 +712,7 @@ func NewTorrentManager(config *params.Config, fsid uint64, cache, compress bool)
 	}
 
 	if cache {
+		torrentManager.fc = filecache.NewDefaultCache()
 		/*conf := bigcache.Config{
 			Shards:             1024,
 			LifeWindow:         600 * time.Second,
@@ -760,6 +771,13 @@ func (tm *TorrentManager) Start() (err error) {
 		go tm.mainLoop()
 
 		//err = tm.init()
+		if tm.fc != nil {
+			tm.lock.Lock()
+			defer tm.lock.Unlock()
+			if err := tm.fc.Start(); err != nil {
+				log.Error("File cache start")
+			}
+		}
 	})
 
 	return
@@ -1233,8 +1251,15 @@ func (tm *TorrentManager) GetFile(infohash, subpath string) ([]byte, uint64, err
 	}
 
 	diskReadMeter.Mark(1)
+	dir := filepath.Join(tm.DataDir, key)
+	if tm.fc != nil {
+		if data, err := tm.fc.ReadFile(dir); err == nil {
+			log.Info("Read file from cache", "dir", dir)
+			return data, 0, err
+		}
+	}
 
-	data, err := os.ReadFile(filepath.Join(tm.DataDir, key))
+	data, err := os.ReadFile(dir)
 
 	return data, 0, err
 }
