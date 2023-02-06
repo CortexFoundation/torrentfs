@@ -713,7 +713,7 @@ func NewTorrentManager(config *params.Config, fsid uint64, cache, compress bool)
 
 	if cache {
 		torrentManager.fc = filecache.NewDefaultCache()
-		torrentManager.fs.MaxSize = 256 * Megabyte
+		torrentManager.fc.MaxSize = 256 * filecache.Megabyte
 		/*conf := bigcache.Config{
 			Shards:             1024,
 			LifeWindow:         600 * time.Second,
@@ -1221,7 +1221,7 @@ func (tm *TorrentManager) Available(ih string, rawSize uint64) (bool, uint64, mc
 	}
 }
 
-func (tm *TorrentManager) GetFile(infohash, subpath string) ([]byte, error) {
+func (tm *TorrentManager) GetFile(infohash, subpath string) (data []byte, err error) {
 	getfileMeter.Mark(1)
 	if tm.metrics {
 		defer func(start time.Time) { tm.Updates += time.Since(start) }(time.Now())
@@ -1254,15 +1254,16 @@ func (tm *TorrentManager) GetFile(infohash, subpath string) ([]byte, error) {
 	diskReadMeter.Mark(1)
 	dir := filepath.Join(tm.DataDir, key)
 	if tm.fc != nil {
-		if data, err := tm.fc.ReadFile(dir); err == nil {
+		if data, err = tm.fc.ReadFile(dir); err == nil {
 			log.Info("Read file from cache", "dir", dir)
-			return data, err
+			//			return data, err
 		}
+	} else {
+
+		data, err = os.ReadFile(dir)
 	}
 
-	data, err := os.ReadFile(dir)
-
-	return data, err
+	return
 }
 
 func (tm *TorrentManager) unzip(data []byte) ([]byte, error) {
