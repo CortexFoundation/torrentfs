@@ -473,8 +473,8 @@ github.com/tklauser/numcpus v0.6.0 h1:kebhY2Qt+3U6RNK7UqpYNA+tJ23IBEGKkB7JQBfDYm
 github.com/tklauser/numcpus v0.6.0/go.mod h1:FEZLMke0lhOUG6w2JadTzp0a+Nl8PF/GFkQ5UVIcaL4=
 github.com/tv42/httpunix v0.0.0-20191220191345-2ba4b9c3382c h1:u6SKchux2yDvFQnDHS3lPnIRmfVJ5Sxy3ao2SIdysLQ=
 github.com/tv42/httpunix v0.0.0-20191220191345-2ba4b9c3382c/go.mod h1:hzIxponao9Kjc7aWznkXaL4U4TWaDSs8zcsY4Ka08nM=
-github.com/ucwong/filecache v0.0.0-20230206083952-07b207ffa665 h1:v9pYVj1cLqxLoi3XYHb0wZfwNlSSQaiSUdunXE6JN8M=
-github.com/ucwong/filecache v0.0.0-20230206083952-07b207ffa665/go.mod h1:LbGxBZpGM7O3hS1WfBU0ESJTWpwKxxOzcUYNn4xEf/A=
+github.com/ucwong/filecache v0.0.0-20230206175602-9e9b9a566376 h1:FkgZQQIFu2fkpqO21jpyDRW4f4n5VXYRxF5gfucUVdI=
+github.com/ucwong/filecache v0.0.0-20230206175602-9e9b9a566376/go.mod h1:JtOTJyVHfE5MOa3/5abu/YtW+o1X9inFtfyIyQoGFfU=
 github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb h1:dVZH3AH9f7zB3VBmsjn25B7lfcAyMP4QxdFYTrfj7tg=
 github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb/go.mod h1:3yswsBsVuwsOjDvFfC5Na9XSEf4HC7mj3W3g6jvSY/s=
 github.com/ucwong/golang-kv v1.0.10-0.20230129204034-9be07a0ed06b h1:oLKdWCEeLawK/dSpwxdluBSdfIKZwsvyDshfbYClrnI=
