@@ -40,7 +40,7 @@ func TestGetFile(t *testing.T) {
 	time.Sleep(30 * time.Second)
 	//a, _, _, _ := tm.Available(ih, 100000000)
 	//fmt.Println("available", a)
-	file, _, _ := tm.GetFile(ih, "data")
+	file, _ := tm.GetFile(ih, "data")
 	if file == nil {
 		log.Fatal("failed to get file")
 	}
