@@ -500,7 +500,7 @@ func (fs *TorrentFS) wakeup(ctx context.Context, ih string, rawSize uint64) (boo
 
 func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSize uint64, subpath string) ([]byte, error) {
 	log.Debug("Get file with size", "ih", infohash, "size", rawSize, "path", subpath)
-	if ret, _, err := fs.storage().GetFile(infohash, subpath); err != nil {
+	if ret, err := fs.storage().GetFile(infohash, subpath); err != nil {
 		fs.wakeup(ctx, infohash, rawSize)
 		return nil, err
 	} else {

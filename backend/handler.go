@@ -713,6 +713,7 @@ func NewTorrentManager(config *params.Config, fsid uint64, cache, compress bool)
 
 	if cache {
 		torrentManager.fc = filecache.NewDefaultCache()
+		torrentManager.fs.MaxSize = 256 * Megabyte
 		/*conf := bigcache.Config{
 			Shards:             1024,
 			LifeWindow:         600 * time.Second,
@@ -1220,14 +1221,14 @@ func (tm *TorrentManager) Available(ih string, rawSize uint64) (bool, uint64, mc
 	}
 }
 
-func (tm *TorrentManager) GetFile(infohash, subpath string) ([]byte, uint64, error) {
+func (tm *TorrentManager) GetFile(infohash, subpath string) ([]byte, error) {
 	getfileMeter.Mark(1)
 	if tm.metrics {
 		defer func(start time.Time) { tm.Updates += time.Since(start) }(time.Now())
 	}
 
 	if !common.IsHexAddress(infohash) {
-		return nil, 0, errors.New("invalid infohash format")
+		return nil, errors.New("invalid infohash format")
 	}
 
 	infohash = strings.TrimPrefix(strings.ToLower(infohash), common.Prefix)
@@ -1241,7 +1242,7 @@ func (tm *TorrentManager) GetFile(infohash, subpath string) ([]byte, uint64, err
 	if t := tm.getTorrent(infohash); t != nil {
 		if !t.Ready() {
 			//log.Error("Unavailable file, waiting", "ih", infohash, "subpath", subpath, "status", t.status, "p", t.BytesCompleted())
-			return nil, 0, ErrUnfinished
+			return nil, ErrUnfinished
 		}
 
 		// Data protection when torrent is active
@@ -1255,13 +1256,13 @@ func (tm *TorrentManager) GetFile(infohash, subpath string) ([]byte, uint64, err
 	if tm.fc != nil {
 		if data, err := tm.fc.ReadFile(dir); err == nil {
 			log.Info("Read file from cache", "dir", dir)
-			return data, 0, err
+			return data, err
 		}
 	}
 
 	data, err := os.ReadFile(dir)
 
-	return data, 0, err
+	return data, err
 }
 
 func (tm *TorrentManager) unzip(data []byte) ([]byte, error) {
