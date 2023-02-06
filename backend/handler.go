@@ -362,8 +362,6 @@ func (tm *TorrentManager) Close() error {
 	//}
 
 	if tm.fc != nil {
-		tm.lock.Lock()
-		defer tm.lock.Unlock()
 		tm.fc.Stop()
 	}
 	log.Info("Fs Download Manager Closed")
@@ -773,10 +771,8 @@ func (tm *TorrentManager) Start() (err error) {
 
 		//err = tm.init()
 		if tm.fc != nil {
-			tm.lock.Lock()
-			defer tm.lock.Unlock()
 			if err := tm.fc.Start(); err != nil {
-				log.Error("File cache start")
+				log.Error("File cache start", "err", err)
 			}
 		}
 	})
