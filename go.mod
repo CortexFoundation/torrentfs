@@ -18,12 +18,12 @@ require (
 	github.com/edsrzf/mmap-go v1.1.1-0.20220903035803-8e5d0fe06024
 	github.com/fsnotify/fsnotify v1.6.0
 	github.com/go-resty/resty/v2 v2.7.0
-	github.com/gokyle/filecache v0.0.0-20220803205700-e8a4791094b7
 	github.com/golang/snappy v0.0.5-0.20220116011046-fa5810519dcb
 	github.com/google/uuid v1.3.0
 	github.com/hashicorp/golang-lru v0.5.5-0.20221011183528-d4900dc688bf
 	github.com/otiai10/copy v1.9.0
 	github.com/prometheus/client_golang v1.14.0
+	github.com/ucwong/filecache v0.0.0-20230206021200-89439808c9c5
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
 	github.com/ucwong/golang-kv v1.0.10-0.20230129204034-9be07a0ed06b
 	github.com/urfave/cli/v2 v2.23.6
