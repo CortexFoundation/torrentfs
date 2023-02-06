@@ -1253,13 +1253,13 @@ func (tm *TorrentManager) GetFile(infohash, subpath string) (data []byte, err er
 
 	diskReadMeter.Mark(1)
 	dir := filepath.Join(tm.DataDir, key)
-	if tm.fc != nil {
+	if tm.fc != nil && tm.fc.Active() {
+		start := mclock.Now()
 		if data, err = tm.fc.ReadFile(dir); err == nil {
-			log.Info("Read file from cache", "dir", dir)
-			//			return data, err
+			elapsed := time.Duration(mclock.Now() - start)
+			log.Info("Read file from cache", "ih", infohash, "dir", dir, "elapsed", common.PrettyDuration(elapsed))
 		}
 	} else {
-
 		data, err = os.ReadFile(dir)
 	}
 
