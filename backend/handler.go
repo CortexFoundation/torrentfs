@@ -1217,7 +1217,7 @@ func (tm *TorrentManager) Available(ih string, rawSize uint64) (bool, uint64, mc
 	}
 }
 
-func (tm *TorrentManager) GetFile(infohash, subpath string) (data []byte, err error) {
+func (tm *TorrentManager) GetFile(ctx context.Context, infohash, subpath string) (data []byte, err error) {
 	getfileMeter.Mark(1)
 	if tm.metrics {
 		defer func(start time.Time) { tm.Updates += time.Since(start) }(time.Now())
@@ -1251,7 +1251,7 @@ func (tm *TorrentManager) GetFile(infohash, subpath string) (data []byte, err er
 	dir := filepath.Join(tm.DataDir, key)
 	if tm.fc != nil && tm.fc.Active() {
 		start := mclock.Now()
-		if data, err = tm.fc.ReadFile(dir); err == nil {
+		if data, err = tm.fc.ReadFileContext(ctx, dir); err == nil {
 			elapsed := time.Duration(mclock.Now() - start)
 			log.Info("Read file from cache", "ih", infohash, "dir", dir, "elapsed", common.PrettyDuration(elapsed))
 		}
