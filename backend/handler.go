@@ -1251,7 +1251,8 @@ func (tm *TorrentManager) GetFile(ctx context.Context, infohash, subpath string)
 	dir := filepath.Join(tm.DataDir, key)
 	if tm.fc != nil && tm.fc.Active() {
 		start := mclock.Now()
-		if data, err = tm.fc.ReadFileContext(ctx, dir); err == nil {
+		//if data, err = tm.fc.ReadFileContext(ctx, dir); err == nil {
+		if data, err = tm.fc.ReadFile(dir); err == nil {
 			elapsed := time.Duration(mclock.Now() - start)
 			log.Info("Load data from file cache", "ih", infohash, "dir", dir, "elapsed", common.PrettyDuration(elapsed))
 		}
