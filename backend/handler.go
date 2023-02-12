@@ -157,7 +157,7 @@ type TorrentManager struct {
 	startOnce sync.Once
 	//seedingNotify chan string
 
-	badger kv.Bucket
+	kvdb kv.Bucket
 
 	//colaList mapset.Set[string]
 
@@ -354,8 +354,8 @@ func (tm *TorrentManager) Close() error {
 	//	tm.fileCache.Reset()
 	//}
 
-	if tm.badger != nil {
-		tm.badger.Close()
+	if tm.kvdb != nil {
+		tm.kvdb.Close()
 	}
 	//if tm.hotCache != nil {
 	//	tm.hotCache.Purge()
@@ -492,8 +492,8 @@ func (tm *TorrentManager) addInfoHash(ih string, bytesRequested int64) *Torrent 
 		v    []byte
 	)
 
-	if tm.badger != nil {
-		if v = tm.badger.Get([]byte(SEED_PRE + ih)); v == nil {
+	if tm.kvdb != nil {
+		if v = tm.kvdb.Get([]byte(SEED_PRE + ih)); v == nil {
 			seedTorrentPath := filepath.Join(tm.DataDir, ih, TORRENT)
 			if _, err := os.Stat(seedTorrentPath); err == nil {
 				spec = tm.loadSpec(ih, seedTorrentPath)
@@ -536,8 +536,8 @@ func (tm *TorrentManager) addInfoHash(ih string, bytesRequested int64) *Torrent 
 			t.AddTrackers(tm.globalTrackers)
 		}
 
-		if t.Info() == nil && tm.badger != nil {
-			if v := tm.badger.Get([]byte(SEED_PRE + ih)); v != nil {
+		if t.Info() == nil && tm.kvdb != nil {
+			if v := tm.kvdb.Get([]byte(SEED_PRE + ih)); v != nil {
 				t.SetInfoBytes(v)
 			}
 		}
@@ -706,7 +706,7 @@ func NewTorrentManager(config *params.Config, fsid uint64, cache, compress bool)
 		slot:           int(fsid % bucket),
 		localSeedFiles: make(map[string]bool),
 		//seedingNotify:  notify,
-		badger: kv.Badger(config.DataDir),
+		kvdb: kv.Badger(config.DataDir),
 	}
 
 	if cache {
@@ -904,11 +904,11 @@ func (tm *TorrentManager) pendingLoop() {
 				case <-t.GotInfo():
 					if b, err := bencode.Marshal(t.Torrent.Info()); err == nil {
 						log.Debug("Record full torrent in history", "ih", t.infohash, "info", len(b))
-						if tm.badger != nil && tm.badger.Get([]byte(SEED_PRE+t.infohash)) == nil {
+						if tm.kvdb != nil && tm.kvdb.Get([]byte(SEED_PRE+t.infohash)) == nil {
 							elapsed := time.Duration(mclock.Now()) - time.Duration(t.start)
 							log.Info("Imported new seed", "ih", t.infohash, "request", common.StorageSize(t.Length()), "ts", common.StorageSize(len(b)), "good", params.IsGood(t.infohash), "elapsed", common.PrettyDuration(elapsed))
 
-							tm.badger.Set([]byte(SEED_PRE+t.infohash), b)
+							tm.kvdb.Set([]byte(SEED_PRE+t.infohash), b)
 						}
 					} else {
 						log.Error("Meta info marshal failed", "ih", t.infohash, "err", err)
