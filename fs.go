@@ -445,8 +445,10 @@ func (fs *TorrentFS) bitsflow(ctx context.Context, ih string, size uint64) error
 func (tfs *TorrentFS) Stop() error {
 	if tfs == nil || tfs.monitor == nil {
 		log.Info("Cortex fs engine is already stopped")
-		return nil
+		return errors.New("fs has been stopped")
 	}
+
+	tfs.monitor.Stop()
 
 	tfs.once.Do(func() {
 		close(tfs.closeAll)
@@ -454,22 +456,9 @@ func (tfs *TorrentFS) Stop() error {
 
 	tfs.wg.Wait()
 
-	// Wait until every goroutine terminates.
-	//tfs.monitor.lock.Lock()
-	tfs.monitor.Stop()
-	//tfs.monitor.lock.Unlock()
-
-	//if tfs.nasCache != nil {
-	//	tfs.nasCache.Purge()
-	//}
-
 	if tfs.tunnel != nil {
 		tfs.tunnel.Drain()
 	}
-
-	//if tfs.queryCache != nil {
-	//	tfs.queryCache.Purge()
-	//}
 	log.Info("Cortex fs engine stopped")
 	return nil
 }
@@ -511,7 +500,7 @@ func (fs *TorrentFS) wakeup(ctx context.Context, ih string, rawSize uint64) (boo
 
 func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSize uint64, subpath string) ([]byte, error) {
 	log.Debug("Get file with size", "ih", infohash, "size", rawSize, "path", subpath)
-	if ret, _, err := fs.storage().GetFile(infohash, subpath); err != nil {
+	if ret, err := fs.storage().GetFile(ctx, infohash, subpath); err != nil {
 		fs.wakeup(ctx, infohash, rawSize)
 		return nil, err
 	} else {

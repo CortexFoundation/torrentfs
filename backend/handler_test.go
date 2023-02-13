@@ -32,7 +32,7 @@ func TestGetFile(t *testing.T) {
 	params.DefaultConfig.Mode = "LAZY"
 	ih := "aea5584d0cd3865e90c80eace3bfcb062473d966"
 	fmt.Println(params.DefaultConfig)
-	tm, _ := NewTorrentManager(&params.DefaultConfig, 1, false, false)
+	tm, _ := NewTorrentManager(&params.DefaultConfig, 1, true, false)
 	//tm.Simulate()
 	tm.Start()
 	tm.Search(context.Background(), ih, 0)
@@ -40,7 +40,7 @@ func TestGetFile(t *testing.T) {
 	time.Sleep(30 * time.Second)
 	//a, _, _, _ := tm.Available(ih, 100000000)
 	//fmt.Println("available", a)
-	file, _, _ := tm.GetFile(ih, "data")
+	file, _ := tm.GetFile(context.Background(), ih, "data")
 	if file == nil {
 		log.Fatal("failed to get file")
 	}

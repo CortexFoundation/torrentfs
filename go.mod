@@ -23,16 +23,28 @@ require (
 	github.com/hashicorp/golang-lru v0.5.5-0.20221011183528-d4900dc688bf
 	github.com/otiai10/copy v1.9.0
 	github.com/prometheus/client_golang v1.14.0
+	github.com/ucwong/filecache v1.0.2-0.20230211204238-5bd1814b10ea
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
-	github.com/ucwong/golang-kv v1.0.10-0.20230129204034-9be07a0ed06b
+	github.com/ucwong/golang-kv v1.0.12-0.20230212185402-0942222b90be
 	github.com/urfave/cli/v2 v2.23.6
-	go.etcd.io/bbolt v1.3.7-0.20230129125154-fc361799ce2e
+	go.etcd.io/bbolt v1.3.7-0.20230211214749-46437cea06b7
 	golang.org/x/time v0.3.0
 	golang.org/x/tools v0.4.0
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2
 )
 
-require github.com/elliotchance/orderedmap v1.4.0 // indirect
+require (
+	github.com/DataDog/zstd v1.4.5 // indirect
+	github.com/cockroachdb/errors v1.8.1 // indirect
+	github.com/cockroachdb/logtags v0.0.0-20190617123548-eb05cc24525f // indirect
+	github.com/cockroachdb/pebble v0.0.0-20230209222158-0568b5fd3d14 // indirect
+	github.com/cockroachdb/redact v1.0.8 // indirect
+	github.com/cockroachdb/sentry-go v0.6.1-cockroachdb.2 // indirect
+	github.com/elliotchance/orderedmap v1.4.0 // indirect
+	github.com/kr/pretty v0.3.1 // indirect
+	github.com/kr/text v0.2.0 // indirect
+	github.com/rogpeppe/go-internal v1.9.0 // indirect
+)
 
 require (
 	crawshaw.io/sqlite v0.3.3-0.20220618202545-d1964889ea3c // indirect
@@ -77,7 +89,7 @@ require (
 	github.com/huandu/xstrings v1.4.0 // indirect
 	github.com/huin/goupnp v1.0.4-0.20220613170603-23b555710578 // indirect
 	github.com/jackpal/go-nat-pmp v1.0.2 // indirect
-	github.com/klauspost/compress v1.15.13 // indirect
+	github.com/klauspost/compress v1.15.15 // indirect
 	github.com/lispad/go-generics-tools v1.1.0 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.4 // indirect
 	github.com/mschoch/smat v0.2.0 // indirect
