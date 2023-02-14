@@ -27,6 +27,7 @@ import (
 	"time"
 
 	"github.com/CortexFoundation/CortexTheseus/common"
+	"github.com/CortexFoundation/CortexTheseus/common/mclock"
 	"github.com/CortexFoundation/CortexTheseus/log"
 	"github.com/CortexFoundation/CortexTheseus/p2p"
 	"github.com/CortexFoundation/CortexTheseus/p2p/dnsdisc"
@@ -508,6 +509,8 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 			fs.wakeup(ctx, infohash, rawSize)
 		}()
 		if fs.config.Mode == params.LAZY && params.IsGood(infohash) {
+			start := mclock.Now()
+			log.Info("Downloading ... ...", "ih", infohash, "size", rawSize)
 			t := time.NewTimer(100 * time.Millisecond)
 			defer t.Stop()
 			for {
@@ -517,6 +520,8 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 						log.Debug("File downloading ... ...", "ih", infohash, "size", rawSize, "path", subpath, "err", err)
 						t.Reset(100 * time.Millisecond)
 					} else {
+						elapsed := time.Duration(mclock.Now()) - time.Duration(start)
+						log.Info("Downloaded", "ih", infohash, "size", rawSize, "elapsed", common.PrettyDuration(elapsed))
 						return ret, err
 					}
 				case <-ctx.Done():
