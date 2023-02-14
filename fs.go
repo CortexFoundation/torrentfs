@@ -260,7 +260,8 @@ func (fs *TorrentFS) listen() {
 		select {
 		case msg := <-fs.callback:
 			meta := msg.(*types.BitsFlow)
-			if meta.Request() > 0 || (params.IsGood(meta.InfoHash()) && fs.config.Mode != params.LAZY) {
+			//if meta.Request() > 0 || (params.IsGood(meta.InfoHash()) && fs.config.Mode != params.LAZY) {
+			if meta.Request() > 0 || params.IsGood(meta.InfoHash()) {
 				fs.download(context.Background(), meta.InfoHash(), meta.Request())
 			} else {
 				fs.ttlchan <- msg
@@ -501,7 +502,29 @@ func (fs *TorrentFS) wakeup(ctx context.Context, ih string, rawSize uint64) (boo
 func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSize uint64, subpath string) ([]byte, error) {
 	log.Debug("Get file with size", "ih", infohash, "size", rawSize, "path", subpath)
 	if ret, err := fs.storage().GetFile(ctx, infohash, subpath); err != nil {
-		fs.wakeup(ctx, infohash, rawSize)
+		fs.wg.Add(1)
+		go func() {
+			defer fs.wg.Done()
+			fs.wakeup(ctx, infohash, rawSize)
+		}()
+		if fs.config.Mode == params.LAZY && params.IsGood(infohash) {
+			t := time.NewTimer(100 * time.Millisecond)
+			defer t.Stop()
+			for {
+				select {
+				case <-t.C:
+					if ret, err := fs.storage().GetFile(ctx, infohash, subpath); err != nil {
+						log.Debug("File downloading ... ...", "ih", infohash, "size", rawSize, "path", subpath, "err", err)
+						t.Reset(100 * time.Millisecond)
+					} else {
+						return ret, err
+					}
+				case <-ctx.Done():
+					log.Warn("Timeout", "ih", infohash, "size", rawSize, "err", ctx.Err())
+					return nil, ctx.Err()
+				}
+			}
+		}
 		return nil, err
 	} else {
 		log.Debug("Get File directly", "ih", infohash, "size", rawSize, "path", subpath, "ret", len(ret))
