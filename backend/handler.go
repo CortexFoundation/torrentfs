@@ -910,7 +910,9 @@ func (tm *TorrentManager) pendingLoop() {
 
 							tm.kvdb.Set([]byte(SEED_PRE+t.infohash), b)
 						}
+						t.lock.Lock()
 						t.start = mclock.Now()
+						t.lock.Unlock()
 					} else {
 						log.Error("Meta info marshal failed", "ih", t.infohash, "err", err)
 						tm.Drop(t.infohash)
