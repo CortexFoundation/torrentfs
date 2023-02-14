@@ -909,8 +909,8 @@ func (tm *TorrentManager) pendingLoop() {
 							log.Info("Imported new seed", "ih", t.infohash, "request", common.StorageSize(t.Length()), "ts", common.StorageSize(len(b)), "good", params.IsGood(t.infohash), "elapsed", common.PrettyDuration(elapsed))
 
 							tm.kvdb.Set([]byte(SEED_PRE+t.infohash), b)
-							t.start = mclock.Now()
 						}
+						t.start = mclock.Now()
 					} else {
 						log.Error("Meta info marshal failed", "ih", t.infohash, "err", err)
 						tm.Drop(t.infohash)
