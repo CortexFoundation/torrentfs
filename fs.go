@@ -40,7 +40,7 @@ import (
 	"github.com/CortexFoundation/torrentfs/types"
 	"github.com/anacrolix/torrent/bencode"
 	"github.com/anacrolix/torrent/metainfo"
-	//mapset "github.com/deckarep/golang-set/v2"
+	mapset "github.com/deckarep/golang-set/v2"
 	//lru "github.com/hashicorp/golang-lru"
 	cp "github.com/otiai10/copy"
 
@@ -76,7 +76,7 @@ type TorrentFS struct {
 	closeAll chan struct{}
 	wg       sync.WaitGroup
 	once     sync.Once
-	//worm     mapset.Set[string]
+	worm     mapset.Set[string]
 
 	tunnel *ttlmap.Map
 
@@ -152,7 +152,7 @@ func New(config *params.Config, cache, compress, listen bool) (*TorrentFS, error
 	//inst.scoreTable = make(map[string]int)
 	//inst.seedingNotify = make(chan string, 32)
 
-	//inst.worm = mapset.NewSet[string]()
+	inst.worm = mapset.NewSet[string]()
 
 	inst.protocol = p2p.Protocol{
 		Name:    params.ProtocolName,
@@ -181,6 +181,7 @@ func New(config *params.Config, cache, compress, listen bool) (*TorrentFS, error
 					"sent":       inst.sent,
 				},
 				//"score": inst.scoreTable,
+				"worm": inst.worm,
 			}
 		},
 		PeerInfo: func(id enode.ID) any {
@@ -534,8 +535,16 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 		return nil, err
 	} else {
 		log.Debug("Get File directly", "ih", infohash, "size", rawSize, "path", subpath, "ret", len(ret))
-		// TODO t0 file found
+		if !params.IsGood(infohash) {
+			go fs.encounter(infohash)
+		}
 		return ret, nil
+	}
+}
+
+func (fs *TorrentFS) encounter(ih string) {
+	if !fs.worm.Contains(ih) {
+		fs.worm.Add(ih)
 	}
 }
 
