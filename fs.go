@@ -508,7 +508,8 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 			defer fs.wg.Done()
 			fs.wakeup(ctx, infohash, rawSize)
 		}()
-		if fs.config.Mode == params.LAZY && params.IsGood(infohash) {
+		//if fs.config.Mode == params.LAZY && params.IsGood(infohash) {
+		if params.IsGood(infohash) {
 			start := mclock.Now()
 			log.Info("Downloading ... ...", "ih", infohash, "size", rawSize)
 			t := time.NewTimer(100 * time.Millisecond)
