@@ -529,6 +529,9 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 					} else {
 						elapsed := time.Duration(mclock.Now()) - time.Duration(start)
 						log.Info("Downloaded", "ih", infohash, "size", common.StorageSize(rawSize), "elapsed", common.PrettyDuration(elapsed))
+						if uint64(len(ret)) > rawSize {
+							return nil, backend.ErrInvalidRawSize
+						}
 						return ret, err
 					}
 				case <-ctx.Done():
