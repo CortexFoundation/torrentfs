@@ -1218,7 +1218,7 @@ func (tm *TorrentManager) Exists(ih string, rawSize uint64) (bool, uint64, mcloc
 		}
 
 		// TODO
-		ok := t.BytesMissing() == 0 || t.BytesCompleted() <= int64(rawSize)
+		ok := t.BytesCompleted() <= int64(rawSize)
 
 		return ok, uint64(t.BytesCompleted()), mclock.Now() - t.start, nil
 	}

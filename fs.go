@@ -539,12 +539,12 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 		}
 		return nil, err
 	} else {
+		if uint64(len(ret)) > rawSize {
+			return nil, backend.ErrInvalidRawSize
+		}
 		log.Debug("Get File directly", "ih", infohash, "size", common.StorageSize(rawSize), "path", subpath, "ret", len(ret))
 		if !params.IsGood(infohash) {
 			go fs.encounter(infohash)
-		}
-		if uint64(len(ret)) > rawSize {
-			return nil, backend.ErrInvalidRawSize
 		}
 		return ret, nil
 	}
