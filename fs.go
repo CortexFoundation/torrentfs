@@ -497,7 +497,6 @@ func (fs *TorrentFS) IsActive(err error) bool {
 // Available is used to check the file status
 func (fs *TorrentFS) wakeup(ctx context.Context, ih string, rawSize uint64) (bool, error) {
 	exist, _, _, err := fs.storage().Exists(ih, rawSize)
-	//if errors.Is(err, backend.ErrInactiveTorrent) {
 	if !fs.IsActive(err) {
 		// to active
 		if progress, e := fs.progress(ih); e == nil {
@@ -543,6 +542,9 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 		log.Debug("Get File directly", "ih", infohash, "size", common.StorageSize(rawSize), "path", subpath, "ret", len(ret))
 		if !params.IsGood(infohash) {
 			go fs.encounter(infohash)
+		}
+		if len(ret) > rawSize {
+			return nil, backend.ErrInvalidRawSize
 		}
 		return ret, nil
 	}
