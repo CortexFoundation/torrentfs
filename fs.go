@@ -543,7 +543,7 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 		if !params.IsGood(infohash) {
 			go fs.encounter(infohash)
 		}
-		if len(ret) > rawSize {
+		if uint64(len(ret)) > rawSize {
 			return nil, backend.ErrInvalidRawSize
 		}
 		return ret, nil
