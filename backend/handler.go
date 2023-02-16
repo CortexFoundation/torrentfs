@@ -1206,7 +1206,7 @@ func (tm *TorrentManager) Exists(ih string, rawSize uint64) (bool, uint64, mcloc
 	if t := tm.getTorrent(ih); t == nil {
 		dir := filepath.Join(tm.DataDir, ih)
 		if _, err := os.Stat(dir); err == nil {
-			return true, 0, 0, nil
+			return true, 0, 0, ErrInactiveTorrent
 		}
 		return false, 0, 0, ErrInactiveTorrent
 	} else {

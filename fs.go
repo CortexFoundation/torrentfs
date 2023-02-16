@@ -490,15 +490,21 @@ func (fs *TorrentFS) broadcast(ih string, rawSize uint64) bool {
 	return true
 }*/
 
+func (fs *TorrentFS) IsActive(err error) bool {
+	return !errors.Is(err, backend.ErrInactiveTorrent)
+}
+
 // Available is used to check the file status
 func (fs *TorrentFS) wakeup(ctx context.Context, ih string, rawSize uint64) (bool, error) {
-	ret, _, _, err := fs.storage().Exists(ih, rawSize)
-	if errors.Is(err, backend.ErrInactiveTorrent) {
+	exist, _, _, err := fs.storage().Exists(ih, rawSize)
+	//if errors.Is(err, backend.ErrInactiveTorrent) {
+	if !fs.IsActive(err) {
+		// to active
 		if progress, e := fs.progress(ih); e == nil {
-			fs.bitsflow(ctx, ih, progress)
+			fs.bitsflow(ctx, ih, progress) // to be downloaded
 		}
 	}
-	return ret, err
+	return exist, err
 }
 
 func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSize uint64, subpath string) ([]byte, error) {
@@ -722,14 +728,14 @@ func (fs *TorrentFS) Drop(ih string) error {
 	return nil
 }
 
-// Download is used to download file with request
+// Download is used to download file with request, broadcast when not found locally
 func (fs *TorrentFS) download(ctx context.Context, ih string, request uint64) error {
 	ih = strings.ToLower(ih)
 	_, p, err := fs.chain().SetTorrentProgress(ih, request)
 	if err != nil {
 		return err
 	}
-	if exist, _, _, err := fs.storage().Exists(ih, request); !exist || err != nil {
+	if exist, _, _, _ := fs.storage().Exists(ih, request); !exist {
 		fs.wg.Add(1)
 		go func(ih string, p uint64) {
 			defer fs.wg.Done()
