@@ -502,7 +502,7 @@ func (fs *TorrentFS) wakeup(ctx context.Context, ih string, rawSize uint64) (boo
 }
 
 func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSize uint64, subpath string) ([]byte, error) {
-	log.Debug("Get file with size", "ih", infohash, "size", rawSize, "path", subpath)
+	log.Debug("Get file with size", "ih", infohash, "size", common.StorageSize(rawSize), "path", subpath)
 	if ret, err := fs.storage().GetFile(ctx, infohash, subpath); err != nil {
 		fs.wg.Add(1)
 		go func() {
@@ -512,29 +512,29 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 		//if fs.config.Mode == params.LAZY && params.IsGood(infohash) {
 		if params.IsGood(infohash) {
 			start := mclock.Now()
-			log.Info("Downloading ... ...", "ih", infohash, "size", rawSize)
-			t := time.NewTimer(100 * time.Millisecond)
+			log.Info("Downloading ... ...", "ih", infohash, "size", common.StorageSize(rawSize))
+			t := time.NewTimer(500 * time.Millisecond)
 			defer t.Stop()
 			for {
 				select {
 				case <-t.C:
 					if ret, err := fs.storage().GetFile(ctx, infohash, subpath); err != nil {
-						log.Debug("File downloading ... ...", "ih", infohash, "size", rawSize, "path", subpath, "err", err)
+						log.Debug("File downloading ... ...", "ih", infohash, "size", common.StorageSize(rawSize), "path", subpath, "err", err)
 						t.Reset(100 * time.Millisecond)
 					} else {
 						elapsed := time.Duration(mclock.Now()) - time.Duration(start)
-						log.Info("Downloaded", "ih", infohash, "size", rawSize, "elapsed", common.PrettyDuration(elapsed))
+						log.Info("Downloaded", "ih", infohash, "size", common.StorageSize(rawSize), "elapsed", common.PrettyDuration(elapsed))
 						return ret, err
 					}
 				case <-ctx.Done():
-					log.Warn("Timeout", "ih", infohash, "size", rawSize, "err", ctx.Err())
+					log.Warn("Timeout", "ih", infohash, "size", common.StorageSize(rawSize), "err", ctx.Err())
 					return nil, ctx.Err()
 				}
 			}
 		}
 		return nil, err
 	} else {
-		log.Debug("Get File directly", "ih", infohash, "size", rawSize, "path", subpath, "ret", len(ret))
+		log.Debug("Get File directly", "ih", infohash, "size", common.StorageSize(rawSize), "path", subpath, "ret", len(ret))
 		if !params.IsGood(infohash) {
 			go fs.encounter(infohash)
 		}
