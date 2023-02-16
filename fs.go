@@ -490,19 +490,24 @@ func (fs *TorrentFS) broadcast(ih string, rawSize uint64) bool {
 	return true
 }*/
 
+func (fs *TorrentFS) IsActive(err error) bool {
+	return !errors.Is(err, backend.ErrInactiveTorrent)
+}
+
 // Available is used to check the file status
 func (fs *TorrentFS) wakeup(ctx context.Context, ih string, rawSize uint64) (bool, error) {
-	ret, _, _, err := fs.storage().Available(ih, rawSize)
-	if errors.Is(err, backend.ErrInactiveTorrent) {
+	exist, _, _, err := fs.storage().Exists(ih, rawSize)
+	if !fs.IsActive(err) {
+		// to active
 		if progress, e := fs.progress(ih); e == nil {
-			fs.bitsflow(ctx, ih, progress)
+			fs.bitsflow(ctx, ih, progress) // to be downloaded
 		}
 	}
-	return ret, err
+	return exist, err
 }
 
 func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSize uint64, subpath string) ([]byte, error) {
-	log.Debug("Get file with size", "ih", infohash, "size", rawSize, "path", subpath)
+	log.Debug("Get file with size", "ih", infohash, "size", common.StorageSize(rawSize), "path", subpath)
 	if ret, err := fs.storage().GetFile(ctx, infohash, subpath); err != nil {
 		fs.wg.Add(1)
 		go func() {
@@ -512,29 +517,35 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 		//if fs.config.Mode == params.LAZY && params.IsGood(infohash) {
 		if params.IsGood(infohash) {
 			start := mclock.Now()
-			log.Info("Downloading ... ...", "ih", infohash, "size", rawSize)
-			t := time.NewTimer(100 * time.Millisecond)
+			log.Info("Downloading ... ...", "ih", infohash, "size", common.StorageSize(rawSize))
+			t := time.NewTimer(500 * time.Millisecond)
 			defer t.Stop()
 			for {
 				select {
 				case <-t.C:
 					if ret, err := fs.storage().GetFile(ctx, infohash, subpath); err != nil {
-						log.Debug("File downloading ... ...", "ih", infohash, "size", rawSize, "path", subpath, "err", err)
+						log.Debug("File downloading ... ...", "ih", infohash, "size", common.StorageSize(rawSize), "path", subpath, "err", err)
 						t.Reset(100 * time.Millisecond)
 					} else {
 						elapsed := time.Duration(mclock.Now()) - time.Duration(start)
-						log.Info("Downloaded", "ih", infohash, "size", rawSize, "elapsed", common.PrettyDuration(elapsed))
+						log.Info("Downloaded", "ih", infohash, "size", common.StorageSize(rawSize), "elapsed", common.PrettyDuration(elapsed))
+						if uint64(len(ret)) > rawSize {
+							return nil, backend.ErrInvalidRawSize
+						}
 						return ret, err
 					}
 				case <-ctx.Done():
-					log.Warn("Timeout", "ih", infohash, "size", rawSize, "err", ctx.Err())
+					log.Warn("Timeout", "ih", infohash, "size", common.StorageSize(rawSize), "err", ctx.Err())
 					return nil, ctx.Err()
 				}
 			}
 		}
 		return nil, err
 	} else {
-		log.Debug("Get File directly", "ih", infohash, "size", rawSize, "path", subpath, "ret", len(ret))
+		if uint64(len(ret)) > rawSize {
+			return nil, backend.ErrInvalidRawSize
+		}
+		log.Debug("Get File directly", "ih", infohash, "size", common.StorageSize(rawSize), "path", subpath, "ret", len(ret))
 		if !params.IsGood(infohash) {
 			go fs.encounter(infohash)
 		}
@@ -722,23 +733,23 @@ func (fs *TorrentFS) Drop(ih string) error {
 	return nil
 }
 
-// Download is used to download file with request
+// Download is used to download file with request, broadcast when not found locally
 func (fs *TorrentFS) download(ctx context.Context, ih string, request uint64) error {
 	ih = strings.ToLower(ih)
 	_, p, err := fs.chain().SetTorrentProgress(ih, request)
 	if err != nil {
 		return err
 	}
-
-	fs.wg.Add(1)
-	go func(ih string, p uint64) {
-		defer fs.wg.Done()
-		s := fs.broadcast(ih, p)
-		if s {
-			log.Debug("Nas "+params.ProtocolVersionStr+" tunnel", "ih", ih, "request", common.StorageSize(float64(p)), "queue", fs.tunnel.Len(), "peers", len(fs.peers))
-		}
-	}(ih, p)
-
+	if exist, _, _, _ := fs.storage().Exists(ih, request); !exist {
+		fs.wg.Add(1)
+		go func(ih string, p uint64) {
+			defer fs.wg.Done()
+			s := fs.broadcast(ih, p)
+			if s {
+				log.Debug("Nas "+params.ProtocolVersionStr+" tunnel", "ih", ih, "request", common.StorageSize(float64(p)), "queue", fs.tunnel.Len(), "peers", len(fs.peers))
+			}
+		}(ih, p)
+	}
 	// local search
 	if err := fs.storage().Search(ctx, ih, p); err != nil {
 		return err

@@ -1191,7 +1191,7 @@ func (tm *TorrentManager) Drop(ih string) error {
 		return nil
 	}
 */
-func (tm *TorrentManager) Available(ih string, rawSize uint64) (bool, uint64, mclock.AbsTime, error) {
+func (tm *TorrentManager) Exists(ih string, rawSize uint64) (bool, uint64, mclock.AbsTime, error) {
 	availableMeter.Mark(1)
 	//if rawSize <= 0 {
 	//	return false, 0, 0, errors.New("raw size is zero or negative")
@@ -1204,6 +1204,10 @@ func (tm *TorrentManager) Available(ih string, rawSize uint64) (bool, uint64, mc
 	ih = strings.TrimPrefix(strings.ToLower(ih), common.Prefix)
 
 	if t := tm.getTorrent(ih); t == nil {
+		dir := filepath.Join(tm.DataDir, ih)
+		if _, err := os.Stat(dir); err == nil {
+			return true, 0, 0, ErrInactiveTorrent
+		}
 		return false, 0, 0, ErrInactiveTorrent
 	} else {
 		if !t.Ready() {
