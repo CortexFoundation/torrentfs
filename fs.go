@@ -516,10 +516,10 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 	log.Debug("Get file with size", "ih", infohash, "size", common.StorageSize(rawSize), "path", subpath)
 	if ret, err := fs.storage().GetFile(ctx, infohash, subpath); err != nil {
 		fs.wg.Add(1)
-		go func(ctx context.Context, infohash string) {
+		go func(ctx context.Context, ih string) {
 			defer fs.wg.Done()
 			//fs.wakeup(ctx, infohash, rawSize)
-			fs.wakeup(ctx, infohash)
+			fs.wakeup(ctx, ih)
 		}(ctx, infohash)
 		//if fs.config.Mode == params.LAZY && params.IsGood(infohash) {
 		if params.IsGood(infohash) {
