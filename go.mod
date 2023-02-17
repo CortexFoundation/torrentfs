@@ -23,7 +23,7 @@ require (
 	github.com/hashicorp/golang-lru v0.5.5-0.20221011183528-d4900dc688bf
 	github.com/otiai10/copy v1.9.0
 	github.com/prometheus/client_golang v1.14.0
-	github.com/ucwong/filecache v1.0.2
+	github.com/ucwong/filecache v1.0.3-0.20230217000133-fcd6fd01cb2d
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
 	github.com/ucwong/golang-kv v1.0.14
 	github.com/urfave/cli/v2 v2.23.6
