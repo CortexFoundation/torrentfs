@@ -501,10 +501,11 @@ func (fs *TorrentFS) wakeup(ctx context.Context, ih string) {
 	//	if !fs.IsActive(err) {
 	if p, e := fs.progress(ih); e == nil {
 		//fs.bitsflow(ctx, ih, p) // to be downloaded
-		if err := fs.storage().Search(ctx, ih, p); err != nil {
+		//if err := fs.storage().Search(ctx, ih, p); err != nil {
 			//return err
-			log.Warn("Wake up failed", "ih", ih)
-		}
+		//	log.Warn("Wake up failed", "ih", ih)
+		//}
+		fs.storage().Search(ctx, ih, p)
 	}
 	//	}
 	//
@@ -515,11 +516,11 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 	log.Debug("Get file with size", "ih", infohash, "size", common.StorageSize(rawSize), "path", subpath)
 	if ret, err := fs.storage().GetFile(ctx, infohash, subpath); err != nil {
 		fs.wg.Add(1)
-		go func() {
+		go func(ctx context.Context, infohash string) {
 			defer fs.wg.Done()
 			//fs.wakeup(ctx, infohash, rawSize)
 			fs.wakeup(ctx, infohash)
-		}()
+		}(ctx, infohash)
 		//if fs.config.Mode == params.LAZY && params.IsGood(infohash) {
 		if params.IsGood(infohash) {
 			start := mclock.Now()
