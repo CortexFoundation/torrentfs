@@ -502,7 +502,7 @@ func (fs *TorrentFS) wakeup(ctx context.Context, ih string) {
 	if p, e := fs.progress(ih); e == nil {
 		//fs.bitsflow(ctx, ih, p) // to be downloaded
 		//if err := fs.storage().Search(ctx, ih, p); err != nil {
-			//return err
+		//return err
 		//	log.Warn("Wake up failed", "ih", ih)
 		//}
 		fs.storage().Search(ctx, ih, p)
