@@ -524,7 +524,7 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 		//if fs.config.Mode == params.LAZY && params.IsGood(infohash) {
 		if params.IsGood(infohash) {
 			start := mclock.Now()
-			log.Info("Downloading ... ...", "ih", infohash, "size", common.StorageSize(rawSize))
+			log.Info("Downloading ... ...", "ih", infohash, "size", common.StorageSize(rawSize), "neighbors", len(fs.peers))
 			t := time.NewTimer(500 * time.Millisecond)
 			defer t.Stop()
 			for {
@@ -535,7 +535,7 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 						t.Reset(100 * time.Millisecond)
 					} else {
 						elapsed := time.Duration(mclock.Now()) - time.Duration(start)
-						log.Info("Downloaded", "ih", infohash, "size", common.StorageSize(rawSize), "elapsed", common.PrettyDuration(elapsed))
+						log.Info("Downloaded", "ih", infohash, "size", common.StorageSize(rawSize), "neighbors", len(fs.peers), "elapsed", common.PrettyDuration(elapsed))
 						if uint64(len(ret)) > rawSize {
 							return nil, backend.ErrInvalidRawSize
 						}
