@@ -21,6 +21,7 @@ require (
 	github.com/golang/snappy v0.0.5-0.20220116011046-fa5810519dcb
 	github.com/google/uuid v1.3.0
 	github.com/hashicorp/golang-lru v0.5.5-0.20221011183528-d4900dc688bf
+	github.com/jedib0t/go-pretty/v6 v6.4.4
 	github.com/otiai10/copy v1.9.0
 	github.com/prometheus/client_golang v1.14.0
 	github.com/ucwong/filecache v1.0.3-0.20230217000133-fcd6fd01cb2d
@@ -31,6 +32,11 @@ require (
 	golang.org/x/time v0.3.0
 	golang.org/x/tools v0.4.0
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2
+)
+
+require (
+	github.com/mattn/go-runewidth v0.0.14 // indirect
+	github.com/rivo/uniseg v0.4.2 // indirect
 )
 
 require (

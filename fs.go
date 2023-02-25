@@ -416,10 +416,11 @@ func (tfs *TorrentFS) Start(srvr *p2p.Server) (err error) {
 	}
 
 	// Figure out a max peers count based on the server limits
-	maxPeers := srvr.MaxPeers
-	tfs.net = srvr
+	if srvr != nil {
+		tfs.net = srvr
+	}
 
-	log.Info("Started nas", "config", tfs, "mode", tfs.config.Mode, "version", params.ProtocolVersion, "queue", tfs.tunnel.Len(), "peers", len(tfs.peers), "maxpeers", maxPeers, "count", tfs.net.PeerCount())
+	log.Info("Started nas", "config", tfs, "mode", tfs.config.Mode, "version", params.ProtocolVersion, "queue", tfs.tunnel.Len(), "peers", len(tfs.peers))
 
 	err = tfs.monitor.Start()
 
