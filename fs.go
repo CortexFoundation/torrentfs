@@ -82,6 +82,8 @@ type TorrentFS struct {
 
 	callback chan any
 	ttlchan  chan any
+
+	net *p2p.Server
 }
 
 func (t *TorrentFS) storage() *backend.TorrentManager {
@@ -415,8 +417,9 @@ func (tfs *TorrentFS) Start(srvr *p2p.Server) (err error) {
 
 	// Figure out a max peers count based on the server limits
 	maxPeers := srvr.MaxPeers
+	tfs.net = srvr
 
-	log.Info("Started nas", "config", tfs, "mode", tfs.config.Mode, "version", params.ProtocolVersion, "queue", tfs.tunnel.Len(), "peers", len(tfs.peers), "maxpeers", maxPeers)
+	log.Info("Started nas", "config", tfs, "mode", tfs.config.Mode, "version", params.ProtocolVersion, "queue", tfs.tunnel.Len(), "peers", len(tfs.peers), "maxpeers", maxPeers, "count", tfs.net.PeerCount())
 
 	err = tfs.monitor.Start()
 
