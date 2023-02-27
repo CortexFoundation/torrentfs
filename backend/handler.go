@@ -355,6 +355,7 @@ func (tm *TorrentManager) Close() error {
 	//}
 
 	if tm.kvdb != nil {
+		log.Info("Nas engine close", "engine", tm.kvdb.Name())
 		tm.kvdb.Close()
 	}
 	//if tm.hotCache != nil {
@@ -706,7 +707,24 @@ func NewTorrentManager(config *params.Config, fsid uint64, cache, compress bool)
 		slot:           int(fsid % bucket),
 		localSeedFiles: make(map[string]bool),
 		//seedingNotify:  notify,
-		kvdb: kv.Badger(config.DataDir),
+		//kvdb: kv.Badger(config.DataDir),
+	}
+
+	switch config.Engine {
+	case "pebble":
+		log.Info("Use pebble as nas db engine")
+		torrentManager.kvdb = kv.Pebble(config.DataDir)
+	case "leveldb":
+		log.Info("Use leveldb as nas db engine")
+		torrentManager.kvdb = kv.LevelDB(config.DataDir)
+	case "badger":
+		log.Info("Use badger as nas db engine")
+		torrentManager.kvdb = kv.Badger(config.DataDir)
+	case "bolt":
+		log.Info("Use bolt as nas db engine")
+		torrentManager.kvdb = kv.Bolt(config.DataDir)
+	default:
+		panic("Invalid nas engine " + config.Engine)
 	}
 
 	if cache {
