@@ -56,6 +56,8 @@ type TorrentFS struct {
 	protocol p2p.Protocol // Protocol description and parameters
 	config   *params.Config
 	monitor  *monitor.Monitor
+	handler  *backend.TorrentManager
+	db       *backend.ChainDB
 
 	peerMu sync.RWMutex     // Mutex to sync the active peer set
 	peers  map[string]*Peer // Set of currently active peers
@@ -87,11 +89,11 @@ type TorrentFS struct {
 }
 
 func (t *TorrentFS) storage() *backend.TorrentManager {
-	return t.monitor.DL()
+	return t.handler
 }
 
 func (t *TorrentFS) chain() *backend.ChainDB {
-	return t.monitor.DB()
+	return t.db
 }
 
 var inst *TorrentFS = nil
@@ -133,15 +135,19 @@ func New(config *params.Config, cache, compress, listen bool) (*TorrentFS, error
 	log.Info("Fs manager initialized")
 
 	_callback := make(chan any, 1)
-	monitor, err := monitor.New(config, cache, compress, listen, db, handler, _callback)
+	monitor, err := monitor.New(config, cache, compress, listen, db, _callback)
 	if err != nil {
 		log.Error("Failed create monitor", "err", err)
 		return nil, err
 	}
 
+	log.Info("Fs monitor initialized")
+
 	inst = &TorrentFS{
 		config:  config,
 		monitor: monitor,
+		handler: handler,
+		db:      db,
 		peers:   make(map[string]*Peer),
 		//queryChan: make(chan Query, 128),
 	}
@@ -239,7 +245,9 @@ func New(config *params.Config, cache, compress, listen bool) (*TorrentFS, error
 	go inst.listen()
 	//inst.wg.Add(1)
 	//go inst.process()
-	inst.init()
+	//inst.init()
+
+	log.Info("Fs instance created")
 
 	return inst, nil
 }
@@ -257,6 +265,7 @@ func New(config *params.Config, cache, compress, listen bool) (*TorrentFS, error
 }*/
 
 func (fs *TorrentFS) listen() {
+	log.Info("Bitsflow listener starting ...")
 	defer fs.wg.Done()
 	ttl := time.NewTimer(3 * time.Second)
 	defer ttl.Stop()
@@ -410,6 +419,7 @@ func (fs *TorrentFS) Version() uint {
 // Start starts the data collection thread and the listening server of the dashboard.
 // Implements the node.Service interface.
 func (tfs *TorrentFS) Start(srvr *p2p.Server) (err error) {
+	log.Info("Fs server starting ... ...")
 	if tfs == nil || tfs.monitor == nil {
 		log.Warn("Storage fs init failed", "fs", tfs)
 		return
@@ -422,7 +432,14 @@ func (tfs *TorrentFS) Start(srvr *p2p.Server) (err error) {
 
 	log.Info("Started nas", "config", tfs, "mode", tfs.config.Mode, "version", params.ProtocolVersion, "queue", tfs.tunnel.Len(), "peers", len(tfs.peers))
 
+	err = tfs.handler.Start()
+	if err != nil {
+		return
+	}
+
 	err = tfs.monitor.Start()
+
+	tfs.init()
 
 	return
 }
@@ -430,6 +447,7 @@ func (tfs *TorrentFS) Start(srvr *p2p.Server) (err error) {
 func (fs *TorrentFS) init() {
 	if fs.config.Mode != params.LAZY {
 		checkpoint := fs.chain().GetRoot(395964)
+		log.Info("Checkpoint loaded")
 		if checkpoint == nil {
 			for k, ok := range params.ColaFiles {
 				if ok {
@@ -438,6 +456,8 @@ func (fs *TorrentFS) init() {
 			}
 		}
 	}
+
+	log.Info("Init finished")
 }
 
 // download and pub
@@ -459,9 +479,12 @@ func (tfs *TorrentFS) Stop() error {
 		return errors.New("fs has been stopped")
 	}
 
-	tfs.monitor.Stop()
-
 	tfs.once.Do(func() {
+		log.Info("Fs client listener synchronizing closing")
+		tfs.handler.Close()
+		tfs.db.Close()
+
+		tfs.monitor.Stop()
 		close(tfs.closeAll)
 	})
 

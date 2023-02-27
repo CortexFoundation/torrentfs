@@ -89,7 +89,7 @@ func run(conf *Config) error {
 		log.Error("err", "e", err)
 		return err
 	}
-	//fs.Start(nil)
+	fs.Start(nil)
 	defer fs.Stop()
 
 	conf.tfs = fs
