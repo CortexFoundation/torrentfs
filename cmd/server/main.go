@@ -18,10 +18,11 @@ import (
 )
 
 type Config struct {
-	tfs  *t.TorrentFS
-	dir  string
-	port string
-	db   kv.Bucket
+	tfs    *t.TorrentFS
+	dir    string
+	port   string
+	engine string
+	db     kv.Bucket
 }
 
 var (
@@ -44,14 +45,22 @@ func main() {
 		Value: "7882",
 	}
 
+	EngineFlag := cli.StringFlag{
+		Name:  "engine",
+		Usage: "db engine",
+		Value: "badger",
+	}
+
 	app.Flags = []cli.Flag{
 		&StorageFlag,
 		&PortFlag,
+		&EngineFlag,
 	}
 
 	app.Action = func(ctx *cli.Context) error {
 		conf.dir = ctx.String(StorageFlag.Name)
 		conf.port = ctx.String(PortFlag.Name)
+		conf.engine = ctx.String(EngineFlag.Name)
 
 		err := run(&conf)
 		return err
@@ -81,6 +90,7 @@ func run(conf *Config) error {
 	config.Server = true
 	config.Wormhole = false
 	config.Quiet = false
+	config.Engine = conf.engine
 
 	//config.DisableUTP = false
 

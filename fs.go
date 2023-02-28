@@ -96,7 +96,10 @@ func (t *TorrentFS) chain() *backend.ChainDB {
 	return t.db
 }
 
-var inst *TorrentFS = nil
+var (
+	inst *TorrentFS = nil
+	mut  sync.RWMutex
+)
 
 func GetStorage() CortexStorage {
 	mut.RLock()
@@ -108,8 +111,6 @@ func GetStorage() CortexStorage {
 	}
 	return inst //GetTorrentInstance()
 }
-
-var mut sync.RWMutex
 
 // New creates a new torrentfs instance with the given configuration.
 func New(config *params.Config, cache, compress, listen bool) (*TorrentFS, error) {
