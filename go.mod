@@ -26,7 +26,7 @@ require (
 	github.com/prometheus/client_golang v1.14.0
 	github.com/ucwong/filecache v1.0.3
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
-	github.com/ucwong/golang-kv v1.0.15-0.20230227233304-2409f019b366
+	github.com/ucwong/golang-kv v1.0.15
 	github.com/urfave/cli/v2 v2.23.6
 	go.etcd.io/bbolt v1.3.7-0.20230227222518-1273ac779e75
 	golang.org/x/time v0.3.0
