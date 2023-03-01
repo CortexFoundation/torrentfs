@@ -475,10 +475,10 @@ func (fs *TorrentFS) bitsflow(ctx context.Context, ih string, size uint64) error
 // Stop stops the data collection thread and the connection listener of the dashboard.
 // Implements the node.Service interface.
 func (tfs *TorrentFS) Stop() error {
-	//if tfs == nil || tfs.monitor == nil {
-	//	log.Info("Cortex fs engine is already stopped")
-	//	return errors.New("fs has been stopped")
-	//}
+	if tfs == nil {
+		log.Info("Cortex fs engine is already stopped")
+		return errors.New("fs has been stopped")
+	}
 
 	tfs.once.Do(func() {
 		log.Info("Fs client listener synchronizing closing")
