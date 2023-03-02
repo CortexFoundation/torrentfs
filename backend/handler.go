@@ -113,9 +113,9 @@ type TorrentManager struct {
 	activeTorrents  map[string]*Torrent
 	pendingTorrents map[string]*Torrent
 	//maxSeedTask         int
-	maxEstablishedConns int
-	trackers            [][]string
-	globalTrackers      [][]string
+	//maxEstablishedConns int
+	trackers       [][]string
+	globalTrackers [][]string
 	//boostFetcher        *BoostDataFetcher
 	DataDir      string
 	TmpDataDir   string
@@ -269,13 +269,13 @@ func (tm *TorrentManager) blockCaculate(value int64) int64 {
 
 func (tm *TorrentManager) register(t *torrent.Torrent, requested int64, status int, ih string) *Torrent {
 	tt := &Torrent{
-		Torrent:             t,
-		maxEstablishedConns: tm.maxEstablishedConns,
-		minEstablishedConns: 1,
-		currentConns:        tm.maxEstablishedConns,
-		bytesRequested:      requested,
-		bytesLimitation:     tm.getLimitation(requested),
-		bytesCompleted:      0,
+		Torrent: t,
+		//maxEstablishedConns: tm.maxEstablishedConns,
+		//minEstablishedConns: 1,
+		//currentConns:        tm.maxEstablishedConns,
+		bytesRequested:  requested,
+		bytesLimitation: tm.getLimitation(requested),
+		bytesCompleted:  0,
 		//bytesMissing:        0,
 		status:   status,
 		infohash: ih,
@@ -688,9 +688,9 @@ func NewTorrentManager(config *params.Config, fsid uint64, cache, compress bool)
 		activeTorrents:  make(map[string]*Torrent),
 		//bytes:               make(map[metainfo.Hash]int64),
 		//maxSeedTask:         config.MaxSeedingNum,
-		maxEstablishedConns: cfg.EstablishedConnsPerTorrent,
-		DataDir:             config.DataDir,
-		TmpDataDir:          tmpFilePath,
+		//maxEstablishedConns: cfg.EstablishedConnsPerTorrent,
+		DataDir:    config.DataDir,
+		TmpDataDir: tmpFilePath,
 		//boostFetcher:        NewBoostDataFetcher(config.BoostNodes),
 		closeAll: make(chan struct{}),
 		//initCh:              make(chan struct{}),
