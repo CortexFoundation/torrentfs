@@ -94,7 +94,7 @@ func ScaleBar(from, to, sum int) string {
 		} else if i < f {
 			bar = bar + " "
 		} else {
-			bar = bar + "."
+			bar = bar + ">"
 		}
 	}
 
