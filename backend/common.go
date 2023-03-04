@@ -76,6 +76,9 @@ const (
 )
 
 func ScaleBar(from, to, sum int) string {
+	if from > to || to > sum || from > sum {
+		return ""
+	}
 	if sum < ScaleBarLen {
 		from = from * ScaleBarLen / sum
 		to = to * ScaleBarLen / sum
@@ -98,7 +101,10 @@ func ScaleBar(from, to, sum int) string {
 		}
 	}
 
-	return "[ " + bar + " ]"
+	prog := float64((to-from)*100) / float64(sum)
+	ff := strconv.FormatFloat(prog, 'f', 2, 64)
+
+	return "[ " + bar + " ] " + ff + "% "
 }
 
 func max(as ...int64) int64 {
