@@ -586,7 +586,7 @@ func (tm *TorrentManager) updateInfoHash(t *Torrent, bytesRequested int64) {
 			//t.bytesLimitation = tm.getLimitation(bytesRequested)
 			t.lock.Unlock()
 		}
-	} else {
+	} else if t.cited < 10 {
 		// call seeding t
 		atomic.AddInt64(&t.cited, 1)
 	}
