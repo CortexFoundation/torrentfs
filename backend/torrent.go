@@ -47,7 +47,7 @@ type Torrent struct {
 	//currentConns        int
 	bytesRequested int64
 	//bytesLimitation int64
-	bytesCompleted int64
+	//bytesCompleted int64
 	//bytesMissing        int64
 	status   int
 	infohash string
