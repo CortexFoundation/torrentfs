@@ -585,6 +585,10 @@ func (tm *TorrentManager) updateInfoHash(t *Torrent, bytesRequested int64) {
 			t.bytesRequested = bytesRequested
 			//t.bytesLimitation = tm.getLimitation(bytesRequested)
 			t.lock.Unlock()
+
+			if t.status != torrentPending {
+				t.Run(tm.slot)
+			}
 		}
 	} else if t.cited < 10 {
 		// call seeding t
@@ -1059,7 +1063,7 @@ func (tm *TorrentManager) activeLoop() {
 					continue
 				}
 
-				if t.bytesCompleted < t.bytesRequested { //&& !t.isBoosting {
+				if t.bytesCompleted < t.bytesRequested {
 					t.Run(tm.slot)
 				}
 			}

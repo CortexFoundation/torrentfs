@@ -173,6 +173,11 @@ func (t *Torrent) Run(slot int) {
 	t.lock.Lock()
 	defer t.lock.Unlock()
 
+	// Make sure the torrent info exists
+	if t.Torrent.Info() == nil {
+		return
+	}
+
 	limitPieces := int((t.bytesRequested*int64(t.Torrent.NumPieces()) + t.Length() - 1) / t.Length())
 	if limitPieces > t.Torrent.NumPieces() {
 		limitPieces = t.Torrent.NumPieces()
