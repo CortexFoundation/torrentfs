@@ -1061,7 +1061,7 @@ func (tm *TorrentManager) activeLoop() {
 				//}
 
 				if t.BytesMissing() == 0 {
-					go tm.finish(ih, t)
+					tm.finish(ih, t)
 					continue
 				}
 
