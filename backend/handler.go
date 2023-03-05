@@ -275,7 +275,7 @@ func (tm *TorrentManager) register(t *torrent.Torrent, requested int64, status i
 		//currentConns:        tm.maxEstablishedConns,
 		bytesRequested: requested,
 		//bytesLimitation: tm.getLimitation(requested),
-		bytesCompleted: 0,
+		//bytesCompleted: 0,
 		//bytesMissing:        0,
 		status:   status,
 		infohash: ih,
@@ -578,15 +578,19 @@ func (tm *TorrentManager) GlobalTrackers() [][]string {
 func (tm *TorrentManager) updateInfoHash(t *Torrent, bytesRequested int64) {
 	if t.status != torrentSeeding {
 		if t.bytesRequested < bytesRequested {
-			if bytesRequested > t.Length() {
-				bytesRequested = t.Length()
-			}
+			//if bytesRequested > t.Length() {
+			//	bytesRequested = t.Length()
+			//}
 			t.lock.Lock()
 			t.bytesRequested = bytesRequested
 			//t.bytesLimitation = tm.getLimitation(bytesRequested)
 			t.lock.Unlock()
+
+			if t.status != torrentPending {
+				t.Run(tm.slot)
+			}
 		}
-	} else {
+	} else if t.cited < 10 {
 		// call seeding t
 		atomic.AddInt64(&t.cited, 1)
 	}
@@ -977,19 +981,21 @@ func (tm *TorrentManager) finish(ih string, t *Torrent) {
 	t.lock.Lock()
 	defer t.lock.Unlock()
 	if _, err := os.Stat(filepath.Join(tm.DataDir, ih)); err == nil {
-		tm.seedingChan <- t
 		tm.active_lock.Lock()
 		delete(tm.activeTorrents, ih)
 		tm.active_lock.Unlock()
+
+		tm.seedingChan <- t
 	} else {
 		if err := os.Symlink(
 			filepath.Join(params.DefaultTmpPath, ih),
 			filepath.Join(tm.DataDir, ih),
 		); err == nil {
-			tm.seedingChan <- t
 			tm.active_lock.Lock()
 			delete(tm.activeTorrents, ih)
 			tm.active_lock.Unlock()
+
+			tm.seedingChan <- t
 		}
 	}
 }
@@ -1050,16 +1056,17 @@ func (tm *TorrentManager) activeLoop() {
 			go tm.updateGlobalTrackers()
 		case <-timer.C:
 			for ih, t := range tm.activeTorrents {
-				if t.BytesCompleted() > t.bytesCompleted {
-					t.bytesCompleted = t.BytesCompleted()
-				}
+				//if t.BytesCompleted() > t.bytesCompleted {
+				//	t.bytesCompleted = t.BytesCompleted()
+				//}
 
 				if t.BytesMissing() == 0 {
 					tm.finish(ih, t)
 					continue
 				}
 
-				if t.bytesCompleted < t.bytesRequested { //&& !t.isBoosting {
+				//if t.bytesCompleted < t.bytesRequested {
+				if t.BytesCompleted() < t.bytesRequested {
 					t.Run(tm.slot)
 				}
 			}

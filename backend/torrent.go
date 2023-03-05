@@ -47,7 +47,7 @@ type Torrent struct {
 	//currentConns        int
 	bytesRequested int64
 	//bytesLimitation int64
-	bytesCompleted int64
+	//bytesCompleted int64
 	//bytesMissing        int64
 	status   int
 	infohash string
@@ -173,6 +173,11 @@ func (t *Torrent) Run(slot int) {
 	t.lock.Lock()
 	defer t.lock.Unlock()
 
+	// Make sure the torrent info exists
+	if t.Torrent.Info() == nil {
+		return
+	}
+
 	limitPieces := int((t.bytesRequested*int64(t.Torrent.NumPieces()) + t.Length() - 1) / t.Length())
 	if limitPieces > t.Torrent.NumPieces() {
 		limitPieces = t.Torrent.NumPieces()
@@ -220,7 +225,7 @@ func (t *Torrent) download(p, slot int) {
 	}
 
 	e = s + p
-	log.Info("Donwloaded pieces "+ScaleBar(s, e, t.Torrent.NumPieces()), "ih", t.Torrent.InfoHash(), "slot", slot, "s", s, "e", e, "p", p, "total", t.Torrent.NumPieces())
+	log.Info("Pieces "+ScaleBar(s, e, t.Torrent.NumPieces()), "ih", t.Torrent.InfoHash(), "slot", slot, "s", s, "e", e, "p", p, "total", t.Torrent.NumPieces())
 	go t.Torrent.DownloadPieces(s, e)
 }
 
