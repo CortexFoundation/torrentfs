@@ -76,6 +76,10 @@ func NewTorrent(t *torrent.Torrent, requested int64, ih string, path string) *To
 	}
 }
 
+func (t *Torrent) Birth() mclock.AbsTime {
+	return t.start
+}
+
 /*func (t *Torrent) BytesLeft() int64 {
 	if t.bytesRequested < t.bytesCompleted {
 		return 0
@@ -101,6 +105,16 @@ func (t *Torrent) CitedInc() {
 
 func (t *Torrent) CitedDec() {
 	atomic.AddInt32(&t.cited, -1)
+}
+
+func (t *Torrent) BytesRequested() int64 {
+	return t.bytesRequested
+}
+
+func (t *Torrent) SetBytesRequested(bytesRequested int64) {
+	t.lock.Lock()
+	defer t.lock.Unlock()
+	t.bytesRequested = bytesRequested
 }
 
 func (t *Torrent) Ready() bool {
