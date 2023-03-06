@@ -987,8 +987,8 @@ func (tm *TorrentManager) pendingLoop() {
 }
 
 func (tm *TorrentManager) finish(ih string, t *Torrent) {
-	t.lock.Lock()
-	defer t.lock.Unlock()
+	t.Lock()
+	defer t.Unlock()
 	if _, err := os.Stat(filepath.Join(tm.DataDir, ih)); err == nil {
 		tm.active_lock.Lock()
 		delete(tm.activeTorrents, ih)
@@ -1249,8 +1249,8 @@ func (tm *TorrentManager) GetFile(ctx context.Context, infohash, subpath string)
 		}
 
 		// Data protection when torrent is active
-		t.lock.RLock()
-		defer t.lock.RUnlock()
+		t.RLock()
+		defer t.RUnlock()
 
 	}
 

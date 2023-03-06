@@ -80,6 +80,22 @@ func (t *Torrent) Birth() mclock.AbsTime {
 	return t.start
 }
 
+func (t *Torrent) Lock() {
+	t.lock.Lock()
+}
+
+func (t *Torrent) Unlock() {
+	t.lock.Unlock()
+}
+
+func (t *Torrent) RLock() {
+	t.lock.RLock()
+}
+
+func (t *Torrent) RUnlock() {
+	t.lock.RUnlock()
+}
+
 /*func (t *Torrent) BytesLeft() int64 {
 	if t.bytesRequested < t.bytesCompleted {
 		return 0
