@@ -1074,7 +1074,7 @@ func (tm *TorrentManager) activeLoop() {
 					continue
 				}
 
-				if t.BytesCompleted() < t.BytesRequested() {
+				if t.Torrent.BytesCompleted() < t.BytesRequested() {
 					t.Run(tm.slot)
 				}
 			}
@@ -1215,13 +1215,13 @@ func (tm *TorrentManager) Exists(ih string, rawSize uint64) (bool, uint64, mcloc
 			if t.Torrent.Info() == nil {
 				return false, 0, 0, ErrTorrentNotFound
 			}
-			return false, uint64(t.BytesCompleted()), mclock.Now() - t.Birth(), ErrUnfinished
+			return false, uint64(t.Torrent.BytesCompleted()), mclock.Now() - t.Birth(), ErrUnfinished
 		}
 
 		// TODO
-		ok := t.BytesCompleted() <= int64(rawSize)
+		ok := t.Torrent.BytesCompleted() <= int64(rawSize)
 
-		return ok, uint64(t.BytesCompleted()), mclock.Now() - t.Birth(), nil
+		return ok, uint64(t.Torrent.BytesCompleted()), mclock.Now() - t.Birth(), nil
 	}
 }
 
