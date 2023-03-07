@@ -349,6 +349,9 @@ func (tm *TorrentManager) removeTorrent(t *Torrent) {
 }
 
 func (tm *TorrentManager) Close() error {
+	tm.lock.Lock()
+	defer tm.lock.Unlock()
+
 	log.Info("Current running torrents", "size", len(tm.torrents))
 	for _, t := range tm.torrents {
 		t.Stop()
