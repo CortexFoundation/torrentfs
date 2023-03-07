@@ -73,7 +73,7 @@ func ProgressBar(x, y int64, desc string) string {
 	}
 
 	prog := float64(x*100) / float64(y)
-	f := strconv.FormatFloat(prog, 'f', 4, 64)
+	f := strconv.FormatFloat(prog, 'f', 2, 64)
 	buffer.WriteString(" ] ")
 	buffer.WriteString(f)
 	buffer.WriteString("%")
