@@ -317,6 +317,9 @@ func (t *Torrent) Pending() bool {
 }
 
 func (t *Torrent) Stop() {
+	t.Lock()
+	defer t.Unlock()
+
 	t.wg.Wait()
 	t.Torrent.Drop()
 
