@@ -298,7 +298,7 @@ func (t *Torrent) download(p, slot int) {
 	go func() {
 		defer t.wg.Done()
 		t.Torrent.DownloadPieces(s, e)
-		close(ex)
+		ex <- struct{}{}
 	}()
 
 	select {
