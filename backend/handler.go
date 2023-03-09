@@ -976,10 +976,11 @@ func (tm *TorrentManager) pendingLoop() {
 							t.SetBytesRequested(t.Length())
 						}
 					}
-					tm.activeChan <- t
 					tm.pending_lock.Lock()
 					delete(tm.pendingTorrents, t.InfoHash())
 					tm.pending_lock.Unlock()
+
+					tm.activeChan <- t
 				case <-t.Closed():
 				case <-tm.closeAll:
 				case <-ctx.Done():
