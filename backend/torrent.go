@@ -152,6 +152,8 @@ func (t *Torrent) Ready() bool {
 }
 
 func (t *Torrent) WriteTorrent() error {
+	t.Lock()
+	defer t.Unlock()
 	if _, err := os.Stat(filepath.Join(t.filepath, TORRENT)); err == nil {
 		//t.Pause()
 		return nil
