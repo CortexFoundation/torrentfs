@@ -130,14 +130,14 @@ func (t *Torrent) BytesRequested() int64 {
 }
 
 func (t *Torrent) SetBytesRequested(bytesRequested int64) {
-	t.lock.Lock()
-	defer t.lock.Unlock()
+	t.Lock()
+	defer t.Unlock()
 	t.bytesRequested = bytesRequested
 }
 
 func (t *Torrent) Ready() bool {
-	t.lock.RLock()
-	defer t.lock.RUnlock()
+	t.RLock()
+	defer t.RUnlock()
 
 	if _, ok := params.BadFiles[t.InfoHash()]; ok {
 		return false
@@ -195,9 +195,9 @@ func (t *Torrent) Seed() bool {
 	//t.Torrent.SetMaxEstablishedConns(t.currentConns)
 	//}
 	if t.Torrent.Seeding() {
-		t.lock.Lock()
+		t.Lock()
 		t.status = torrentSeeding
-		t.lock.Unlock()
+		t.Unlock()
 
 		elapsed := time.Duration(mclock.Now()) - time.Duration(t.start)
 		//if active, ok := params.GoodFiles[t.InfoHash()]; !ok {
@@ -237,8 +237,8 @@ func (t *Torrent) Start(slot int) {
 		return
 	}
 
-	t.lock.Lock()
-	defer t.lock.Unlock()
+	t.Lock()
+	defer t.Unlock()
 
 	if t.status != torrentRunning {
 		t.status = torrentRunning
