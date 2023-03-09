@@ -231,7 +231,7 @@ func (t *Torrent) Paused() bool {
 	return t.status == torrentPaused
 }
 
-func (t *Torrent) Run(slot int) {
+func (t *Torrent) Start(slot int) {
 	// Make sure the torrent info exists
 	if t.Torrent.Info() == nil {
 		return
