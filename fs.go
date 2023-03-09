@@ -269,7 +269,9 @@ func (fs *TorrentFS) listen() {
 	log.Info("Bitsflow listener starting ...")
 	defer fs.wg.Done()
 	ttl := time.NewTimer(3 * time.Second)
+	ticker := time.NewTicker(90 * time.Second)
 	defer ttl.Stop()
+	defer ticker.Stop()
 	for {
 		select {
 		case msg := <-fs.callback:
@@ -287,6 +289,8 @@ func (fs *TorrentFS) listen() {
 				fs.download(context.Background(), meta.InfoHash(), meta.Request())
 			}
 			ttl.Reset(3 * time.Second)
+		case <-ticker.C:
+			log.Info("Bitsflow status", "neighbors", fs.Neighbors(), "current", fs.monitor.CurrentNumber(), "rev", fs.received, "sent", fs.sent)
 		case <-fs.closeAll:
 			log.Info("Bitsflow listener stop")
 			return
@@ -428,6 +432,7 @@ func (tfs *TorrentFS) Start(srvr *p2p.Server) (err error) {
 
 	// Figure out a max peers count based on the server limits
 	if srvr != nil {
+		log.Info("P2p net bounded")
 		tfs.net = srvr
 	}
 
@@ -561,7 +566,7 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 		//if fs.config.Mode == params.LAZY && params.IsGood(infohash) {
 		if params.IsGood(infohash) {
 			start := mclock.Now()
-			log.Info("Downloading ... ...", "ih", infohash, "size", common.StorageSize(rawSize), "neighbors", len(fs.peers), "current", fs.monitor.CurrentNumber())
+			log.Info("Downloading ... ...", "ih", infohash, "size", common.StorageSize(rawSize), "neighbors", fs.Neighbors(), "current", fs.monitor.CurrentNumber())
 			t := time.NewTimer(500 * time.Millisecond)
 			defer t.Stop()
 			for {
@@ -572,7 +577,7 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 						t.Reset(100 * time.Millisecond)
 					} else {
 						elapsed := time.Duration(mclock.Now()) - time.Duration(start)
-						log.Info("Downloaded", "ih", infohash, "size", common.StorageSize(rawSize), "neighbors", len(fs.peers), "elapsed", common.PrettyDuration(elapsed), "current", fs.monitor.CurrentNumber())
+						log.Info("Downloaded", "ih", infohash, "size", common.StorageSize(rawSize), "neighbors", fs.Neighbors(), "elapsed", common.PrettyDuration(elapsed), "current", fs.monitor.CurrentNumber())
 						if uint64(len(ret)) > rawSize {
 							return nil, backend.ErrInvalidRawSize
 						}
@@ -790,7 +795,7 @@ func (fs *TorrentFS) download(ctx context.Context, ih string, request uint64) er
 			defer fs.wg.Done()
 			s := fs.broadcast(ih, p)
 			if s {
-				log.Debug("Nas "+params.ProtocolVersionStr+" tunnel", "ih", ih, "request", common.StorageSize(float64(p)), "queue", fs.tunnel.Len(), "peers", len(fs.peers))
+				log.Debug("Nas "+params.ProtocolVersionStr+" tunnel", "ih", ih, "request", common.StorageSize(float64(p)), "queue", fs.tunnel.Len(), "peers", fs.Neighbors())
 			}
 		}(ih, p)
 	}
@@ -856,4 +861,12 @@ func (fs *TorrentFS) Envelopes() *ttlmap.Map {
 	defer fs.peerMu.RUnlock()
 
 	return fs.tunnel
+}
+
+func (fs *TorrentFS) Neighbors() int {
+	if fs.net != nil {
+		return fs.net.PeerCount()
+	}
+
+	return len(fs.peers)
 }
