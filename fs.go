@@ -319,7 +319,8 @@ func (fs *TorrentFS) MaxMessageSize() uint32 {
 }*/
 
 func (fs *TorrentFS) HandlePeer(peer *p2p.Peer, rw p2p.MsgReadWriter) error {
-	tfsPeer := newPeer(fmt.Sprintf("%x", peer.ID().Bytes()[:8]), fs, peer, rw)
+	//tfsPeer := newPeer(fmt.Sprintf("%x", peer.ID().Bytes()[:8]), fs, peer, rw)
+	tfsPeer := newPeer(peer.ID().String(), fs, peer, rw)
 
 	fs.peerMu.Lock()
 	fs.peers[tfsPeer.id] = tfsPeer
