@@ -441,7 +441,7 @@ func (tfs *TorrentFS) Start(srvr *p2p.Server) (err error) {
 		tfs.net = srvr
 	}
 
-	log.Info("Started nas", "config", tfs, "mode", tfs.config.Mode, "version", params.ProtocolVersion, "queue", tfs.tunnel.Len(), "peers", len(tfs.peers))
+	log.Info("Started nas", "config", tfs, "mode", tfs.config.Mode, "version", params.ProtocolVersion, "queue", tfs.tunnel.Len(), "peers", fs.Neighbors())
 
 	err = tfs.handler.Start()
 	if err != nil {
@@ -773,10 +773,6 @@ func (fs *TorrentFS) Tunnel(ctx context.Context, ih string) error {
 	if err := fs.storage().Search(ctx, ih, 1024*1024*1024); err != nil {
 		return err
 	}
-	/*s := fs.query(ih, 1024*1024*1024)
-	if s {
-		log.Info("Nas "+params.ProtocolVersionStr+" tunnel", "ih", ih, "queue", fs.tunnel.Len(), "peers", len(fs.peers))
-	}*/
 	return nil
 }
 
