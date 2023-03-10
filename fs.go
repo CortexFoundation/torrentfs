@@ -188,7 +188,7 @@ func New(config *params.Config, cache, compress, listen bool) (*TorrentFS, error
 					"maxMessageSize": inst.MaxMessageSize(),
 					//					"listen":         monitor.listen,
 					"metrics":    inst.NasCounter(),
-					"neighbours": len(inst.peers),
+					"neighbours": inst.Neighbors(),
 					"received":   inst.received,
 					"sent":       inst.sent,
 				},
