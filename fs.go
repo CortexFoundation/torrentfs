@@ -441,7 +441,7 @@ func (tfs *TorrentFS) Start(srvr *p2p.Server) (err error) {
 		tfs.net = srvr
 	}
 
-	log.Info("Started nas", "config", tfs, "mode", tfs.config.Mode, "version", params.ProtocolVersion, "queue", tfs.tunnel.Len(), "peers", fs.Neighbors())
+	log.Info("Started nas", "config", tfs, "mode", tfs.config.Mode, "version", params.ProtocolVersion, "queue", tfs.tunnel.Len(), "peers", tfs.Neighbors())
 
 	err = tfs.handler.Start()
 	if err != nil {
