@@ -37,6 +37,7 @@ import (
 	"github.com/CortexFoundation/torrentfs/backend"
 	"github.com/CortexFoundation/torrentfs/monitor"
 	"github.com/CortexFoundation/torrentfs/params"
+	"github.com/CortexFoundation/torrentfs/tool"
 	"github.com/CortexFoundation/torrentfs/types"
 	"github.com/anacrolix/torrent/bencode"
 	"github.com/anacrolix/torrent/metainfo"
@@ -304,16 +305,9 @@ func (fs *TorrentFS) listen() {
 	}
 }
 
-func (fs *TorrentFS) rand(s int64) int64 {
-	if s == 0 {
-		return 0
-	}
-	return time.Now().Unix() % s
-}
-
 func (fs *TorrentFS) sampling() (s string) {
 	records := fs.Records()
-	pos := fs.rand(int64(len(records)))
+	pos := tool.Rand(int64(len(records)))
 	i := int64(0)
 	for ih, p := range records {
 		if i == pos {
