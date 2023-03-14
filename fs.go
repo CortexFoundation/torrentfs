@@ -320,13 +320,17 @@ func (fs *TorrentFS) sampling() (s string) {
 			if p > 0 {
 				s = ih
 				log.Info("Random seeding", "ih", ih, "prog", common.StorageSize(p), "pos", pos)
-				break
+				return
 			} else {
+				log.Info("Next pos ->", "ih", ih, "prog", common.StorageSize(p), "pos", pos)
 				pos++
 			}
 		}
 		i++
 	}
+
+	log.Warn("No random seeding founded")
+
 	return
 }
 
