@@ -314,8 +314,10 @@ func (fs *TorrentFS) sampling() (s string) {
 	i := int64(0)
 	for ih, p := range records {
 		if i == pos {
-			s = ih
-			log.Info("Random torrent seeding", "ih", ih, "prog", common.StorageSize(p), "size", size, "pos", pos)
+			if p > 0 {
+				s = ih
+			}
+			log.Info("Random torrent seeding", "ih", ih, "prog", common.StorageSize(p), "pos", pos)
 			break
 		}
 		i++
