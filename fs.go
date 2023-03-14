@@ -303,7 +303,10 @@ func (fs *TorrentFS) listen() {
 	}
 }
 
-func (fs TorrentFS) rand(s int64) int64 {
+func (fs *TorrentFS) rand(s int64) int64 {
+	if s == 0 {
+		return 0
+	}
 	return time.Now().Unix() % s
 }
 
