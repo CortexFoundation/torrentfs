@@ -1,4 +1,4 @@
-// Copyright 2023 The CortexTheseus Authors
+// Copyright 2020 The CortexTheseus Authors
 // This file is part of the CortexTheseus library.
 //
 // The CortexTheseus library is free software: you can redistribute it and/or modify
@@ -12,17 +12,19 @@
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
-// along with the CortexTheseus library. If not, see <http://www.gnu.org/licenses/>
+// along with the CortexTheseus library. If not, see <http://www.gnu.org/licenses/>.
 
 package tool
 
 import (
-	"time"
+	"fmt"
+	"testing"
 )
 
-func Rand(s int64) int64 {
-	if s == 0 {
-		return 0
+func TestRandom(t *testing.T) {
+	for i := 0; i < 10; i++ {
+		r := Rand(100)
+		fmt.Printf("%v ", r)
 	}
-	return time.Now().UnixNano() % s
+	fmt.Println()
 }
