@@ -294,11 +294,33 @@ func (fs *TorrentFS) listen() {
 			ttl.Reset(3 * time.Second)
 		case <-ticker.C:
 			log.Info("Bitsflow status", "neighbors", fs.Neighbors(), "current", fs.monitor.CurrentNumber(), "rev", fs.received, "sent", fs.sent, "in", fs.in, "out", fs.out, "nocola", fs.out+uint64(fs.Neighbors())-fs.in)
+			// TODO random wakeup and seeding on/off
+			fs.wakeup(context.Background(), fs.sampling())
 		case <-fs.closeAll:
 			log.Info("Bitsflow listener stop")
 			return
 		}
 	}
+}
+
+func (fs TorrentFS) rand(s int64) int64 {
+	return time.Now().Unix() % s
+}
+
+func (fs *TorrentFS) sampling() (s string) {
+	records := fs.Records()
+	size := int64(len(records))
+	pos := fs.rand(size)
+	i := int64(0)
+	for ih, p := range records {
+		if i == pos {
+			s = ih
+			log.Info("Random torrent seeding", "ih", ih, "prog", common.StorageSize(p), "size", size, "pos", pos)
+			break
+		}
+		i++
+	}
+	return
 }
 
 func (fs *TorrentFS) MaxMessageSize() uint32 {
@@ -406,6 +428,14 @@ func (fs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 
 func (fs *TorrentFS) progress(ih string) (uint64, error) {
 	return fs.chain().GetTorrentProgress(ih)
+}
+
+func (fs *TorrentFS) Records() map[string]uint64 {
+	if progs, err := fs.chain().InitTorrents(); err == nil {
+		return progs
+	}
+
+	return nil
 }
 
 // Protocols implements the node.Service interface.
