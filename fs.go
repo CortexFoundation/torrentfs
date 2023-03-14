@@ -294,8 +294,9 @@ func (fs *TorrentFS) listen() {
 			ttl.Reset(3 * time.Second)
 		case <-ticker.C:
 			log.Info("Bitsflow status", "neighbors", fs.Neighbors(), "current", fs.monitor.CurrentNumber(), "rev", fs.received, "sent", fs.sent, "in", fs.in, "out", fs.out, "nocola", fs.out+uint64(fs.Neighbors())-fs.in)
-			// TODO random wakeup and seeding on/off
-			fs.wakeup(context.Background(), fs.sampling())
+			if fs.config.Mode == params.LAZY {
+				fs.wakeup(context.Background(), fs.sampling())
+			}
 		case <-fs.closeAll:
 			log.Info("Bitsflow listener stop")
 			return
@@ -312,16 +313,17 @@ func (fs *TorrentFS) rand(s int64) int64 {
 
 func (fs *TorrentFS) sampling() (s string) {
 	records := fs.Records()
-	size := int64(len(records))
-	pos := fs.rand(size)
+	pos := fs.rand(int64(len(records)))
 	i := int64(0)
 	for ih, p := range records {
 		if i == pos {
 			if p > 0 {
 				s = ih
-				log.Info("Random torrent seeding", "ih", ih, "prog", common.StorageSize(p), "pos", pos)
+				log.Info("Random seeding", "ih", ih, "prog", common.StorageSize(p), "pos", pos)
+				break
+			} else {
+				pos++
 			}
-			break
 		}
 		i++
 	}
