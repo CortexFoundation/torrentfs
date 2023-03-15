@@ -323,6 +323,8 @@ func (fs *TorrentFS) sampling() (s string) {
 
 	log.Warn("No random seeding founded")
 
+	s = fs.sampling()
+
 	return
 }
 
@@ -385,7 +387,6 @@ func (fs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 		}
 
 		log.Debug("Nas "+params.ProtocolVersionStr+" package", "size", packet.Size, "code", packet.Code)
-		//fs.received++
 
 		switch packet.Code {
 		case params.StatusCode:
@@ -511,6 +512,8 @@ func (fs *TorrentFS) bitsflow(ctx context.Context, ih string, size uint64) error
 	case fs.callback <- types.NewBitsFlow(ih, size):
 	case <-ctx.Done():
 		return ctx.Err()
+	case <-fs.closeAll:
+		return nil
 	}
 
 	return nil
@@ -541,6 +544,10 @@ func (tfs *TorrentFS) Stop() error {
 	})
 
 	tfs.wg.Wait()
+
+	for _, p := range tfs.peers {
+		p.stop()
+	}
 
 	if tfs.tunnel != nil {
 		tfs.tunnel.Drain()
@@ -627,6 +634,8 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 				case <-ctx.Done():
 					log.Warn("Timeout", "ih", infohash, "size", common.StorageSize(rawSize), "err", ctx.Err())
 					return nil, ctx.Err()
+				case <-fs.closeAll:
+					return nil, nil
 				}
 			}
 		}
