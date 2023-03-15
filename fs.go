@@ -525,15 +525,17 @@ func (tfs *TorrentFS) Stop() error {
 	}
 
 	tfs.once.Do(func() {
-		log.Info("Fs client listener synchronizing closing")
+		log.Info("Fs client listener synchronizing closing ... ...")
 		if tfs.handler != nil {
 			tfs.handler.Close()
 		}
-		if tfs.db != nil {
-			tfs.db.Close()
-		}
 		if tfs.monitor != nil {
+			log.Info("Monior stopping ... ...")
 			tfs.monitor.Stop()
+		}
+		if tfs.db != nil {
+			log.Info("Chain DB closing ... ...")
+			tfs.db.Close()
 		}
 		close(tfs.closeAll)
 	})
