@@ -323,7 +323,7 @@ func (fs *TorrentFS) sampling() (s string) {
 
 	log.Warn("No random seeding founded")
 
-	s = fs.sampling()
+	//s = fs.sampling()
 
 	return
 }
