@@ -79,7 +79,7 @@ type TorrentFS struct {
 	//scoreTable map[string]int
 
 	//seedingNotify chan string
-	closeAll chan struct{}
+	closeAll chan any
 	wg       sync.WaitGroup
 	once     sync.Once
 	worm     mapset.Set[string]
@@ -244,7 +244,7 @@ func New(config *params.Config, cache, compress, listen bool) (*TorrentFS, error
 
 	inst.tunnel = ttlmap.New(options)
 
-	inst.closeAll = make(chan struct{})
+	inst.closeAll = make(chan any)
 
 	inst.wg.Add(1)
 	go inst.listen()
@@ -372,62 +372,69 @@ func (fs *TorrentFS) HandlePeer(peer *p2p.Peer, rw p2p.MsgReadWriter) error {
 
 	return fs.runMessageLoop(tfsPeer, rw)
 }
+
 func (fs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 	for {
-		// fetch the next packet
-		packet, err := rw.ReadMsg()
-		if err != nil {
-			log.Debug("message loop", "peer", p.peer.ID(), "err", err)
+		if err := fs.handleMsg(p, rw); err != nil {
 			return err
 		}
-
-		if packet.Size > fs.MaxMessageSize() {
-			log.Warn("oversized message received", "peer", p.peer.ID())
-			return errors.New("oversized message received")
-		}
-
-		log.Debug("Nas "+params.ProtocolVersionStr+" package", "size", packet.Size, "code", packet.Code)
-
-		switch packet.Code {
-		case params.StatusCode:
-			var info *PeerInfo
-			if err := packet.Decode(&info); err != nil {
-				log.Warn("failed to decode peer state, peer will be disconnected", "peer", p.peer.ID(), "err", err)
-				return errors.New("invalid peer state")
-			}
-			p.peerInfo = info
-		case params.QueryCode:
-			if params.ProtocolVersion >= 4 {
-				var info *Query
-				if err := packet.Decode(&info); err != nil {
-					log.Warn("failed to decode msg, peer will be disconnected", "peer", p.peer.ID(), "err", err)
-					return errors.New("invalid msg")
-				}
-
-				if !common.IsHexAddress(info.Hash) {
-					return errors.New("invalid address")
-				}
-
-				//if info.Size > 0 {
-				//fs.wakeup(context.Background(), info.Hash, info.Size)
-				fs.wakeup(context.Background(), info.Hash)
-				//}
-			}
-		case params.MsgCode:
-			if params.ProtocolVersion > 4 {
-				var info *MsgInfo
-				if err := packet.Decode(&info); err != nil {
-					log.Warn("failed to decode msg, peer will be disconnected", "peer", p.peer.ID(), "err", err)
-					return errors.New("invalid msg")
-				}
-				log.Warn("Nas msg testing", "code", params.MsgCode, "desc", info.Desc)
-			}
-		default:
-			log.Warn("Encounter package code", "code", packet.Code)
-			return errors.New("invalid code")
-		}
-		packet.Discard()
 	}
+}
+
+func (fs *TorrentFS) handleMsg(p *Peer, rw p2p.MsgReadWriter) error {
+	// fetch the next packet
+	packet, err := rw.ReadMsg()
+	if err != nil {
+		log.Debug("message loop", "peer", p.peer.ID(), "err", err)
+		return err
+	}
+
+	if packet.Size > fs.MaxMessageSize() {
+		log.Warn("oversized message received", "peer", p.peer.ID())
+		return errors.New("oversized message received")
+	}
+
+	defer packet.Discard()
+
+	log.Debug("Nas "+params.ProtocolVersionStr+" package", "size", packet.Size, "code", packet.Code)
+
+	switch packet.Code {
+	case params.StatusCode:
+		var info *PeerInfo
+		if err := packet.Decode(&info); err != nil {
+			log.Warn("failed to decode peer state, peer will be disconnected", "peer", p.peer.ID(), "err", err)
+			return errors.New("invalid peer state")
+		}
+		p.peerInfo = info
+	case params.QueryCode:
+		if params.ProtocolVersion >= 4 {
+			var info *Query
+			if err := packet.Decode(&info); err != nil {
+				log.Warn("failed to decode msg, peer will be disconnected", "peer", p.peer.ID(), "err", err)
+				return errors.New("invalid msg")
+			}
+
+			if !common.IsHexAddress(info.Hash) {
+				return errors.New("invalid address")
+			}
+
+			fs.wakeup(context.Background(), info.Hash)
+		}
+	case params.MsgCode:
+		if params.ProtocolVersion > 4 {
+			var info *MsgInfo
+			if err := packet.Decode(&info); err != nil {
+				log.Warn("failed to decode msg, peer will be disconnected", "peer", p.peer.ID(), "err", err)
+				return errors.New("invalid msg")
+			}
+			log.Warn("Nas msg testing", "code", params.MsgCode, "desc", info.Desc)
+		}
+	default:
+		log.Warn("Encounter package code", "code", packet.Code)
+		return errors.New("invalid code")
+	}
+
+	return nil
 }
 
 func (fs *TorrentFS) progress(ih string) (uint64, error) {
