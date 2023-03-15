@@ -470,29 +470,29 @@ func (fs *TorrentFS) Version() uint {
 
 // Start starts the data collection thread and the listening server of the dashboard.
 // Implements the node.Service interface.
-func (tfs *TorrentFS) Start(srvr *p2p.Server) (err error) {
+func (fs *TorrentFS) Start(srvr *p2p.Server) (err error) {
 	log.Info("Fs server starting ... ...")
-	if tfs == nil || tfs.monitor == nil {
-		log.Warn("Storage fs init failed", "fs", tfs)
+	if fs == nil || fs.monitor == nil {
+		log.Warn("Storage fs init failed", "fs", fs)
 		return
 	}
 
 	// Figure out a max peers count based on the server limits
 	if srvr != nil {
 		log.Info("P2p net bounded")
-		tfs.net = srvr
+		fs.net = srvr
 	}
 
-	log.Info("Started nas", "config", tfs, "mode", tfs.config.Mode, "version", params.ProtocolVersion, "queue", tfs.tunnel.Len(), "peers", tfs.Neighbors())
+	log.Info("Started nas", "config", fs, "mode", fs.config.Mode, "version", params.ProtocolVersion, "queue", fs.tunnel.Len(), "peers", fs.Neighbors())
 
-	err = tfs.handler.Start()
+	err = fs.handler.Start()
 	if err != nil {
 		return
 	}
 
-	err = tfs.monitor.Start()
+	err = fs.monitor.Start()
 
-	tfs.init()
+	fs.init()
 
 	return
 }
@@ -528,36 +528,36 @@ func (fs *TorrentFS) bitsflow(ctx context.Context, ih string, size uint64) error
 
 // Stop stops the data collection thread and the connection listener of the dashboard.
 // Implements the node.Service interface.
-func (tfs *TorrentFS) Stop() error {
-	if tfs == nil {
+func (fs *TorrentFS) Stop() error {
+	if fs == nil {
 		log.Info("Cortex fs engine is already stopped")
 		return errors.New("fs has been stopped")
 	}
 
-	tfs.once.Do(func() {
+	fs.once.Do(func() {
 		log.Info("Fs client listener synchronizing closing ... ...")
-		if tfs.handler != nil {
-			tfs.handler.Close()
+		if fs.handler != nil {
+			fs.handler.Close()
 		}
-		if tfs.monitor != nil {
+		if fs.monitor != nil {
 			log.Info("Monior stopping ... ...")
-			tfs.monitor.Stop()
+			fs.monitor.Stop()
 		}
-		if tfs.db != nil {
+		if fs.db != nil {
 			log.Info("Chain DB closing ... ...")
-			tfs.db.Close()
+			fs.db.Close()
 		}
-		close(tfs.closeAll)
+		close(fs.closeAll)
 	})
 
-	tfs.wg.Wait()
+	fs.wg.Wait()
 
-	for _, p := range tfs.peers {
+	for _, p := range fs.peers {
 		p.stop()
 	}
 
-	if tfs.tunnel != nil {
-		tfs.tunnel.Drain()
+	if fs.tunnel != nil {
+		fs.tunnel.Drain()
 	}
 	log.Info("Cortex fs engine stopped")
 	return nil
