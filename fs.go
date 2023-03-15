@@ -539,26 +539,37 @@ func (fs *TorrentFS) Stop() error {
 		if fs.handler != nil {
 			fs.handler.Close()
 		}
+
 		if fs.monitor != nil {
 			log.Info("Monior stopping ... ...")
 			fs.monitor.Stop()
 		}
+
 		if fs.db != nil {
 			log.Info("Chain DB closing ... ...")
 			fs.db.Close()
 		}
+
 		close(fs.closeAll)
+
+		fs.wg.Wait()
+
+		for _, p := range fs.peers {
+			p.stop()
+		}
+
+		if fs.tunnel != nil {
+			fs.tunnel.Drain()
+		}
 	})
 
-	fs.wg.Wait()
-
-	for _, p := range fs.peers {
+	/*for _, p := range fs.peers {
 		p.stop()
 	}
 
 	if fs.tunnel != nil {
 		fs.tunnel.Drain()
-	}
+	}*/
 	log.Info("Cortex fs engine stopped")
 	return nil
 }
