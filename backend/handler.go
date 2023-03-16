@@ -730,6 +730,7 @@ func NewTorrentManager(config *params.Config, fsid uint64, cache, compress bool)
 		localSeedFiles: make(map[string]bool),
 		//seedingNotify:  notify,
 		//kvdb: kv.Badger(config.DataDir),
+		seconds: 1,
 	}
 
 	switch config.Engine {
