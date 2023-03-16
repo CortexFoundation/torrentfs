@@ -29,7 +29,7 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
-	//"sync/atomic"
+	"sync/atomic"
 	//"strconv"
 	"math"
 	"runtime"
@@ -163,6 +163,8 @@ type TorrentManager struct {
 	//colaList mapset.Set[string]
 
 	fc *filecache.FileCache
+
+	seconds uint64
 }
 
 // can only call by fs.go: 'SeedingLocal()'
@@ -1003,6 +1005,7 @@ func (tm *TorrentManager) pendingLoop() {
 func (tm *TorrentManager) finish(ih string, t *Torrent) {
 	t.Lock()
 	defer t.Unlock()
+
 	if _, err := os.Stat(filepath.Join(tm.DataDir, ih)); err == nil {
 		tm.active_lock.Lock()
 		delete(tm.activeTorrents, ih)
@@ -1025,6 +1028,27 @@ func (tm *TorrentManager) finish(ih string, t *Torrent) {
 
 func (tm *TorrentManager) salt(n int) int64 {
 	return int64(tm.slot % n)
+}
+
+func (tm *TorrentManager) total() (ret uint64) {
+	tm.lock.RLock()
+	defer tm.lock.RUnlock()
+
+	for _, t := range tm.torrents {
+		if t.Torrent.Info() != nil {
+			ret += uint64(t.Torrent.BytesCompleted())
+		}
+	}
+
+	return
+}
+
+func (tm *TorrentManager) dur() uint64 {
+	return atomic.LoadUint64(&tm.seconds)
+}
+
+func (tm *TorrentManager) cost(s uint64) {
+	atomic.AddUint64(&tm.seconds, s)
 }
 
 func (tm *TorrentManager) activeLoop() {
@@ -1078,13 +1102,14 @@ func (tm *TorrentManager) activeLoop() {
 				}
 			}(t.InfoHash(), n)
 		case <-timer_1.C:
-			log.Info("Fs status", "pending", len(tm.pendingTorrents), "downloading", len(tm.activeTorrents), "seeding", len(tm.seedingTorrents), "metrics", common.PrettyDuration(tm.Updates))
+			log.Info("Fs status", "pending", len(tm.pendingTorrents), "downloading", len(tm.activeTorrents), "seeding", len(tm.seedingTorrents), "metrics", common.PrettyDuration(tm.Updates), "total", common.StorageSize(tm.total()), "cost", common.PrettyDuration(time.Duration(tm.dur())), "speed", common.StorageSize(float64(tm.total()*1000*1000*1000)/float64(tm.dur())).String()+"/s")
 		case <-timer_2.C:
 			go tm.updateGlobalTrackers()
 		case <-timer.C:
 			for ih, t := range tm.activeTorrents {
 				if t.BytesMissing() == 0 {
 					tm.finish(ih, t)
+					tm.cost(uint64(time.Duration(mclock.Now()) - time.Duration(t.start)))
 					continue
 				}
 
