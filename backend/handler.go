@@ -1100,7 +1100,7 @@ func (tm *TorrentManager) activeLoop() {
 								//atomic.AddInt32(&t.Cited(), -1)
 								t.CitedDec()
 								elapsed := time.Duration(mclock.Now()) - time.Duration(t.Birth())
-								log.Info("Seed cited has been decreased", "ih", i, "cited", t.Cited(), "n", n, "status", t.Status(), "elapsed", common.PrettyDuration(elapsed))
+								log.Debug("Seed cited has been decreased", "ih", i, "cited", t.Cited(), "n", n, "status", t.Status(), "elapsed", common.PrettyDuration(elapsed))
 							}
 						} else {
 							return
@@ -1123,6 +1123,8 @@ func (tm *TorrentManager) activeLoop() {
 					tm.cost(uint64(time.Duration(mclock.Now()) - time.Duration(t.start)))
 					continue
 				}
+
+				// TODO
 
 				if t.Torrent.BytesCompleted() < t.BytesRequested() {
 					t.Start(tm.slot)
