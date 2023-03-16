@@ -1030,6 +1030,8 @@ func (tm *TorrentManager) salt(n int) int64 {
 	return int64(tm.slot % n)
 }
 
+var _cache uint64
+
 func (tm *TorrentManager) total() (ret uint64) {
 	tm.lock.RLock()
 	defer tm.lock.RUnlock()
@@ -1038,6 +1040,12 @@ func (tm *TorrentManager) total() (ret uint64) {
 		if t.Torrent.Info() != nil {
 			ret += uint64(t.Torrent.BytesCompleted())
 		}
+	}
+
+	if _cache > ret {
+		ret = _cache
+	} else {
+		_cache = ret
 	}
 
 	return
