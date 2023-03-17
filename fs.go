@@ -19,7 +19,6 @@ package torrentfs
 import (
 	"context"
 	"errors"
-	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -200,7 +199,7 @@ func New(config *params.Config, cache, compress, listen bool) (*TorrentFS, error
 		PeerInfo: func(id enode.ID) any {
 			inst.peerMu.RLock()
 			defer inst.peerMu.RUnlock()
-			if p := inst.peers[fmt.Sprintf("%x", id[:8])]; p != nil {
+			if p := inst.peers[id.String()]; p != nil {
 				if p.Info() != nil {
 					return map[string]any{
 						"version": p.version,
@@ -382,7 +381,6 @@ func (fs *TorrentFS) runMessageLoop(p *Peer) error {
 }
 
 func (fs *TorrentFS) handleMsg(p *Peer) error {
-	// fetch the next packet
 	packet, err := p.ws.ReadMsg()
 	if err != nil {
 		log.Debug("message loop", "peer", p.peer.ID(), "err", err)
@@ -433,6 +431,8 @@ func (fs *TorrentFS) handleMsg(p *Peer) error {
 		log.Warn("Encounter package code", "code", packet.Code)
 		return errors.New("invalid code")
 	}
+
+	// TODO
 
 	return nil
 }
@@ -517,6 +517,7 @@ func (fs *TorrentFS) init() {
 func (fs *TorrentFS) bitsflow(ctx context.Context, ih string, size uint64) error {
 	select {
 	case fs.callback <- types.NewBitsFlow(ih, size):
+		// TODO
 	case <-ctx.Done():
 		return ctx.Err()
 	case <-fs.closeAll:
@@ -626,7 +627,6 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 		fs.wg.Add(1)
 		go func(ctx context.Context, ih string) {
 			defer fs.wg.Done()
-			//fs.wakeup(ctx, infohash, rawSize)
 			fs.wakeup(ctx, ih)
 		}(ctx, infohash)
 		//if fs.config.Mode == params.LAZY && params.IsGood(infohash) {
