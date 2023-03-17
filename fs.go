@@ -370,20 +370,20 @@ func (fs *TorrentFS) HandlePeer(peer *p2p.Peer, rw p2p.MsgReadWriter) error {
 		tfsPeer.stop()
 	}()
 
-	return fs.runMessageLoop(tfsPeer, rw)
+	return fs.runMessageLoop(tfsPeer)
 }
 
-func (fs *TorrentFS) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
+func (fs *TorrentFS) runMessageLoop(p *Peer) error {
 	for {
-		if err := fs.handleMsg(p, rw); err != nil {
+		if err := fs.handleMsg(p); err != nil {
 			return err
 		}
 	}
 }
 
-func (fs *TorrentFS) handleMsg(p *Peer, rw p2p.MsgReadWriter) error {
+func (fs *TorrentFS) handleMsg(p *Peer) error {
 	// fetch the next packet
-	packet, err := rw.ReadMsg()
+	packet, err := p.ws.ReadMsg()
 	if err != nil {
 		log.Debug("message loop", "peer", p.peer.ID(), "err", err)
 		return err
