@@ -798,6 +798,12 @@ func NewTorrentManager(config *params.Config, fsid uint64, cache, compress bool)
 
 func (tm *TorrentManager) Start() (err error) {
 	tm.startOnce.Do(func() {
+		if tm.fc != nil {
+			if err := tm.fc.Start(); err != nil {
+				log.Error("File cache start", "err", err)
+			}
+		}
+
 		tm.wg.Add(1)
 		go tm.droppingLoop()
 		tm.wg.Add(1)
@@ -811,11 +817,6 @@ func (tm *TorrentManager) Start() (err error) {
 		go tm.mainLoop()
 
 		//err = tm.init()
-		if tm.fc != nil {
-			if err := tm.fc.Start(); err != nil {
-				log.Error("File cache start", "err", err)
-			}
-		}
 	})
 
 	return
@@ -898,6 +899,7 @@ func (tm *TorrentManager) Search(ctx context.Context, hex string, request uint64
 func (tm *TorrentManager) commit(ctx context.Context, hex string, request uint64) error {
 	select {
 	case tm.taskChan <- types.NewBitsFlow(hex, request):
+		// TODO
 	case <-ctx.Done():
 		return ctx.Err()
 	case <-tm.closeAll:
