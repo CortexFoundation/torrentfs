@@ -66,7 +66,7 @@ func ProgressBar(x, y int64, desc string) string {
 	buffer.WriteString("[ ")
 	//progress := ""
 	for i := ProgressBarLen; i > 0; i-- {
-		if int64(i) > (10*x)/y {
+		if int64(i) > ((10*x)+y-1)/y {
 			//progress = progress + " "
 			buffer.WriteString(" ")
 		} else {
