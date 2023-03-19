@@ -59,8 +59,11 @@ func ProgressBar(x, y int64, desc string) string {
 	}
 	//var buffer bytes.Buffer
 	var buffer strings.Builder
-	buffer.WriteString(desc)
-	buffer.WriteString(" [ ")
+	if len(desc) > 0 {
+		buffer.WriteString(desc)
+		buffer.WriteString(" ")
+	}
+	buffer.WriteString("[ ")
 	//progress := ""
 	for i := ProgressBarLen; i > 0; i-- {
 		if int64(i) > (10*x)/y {
