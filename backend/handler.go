@@ -602,9 +602,11 @@ func (tm *TorrentManager) updateInfoHash(t *Torrent, bytesRequested int64) {
 
 			t.SetBytesRequested(bytesRequested)
 
-			if t.Status() == torrentRunning {
+			//if t.Status() == torrentRunning {
+			if t.QuotaFull() { //t.Length() <= t.BytesRequested() {
 				t.Start(tm.slot)
 			}
+			//}
 		}
 	} else if t.Cited() < 10 {
 		// call seeding t
@@ -1078,7 +1080,9 @@ func (tm *TorrentManager) activeLoop() {
 			tm.activeTorrents[t.InfoHash()] = t
 			tm.active_lock.Unlock()
 
-			t.Start(tm.slot)
+			if t.QuotaFull() { //t.Length() <= t.BytesRequested() {
+				t.Start(tm.slot)
+			}
 
 			n := tm.blockCaculate(t.Torrent.Length())
 			if n < 300 {
