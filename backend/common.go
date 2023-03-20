@@ -59,11 +59,14 @@ func ProgressBar(x, y int64, desc string) string {
 	}
 	//var buffer bytes.Buffer
 	var buffer strings.Builder
-	buffer.WriteString(desc)
-	buffer.WriteString(" [ ")
+	if len(desc) > 0 {
+		buffer.WriteString(desc)
+		buffer.WriteString(" ")
+	}
+	buffer.WriteString("[ ")
 	//progress := ""
 	for i := ProgressBarLen; i > 0; i-- {
-		if int64(i) > (10*x)/y {
+		if int64(i) > ((10*x)+y-1)/y {
 			//progress = progress + " "
 			buffer.WriteString(" ")
 		} else {
@@ -83,7 +86,7 @@ func ProgressBar(x, y int64, desc string) string {
 
 const (
 	ProgressBarLen = 10
-	ScaleBarLen    = 15
+	ScaleBarLen    = 10
 )
 
 func ScaleBar(from, to, sum int) string {
