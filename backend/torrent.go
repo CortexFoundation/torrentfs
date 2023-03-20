@@ -54,7 +54,7 @@ type Torrent struct {
 	status   int
 	infohash string
 	filepath string
-	cited    int32
+	cited    atomic.Int32
 	//weight     int
 	//loop       int
 	maxPieces int
@@ -137,15 +137,15 @@ func (t *Torrent) Status() int {
 }
 
 func (t *Torrent) Cited() int32 {
-	return atomic.LoadInt32(&t.cited)
+	return t.cited.Load()
 }
 
 func (t *Torrent) CitedInc() {
-	atomic.AddInt32(&t.cited, 1)
+	t.cited.Add(1)
 }
 
 func (t *Torrent) CitedDec() {
-	atomic.AddInt32(&t.cited, -1)
+	t.cited.Add(-1)
 }
 
 func (t *Torrent) BytesRequested() int64 {
@@ -353,11 +353,10 @@ func (t *Torrent) listen() {
 		case task := <-t.taskCh:
 			t.Torrent.DownloadPieces(task.start, task.end)
 		case <-t.closeAll:
+			log.Info("Task listener stopped", "ih", t.InfoHash())
 			return
 		}
 	}
-
-	log.Info("Task listener stopped", "ih", t.InfoHash())
 }
 
 func (t *Torrent) Running() bool {
