@@ -18,7 +18,7 @@ package backend
 
 import (
 	//"bytes"
-	"context"
+	//"context"
 	"os"
 	"path/filepath"
 	"sync"
@@ -54,7 +54,7 @@ type Torrent struct {
 	status   int
 	infohash string
 	filepath string
-	cited    int32
+	cited    atomic.Int32
 	//weight     int
 	//loop       int
 	maxPieces int
@@ -66,19 +66,35 @@ type Torrent struct {
 
 	lock sync.RWMutex
 
-	//closeAll chan any
+	closeAll chan any
+
+	taskCh chan task
+
+	slot int
 }
 
-func NewTorrent(t *torrent.Torrent, requested int64, ih string, path string) *Torrent {
-	return &Torrent{
+type task struct {
+	start int
+	end   int
+}
+
+func NewTorrent(t *torrent.Torrent, requested int64, ih string, path string, slot int) *Torrent {
+	tor := Torrent{
 		Torrent:        t,
 		bytesRequested: requested,
 		status:         torrentPending,
 		infohash:       ih,
 		filepath:       path,
 		start:          mclock.Now(),
-		//closeAll:       make(chan any),
+		taskCh:         make(chan task, 1),
+		closeAll:       make(chan any),
+		slot:           slot,
 	}
+
+	tor.wg.Add(1)
+	go tor.listen()
+
+	return &tor
 }
 
 func (t *Torrent) QuotaFull() bool {
@@ -124,15 +140,15 @@ func (t *Torrent) Status() int {
 }
 
 func (t *Torrent) Cited() int32 {
-	return atomic.LoadInt32(&t.cited)
+	return t.cited.Load()
 }
 
 func (t *Torrent) CitedInc() {
-	atomic.AddInt32(&t.cited, 1)
+	t.cited.Add(1)
 }
 
 func (t *Torrent) CitedDec() {
-	atomic.AddInt32(&t.cited, -1)
+	t.cited.Add(-1)
 }
 
 func (t *Torrent) BytesRequested() int64 {
@@ -244,7 +260,7 @@ func (t *Torrent) Paused() bool {
 	return t.status == torrentPaused
 }
 
-func (t *Torrent) Start(slot int) {
+func (t *Torrent) Leech() {
 	// Make sure the torrent info exists
 	if t.Torrent.Info() == nil {
 		return
@@ -279,16 +295,16 @@ func (t *Torrent) Start(slot int) {
 	//}
 	if limitPieces > t.maxPieces {
 		//t.maxPieces = limitPieces
-		if err := t.download(limitPieces, slot); err == nil {
+		if err := t.download(limitPieces); err == nil {
 			t.maxPieces = limitPieces
 		}
 	}
 }
 
 // Find out the start and end
-func (t *Torrent) download(p, slot int) error {
+func (t *Torrent) download(p int) error {
 	var s, e int
-	s = (t.Torrent.NumPieces() * slot) / bucket
+	s = (t.Torrent.NumPieces() * t.slot) / bucket
 	/*if s < t.Torrent.NumPieces()/n {
 		s = s - p
 
@@ -306,7 +322,7 @@ func (t *Torrent) download(p, slot int) error {
 
 	e = s + p
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	/*ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	ex := make(chan any, 1)
@@ -323,11 +339,27 @@ func (t *Torrent) download(p, slot int) error {
 	case <-ctx.Done():
 		log.Warn("Piece download timeout", "ih", t.InfoHash(), "slot", slot, "s", s, "e", e, "p", p, "total", t.Torrent.NumPieces())
 		return ctx.Err()
-		//case <-t.closeAll:
-		//	return nil
-	}
+	case <-t.closeAll:
+		return nil
+	}*/
 
+	t.taskCh <- task{s, e}
+	log.Info(ScaleBar(s, e, t.Torrent.NumPieces()), "ih", t.InfoHash(), "slot", t.slot, "s", s, "e", e, "p", p, "total", t.Torrent.NumPieces())
 	return nil
+}
+
+func (t *Torrent) listen() {
+	defer t.wg.Done()
+	log.Info("Task listener started", "ih", t.InfoHash())
+	for {
+		select {
+		case task := <-t.taskCh:
+			t.Torrent.DownloadPieces(task.start, task.end)
+		case <-t.closeAll:
+			log.Info("Task listener stopped", "ih", t.InfoHash())
+			return
+		}
+	}
 }
 
 func (t *Torrent) Running() bool {
@@ -342,7 +374,7 @@ func (t *Torrent) Stop() {
 	t.Lock()
 	defer t.Unlock()
 
-	//close(t.closeAll)
+	close(t.closeAll)
 
 	t.wg.Wait()
 	t.Torrent.Drop()

@@ -164,7 +164,7 @@ type TorrentManager struct {
 
 	fc *filecache.FileCache
 
-	seconds uint64
+	seconds atomic.Uint64
 }
 
 // can only call by fs.go: 'SeedingLocal()'
@@ -292,7 +292,7 @@ func (tm *TorrentManager) register(t *torrent.Torrent, requested int64, ih strin
 		start: mclock.Now(),
 	}*/
 
-	tt := NewTorrent(t, requested, ih, filepath.Join(tm.TmpDataDir, ih))
+	tt := NewTorrent(t, requested, ih, filepath.Join(tm.TmpDataDir, ih), tm.slot)
 
 	tm.setTorrent(ih, tt)
 
@@ -604,13 +604,12 @@ func (tm *TorrentManager) updateInfoHash(t *Torrent, bytesRequested int64) {
 
 			//if t.Status() == torrentRunning {
 			if t.QuotaFull() { //t.Length() <= t.BytesRequested() {
-				t.Start(tm.slot)
+				t.Leech()
 			}
 			//}
 		}
 	} else if t.Cited() < 10 {
 		// call seeding t
-		//atomic.AddInt32(&t.Cited(), 1)
 		log.Debug("Already seeding", "ih", t.InfoHash(), "cited", t.Cited())
 		t.CitedInc()
 	}
@@ -732,8 +731,9 @@ func NewTorrentManager(config *params.Config, fsid uint64, cache, compress bool)
 		localSeedFiles: make(map[string]bool),
 		//seedingNotify:  notify,
 		//kvdb: kv.Badger(config.DataDir),
-		seconds: 1,
 	}
+
+	torrentManager.seconds.Store(1)
 
 	switch config.Engine {
 	case "pebble":
@@ -1031,10 +1031,6 @@ func (tm *TorrentManager) finish(ih string, t *Torrent) {
 	}
 }
 
-func (tm *TorrentManager) salt(n int) int64 {
-	return int64(tm.slot % n)
-}
-
 var _cache uint64
 
 func (tm *TorrentManager) total() (ret uint64) {
@@ -1057,11 +1053,11 @@ func (tm *TorrentManager) total() (ret uint64) {
 }
 
 func (tm *TorrentManager) dur() uint64 {
-	return atomic.LoadUint64(&tm.seconds)
+	return tm.seconds.Load()
 }
 
 func (tm *TorrentManager) cost(s uint64) {
-	atomic.AddUint64(&tm.seconds, s)
+	tm.seconds.Add(s)
 }
 
 func (tm *TorrentManager) activeLoop() {
@@ -1081,7 +1077,7 @@ func (tm *TorrentManager) activeLoop() {
 			tm.active_lock.Unlock()
 
 			if t.QuotaFull() { //t.Length() <= t.BytesRequested() {
-				t.Start(tm.slot)
+				t.Leech()
 			}
 
 			n := tm.blockCaculate(t.Torrent.Length())
@@ -1103,7 +1099,6 @@ func (tm *TorrentManager) activeLoop() {
 								tm.Drop(i)
 								return
 							} else {
-								//atomic.AddInt32(&t.Cited(), -1)
 								t.CitedDec()
 								log.Debug("Seed cited has been decreased", "ih", i, "cited", t.Cited(), "n", n, "status", t.Status(), "elapsed", common.PrettyDuration(time.Duration(mclock.Now())-time.Duration(t.Birth())))
 							}
@@ -1135,7 +1130,7 @@ func (tm *TorrentManager) activeLoop() {
 				// TODO
 
 				if t.Torrent.BytesCompleted() < t.BytesRequested() {
-					t.Start(tm.slot)
+					t.Leech()
 				}
 			}
 		case <-tm.closeAll:
