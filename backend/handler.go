@@ -1077,7 +1077,7 @@ func (tm *TorrentManager) activeLoop() {
 			tm.active_lock.Unlock()
 
 			if t.QuotaFull() { //t.Length() <= t.BytesRequested() {
-				//t.Leech()
+				t.Leech()
 			}
 
 			n := tm.blockCaculate(t.Torrent.Length())
