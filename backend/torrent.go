@@ -268,6 +268,9 @@ func (t *Torrent) Leech() {
 		return
 	}
 
+	t.Lock()
+	defer t.Unlock()
+
 	if t.status != torrentRunning {
 		return
 	}
@@ -292,8 +295,6 @@ func (t *Torrent) Leech() {
 	//		t.Torrent.SetMaxEstablishedConns(t.currentConns)
 	//	}
 	//}
-	t.Lock()
-	defer t.Unlock()
 	if limitPieces > t.maxPieces {
 		//t.maxPieces = limitPieces
 		if err := t.download(limitPieces); err == nil {
