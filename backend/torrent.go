@@ -349,18 +349,27 @@ func (t *Torrent) download(p int) error {
 	return nil
 }
 
-func (t *Torrent) listen() {
-	defer t.wg.Done()
-
+func (t *Torrent) run() bool {
 	t.Lock()
+	defer t.Unlock()
+
 	if t.Info() != nil {
 		t.status = torrentRunning
 	} else {
 		log.Warn("Task listener not ready", "ih", t.InfoHash())
-		t.Unlock()
+		return false
+	}
+
+	return true
+}
+
+func (t *Torrent) listen() {
+	defer t.wg.Done()
+
+	if !t.run() {
 		return
 	}
-	t.Unlock()
+
 	log.Info("Task listener started", "ih", t.InfoHash())
 
 	for {
