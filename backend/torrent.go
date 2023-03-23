@@ -71,6 +71,8 @@ type Torrent struct {
 	taskCh chan task
 
 	slot int
+
+	once sync.Once
 }
 
 type task struct {
@@ -91,8 +93,8 @@ func NewTorrent(t *torrent.Torrent, requested int64, ih string, path string, slo
 		slot:           slot,
 	}
 
-	tor.wg.Add(1)
-	go tor.listen()
+	//tor.wg.Add(1)
+	//go tor.listen()
 
 	return &tor
 }
@@ -266,11 +268,8 @@ func (t *Torrent) Leech() {
 		return
 	}
 
-	t.Lock()
-	defer t.Unlock()
-
 	if t.status != torrentRunning {
-		t.status = torrentRunning
+		return
 	}
 
 	limitPieces := int((t.bytesRequested*int64(t.Torrent.NumPieces()) + t.Length() - 1) / t.Length())
@@ -293,6 +292,8 @@ func (t *Torrent) Leech() {
 	//		t.Torrent.SetMaxEstablishedConns(t.currentConns)
 	//	}
 	//}
+	t.Lock()
+	defer t.Unlock()
 	if limitPieces > t.maxPieces {
 		//t.maxPieces = limitPieces
 		if err := t.download(limitPieces); err == nil {
@@ -351,6 +352,15 @@ func (t *Torrent) download(p int) error {
 func (t *Torrent) listen() {
 	defer t.wg.Done()
 	log.Info("Task listener started", "ih", t.InfoHash())
+
+	t.Lock()
+	if t.Info() != nil {
+		t.status = torrentRunning
+	} else {
+		return
+	}
+	t.Unlock()
+
 	for {
 		select {
 		case task := <-t.taskCh:
@@ -370,14 +380,23 @@ func (t *Torrent) Pending() bool {
 	return t.status == torrentPending
 }
 
+func (t *Torrent) Start() error {
+	t.once.Do(func() {
+		t.wg.Add(1)
+		go t.listen()
+	})
+	return nil
+}
+
 func (t *Torrent) Stop() {
 	t.Lock()
 	defer t.Unlock()
 
+	defer t.Torrent.Drop()
+
 	close(t.closeAll)
 
 	t.wg.Wait()
-	t.Torrent.Drop()
 
 	log.Info(ProgressBar(t.BytesCompleted(), t.Torrent.Length(), ""), "ih", t.InfoHash(), "total", common.StorageSize(t.Torrent.Length()), "req", common.StorageSize(t.BytesRequested()), "finish", common.StorageSize(t.Torrent.BytesCompleted()), "status", t.Status(), "cited", t.Cited())
 }
