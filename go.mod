@@ -1,6 +1,6 @@
 module github.com/CortexFoundation/torrentfs
 
-go 1.19
+go 1.20
 
 require (
 	github.com/CortexFoundation/CortexTheseus v1.10.34
@@ -26,7 +26,7 @@ require (
 	github.com/prometheus/client_golang v1.14.0
 	github.com/ucwong/filecache v1.0.3
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
-	github.com/ucwong/golang-kv v1.0.16-0.20230321234316-1f5bc705c745
+	github.com/ucwong/golang-kv v1.0.16-0.20230323143210-3f67f718ceb1
 	github.com/urfave/cli/v2 v2.23.6
 	go.etcd.io/bbolt v1.3.7
 	golang.org/x/time v0.3.0
