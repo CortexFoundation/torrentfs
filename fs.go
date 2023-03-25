@@ -355,7 +355,6 @@ func (fs *TorrentFS) HandlePeer(peer *p2p.Peer, rw p2p.MsgReadWriter) error {
 	fs.peerMu.Lock()
 	fs.peers[tfsPeer.id] = tfsPeer
 	fs.in.Add(1)
-	fs.record(peer.ID().String())
 	fs.peerMu.Unlock()
 
 	defer func() {
@@ -368,6 +367,8 @@ func (fs *TorrentFS) HandlePeer(peer *p2p.Peer, rw p2p.MsgReadWriter) error {
 	if err := tfsPeer.handshake(); err != nil {
 		return err
 	}
+
+	fs.record(peer.ID().String())
 
 	tfsPeer.start()
 	defer func() {
