@@ -26,13 +26,15 @@ require (
 	github.com/prometheus/client_golang v1.14.0
 	github.com/ucwong/filecache v1.0.3
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
-	github.com/ucwong/golang-kv v1.0.16-0.20230323143210-3f67f718ceb1
+	github.com/ucwong/golang-kv v1.0.16-0.20230329033712-3c4b86ec2871
 	github.com/urfave/cli/v2 v2.23.6
 	go.etcd.io/bbolt v1.3.7
 	golang.org/x/time v0.3.0
 	golang.org/x/tools v0.4.0
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2
 )
+
+require github.com/dgraph-io/badger/v4 v4.0.2-0.20230328064903-ac93972fb2d0 // indirect
 
 require (
 	crawshaw.io/sqlite v0.3.3-0.20220618202545-d1964889ea3c // indirect
@@ -57,17 +59,15 @@ require (
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bits-and-blooms/bitset v1.4.0 // indirect
 	github.com/btcsuite/btcd/btcec/v2 v2.3.2 // indirect
-	github.com/cespare/xxhash v1.1.0 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/cockroachdb/errors v1.8.1 // indirect
 	github.com/cockroachdb/logtags v0.0.0-20190617123548-eb05cc24525f // indirect
-	github.com/cockroachdb/pebble v0.0.0-20230321221706-c24246ffc012 // indirect
+	github.com/cockroachdb/pebble v0.0.0-20230328192725-2e9d3f59c4a2 // indirect
 	github.com/cockroachdb/redact v1.0.8 // indirect
 	github.com/cockroachdb/sentry-go v0.6.1-cockroachdb.2 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
 	github.com/deckarep/golang-set v1.8.0 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.1.0 // indirect
-	github.com/dgraph-io/badger/v3 v3.2103.5 // indirect
 	github.com/dgraph-io/ristretto v0.1.1 // indirect
 	github.com/elliotchance/orderedmap v1.4.0 // indirect
 	github.com/go-logr/logr v1.2.3 // indirect
