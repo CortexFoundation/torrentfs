@@ -24,7 +24,7 @@ require (
 	github.com/jedib0t/go-pretty/v6 v6.4.4
 	github.com/otiai10/copy v1.9.0
 	github.com/prometheus/client_golang v1.14.0
-	github.com/ucwong/filecache v1.0.3
+	github.com/ucwong/filecache v1.0.4
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
 	github.com/ucwong/golang-kv v1.0.16-0.20230330234605-e996820f9065
 	github.com/urfave/cli/v2 v2.23.6
