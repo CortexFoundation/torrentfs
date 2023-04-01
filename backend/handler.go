@@ -1115,6 +1115,12 @@ func (tm *TorrentManager) activeLoop() {
 
 			// TODO
 
+			if tm.mode == params.LAZY {
+				for _, itm := range tm.fc.MostAccessed(10) {
+					log.Info("Fc status", "key", itm.Key(), "acc", itm.AccessCount, "last", itm.Lastaccess, "modify", itm.Modified)
+				}
+			}
+
 			if tm.dur() > 0 {
 				log.Info("Fs status", "pending", len(tm.pendingTorrents), "downloading", len(tm.activeTorrents), "seeding", len(tm.seedingTorrents), "metrics", common.PrettyDuration(tm.Updates), "total", common.StorageSize(tm.total()), "cost", common.PrettyDuration(time.Duration(tm.dur())), "speed", common.StorageSize(float64(tm.total()*1000*1000*1000)/float64(tm.dur())).String()+"/s")
 			}
