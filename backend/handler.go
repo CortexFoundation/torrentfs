@@ -1117,7 +1117,7 @@ func (tm *TorrentManager) activeLoop() {
 
 			if tm.mode == params.LAZY {
 				for _, itm := range tm.fc.MostAccessed(10) {
-					log.Info("Cache status", "key", itm.Key(), "acc", itm.AccessCount, "last", itm.Lastaccess, "modify", itm.Modified)
+					log.Info("Cache status", "key", itm.Key(), "acc", itm.AccessCount)
 				}
 			}
 
