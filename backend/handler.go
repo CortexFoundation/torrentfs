@@ -1065,7 +1065,7 @@ func (tm *TorrentManager) activeLoop() {
 	defer tm.wg.Done()
 	timer := time.NewTicker(time.Second * params.QueryTimeInterval)
 	timer_1 := time.NewTicker(time.Second * params.QueryTimeInterval * 60)
-	timer_2 := time.NewTicker(time.Second * params.QueryTimeInterval * 3600 * 24)
+	timer_2 := time.NewTicker(time.Second * params.QueryTimeInterval * 3600 * 18)
 	defer timer.Stop()
 	defer timer_1.Stop()
 	defer timer_2.Stop()
