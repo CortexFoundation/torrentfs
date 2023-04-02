@@ -754,6 +754,8 @@ func NewTorrentManager(config *params.Config, fsid uint64, cache, compress bool)
 	if cache {
 		torrentManager.fc = filecache.NewDefaultCache()
 		torrentManager.fc.MaxSize = 256 * filecache.Megabyte
+		//torrentManager.fc.MaxItems = 8
+		//torrentManager.fc.Every = 30
 		/*conf := bigcache.Config{
 			Shards:             1024,
 			LifeWindow:         600 * time.Second,
@@ -1087,6 +1089,9 @@ func (tm *TorrentManager) activeLoop() {
 			}
 
 			n += tool.Rand(300)
+			if tm.mode == params.FULL {
+				n *= 2
+			}
 			tm.wg.Add(1)
 			go func(i string, n int64) {
 				defer tm.wg.Done()
@@ -1115,8 +1120,9 @@ func (tm *TorrentManager) activeLoop() {
 
 			// TODO
 
+			log.Info("Cache status", "total", common.StorageSize(tm.fc.FileSize()), "itms", tm.fc.Size())
 			if tm.mode == params.LAZY {
-				for _, itm := range tm.fc.MostAccessed(10) {
+				for _, itm := range tm.fc.MostAccessed(4) {
 					log.Info("Cache status", "key", itm.Key(), "acc", itm.AccessCount, "dur", common.PrettyDuration(itm.Dur()))
 				}
 			}
