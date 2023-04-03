@@ -24,5 +24,6 @@ func Rand(s int64) int64 {
 	if s == 0 {
 		return 0
 	}
-	return time.Now().UnixNano() % s
+	return time.Now().UnixNano() & (s - 1)
+	//return time.Now().UnixNano() % s
 }

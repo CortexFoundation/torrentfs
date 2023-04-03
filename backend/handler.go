@@ -41,6 +41,7 @@ import (
 	"github.com/CortexFoundation/CortexTheseus/metrics"
 	"github.com/CortexFoundation/torrentfs/compress"
 	"github.com/CortexFoundation/torrentfs/params"
+	"github.com/CortexFoundation/torrentfs/shard"
 	"github.com/CortexFoundation/torrentfs/tool"
 	"github.com/CortexFoundation/torrentfs/types"
 	"github.com/CortexFoundation/torrentfs/wormhole"
@@ -109,7 +110,8 @@ var (
 type TorrentManager struct {
 	client *torrent.Client
 	//bytes               map[metainfo.Hash]int64
-	torrents        map[string]*Torrent
+	//torrents        map[string]*Torrent
+	torrents        *shard.Map
 	seedingTorrents map[string]*Torrent
 	activeTorrents  map[string]*Torrent
 	pendingTorrents map[string]*Torrent
@@ -248,7 +250,7 @@ func (tm *TorrentManager) ListAllTorrents() map[string]map[string]int {
 	defer tm.localSeedLock.RUnlock()
 
 	tts := make(map[string]map[string]int)
-	for ih, tt := range tm.torrents {
+	/*for ih, tt := range tm.torrents {
 		tType := torrentTypeOnChain
 		if _, ok := tm.localSeedFiles[ih]; ok {
 			tType = torrentTypeLocal
@@ -257,7 +259,19 @@ func (tm *TorrentManager) ListAllTorrents() map[string]map[string]int {
 			"status": tt.Status(),
 			"type":   tType,
 		}
-	}
+	}*/
+
+	tm.torrents.Range(func(ih string, tt interface{}) bool {
+		tType := torrentTypeOnChain
+		if _, ok := tm.localSeedFiles[ih]; ok {
+			tType = torrentTypeLocal
+		}
+		tts[ih] = map[string]int{
+			"status": tt.(*Torrent).Status(),
+			"type":   tType,
+		}
+		return true
+	})
 
 	return tts
 }
@@ -300,36 +314,32 @@ func (tm *TorrentManager) register(t *torrent.Torrent, requested int64, ih strin
 }
 
 func (tm *TorrentManager) getTorrent(ih string) *Torrent {
-	tm.lock.RLock()
+	/*tm.lock.RLock()
 	defer tm.lock.RUnlock()
 	if torrent, ok := tm.torrents[ih]; ok {
 		return torrent
+	}
+	return nil*/
+
+	if torrent, ok := tm.torrents.Get(ih); ok {
+		return torrent.(*Torrent)
 	}
 	return nil
 }
 
 func (tm *TorrentManager) setTorrent(ih string, t *Torrent) {
-	tm.lock.Lock()
+	/*tm.lock.Lock()
 	defer tm.lock.Unlock()
 
-	//t.lock.Lock()
-	//defer t.lock.Unlock()
-
-	tm.torrents[ih] = t
+	tm.torrents[ih] = t*/
+	tm.torrents.Set(ih, t)
 }
 
 func (tm *TorrentManager) removeTorrent(t *Torrent) {
-	tm.lock.Lock()
-	defer tm.lock.Unlock()
+	//tm.lock.Lock()
+	//defer tm.lock.Unlock()
 
-	//t.lock.Lock()
-	//defer t.lock.Unlock()
-
-	//defer t.Torrent.Drop()
 	defer t.Stop()
-
-	//t.Status() = torrentSleeping
-	//tm.torrents[ih] = t
 
 	if t.Status() == torrentPending {
 		tm.pending_lock.Lock()
@@ -347,17 +357,24 @@ func (tm *TorrentManager) removeTorrent(t *Torrent) {
 		log.Warn("Unknown status", "ih", t.InfoHash(), "status", t.Status())
 	}
 
-	delete(tm.torrents, t.InfoHash())
+	//delete(tm.torrents, t.InfoHash())
+	tm.torrents.Delete(t.InfoHash())
 }
 
 func (tm *TorrentManager) Close() error {
 	tm.lock.Lock()
 	defer tm.lock.Unlock()
 
-	log.Info("Current running torrents", "size", len(tm.torrents))
+	/*log.Info("Current running torrents", "size", len(tm.torrents))
 	for _, t := range tm.torrents {
 		t.Stop()
-	}
+	}*/
+
+	log.Info("Current running torrents", "size", tm.torrents.Len())
+	tm.torrents.Range(func(_ string, t interface{}) bool {
+		t.(*Torrent).Stop()
+		return true
+	})
 
 	tm.client.Close()
 	tm.client.WaitAll()
@@ -703,8 +720,9 @@ func NewTorrentManager(config *params.Config, fsid uint64, cache, compress bool)
 	}
 
 	torrentManager := &TorrentManager{
-		client:          cl,
-		torrents:        make(map[string]*Torrent),
+		client: cl,
+		//torrents:        make(map[string]*Torrent),
+		torrents:        shard.New(1024 * 1024),
 		pendingTorrents: make(map[string]*Torrent),
 		seedingTorrents: make(map[string]*Torrent),
 		activeTorrents:  make(map[string]*Torrent),
@@ -1037,14 +1055,22 @@ func (tm *TorrentManager) finish(ih string, t *Torrent) {
 var _cache uint64
 
 func (tm *TorrentManager) total() (ret uint64) {
-	tm.lock.RLock()
+	/*tm.lock.RLock()
 	defer tm.lock.RUnlock()
 
 	for _, t := range tm.torrents {
 		if t.Torrent.Info() != nil {
 			ret += uint64(t.Torrent.BytesCompleted())
 		}
-	}
+	}*/
+
+	tm.torrents.Range(func(_ string, t interface{}) bool {
+		if t.(*Torrent).Torrent.Info() != nil {
+			ret += uint64(t.(*Torrent).Torrent.BytesCompleted())
+		}
+
+		return true
+	})
 
 	if _cache > ret {
 		ret = _cache
