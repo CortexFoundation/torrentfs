@@ -261,7 +261,7 @@ func (tm *TorrentManager) ListAllTorrents() map[string]map[string]int {
 		}
 	}*/
 
-	tm.torrents.Range(func(ih string, tt interface{}) bool {
+	tm.torrents.Range(func(ih string, tt any) bool {
 		tType := torrentTypeOnChain
 		if _, ok := tm.localSeedFiles[ih]; ok {
 			tType = torrentTypeLocal
@@ -371,7 +371,7 @@ func (tm *TorrentManager) Close() error {
 	}*/
 
 	log.Info("Current running torrents", "size", tm.torrents.Len())
-	tm.torrents.Range(func(_ string, t interface{}) bool {
+	tm.torrents.Range(func(_ string, t any) bool {
 		t.(*Torrent).Stop()
 		return true
 	})
@@ -1064,7 +1064,7 @@ func (tm *TorrentManager) total() (ret uint64) {
 		}
 	}*/
 
-	tm.torrents.Range(func(_ string, t interface{}) bool {
+	tm.torrents.Range(func(_ string, t any) bool {
 		if t.(*Torrent).Torrent.Info() != nil {
 			ret += uint64(t.(*Torrent).Torrent.BytesCompleted())
 		}

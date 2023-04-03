@@ -8,7 +8,7 @@ import (
 	"github.com/tidwall/hashmap"
 )
 
-// Map is a hashmap. Like map[string]interface{}, but sharded and thread-safe.
+// Map is a hashmap. Like map[string]any, but sharded and thread-safe.
 type Map struct {
 	init   sync.Once
 	cap    int
@@ -38,7 +38,7 @@ func (m *Map) Clear() {
 
 // Set assigns a value to a key.
 // Returns the previous value, or false when no value was assigned.
-func (m *Map) Set(key string, value interface{}) (prev interface{}, replaced bool) {
+func (m *Map) Set(key string, value any) (prev any, replaced bool) {
 	m.initDo()
 	shard := m.choose(key)
 	m.mus[shard].Lock()
@@ -53,9 +53,9 @@ func (m *Map) Set(key string, value interface{}) (prev interface{}, replaced boo
 // same shard while inspecting.
 // Returns the previous value, or false when no value was assigned.
 func (m *Map) SetAccept(
-	key string, value interface{},
-	accept func(prev interface{}, replaced bool) bool,
-) (prev interface{}, replaced bool) {
+	key string, value any,
+	accept func(prev any, replaced bool) bool,
+) (prev any, replaced bool) {
 	m.initDo()
 	shard := m.choose(key)
 	m.mus[shard].Lock()
@@ -79,7 +79,7 @@ func (m *Map) SetAccept(
 
 // Get returns a value for a key.
 // Returns false when no value has been assign for key.
-func (m *Map) Get(key string) (value interface{}, ok bool) {
+func (m *Map) Get(key string) (value any, ok bool) {
 	m.initDo()
 	shard := m.choose(key)
 	m.mus[shard].RLock()
@@ -90,7 +90,7 @@ func (m *Map) Get(key string) (value interface{}, ok bool) {
 
 // Delete deletes a value for a key.
 // Returns the deleted value, or false when no value was assigned.
-func (m *Map) Delete(key string) (prev interface{}, deleted bool) {
+func (m *Map) Delete(key string) (prev any, deleted bool) {
 	m.initDo()
 	shard := m.choose(key)
 	m.mus[shard].Lock()
@@ -106,8 +106,8 @@ func (m *Map) Delete(key string) (prev interface{}, deleted bool) {
 // Returns the deleted value, or false when no value was assigned.
 func (m *Map) DeleteAccept(
 	key string,
-	accept func(prev interface{}, replaced bool) bool,
-) (prev interface{}, deleted bool) {
+	accept func(prev any, replaced bool) bool,
+) (prev any, deleted bool) {
 	m.initDo()
 	shard := m.choose(key)
 	m.mus[shard].Lock()
@@ -141,14 +141,14 @@ func (m *Map) Len() int {
 
 // Range iterates overall all key/values.
 // It's not safe to call or Set or Delete while ranging.
-func (m *Map) Range(iter func(key string, value interface{}) bool) {
+func (m *Map) Range(iter func(key string, value any) bool) {
 	m.initDo()
 	var done bool
 	for i := 0; i < m.shards; i++ {
 		func() {
 			m.mus[i].RLock()
 			defer m.mus[i].RUnlock()
-			m.maps[i].Scan(func(key string, value interface{}) bool {
+			m.maps[i].Scan(func(key string, value any) bool {
 				if !iter(key, value) {
 					done = true
 					return false

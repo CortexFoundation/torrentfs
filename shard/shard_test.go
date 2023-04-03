@@ -9,7 +9,7 @@ import (
 )
 
 type keyT = string
-type valueT = interface{}
+type valueT = any
 
 func k(key int) keyT {
 	return strconv.FormatInt(int64(key), 10)
@@ -191,7 +191,7 @@ func TestSetAccept(t *testing.T) {
 	if v, _ := m.Get("hello"); v.(string) != "planet" {
 		t.Fatalf("expected '%v', got '%v'", "planet", v)
 	}
-	prev, replaced = m.SetAccept("hello", "world", func(prev interface{}, replaced bool) bool {
+	prev, replaced = m.SetAccept("hello", "world", func(prev any, replaced bool) bool {
 		if !replaced {
 			t.Fatal("expected true")
 		}
@@ -206,7 +206,7 @@ func TestSetAccept(t *testing.T) {
 	if prev.(string) != "planet" {
 		t.Fatalf("expected '%v', got '%v'", "planet", prev)
 	}
-	prev, replaced = m.SetAccept("hello", "planet", func(prev interface{}, replaced bool) bool {
+	prev, replaced = m.SetAccept("hello", "planet", func(prev any, replaced bool) bool {
 		if !replaced {
 			t.Fatal("expected true")
 		}
@@ -225,7 +225,7 @@ func TestSetAccept(t *testing.T) {
 		t.Fatalf("expected '%v', got '%v'", "world", v)
 	}
 
-	prev, replaced = m.SetAccept("hi", "world", func(prev interface{}, replaced bool) bool {
+	prev, replaced = m.SetAccept("hi", "world", func(prev any, replaced bool) bool {
 		if replaced {
 			t.Fatal("expected false")
 		}
@@ -253,7 +253,7 @@ func TestDeleteAccept(t *testing.T) {
 		t.Fatalf("expected '%v', got '%v'", "world", prev)
 	}
 	m.Set("hello", "world")
-	prev, deleted = m.DeleteAccept("hello", func(prev interface{}, deleted bool) bool {
+	prev, deleted = m.DeleteAccept("hello", func(prev any, deleted bool) bool {
 		if !deleted {
 			t.Fatal("expected true")
 		}
@@ -269,7 +269,7 @@ func TestDeleteAccept(t *testing.T) {
 		t.Fatalf("expected '%v', got '%v'", "world", prev)
 	}
 	m.Set("hello", "world")
-	prev, deleted = m.DeleteAccept("hello", func(prev interface{}, deleted bool) bool {
+	prev, deleted = m.DeleteAccept("hello", func(prev any, deleted bool) bool {
 		if !deleted {
 			t.Fatal("expected true")
 		}
