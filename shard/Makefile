@@ -12,3 +12,5 @@ endif
 
 test:
 	go test ./... -v -race -cpu=1,2 -coverprofile=coverage.txt -covermode=atomic
+format:
+	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "*/generated/*" | xargs gofmt -w -s

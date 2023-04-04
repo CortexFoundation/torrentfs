@@ -10,20 +10,20 @@ import (
 
 // Map is a hashmap. Like map[string]any, but sharded and thread-safe.
 type Map struct {
-	init   sync.Once
-	cap    int
-	shards int
-	seed   uint32
-	mus    []sync.RWMutex
-	maps   []*hashmap.Map[string, any]
+	once    sync.Once
+	capcity int
+	shards  int
+	//seed    uint32
+	mus  []sync.RWMutex
+	maps []*hashmap.Map[string, any]
 }
 
 // New returns a new hashmap with the specified capacity. This function is only
 // needed when you must define a minimum capacity, otherwise just use:
 //
 //	var m shard.Map
-func New(cap int) *Map {
-	return &Map{cap: cap}
+func New(capcity int) *Map {
+	return &Map{capcity: capcity}
 }
 
 // Clear out all values from map
@@ -31,7 +31,7 @@ func (m *Map) Clear() {
 	m.initDo()
 	for i := 0; i < m.shards; i++ {
 		m.mus[i].Lock()
-		m.maps[i] = hashmap.New[string, any](m.cap / m.shards)
+		m.maps[i] = hashmap.New[string, any](m.capcity / m.shards)
 		m.mus[i].Unlock()
 	}
 }
@@ -44,7 +44,7 @@ func (m *Map) Set(key string, value any) (prev any, replaced bool) {
 	m.mus[shard].Lock()
 	prev, replaced = m.maps[shard].Set(key, value)
 	m.mus[shard].Unlock()
-	return prev, replaced
+	return
 }
 
 // SetAccept assigns a value to a key. The "accept" function can be used to
@@ -74,7 +74,7 @@ func (m *Map) SetAccept(
 			prev, replaced = nil, false
 		}
 	}
-	return prev, replaced
+	return
 }
 
 // Get returns a value for a key.
@@ -85,7 +85,7 @@ func (m *Map) Get(key string) (value any, ok bool) {
 	m.mus[shard].RLock()
 	value, ok = m.maps[shard].Get(key)
 	m.mus[shard].RUnlock()
-	return value, ok
+	return
 }
 
 // Delete deletes a value for a key.
@@ -96,7 +96,7 @@ func (m *Map) Delete(key string) (prev any, deleted bool) {
 	m.mus[shard].Lock()
 	prev, deleted = m.maps[shard].Delete(key)
 	m.mus[shard].Unlock()
-	return prev, deleted
+	return
 }
 
 // DeleteAccept deletes a value for a key. The "accept" function can be used to
@@ -124,19 +124,18 @@ func (m *Map) DeleteAccept(
 		}
 	}
 
-	return prev, deleted
+	return
 }
 
 // Len returns the number of values in map.
-func (m *Map) Len() int {
+func (m *Map) Len() (length int) {
 	m.initDo()
-	var len int
 	for i := 0; i < m.shards; i++ {
-		m.mus[i].Lock()
-		len += m.maps[i].Len()
-		m.mus[i].Unlock()
+		m.mus[i].RLock()
+		length += m.maps[i].Len()
+		m.mus[i].RUnlock()
 	}
-	return len
+	return
 }
 
 // Range iterates overall all key/values.
@@ -167,12 +166,12 @@ func (m *Map) choose(key string) int {
 }
 
 func (m *Map) initDo() {
-	m.init.Do(func() {
+	m.once.Do(func() {
 		m.shards = 1
 		for m.shards < runtime.NumCPU()*16 {
 			m.shards *= 2
 		}
-		scap := m.cap / m.shards
+		scap := m.capcity / m.shards
 		m.mus = make([]sync.RWMutex, m.shards)
 		m.maps = make([]*hashmap.Map[string, any], m.shards)
 		for i := 0; i < len(m.maps); i++ {

@@ -11,4 +11,4 @@ ifeq ($(OS), Darwin)
 endif
 
 test:
-	go test -bench=.
+	go test -bench=. -cpu=1,2,4
