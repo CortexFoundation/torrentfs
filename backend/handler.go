@@ -122,18 +122,18 @@ type TorrentManager struct {
 	trackers       [][]string
 	globalTrackers [][]string
 	//boostFetcher        *BoostDataFetcher
-	DataDir      string
-	TmpDataDir   string
-	closeAll     chan struct{}
-	taskChan     chan any
-	lock         sync.RWMutex
-	pending_lock sync.RWMutex
-	active_lock  sync.RWMutex
-	seeding_lock sync.RWMutex
-	wg           sync.WaitGroup
-	seedingChan  chan *Torrent
-	activeChan   chan *Torrent
-	pendingChan  chan *Torrent
+	DataDir    string
+	TmpDataDir string
+	closeAll   chan struct{}
+	taskChan   chan any
+	lock       sync.RWMutex
+	//pending_lock sync.RWMutex
+	//active_lock  sync.RWMutex
+	//seeding_lock sync.RWMutex
+	wg          sync.WaitGroup
+	seedingChan chan *Torrent
+	activeChan  chan *Torrent
+	pendingChan chan *Torrent
 	//pendingRemoveChan chan string
 	droppingChan chan string
 	mode         string
