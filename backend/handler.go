@@ -1042,28 +1042,19 @@ func (tm *TorrentManager) pendingLoop() {
 	}
 }
 
-// func (tm *TorrentManager) finish(ih string, t *Torrent) {
 func (tm *TorrentManager) finish(t *Torrent) {
-	//t.Lock()
-	//defer t.Unlock()
+	t.Lock()
+	defer t.Unlock()
 
 	if _, err := os.Stat(filepath.Join(tm.DataDir, t.InfoHash())); err == nil {
-		//tm.active_lock.Lock()
-		//delete(tm.activeTorrents, ih)
-		//tm.active_lock.Unlock()
 		tm.activeTorrents.Delete(t.InfoHash())
-
 		tm.seedingChan <- t
 	} else {
 		if err := os.Symlink(
 			filepath.Join(params.DefaultTmpPath, t.InfoHash()),
 			filepath.Join(tm.DataDir, t.InfoHash()),
 		); err == nil {
-			//tm.active_lock.Lock()
-			//delete(tm.activeTorrents, ih)
-			//tm.active_lock.Unlock()
 			tm.activeTorrents.Delete(t.InfoHash())
-
 			tm.seedingChan <- t
 		}
 	}
