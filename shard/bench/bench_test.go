@@ -152,7 +152,7 @@ func m() {
 	println()
 
 	println("-- shardmap --")
-	var com shard.Map[int]
+	var com = shard.New[int](1024)
 	print("set: ")
 	lotsa.Ops(N, runtime.NumCPU(), func(i, _ int) {
 		com.Set(keys[i], i)

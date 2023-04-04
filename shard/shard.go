@@ -23,12 +23,13 @@ type Map[V any] struct {
 //
 //	var m shard.Map
 func New[V any](capcity int) *Map[V] {
-	return &Map[V]{capcity: capcity}
+	m := &Map[V]{capcity: capcity}
+	m.initDo()
+	return m
 }
 
 // Clear out all values from map
 func (m *Map[V]) Clear() {
-	m.initDo()
 	for i := 0; i < m.shards; i++ {
 		m.mus[i].Lock()
 		m.maps[i] = hashmap.New[string, V](m.capcity / m.shards)
@@ -39,7 +40,6 @@ func (m *Map[V]) Clear() {
 // Set assigns a value to a key.
 // Returns the previous value, or false when no value was assigned.
 func (m *Map[V]) Set(key string, value V) (prev any, replaced bool) {
-	m.initDo()
 	shard := m.choose(key)
 	m.mus[shard].Lock()
 	prev, replaced = m.maps[shard].Set(key, value)
@@ -56,7 +56,6 @@ func (m *Map[V]) SetAccept(
 	key string, value V,
 	accept func(prev V, replaced bool) bool,
 ) (prev V, replaced bool) {
-	m.initDo()
 	shard := m.choose(key)
 	m.mus[shard].Lock()
 	defer m.mus[shard].Unlock()
@@ -71,6 +70,7 @@ func (m *Map[V]) SetAccept(
 				// reset updated data
 				m.maps[shard].Set(key, prev)
 			}
+			//prev = nil
 			replaced = false
 		}
 	}
@@ -80,7 +80,6 @@ func (m *Map[V]) SetAccept(
 // Get returns a value for a key.
 // Returns false when no value has been assign for key.
 func (m *Map[V]) Get(key string) (value V, ok bool) {
-	m.initDo()
 	shard := m.choose(key)
 	m.mus[shard].RLock()
 	value, ok = m.maps[shard].Get(key)
@@ -90,7 +89,6 @@ func (m *Map[V]) Get(key string) (value V, ok bool) {
 
 // Looks up an item under specified key
 func (m *Map[V]) Has(key string) (ok bool) {
-	m.initDo()
 	shard := m.choose(key)
 	m.mus[shard].RLock()
 	_, ok = m.maps[shard].Get(key)
@@ -101,7 +99,6 @@ func (m *Map[V]) Has(key string) (ok bool) {
 // Delete deletes a value for a key.
 // Returns the deleted value, or false when no value was assigned.
 func (m *Map[V]) Delete(key string) (prev V, deleted bool) {
-	m.initDo()
 	shard := m.choose(key)
 	m.mus[shard].Lock()
 	prev, deleted = m.maps[shard].Delete(key)
@@ -118,7 +115,6 @@ func (m *Map[V]) DeleteAccept(
 	key string,
 	accept func(prev V, replaced bool) bool,
 ) (prev V, deleted bool) {
-	m.initDo()
 	shard := m.choose(key)
 	m.mus[shard].Lock()
 	defer m.mus[shard].Unlock()
@@ -140,7 +136,6 @@ func (m *Map[V]) DeleteAccept(
 
 // Len returns the number of values in map.
 func (m *Map[V]) Len() (length int) {
-	m.initDo()
 	for i := 0; i < m.shards; i++ {
 		m.mus[i].RLock()
 		length += m.maps[i].Len()
@@ -152,7 +147,6 @@ func (m *Map[V]) Len() (length int) {
 // Range iterates overall all key/values.
 // It's not safe to call or Set or Delete while ranging.
 func (m *Map[V]) Range(iter func(key string, value V) bool) {
-	m.initDo()
 	var done bool
 	for i := 0; i < m.shards; i++ {
 		func() {
@@ -178,7 +172,7 @@ func (m *Map[V]) choose(key string) int {
 
 func (m *Map[V]) initDo() {
 	m.once.Do(func() {
-		m.shards = 32
+		m.shards = 1
 		for m.shards < runtime.NumCPU()*16 {
 			m.shards *= 2
 		}
