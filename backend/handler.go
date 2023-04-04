@@ -1186,7 +1186,7 @@ func (tm *TorrentManager) activeLoop() {
 				}
 			}*/
 
-			clean := []*Torrent{}
+			var clean = []*Torrent{}
 
 			tm.activeTorrents.Range(func(ih string, t any) bool {
 				if t.(*Torrent).BytesMissing() == 0 {

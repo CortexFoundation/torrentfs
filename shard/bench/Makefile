@@ -11,4 +11,4 @@ ifeq ($(OS), Darwin)
 endif
 
 test:
-	go test ./... -v -race -cpu=1,2 -coverprofile=coverage.txt -covermode=atomic
+	go test -bench=.

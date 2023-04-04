@@ -59,6 +59,7 @@ func init() {
 }
 
 func TestRandomData(t *testing.T) {
+	t.Parallel()
 	N := 10000
 	start := time.Now()
 	for time.Since(start) < time.Second*2 {
@@ -179,6 +180,7 @@ func TestRandomData(t *testing.T) {
 }
 
 func TestSetAccept(t *testing.T) {
+	t.Parallel()
 	var m Map
 	m.Set("hello", "world")
 	prev, replaced := m.SetAccept("hello", "planet", nil)
@@ -243,6 +245,7 @@ func TestSetAccept(t *testing.T) {
 }
 
 func TestDeleteAccept(t *testing.T) {
+	t.Parallel()
 	var m Map
 	m.Set("hello", "world")
 	prev, deleted := m.DeleteAccept("hello", nil)
@@ -295,6 +298,7 @@ func TestDeleteAccept(t *testing.T) {
 }
 
 func TestClear(t *testing.T) {
+	t.Parallel()
 	var m Map
 	for i := 0; i < 1000; i++ {
 		m.Set(fmt.Sprintf("%d", i), i)
