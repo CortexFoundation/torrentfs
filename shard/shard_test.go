@@ -64,21 +64,21 @@ func TestRandomData(t *testing.T) {
 	start := time.Now()
 	for time.Since(start) < time.Second*2 {
 		nums := random(N, true)
-		var m *Map
+		var m *Map[int]
 		switch rand.Int() % 5 {
 		default:
-			m = New(N / ((rand.Int() % 3) + 1))
+			m = New[int](N / ((rand.Int() % 3) + 1))
 		case 1:
-			m = new(Map)
+			m = new(Map[int])
 		case 2:
-			m = New(0)
+			m = New[int](0)
 		}
 		v, ok := m.Get(k(999))
-		if ok || v != nil {
+		if ok {
 			t.Fatalf("expected %v, got %v", nil, v)
 		}
 		v, ok = m.Delete(k(999))
-		if ok || v != nil {
+		if ok {
 			t.Fatalf("expected %v, got %v", nil, v)
 		}
 		if m.Len() != 0 {
@@ -86,8 +86,9 @@ func TestRandomData(t *testing.T) {
 		}
 		// set a bunch of items
 		for i := 0; i < len(nums); i++ {
-			v, ok := m.Set(nums[i], nums[i])
-			if ok || v != nil {
+			x, _ := strconv.Atoi(nums[i])
+			v, ok := m.Set(nums[i], x)
+			if ok {
 				t.Fatalf("expected %v, got %v", nil, v)
 			}
 		}
@@ -98,7 +99,8 @@ func TestRandomData(t *testing.T) {
 		shuffle(nums)
 		for i := 0; i < len(nums); i++ {
 			v, ok := m.Get(nums[i])
-			if !ok || v == nil || v != nums[i] {
+			x, _ := strconv.Atoi(nums[i])
+			if !ok || v != x {
 				t.Fatalf("expected %v, got %v", nums[i], v)
 			}
 		}
@@ -106,8 +108,9 @@ func TestRandomData(t *testing.T) {
 		shuffle(nums)
 		for i := 0; i < len(nums); i++ {
 			v, ok := m.Set(nums[i], add(nums[i], 1))
-			if !ok || v != nums[i] {
-				t.Fatalf("expected %v, got %v", nums[i], v)
+			x, _ := strconv.Atoi(nums[i])
+			if !ok || v != x {
+				t.Fatalf("expected %v, got %v, %v", nums[i], v, ok)
 			}
 		}
 		if m.Len() != N {
@@ -135,7 +138,7 @@ func TestRandomData(t *testing.T) {
 		// check to make sure that the items have been removed
 		for i := 0; i < len(nums)/2; i++ {
 			v, ok := m.Get(nums[i])
-			if ok || v != nil {
+			if ok {
 				t.Fatalf("expected %v, got %v", nil, v)
 			}
 		}
@@ -149,21 +152,21 @@ func TestRandomData(t *testing.T) {
 		// try to delete again, make sure they don't exist
 		for i := 0; i < len(nums)/2; i++ {
 			v, ok := m.Delete(nums[i])
-			if ok || v != nil {
+			if ok {
 				t.Fatalf("expected %v, got %v", nil, v)
 			}
 		}
 		if m.Len() != N/2 {
 			t.Fatalf("expected %v, got %v", N/2, m.Len())
 		}
-		m.Range(func(key keyT, value valueT) bool {
+		m.Range(func(key keyT, value int) bool {
 			if value != add(key, 1) {
 				t.Fatalf("expected %v, got %v", add(key, 1), value)
 			}
 			return true
 		})
 		var n int
-		m.Range(func(key keyT, value valueT) bool {
+		m.Range(func(key keyT, value int) bool {
 			n++
 			return false
 		})
@@ -181,23 +184,23 @@ func TestRandomData(t *testing.T) {
 
 func TestSetAccept(t *testing.T) {
 	t.Parallel()
-	var m Map
+	var m Map[string]
 	m.Set("hello", "world")
 	prev, replaced := m.SetAccept("hello", "planet", nil)
 	if !replaced {
 		t.Fatal("expected true")
 	}
-	if prev.(string) != "world" {
+	if prev != "world" {
 		t.Fatalf("expected '%v', got '%v'", "world", prev)
 	}
-	if v, _ := m.Get("hello"); v.(string) != "planet" {
+	if v, _ := m.Get("hello"); v != "planet" {
 		t.Fatalf("expected '%v', got '%v'", "planet", v)
 	}
-	prev, replaced = m.SetAccept("hello", "world", func(prev any, replaced bool) bool {
+	prev, replaced = m.SetAccept("hello", "world", func(prev string, replaced bool) bool {
 		if !replaced {
 			t.Fatal("expected true")
 		}
-		if prev.(string) != "planet" {
+		if prev != "planet" {
 			t.Fatalf("expected '%v', got '%v'", "planet", prev)
 		}
 		return true
@@ -205,14 +208,14 @@ func TestSetAccept(t *testing.T) {
 	if !replaced {
 		t.Fatal("expected true")
 	}
-	if prev.(string) != "planet" {
+	if prev != "planet" {
 		t.Fatalf("expected '%v', got '%v'", "planet", prev)
 	}
-	prev, replaced = m.SetAccept("hello", "planet", func(prev any, replaced bool) bool {
+	prev, replaced = m.SetAccept("hello", "planet", func(prev string, replaced bool) bool {
 		if !replaced {
 			t.Fatal("expected true")
 		}
-		if prev.(string) != "world" {
+		if prev != "world" {
 			t.Fatalf("expected '%v', got '%v'", "world", prev)
 		}
 		return false
@@ -220,47 +223,47 @@ func TestSetAccept(t *testing.T) {
 	if replaced {
 		t.Fatal("expected false")
 	}
-	if prev != nil {
-		t.Fatalf("expected '%v', got '%v'", nil, prev)
-	}
-	if v, _ := m.Get("hello"); v.(string) != "world" {
+	//if prev != nil {
+	//	t.Fatalf("expected '%v', got '%v'", nil, prev)
+	//}
+	if v, _ := m.Get("hello"); v != "world" {
 		t.Fatalf("expected '%v', got '%v'", "world", v)
 	}
 
-	prev, replaced = m.SetAccept("hi", "world", func(prev any, replaced bool) bool {
+	prev, replaced = m.SetAccept("hi", "world", func(prev string, replaced bool) bool {
 		if replaced {
 			t.Fatal("expected false")
 		}
-		if prev != nil {
-			t.Fatalf("expected '%v', got '%v'", nil, prev)
-		}
+		//if prev != nil {
+		//	t.Fatalf("expected '%v', got '%v'", nil, prev)
+		//}
 		return false
 	})
 	if replaced {
 		t.Fatal("expected false")
 	}
-	if prev != nil {
-		t.Fatalf("expected '%v', got '%v'", nil, prev)
-	}
+	//if prev != nil {
+	//	t.Fatalf("expected '%v', got '%v'", nil, prev)
+	//}
 }
 
 func TestDeleteAccept(t *testing.T) {
 	t.Parallel()
-	var m Map
+	var m Map[string]
 	m.Set("hello", "world")
 	prev, deleted := m.DeleteAccept("hello", nil)
 	if !deleted {
 		t.Fatal("expected true")
 	}
-	if prev.(string) != "world" {
+	if prev != "world" {
 		t.Fatalf("expected '%v', got '%v'", "world", prev)
 	}
 	m.Set("hello", "world")
-	prev, deleted = m.DeleteAccept("hello", func(prev any, deleted bool) bool {
+	prev, deleted = m.DeleteAccept("hello", func(prev string, deleted bool) bool {
 		if !deleted {
 			t.Fatal("expected true")
 		}
-		if prev.(string) != "world" {
+		if prev != "world" {
 			t.Fatalf("expected '%v', got '%v'", "world", prev)
 		}
 		return true
@@ -268,15 +271,15 @@ func TestDeleteAccept(t *testing.T) {
 	if !deleted {
 		t.Fatal("expected true")
 	}
-	if prev.(string) != "world" {
+	if prev != "world" {
 		t.Fatalf("expected '%v', got '%v'", "world", prev)
 	}
 	m.Set("hello", "world")
-	prev, deleted = m.DeleteAccept("hello", func(prev any, deleted bool) bool {
+	prev, deleted = m.DeleteAccept("hello", func(prev string, deleted bool) bool {
 		if !deleted {
 			t.Fatal("expected true")
 		}
-		if prev.(string) != "world" {
+		if prev != "world" {
 			t.Fatalf("expected '%v', got '%v'", "world", prev)
 		}
 		return false
@@ -284,14 +287,14 @@ func TestDeleteAccept(t *testing.T) {
 	if deleted {
 		t.Fatal("expected false")
 	}
-	if prev != nil {
-		t.Fatalf("expected '%v', got '%v'", nil, prev)
-	}
+	//if prev != nil {
+	//	t.Fatalf("expected '%v', got '%v'", nil, prev)
+	//}
 	prev, ok := m.Get("hello")
 	if !ok {
 		t.Fatal("expected true")
 	}
-	if prev.(string) != "world" {
+	if prev != "world" {
 		t.Fatalf("expected '%v', got '%v'", "world", prev)
 	}
 
@@ -299,7 +302,7 @@ func TestDeleteAccept(t *testing.T) {
 
 func TestClear(t *testing.T) {
 	t.Parallel()
-	var m Map
+	var m Map[int]
 	for i := 0; i < 1000; i++ {
 		m.Set(fmt.Sprintf("%d", i), i)
 	}

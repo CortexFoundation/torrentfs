@@ -124,7 +124,7 @@ func m() {
 	})
 	println()
 
-	println("-- github.com/orcaman/concurrent-map --")
+	println("-- github.com/orcaman/concurrent-map/v2 --")
 	cmap := cmap.New[any]()
 	print("set: ")
 	lotsa.Ops(N, runtime.NumCPU(), func(i, _ int) {
@@ -152,7 +152,7 @@ func m() {
 	println()
 
 	println("-- shardmap --")
-	var com shard.Map
+	var com shard.Map[int]
 	print("set: ")
 	lotsa.Ops(N, runtime.NumCPU(), func(i, _ int) {
 		com.Set(keys[i], i)
@@ -161,13 +161,13 @@ func m() {
 	print("get: ")
 	lotsa.Ops(N, runtime.NumCPU(), func(i, _ int) {
 		v, _ := com.Get(keys[i])
-		if v.(int) != i {
+		if v != i {
 			panic("bad news")
 		}
 	})
 	print("rng:       ")
 	lotsa.Ops(100, runtime.NumCPU(), func(i, _ int) {
-		com.Range(func(key string, value interface{}) bool {
+		com.Range(func(key string, value int) bool {
 			return true
 		})
 	})

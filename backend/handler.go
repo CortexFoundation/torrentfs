@@ -111,12 +111,12 @@ type TorrentManager struct {
 	client *torrent.Client
 	//bytes               map[metainfo.Hash]int64
 	//torrents        map[string]*Torrent
-	torrents *shard.Map
+	torrents *shard.Map[*Torrent]
 	//seedingTorrents map[string]*Torrent
-	seedingTorrents *shard.Map
+	seedingTorrents *shard.Map[*Torrent]
 	//activeTorrents  map[string]*Torrent
-	activeTorrents  *shard.Map
-	pendingTorrents *shard.Map
+	activeTorrents  *shard.Map[*Torrent]
+	pendingTorrents *shard.Map[*Torrent]
 	//maxSeedTask         int
 	//maxEstablishedConns int
 	trackers       [][]string
@@ -263,13 +263,13 @@ func (tm *TorrentManager) ListAllTorrents() map[string]map[string]int {
 		}
 	}*/
 
-	tm.torrents.Range(func(ih string, tt any) bool {
+	tm.torrents.Range(func(ih string, tt *Torrent) bool {
 		tType := torrentTypeOnChain
 		if _, ok := tm.localSeedFiles[ih]; ok {
 			tType = torrentTypeLocal
 		}
 		tts[ih] = map[string]int{
-			"status": tt.(*Torrent).Status(),
+			"status": tt.Status(),
 			"type":   tType,
 		}
 		return true
@@ -324,7 +324,7 @@ func (tm *TorrentManager) getTorrent(ih string) *Torrent {
 	return nil*/
 
 	if torrent, ok := tm.torrents.Get(ih); ok {
-		return torrent.(*Torrent)
+		return torrent
 	}
 	return nil
 }
@@ -376,8 +376,8 @@ func (tm *TorrentManager) Close() error {
 	}*/
 
 	log.Info("Current running torrents", "size", tm.torrents.Len())
-	tm.torrents.Range(func(_ string, t any) bool {
-		t.(*Torrent).Stop()
+	tm.torrents.Range(func(_ string, t *Torrent) bool {
+		t.Stop()
 		return true
 	})
 
@@ -733,13 +733,13 @@ func NewTorrentManager(config *params.Config, fsid uint64, cache, compress bool)
 	torrentManager := &TorrentManager{
 		client: cl,
 		//torrents:        make(map[string]*Torrent),
-		torrents: shard.New(1024 * 1024),
+		torrents: shard.New[*Torrent](1024 * 1024),
 		//pendingTorrents: make(map[string]*Torrent),
-		pendingTorrents: shard.New(1024 * 1024),
+		pendingTorrents: shard.New[*Torrent](1024 * 1024),
 		//seedingTorrents: make(map[string]*Torrent),
-		seedingTorrents: shard.New(1024 * 1024),
+		seedingTorrents: shard.New[*Torrent](1024 * 1024),
 		//activeTorrents:  make(map[string]*Torrent),
-		activeTorrents: shard.New(1024 * 1024),
+		activeTorrents: shard.New[*Torrent](1024 * 1024),
 		//bytes:               make(map[metainfo.Hash]int64),
 		//maxSeedTask:         config.MaxSeedingNum,
 		//maxEstablishedConns: cfg.EstablishedConnsPerTorrent,
@@ -1072,9 +1072,9 @@ func (tm *TorrentManager) total() (ret uint64) {
 		}
 	}*/
 
-	tm.torrents.Range(func(_ string, t any) bool {
-		if t.(*Torrent).Torrent.Info() != nil {
-			ret += uint64(t.(*Torrent).Torrent.BytesCompleted())
+	tm.torrents.Range(func(_ string, t *Torrent) bool {
+		if t.Torrent.Info() != nil {
+			ret += uint64(t.Torrent.BytesCompleted())
 		}
 
 		return true
@@ -1179,13 +1179,13 @@ func (tm *TorrentManager) activeLoop() {
 
 			var clean = []*Torrent{}
 
-			tm.activeTorrents.Range(func(ih string, t any) bool {
-				if t.(*Torrent).BytesMissing() == 0 {
-					clean = append(clean, t.(*Torrent))
-					tm.cost(uint64(time.Duration(mclock.Now()) - time.Duration(t.(*Torrent).start)))
+			tm.activeTorrents.Range(func(ih string, t *Torrent) bool {
+				if t.BytesMissing() == 0 {
+					clean = append(clean, t)
+					tm.cost(uint64(time.Duration(mclock.Now()) - time.Duration(t.start)))
 				} else {
-					if t.(*Torrent).Torrent.BytesCompleted() < t.(*Torrent).BytesRequested() {
-						t.(*Torrent).Leech()
+					if t.Torrent.BytesCompleted() < t.BytesRequested() {
+						t.Leech()
 					}
 				}
 
