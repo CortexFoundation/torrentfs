@@ -1152,10 +1152,12 @@ func (tm *TorrentManager) activeLoop() {
 				}
 			}(t.InfoHash(), n)
 		case <-timer_1.C:
-			log.Info("Cache status", "total", common.StorageSize(tm.fc.FileSize()), "itms", tm.fc.Size())
-			if tm.mode == params.LAZY {
-				for _, itm := range tm.fc.MostAccessed(4) {
-					log.Info("Cache status", "key", itm.Key(), "acc", itm.AccessCount, "dur", common.PrettyDuration(itm.Dur()))
+			if tm.fc != nil {
+				log.Info("Cache status", "total", common.StorageSize(tm.fc.FileSize()), "itms", tm.fc.Size())
+				if tm.mode == params.LAZY {
+					for _, itm := range tm.fc.MostAccessed(4) {
+						log.Info("Cache status", "key", itm.Key(), "acc", itm.AccessCount, "dur", common.PrettyDuration(itm.Dur()))
+					}
 				}
 			}
 

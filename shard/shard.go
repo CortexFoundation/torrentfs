@@ -18,10 +18,7 @@ type Map[V any] struct {
 	maps []*hashmap.Map[string, V]
 }
 
-// New returns a new hashmap with the specified capacity. This function is only
-// needed when you must define a minimum capacity, otherwise just use:
-//
-//	var m shard.Map
+// New returns a new hashmap with the specified capacity.
 func New[V any](capcity int) *Map[V] {
 	m := &Map[V]{capcity: capcity}
 	m.initDo()
