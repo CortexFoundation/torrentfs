@@ -10,7 +10,7 @@ require (
 	github.com/anacrolix/log v0.13.2-0.20221123232138-02e2764801c3
 	github.com/anacrolix/missinggo/v2 v2.7.1
 	github.com/anacrolix/tagflag v1.3.1-0.20210717093243-41ae76143afa
-	github.com/anacrolix/torrent v1.49.0
+	github.com/anacrolix/torrent v1.49.1-0.20230404091314-fdb0911e28c6
 	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8
 	github.com/cespare/xxhash v1.1.0
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
