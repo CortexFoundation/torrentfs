@@ -41,10 +41,11 @@ import (
 	"github.com/CortexFoundation/CortexTheseus/metrics"
 	"github.com/CortexFoundation/torrentfs/compress"
 	"github.com/CortexFoundation/torrentfs/params"
-	"github.com/CortexFoundation/torrentfs/shard"
+	//"github.com/CortexFoundation/torrentfs/shard"
 	"github.com/CortexFoundation/torrentfs/tool"
 	"github.com/CortexFoundation/torrentfs/types"
 	"github.com/CortexFoundation/torrentfs/wormhole"
+	"github.com/ucwong/shard"
 
 	//"github.com/allegro/bigcache/v3"
 	"github.com/bradfitz/iter"
@@ -434,7 +435,7 @@ func mmapFile(name string) (mm mmap.MMap, err error) {
 	return mmap.MapRegion(f, -1, mmap.RDONLY, mmap.COPY, 0)
 }
 
-func (tm *TorrentManager) verifyTorrent(info *metainfo.Info, root string) error {
+/*func (tm *TorrentManager) verifyTorrent(info *metainfo.Info, root string) error {
 	span := new(mmap_span.MMapSpan)
 	for _, file := range info.UpvertedFiles() {
 		filename := filepath.Join(append([]string{root, info.Name}, file.Path...)...)
@@ -458,6 +459,55 @@ func (tm *TorrentManager) verifyTorrent(info *metainfo.Info, root string) error 
 		good := bytes.Equal(hash.Sum(nil), p.Hash().Bytes())
 		if !good {
 			return fmt.Errorf("hash mismatch at piece %d", i)
+		}
+	}
+	return nil
+}*/
+
+func (tm *TorrentManager) verifyTorrent(info *metainfo.Info, root string) error {
+	span := new(mmap_span.MMapSpan)
+	for _, file := range info.UpvertedFiles() {
+		filename := filepath.Join(append([]string{root, info.Name}, file.Path...)...)
+		mm, err := mmapFile(filename)
+		if err != nil {
+			return err
+		}
+		if int64(len(mm)) != file.Length {
+			return fmt.Errorf("file %q has wrong length, %d / %d", filename, int64(len(mm)), file.Length)
+		}
+		span.Append(mm)
+	}
+	span.InitIndex()
+
+	// Use a channel to collect errors from goroutines
+	errChan := make(chan error, info.NumPieces())
+	var wg sync.WaitGroup
+	for i := range iter.N(info.NumPieces()) {
+		wg.Add(1)
+		go func(i int) {
+			defer wg.Done()
+			p := info.Piece(i)
+			hash := sha1.New()
+			_, err := io.CopyBuffer(hash, io.NewSectionReader(span, p.Offset(), p.Length()), make([]byte, 64*1024))
+			if err != nil {
+				errChan <- err
+				return
+			}
+			good := bytes.Equal(hash.Sum(nil), p.Hash().Bytes())
+			if !good {
+				errChan <- fmt.Errorf("hash mismatch at piece %d", i)
+				return
+			}
+			errChan <- nil
+		}(i)
+	}
+	go func() {
+		wg.Wait()
+		close(errChan)
+	}()
+	for err := range errChan {
+		if err != nil {
+			return err
 		}
 	}
 	return nil
@@ -733,13 +783,13 @@ func NewTorrentManager(config *params.Config, fsid uint64, cache, compress bool)
 	torrentManager := &TorrentManager{
 		client: cl,
 		//torrents:        make(map[string]*Torrent),
-		torrents: shard.New[*Torrent](1024 * 1024),
+		torrents: shard.New[*Torrent](),
 		//pendingTorrents: make(map[string]*Torrent),
-		pendingTorrents: shard.New[*Torrent](1024 * 1024),
+		pendingTorrents: shard.New[*Torrent](),
 		//seedingTorrents: make(map[string]*Torrent),
-		seedingTorrents: shard.New[*Torrent](1024 * 1024),
+		seedingTorrents: shard.New[*Torrent](),
 		//activeTorrents:  make(map[string]*Torrent),
-		activeTorrents: shard.New[*Torrent](1024 * 1024),
+		activeTorrents: shard.New[*Torrent](),
 		//bytes:               make(map[metainfo.Hash]int64),
 		//maxSeedTask:         config.MaxSeedingNum,
 		//maxEstablishedConns: cfg.EstablishedConnsPerTorrent,
@@ -758,7 +808,7 @@ func NewTorrentManager(config *params.Config, fsid uint64, cache, compress bool)
 		mode:         config.Mode,
 		//boost:             config.Boost,
 		id:             fsid,
-		slot:           int(fsid % bucket),
+		slot:           int(fsid & (bucket - 1)),
 		localSeedFiles: make(map[string]bool),
 		//seedingNotify:  notify,
 		//kvdb: kv.Badger(config.DataDir),
@@ -975,7 +1025,7 @@ func (tm *TorrentManager) pendingLoop() {
 			tm.wg.Add(1)
 			go func(t *Torrent) {
 				defer tm.wg.Done()
-				var timeout time.Duration = 10 + time.Duration(tm.slot%10)
+				var timeout time.Duration = 10 + time.Duration(tm.slot&9)
 				if tm.mode == params.FULL {
 					//timeout *= 2
 				}
@@ -1251,61 +1301,6 @@ func (tm *TorrentManager) Drop(ih string) error {
 	return nil
 }
 
-/*
-	func (tm *TorrentManager) dropSeeding(slot int) error {
-		g := int(math.Min(float64(group), float64(tm.maxSeedTask)))
-		s := slot % g
-		i := 0
-		for ih, t := range tm.seedingTorrents {
-			if i%group == s {
-				if t.currentConns <= 1 {
-					continue
-				}
-				if tm.hotCache.Contains(ih) {
-					log.Debug("Encounter active torrent", "ih", ih, "index", i, "group", s, "slot", slot, "len", len(tm.seedingTorrents), "max", tm.maxSeedTask, "peers", t.currentConns)
-					continue
-				}
-
-				if tm.mode == params.LAZY {
-					t.setCurrentConns(1)
-					log.Debug("Lazy mode dropped", "ih", ih, "seeding", len(tm.seedingTorrents), "torrents", len(tm.torrents), "max", tm.maxSeedTask, "peers", t.currentConns)
-				} else {
-					t.setCurrentConns(2)
-				}
-				t.Torrent.SetMaxEstablishedConns(t.currentConns)
-				log.Debug("Drop seeding invoke", "ih", ih, "index", i, "group", s, "slot", slot, "len", len(tm.seedingTorrents), "max", tm.maxSeedTask, "peers", t.currentConns)
-			}
-			i++
-		}
-		return nil
-	}
-
-	func (tm *TorrentManager) graceSeeding(slot int) error {
-		g := int(math.Min(float64(group), float64(tm.maxSeedTask)))
-		s := slot % g
-		i := 0
-		for ih, t := range tm.seedingTorrents {
-			if i%group == s {
-				if t.currentConns <= t.minEstablishedConns {
-					continue
-				}
-				if tm.hotCache.Contains(ih) {
-					log.Debug("Encounter active torrent", "ih", ih, "index", i, "group", s, "slot", slot, "len", len(tm.seedingTorrents), "max", tm.maxSeedTask, "peers", t.currentConns)
-					continue
-				}
-				if tm.mode == params.LAZY {
-					t.setCurrentConns(1)
-				} else {
-					t.setCurrentConns(t.minEstablishedConns)
-				}
-				t.Torrent.SetMaxEstablishedConns(t.currentConns)
-				log.Debug("Grace seeding invoke", "ih", ih, "index", i, "group", s, "slot", slot, "len", len(tm.seedingTorrents), "max", tm.maxSeedTask, "peers", t.currentConns)
-			}
-			i++
-		}
-		return nil
-	}
-*/
 func (tm *TorrentManager) Exists(ih string, rawSize uint64) (bool, uint64, mclock.AbsTime, error) {
 	availableMeter.Mark(1)
 

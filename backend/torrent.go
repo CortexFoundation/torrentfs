@@ -312,12 +312,6 @@ func (t *Torrent) Leech() error {
 func (t *Torrent) download(p int) error {
 	var s, e int
 	s = (t.Torrent.NumPieces() * t.slot) / bucket
-	/*if s < t.Torrent.NumPieces()/n {
-		s = s - p
-
-	} else if s >= t.Torrent.NumPieces()/n && s < (t.Torrent.NumPieces()*(n-1))/n {
-		s = s - p/2
-	}*/
 	s = s - p/2
 	if s < 0 {
 		s = 0
@@ -328,27 +322,6 @@ func (t *Torrent) download(p int) error {
 	}
 
 	e = s + p
-
-	/*ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	ex := make(chan any, 1)
-	t.wg.Add(1)
-	go func() {
-		defer t.wg.Done()
-		t.Torrent.DownloadPieces(s, e)
-		ex <- struct{}{}
-	}()
-
-	select {
-	case <-ex:
-		log.Info(ScaleBar(s, e, t.Torrent.NumPieces()), "ih", t.InfoHash(), "slot", slot, "s", s, "e", e, "p", p, "total", t.Torrent.NumPieces())
-	case <-ctx.Done():
-		log.Warn("Piece download timeout", "ih", t.InfoHash(), "slot", slot, "s", s, "e", e, "p", p, "total", t.Torrent.NumPieces())
-		return ctx.Err()
-	case <-t.closeAll:
-		return nil
-	}*/
 
 	t.taskCh <- task{s, e}
 	log.Info(ScaleBar(s, e, t.Torrent.NumPieces()), "ih", t.InfoHash(), "slot", t.slot, "s", s, "e", e, "p", p, "total", t.Torrent.NumPieces())
