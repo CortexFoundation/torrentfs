@@ -1411,18 +1411,21 @@ func (tm *TorrentManager) Nominee() int {
 
 func (tm *TorrentManager) IsPending(ih string) bool {
 	//return tm.pendingTorrents[ih] != nil
-	_, ok := tm.pendingTorrents.Get(ih)
-	return ok
+	//_, ok := tm.pendingTorrents.Get(ih)
+	//return ok
+	return tm.pendingTorrents.Has(ih)
 }
 
 func (tm *TorrentManager) IsDownloading(ih string) bool {
 	//return tm.activeTorrents[ih] != nil
-	_, ok := tm.activeTorrents.Get(ih)
-	return ok
+	//_, ok := tm.activeTorrents.Get(ih)
+	//return ok
+	return tm.activeTorrents.Has(ih)
 }
 
 func (tm *TorrentManager) IsSeeding(ih string) bool {
 	//return tm.seedingTorrents[ih] != nil
-	_, ok := tm.seedingTorrents.Get(ih)
-	return ok
+	//_, ok := tm.seedingTorrents.Get(ih)
+	//return ok
+	return tm.seedingTorrents.Has(ih)
 }
