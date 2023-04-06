@@ -435,7 +435,7 @@ func mmapFile(name string) (mm mmap.MMap, err error) {
 	return mmap.MapRegion(f, -1, mmap.RDONLY, mmap.COPY, 0)
 }
 
-/*func (tm *TorrentManager) verifyTorrent(info *metainfo.Info, root string) error {
+func (tm *TorrentManager) verifyTorrent(info *metainfo.Info, root string) error {
 	span := new(mmap_span.MMapSpan)
 	for _, file := range info.UpvertedFiles() {
 		filename := filepath.Join(append([]string{root, info.Name}, file.Path...)...)
@@ -462,9 +462,9 @@ func mmapFile(name string) (mm mmap.MMap, err error) {
 		}
 	}
 	return nil
-}*/
+}
 
-func (tm *TorrentManager) verifyTorrent(info *metainfo.Info, root string) error {
+/*func (tm *TorrentManager) verifyTorrent(info *metainfo.Info, root string) error {
 	span := new(mmap_span.MMapSpan)
 	for _, file := range info.UpvertedFiles() {
 		filename := filepath.Join(append([]string{root, info.Name}, file.Path...)...)
@@ -511,7 +511,7 @@ func (tm *TorrentManager) verifyTorrent(info *metainfo.Info, root string) error 
 		}
 	}
 	return nil
-}
+}*/
 
 // func (tm *TorrentManager) loadSpec(ih metainfo.Hash, filePath string, BytesRequested int64) *torrent.TorrentSpec {
 func (tm *TorrentManager) loadSpec(ih string, filePath string) *torrent.TorrentSpec {
