@@ -402,10 +402,10 @@ func (tm *TorrentManager) Close() error {
 		tm.fc.Stop()
 	}
 
-	tm.torrents.Clear()
-	tm.seedingTorrents.Clear()
-	tm.activeTorrents.Clear()
-	tm.pendingTorrents.Clear()
+	//tm.torrents.Clear()
+	//tm.seedingTorrents.Clear()
+	//tm.activeTorrents.Clear()
+	//tm.pendingTorrents.Clear()
 
 	log.Info("Fs Download Manager Closed")
 	return nil
