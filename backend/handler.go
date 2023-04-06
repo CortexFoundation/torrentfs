@@ -310,7 +310,7 @@ func (tm *TorrentManager) register(t *torrent.Torrent, requested int64, ih strin
 	}*/
 
 	tt := NewTorrent(t, requested, ih, filepath.Join(tm.TmpDataDir, ih), tm.slot)
-	tm.setTorrent(ih, tt)
+	tm.setTorrent(tt)
 
 	tm.pendingChan <- tt
 	return tt
@@ -330,12 +330,12 @@ func (tm *TorrentManager) getTorrent(ih string) *Torrent {
 	return nil
 }
 
-func (tm *TorrentManager) setTorrent(ih string, t *Torrent) {
+func (tm *TorrentManager) setTorrent(t *Torrent) {
 	/*tm.lock.Lock()
 	defer tm.lock.Unlock()
 
 	tm.torrents[ih] = t*/
-	tm.torrents.Set(ih, t)
+	tm.torrents.Set(t.InfoHash(), t)
 }
 
 func (tm *TorrentManager) removeTorrent(t *Torrent) {
