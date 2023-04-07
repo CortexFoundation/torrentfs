@@ -161,6 +161,7 @@ type TorrentManager struct {
 	//good     uint64
 
 	startOnce sync.Once
+	closeOnce sync.Once
 	//seedingNotify chan string
 
 	kvdb kv.Bucket
@@ -169,7 +170,8 @@ type TorrentManager struct {
 
 	fc *filecache.FileCache
 
-	seconds atomic.Uint64
+	seconds  atomic.Uint64
+	recovery atomic.Uint64
 }
 
 // can only call by fs.go: 'SeedingLocal()'
@@ -287,7 +289,7 @@ func (tm *TorrentManager) blockCaculate(value int64) int64 {
 	return ((value + block - 1) / block)
 }
 
-func (tm *TorrentManager) register(t *torrent.Torrent, requested int64, ih string) *Torrent {
+func (tm *TorrentManager) register(t *torrent.Torrent, requested int64, ih string, spec *torrent.TorrentSpec) *Torrent {
 	/*tt := &Torrent{
 		Torrent: t,
 		//maxEstablishedConns: tm.maxEstablishedConns,
@@ -309,7 +311,7 @@ func (tm *TorrentManager) register(t *torrent.Torrent, requested int64, ih strin
 		start: mclock.Now(),
 	}*/
 
-	tt := NewTorrent(t, requested, ih, filepath.Join(tm.TmpDataDir, ih), tm.slot)
+	tt := NewTorrent(t, requested, ih, filepath.Join(tm.TmpDataDir, ih), tm.slot, spec)
 	tm.setTorrent(tt)
 
 	tm.pendingChan <- tt
@@ -364,7 +366,7 @@ func (tm *TorrentManager) removeTorrent(t *Torrent) {
 	}
 
 	//delete(tm.torrents, t.InfoHash())
-	tm.torrents.Delete(t.InfoHash())
+	//tm.torrents.Delete(t.InfoHash())
 }
 
 func (tm *TorrentManager) Close() error {
@@ -378,14 +380,16 @@ func (tm *TorrentManager) Close() error {
 
 	log.Info("Current running torrents", "size", tm.torrents.Len())
 	tm.torrents.Range(func(_ string, t *Torrent) bool {
-		t.Stop()
+		t.Close()
 		return true
 	})
 
 	tm.client.Close()
 	tm.client.WaitAll()
-	close(tm.closeAll)
-	tm.wg.Wait()
+	tm.closeOnce.Do(func() {
+		close(tm.closeAll)
+		tm.wg.Wait()
+	})
 	//if tm.fileCache != nil {
 	//	tm.fileCache.Reset()
 	//}
@@ -605,7 +609,7 @@ func (tm *TorrentManager) addInfoHash(ih string, bytesRequested int64) *Torrent 
 
 		if _, err := os.Stat(tmpDataPath); err != nil {
 			if err := os.MkdirAll(tmpDataPath, 0777); err != nil {
-				log.Warn("torrent path create failed", "err", err)
+				log.Warn("nas path create failed", "err", err)
 				return nil
 			}
 		}
@@ -617,6 +621,34 @@ func (tm *TorrentManager) addInfoHash(ih string, bytesRequested int64) *Torrent 
 		}
 	}
 
+	/*if t, n, err := tm.client.AddTorrentSpec(spec); err == nil {
+		if !n {
+			log.Warn("Try to add a dupliated torrent", "ih", ih)
+		}
+
+		t.AddTrackers(tm.trackers)
+
+		if tm.globalTrackers != nil {
+			t.AddTrackers(tm.globalTrackers)
+		}
+
+		if t.Info() == nil && tm.kvdb != nil {
+			if v := tm.kvdb.Get([]byte(SEED_PRE + ih)); v != nil {
+				t.SetInfoBytes(v)
+			}
+		}
+	} else {
+		return nil
+	}*/
+
+	if t, err := tm.injectSpec(ih, spec); err != nil {
+		return nil
+	} else {
+		return tm.register(t, bytesRequested, ih, spec)
+	}
+}
+
+func (tm *TorrentManager) injectSpec(ih string, spec *torrent.TorrentSpec) (*torrent.Torrent, error) {
 	if t, n, err := tm.client.AddTorrentSpec(spec); err == nil {
 		if !n {
 			log.Warn("Try to add a dupliated torrent", "ih", ih)
@@ -633,11 +665,10 @@ func (tm *TorrentManager) addInfoHash(ih string, bytesRequested int64) *Torrent 
 				t.SetInfoBytes(v)
 			}
 		}
-
-		return tm.register(t, bytesRequested, ih)
+		return t, nil
+	} else {
+		return nil, err
 	}
-
-	return nil
 }
 
 func (tm *TorrentManager) updateGlobalTrackers() {
@@ -764,7 +795,7 @@ func NewTorrentManager(config *params.Config, fsid uint64, cache, compress bool)
 
 	cl, err := torrent.NewClient(cfg)
 	if err != nil {
-		log.Error("Error while create torrent client", "err", err)
+		log.Error("Error while create nas client", "err", err)
 		return nil, err
 	}
 
@@ -815,6 +846,7 @@ func NewTorrentManager(config *params.Config, fsid uint64, cache, compress bool)
 	}
 
 	torrentManager.seconds.Store(1)
+	torrentManager.recovery.Store(0)
 
 	switch config.Engine {
 	case "pebble":
@@ -1006,6 +1038,23 @@ func (tm *TorrentManager) mainLoop() {
 
 			if t := tm.addInfoHash(meta.InfoHash(), int64(meta.Request())); t == nil {
 				log.Error("Seed [create] failed", "ih", meta.InfoHash(), "request", meta.Request())
+			} else {
+				if t.Stopping() {
+					log.Info("Nas recovery", "ih", t.InfoHash(), "status", t.Status(), "complete", common.StorageSize(t.Torrent.BytesCompleted()))
+					if tt, err := tm.injectSpec(t.InfoHash(), t.Spec()); err == nil && tt != nil {
+						t.Lock()
+						t.status = torrentPending
+						t.Torrent = tt
+						t.start = mclock.Now()
+						t.Unlock()
+						tm.pendingChan <- t
+						tm.recovery.Add(1)
+					} else {
+						log.Warn("Nas recovery failed", "ih", t.InfoHash(), "status", t.Status(), "complete", common.StorageSize(t.Torrent.BytesCompleted()), "err", err)
+					}
+				} else {
+					// TODO
+				}
 			}
 		case <-tm.closeAll:
 			return
@@ -1034,7 +1083,7 @@ func (tm *TorrentManager) pendingLoop() {
 				select {
 				case <-t.GotInfo():
 					if b, err := bencode.Marshal(t.Torrent.Info()); err == nil {
-						log.Debug("Record full torrent in history", "ih", t.InfoHash(), "info", len(b))
+						log.Debug("Record full nas in history", "ih", t.InfoHash(), "info", len(b))
 						if tm.kvdb != nil && tm.kvdb.Get([]byte(SEED_PRE+t.InfoHash())) == nil {
 							elapsed := time.Duration(mclock.Now()) - time.Duration(t.Birth())
 							log.Info("Imported new seed", "ih", t.InfoHash(), "request", common.StorageSize(t.Length()), "ts", common.StorageSize(len(b)), "good", params.IsGood(t.InfoHash()), "elapsed", common.PrettyDuration(elapsed))
@@ -1050,7 +1099,9 @@ func (tm *TorrentManager) pendingLoop() {
 						return
 					}
 
-					t.Start()
+					if err := t.Start(); err != nil {
+						log.Error("Nas start failed", "ih", t.InfoHash())
+					}
 
 					//if err := t.WriteTorrent(); err != nil {
 					//	log.Warn("Write torrent file error", "ih", t.InfoHash(), "err", err)
@@ -1124,7 +1175,9 @@ func (tm *TorrentManager) total() (ret uint64) {
 
 	tm.torrents.Range(func(_ string, t *Torrent) bool {
 		if t.Torrent.Info() != nil {
+			t.RLock()
 			ret += uint64(t.Torrent.BytesCompleted())
+			t.RUnlock()
 		}
 
 		return true
@@ -1212,7 +1265,7 @@ func (tm *TorrentManager) activeLoop() {
 			}
 
 			if tm.dur() > 0 {
-				log.Info("Fs status", "pending", tm.pendingTorrents.Len(), "downloading", tm.activeTorrents.Len(), "seeding", tm.seedingTorrents.Len(), "metrics", common.PrettyDuration(tm.Updates), "total", common.StorageSize(tm.total()), "cost", common.PrettyDuration(time.Duration(tm.dur())), "speed", common.StorageSize(float64(tm.total()*1000*1000*1000)/float64(tm.dur())).String()+"/s")
+				log.Info("Fs status", "pending", tm.pendingTorrents.Len(), "downloading", tm.activeTorrents.Len(), "seeding", tm.seedingTorrents.Len(), "stopping", (tm.torrents.Len() - tm.pendingTorrents.Len() - tm.activeTorrents.Len() - tm.seedingTorrents.Len()), "all", tm.torrents.Len(), "recovery", tm.recovery.Load(), "metrics", common.PrettyDuration(tm.Updates), "total", common.StorageSize(tm.total()), "cost", common.PrettyDuration(time.Duration(tm.dur())), "speed", common.StorageSize(float64(tm.total()*1000*1000*1000)/float64(tm.dur())).String()+"/s")
 			}
 		case <-timer_2.C:
 			go tm.updateGlobalTrackers()

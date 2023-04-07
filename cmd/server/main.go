@@ -85,7 +85,7 @@ func run(conf *Config) error {
 
 	config := &params.DefaultConfig
 	config.DataDir = conf.dir
-	config.Mode = params.FULL
+	//config.Mode = params.LAZY
 	config.Port = 0
 	config.Server = true
 	config.Wormhole = false

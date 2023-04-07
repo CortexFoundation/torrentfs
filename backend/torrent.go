@@ -40,7 +40,7 @@ const (
 	torrentPaused
 	torrentRunning
 	torrentSeeding
-	//torrentSleeping
+	torrentStopping
 )
 
 type Torrent struct {
@@ -73,7 +73,10 @@ type Torrent struct {
 
 	slot int
 
-	once sync.Once
+	startOnce sync.Once
+	stopOnce  sync.Once
+
+	spec *torrent.TorrentSpec
 }
 
 type task struct {
@@ -81,7 +84,7 @@ type task struct {
 	end   int
 }
 
-func NewTorrent(t *torrent.Torrent, requested int64, ih string, path string, slot int) *Torrent {
+func NewTorrent(t *torrent.Torrent, requested int64, ih string, path string, slot int, spec *torrent.TorrentSpec) *Torrent {
 	tor := Torrent{
 		Torrent:        t,
 		bytesRequested: requested,
@@ -92,10 +95,8 @@ func NewTorrent(t *torrent.Torrent, requested int64, ih string, path string, slo
 		taskCh:         make(chan task, 1),
 		closeAll:       make(chan any),
 		slot:           slot,
+		spec:           spec,
 	}
-
-	//tor.wg.Add(1)
-	//go tor.listen()
 
 	return &tor
 }
@@ -105,6 +106,10 @@ func (t *Torrent) QuotaFull() bool {
 	//defer t.RUnlock()
 
 	return t.Info() != nil && t.bytesRequested >= t.Length()
+}
+
+func (t *Torrent) Spec() *torrent.TorrentSpec {
+	return t.spec
 }
 
 func (t *Torrent) Birth() mclock.AbsTime {
@@ -215,11 +220,11 @@ func (t *Torrent) Seed() bool {
 	//defer t.lock.Unlock()
 
 	if t.Torrent.Info() == nil {
-		log.Debug("Torrent info is nil", "ih", t.InfoHash())
+		log.Debug("Nas info is nil", "ih", t.InfoHash())
 		return false
 	}
 	if t.status == torrentSeeding {
-		log.Debug("Torrent status is", "status", t.status, "ih", t.InfoHash())
+		log.Debug("Nas status is", "status", t.status, "ih", t.InfoHash())
 		return true
 	}
 	//if t.currentConns <= t.minEstablishedConns {
@@ -229,6 +234,7 @@ func (t *Torrent) Seed() bool {
 	if t.Torrent.Seeding() {
 		t.Lock()
 		t.status = torrentSeeding
+		t.stopListen()
 		t.Unlock()
 
 		elapsed := time.Duration(mclock.Now()) - time.Duration(t.start)
@@ -237,6 +243,7 @@ func (t *Torrent) Seed() bool {
 		//} else {
 		log.Info("Imported new nas segment", "ih", t.InfoHash(), "size", common.StorageSize(t.Torrent.BytesCompleted()), "files", len(t.Files()), "pieces", t.Torrent.NumPieces(), "seg", len(t.Torrent.PieceStateRuns()), "status", t.status, "elapsed", common.PrettyDuration(elapsed), "speed", common.StorageSize(float64(t.Torrent.BytesCompleted()*1000*1000*1000)/float64(elapsed)).String()+"/s")
 		//}
+
 		return true
 	}
 
@@ -273,7 +280,11 @@ func (t *Torrent) Leech() error {
 	defer t.Unlock()
 
 	if t.status != torrentRunning {
-		return errors.New("torrent is not running")
+		return errors.New("nas is not running")
+	}
+
+	if t.Torrent.BytesMissing() == 0 {
+		return nil
 	}
 
 	limitPieces := int((t.bytesRequested*int64(t.Torrent.NumPieces()) + t.Length() - 1) / t.Length())
@@ -323,8 +334,10 @@ func (t *Torrent) download(p int) error {
 
 	e = s + p
 
-	t.taskCh <- task{s, e}
-	log.Info(ScaleBar(s, e, t.Torrent.NumPieces()), "ih", t.InfoHash(), "slot", t.slot, "s", s, "e", e, "p", p, "total", t.Torrent.NumPieces())
+	if t.taskCh != nil {
+		t.taskCh <- task{s, e}
+		log.Info(ScaleBar(s, e, t.Torrent.NumPieces()), "ih", t.InfoHash(), "slot", t.slot, "s", s, "e", e, "p", p, "total", t.Torrent.NumPieces())
+	}
 	return nil
 }
 
@@ -344,10 +357,6 @@ func (t *Torrent) run() bool {
 
 func (t *Torrent) listen() {
 	defer t.wg.Done()
-
-	if !t.run() {
-		return
-	}
 
 	log.Info("Task listener started", "ih", t.InfoHash())
 
@@ -370,8 +379,19 @@ func (t *Torrent) Pending() bool {
 	return t.status == torrentPending
 }
 
+func (t *Torrent) Stopping() bool {
+	t.RLock()
+	defer t.RUnlock()
+
+	return t.status == torrentStopping
+}
+
 func (t *Torrent) Start() error {
-	t.once.Do(func() {
+	if !t.run() {
+		return errors.New("nas run failed")
+	}
+
+	t.startOnce.Do(func() {
 		t.wg.Add(1)
 		go t.listen()
 	})
@@ -384,9 +404,26 @@ func (t *Torrent) Stop() {
 
 	defer t.Torrent.Drop()
 
-	close(t.closeAll)
+	if t.Status() != torrentStopping {
+		log.Info(ProgressBar(t.BytesCompleted(), t.Torrent.Length(), ""), "ih", t.InfoHash(), "total", common.StorageSize(t.Torrent.Length()), "req", common.StorageSize(t.BytesRequested()), "finish", common.StorageSize(t.Torrent.BytesCompleted()), "status", t.Status(), "cited", t.Cited())
+		t.status = torrentStopping
+	}
+}
 
-	t.wg.Wait()
+func (t *Torrent) stopListen() {
+	t.stopOnce.Do(func() {
+		close(t.closeAll)
+		t.wg.Wait()
 
-	log.Info(ProgressBar(t.BytesCompleted(), t.Torrent.Length(), ""), "ih", t.InfoHash(), "total", common.StorageSize(t.Torrent.Length()), "req", common.StorageSize(t.BytesRequested()), "finish", common.StorageSize(t.Torrent.BytesCompleted()), "status", t.Status(), "cited", t.Cited())
+		t.taskCh = nil
+
+		log.Info("Nas listener stopped", "ih", t.InfoHash(), "status", t.Status())
+	})
+}
+
+func (t *Torrent) Close() {
+	t.Stop()
+
+	log.Info("Nas closed", "ih", t.InfoHash(), "total", common.StorageSize(t.Torrent.Length()), "req", common.StorageSize(t.BytesRequested()), "finish", common.StorageSize(t.Torrent.BytesCompleted()), "status", t.Status(), "cited", t.Cited())
+	t = nil
 }

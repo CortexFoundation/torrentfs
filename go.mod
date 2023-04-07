@@ -26,7 +26,7 @@ require (
 	github.com/prometheus/client_golang v1.14.0
 	github.com/ucwong/filecache v1.0.5-0.20230402204106-c6ff7d7930ef
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
-	github.com/ucwong/golang-kv v1.0.16-0.20230401184202-64550fb7d0a5
+	github.com/ucwong/golang-kv v1.0.17-0.20230407011655-228509ac079d
 	github.com/ucwong/shard v0.0.0-20230406003402-a003024d1f4f
 	github.com/urfave/cli/v2 v2.23.6
 	go.etcd.io/bbolt v1.3.7
@@ -63,12 +63,12 @@ require (
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/cockroachdb/errors v1.9.1 // indirect
 	github.com/cockroachdb/logtags v0.0.0-20230118201751-21c54148d20b // indirect
-	github.com/cockroachdb/pebble v0.0.0-20230401172815-5fd583650456 // indirect
+	github.com/cockroachdb/pebble v0.0.0-20230406223121-124486b0f85d // indirect
 	github.com/cockroachdb/redact v1.1.3 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
 	github.com/deckarep/golang-set v1.8.0 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.1.0 // indirect
-	github.com/dgraph-io/badger/v4 v4.0.2-0.20230328064903-ac93972fb2d0 // indirect
+	github.com/dgraph-io/badger/v4 v4.0.2-0.20230404180821-cfe4314daf20 // indirect
 	github.com/dgraph-io/ristretto v0.1.1 // indirect
 	github.com/elliotchance/orderedmap v1.4.0 // indirect
 	github.com/getsentry/sentry-go v0.20.0 // indirect
