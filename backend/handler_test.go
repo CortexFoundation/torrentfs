@@ -38,8 +38,6 @@ func TestGetFile(t *testing.T) {
 	tm.Search(context.Background(), ih, 0)
 	defer tm.Close()
 	time.Sleep(30 * time.Second)
-	//a, _, _, _ := tm.Available(ih, 100000000)
-	//fmt.Println("available", a)
 	file, _ := tm.GetFile(context.Background(), ih, "data")
 	if file == nil {
 		log.Fatal("failed to get file")
