@@ -28,3 +28,32 @@ func TestRandom(t *testing.T) {
 	}
 	fmt.Println()
 }
+
+func TestRand(t *testing.T) {
+	// Test case 1: s = 0
+	if Rand(0) != 0 {
+		t.Errorf("Rand(0) should return 0")
+	}
+
+	// Test cases 2-3: s = 1 or 2
+	/*for i := int64(0); i <= 2; i++ {
+		r := Rand(i)
+		if i < 16 {
+			if r != smallRandTable[i] {
+				t.Errorf("Rand(%d) should return %d", i, smallRandTable[i])
+			}
+		} else {
+			if r != 0 && r != 1 {
+				t.Errorf("Rand(%d) should return 0 or 1", i)
+			}
+		}
+	}*/
+
+	// Test cases 4-6: s = 16, 100, 1000000
+	for _, s := range []int64{16, 100, 1000000} {
+		r := Rand(s)
+		if r < 0 || r >= s {
+			t.Errorf("Rand(%d) should return a value between 0 and %d", s, s-1)
+		}
+	}
+}

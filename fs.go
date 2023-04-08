@@ -323,7 +323,7 @@ func (fs *TorrentFS) sampling() (s string) {
 		i++
 	}
 
-	log.Warn("No random seeding founded")
+	log.Warn("No random seeding founded", "pos", pos, "total", total)
 
 	//s = fs.sampling()
 
@@ -934,10 +934,6 @@ func (fs *TorrentFS) LocalPort() int {
 
 func (fs *TorrentFS) Congress() int {
 	return fs.storage().Congress()
-}
-
-func (fs *TorrentFS) FullSeed() map[string]*backend.Torrent {
-	return fs.storage().FullSeed()
 }
 
 func (fs *TorrentFS) Candidate() int {

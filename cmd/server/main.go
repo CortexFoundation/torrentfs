@@ -73,7 +73,7 @@ func main() {
 
 func run(conf *Config) error {
 	glogger := log.NewGlogHandler(log.StreamHandler(os.Stderr, log.TerminalFormat(true)))
-	glogger.Verbosity(log.LvlDebug)
+	glogger.Verbosity(log.LvlInfo)
 	glogger.Vmodule("")
 	log.Root().SetHandler(glogger)
 	conf.db = kv.Badger("")
@@ -89,12 +89,12 @@ func run(conf *Config) error {
 	config.Port = 0
 	config.Server = true
 	config.Wormhole = false
-	config.Quiet = false
+	config.Quiet = true
 	config.Engine = conf.engine
 
 	//config.DisableUTP = false
 
-	fs, err := t.New(config, false, false, false)
+	fs, err := t.New(config, true, false, false)
 	if err != nil {
 		log.Error("err", "e", err)
 		return err

@@ -10,7 +10,7 @@ require (
 	github.com/anacrolix/log v0.13.2-0.20221123232138-02e2764801c3
 	github.com/anacrolix/missinggo/v2 v2.7.1
 	github.com/anacrolix/tagflag v1.3.1-0.20210717093243-41ae76143afa
-	github.com/anacrolix/torrent v1.49.0
+	github.com/anacrolix/torrent v1.49.1-0.20230404091314-fdb0911e28c6
 	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/deckarep/golang-set/v2 v2.3.0
@@ -27,6 +27,7 @@ require (
 	github.com/ucwong/filecache v1.0.5-0.20230402204106-c6ff7d7930ef
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
 	github.com/ucwong/golang-kv v1.0.16-0.20230401184202-64550fb7d0a5
+	github.com/ucwong/shard v0.0.0-20230406003402-a003024d1f4f
 	github.com/urfave/cli/v2 v2.23.6
 	go.etcd.io/bbolt v1.3.7
 	golang.org/x/time v0.3.0
@@ -34,11 +35,7 @@ require (
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2
 )
 
-require (
-	github.com/dgraph-io/badger/v4 v4.0.2-0.20230328064903-ac93972fb2d0 // indirect
-	github.com/getsentry/sentry-go v0.20.0 // indirect
-	golang.org/x/text v0.8.0 // indirect
-)
+require github.com/tidwall/hashmap v1.8.1 // indirect
 
 require (
 	crawshaw.io/sqlite v0.3.3-0.20220618202545-d1964889ea3c // indirect
@@ -71,8 +68,10 @@ require (
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
 	github.com/deckarep/golang-set v1.8.0 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.1.0 // indirect
+	github.com/dgraph-io/badger/v4 v4.0.2-0.20230328064903-ac93972fb2d0 // indirect
 	github.com/dgraph-io/ristretto v0.1.1 // indirect
 	github.com/elliotchance/orderedmap v1.4.0 // indirect
+	github.com/getsentry/sentry-go v0.20.0 // indirect
 	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
@@ -88,6 +87,7 @@ require (
 	github.com/huin/goupnp v1.0.4-0.20220613170603-23b555710578 // indirect
 	github.com/jackpal/go-nat-pmp v1.0.2 // indirect
 	github.com/klauspost/compress v1.16.3 // indirect
+	github.com/klauspost/cpuid/v2 v2.2.4 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/lispad/go-generics-tools v1.1.0 // indirect
@@ -127,6 +127,7 @@ require (
 	github.com/tklauser/numcpus v0.6.0 // indirect
 	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
+	github.com/zeebo/xxh3 v1.0.3-0.20230105190837-8b1e819c6d4d // indirect
 	go.opencensus.io v0.24.0 // indirect
 	go.opentelemetry.io/otel v1.11.2 // indirect
 	go.opentelemetry.io/otel/trace v1.11.2 // indirect
@@ -135,7 +136,8 @@ require (
 	golang.org/x/mod v0.8.0 // indirect
 	golang.org/x/net v0.8.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
-	golang.org/x/sys v0.6.0 // indirect
+	golang.org/x/sys v0.7.0 // indirect
+	golang.org/x/text v0.8.0 // indirect
 	google.golang.org/protobuf v1.30.0 // indirect
 	gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce // indirect
 )
