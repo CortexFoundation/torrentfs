@@ -73,7 +73,7 @@ func main() {
 
 func run(conf *Config) error {
 	glogger := log.NewGlogHandler(log.StreamHandler(os.Stderr, log.TerminalFormat(true)))
-	glogger.Verbosity(log.LvlInfo)
+	glogger.Verbosity(log.LvlDebug)
 	glogger.Vmodule("")
 	log.Root().SetHandler(glogger)
 	conf.db = kv.Badger("")

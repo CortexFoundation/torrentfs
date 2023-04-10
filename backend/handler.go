@@ -360,6 +360,7 @@ func (tm *TorrentManager) dropTorrent(t *Torrent) {
 	case torrentPaused:
 	case torrentSeeding:
 		tm.seeds.Add(-1)
+	//case torrentStopping:
 	default:
 		log.Warn("Unknown status", "ih", t.InfoHash(), "status", t.Status())
 	}
@@ -676,14 +677,18 @@ func (tm *TorrentManager) injectSpec(ih string, spec *torrent.TorrentSpec) (*tor
 	}
 }
 
-func (tm *TorrentManager) updateGlobalTrackers() {
+func (tm *TorrentManager) updateGlobalTrackers() error {
 	tm.lock.Lock()
 	defer tm.lock.Unlock()
 
 	if global := wormhole.BestTrackers(); len(global) > 0 {
 		tm.globalTrackers = [][]string{global}
 		log.Info("Global trackers update", "size", len(global), "cap", wormhole.CAP)
+	} else {
+		return errors.New("best trackers failed")
 	}
+
+	return nil
 }
 
 /*func (tm *TorrentManager) updateColaList() {
@@ -1043,7 +1048,7 @@ func (tm *TorrentManager) forPending(t *Torrent) {
 
 func (tm *TorrentManager) mainLoop() {
 	defer tm.wg.Done()
-	timer := time.NewTicker(time.Second * params.QueryTimeInterval * 3600 * 18)
+	timer := time.NewTimer(time.Second * params.QueryTimeInterval * 3600 * 18)
 	defer timer.Stop()
 	for {
 		select {
@@ -1076,7 +1081,16 @@ func (tm *TorrentManager) mainLoop() {
 				}
 			}
 		case <-timer.C:
-			go tm.updateGlobalTrackers()
+			tm.wg.Add(1)
+			go func() {
+				defer tm.wg.Done()
+				if err := tm.updateGlobalTrackers(); err == nil {
+					timer.Reset(time.Second * params.QueryTimeInterval * 3600 * 18)
+				} else {
+					log.Error("No global tracker found", "err", err)
+					timer.Reset(time.Second * params.QueryTimeInterval * 3600)
+				}
+			}()
 		case <-tm.closeAll:
 			return
 		}
