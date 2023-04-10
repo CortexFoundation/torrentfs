@@ -174,9 +174,8 @@ type TorrentManager struct {
 	recovery atomic.Uint32
 	seeds    atomic.Int32
 	pends    atomic.Int32
-
-	actives atomic.Int32
-	stops   atomic.Int32
+	actives  atomic.Int32
+	stops    atomic.Int32
 }
 
 // can only call by fs.go: 'SeedingLocal()'
@@ -354,7 +353,18 @@ func (tm *TorrentManager) dropTorrent(t *Torrent) {
 		tm.stops.Add(1)
 	}()
 
-	if t.Status() == torrentPending {
+	switch t.Status() {
+	case torrentPending:
+	case torrentRunning:
+		tm.actives.Add(-1)
+	case torrentPaused:
+	case torrentSeeding:
+		tm.seeds.Add(-1)
+	default:
+		log.Warn("Unknown status", "ih", t.InfoHash(), "status", t.Status())
+	}
+
+	/*if t.Status() == torrentPending {
 		//tm.pending_lock.Lock()
 		//delete(tm.pendingTorrents, t.InfoHash())
 		//tm.pending_lock.Unlock()
@@ -373,7 +383,7 @@ func (tm *TorrentManager) dropTorrent(t *Torrent) {
 		tm.seeds.Add(-1)
 	} else {
 		log.Warn("Unknown status", "ih", t.InfoHash(), "status", t.Status())
-	}
+	}*/
 
 	//delete(tm.torrents, t.InfoHash())
 	//tm.torrents.Delete(t.InfoHash())
@@ -383,45 +393,30 @@ func (tm *TorrentManager) Close() error {
 	tm.lock.Lock()
 	defer tm.lock.Unlock()
 
-	/*log.Info("Current running torrents", "size", len(tm.torrents))
-	for _, t := range tm.torrents {
-		t.Stop()
-	}*/
-
-	log.Info("Current running torrents", "size", tm.torrents.Len())
-	tm.torrents.Range(func(_ string, t *Torrent) bool {
-		t.Close()
-		return true
-	})
-
-	tm.client.Close()
-	tm.client.WaitAll()
 	tm.closeOnce.Do(func() {
+		log.Info("Current running torrents", "size", tm.torrents.Len())
+		tm.torrents.Range(func(_ string, t *Torrent) bool {
+			t.Close()
+			return true
+		})
+
+		tm.client.Close()
+		tm.client.WaitAll()
+
 		close(tm.closeAll)
 		tm.wg.Wait()
+
+		if tm.kvdb != nil {
+			log.Info("Nas engine close", "engine", tm.kvdb.Name())
+			tm.kvdb.Close()
+		}
+
+		if tm.fc != nil {
+			tm.fc.Stop()
+		}
+		log.Info("Fs Download Manager Closed")
 	})
-	//if tm.fileCache != nil {
-	//	tm.fileCache.Reset()
-	//}
 
-	if tm.kvdb != nil {
-		log.Info("Nas engine close", "engine", tm.kvdb.Name())
-		tm.kvdb.Close()
-	}
-	//if tm.hotCache != nil {
-	//	tm.hotCache.Purge()
-	//}
-
-	if tm.fc != nil {
-		tm.fc.Stop()
-	}
-
-	//tm.torrents.Clear()
-	//tm.seedingTorrents.Clear()
-	//tm.activeTorrents.Clear()
-	//tm.pendingTorrents.Clear()
-
-	log.Info("Fs Download Manager Closed")
 	return nil
 }
 
@@ -684,6 +679,7 @@ func (tm *TorrentManager) injectSpec(ih string, spec *torrent.TorrentSpec) (*tor
 func (tm *TorrentManager) updateGlobalTrackers() {
 	tm.lock.Lock()
 	defer tm.lock.Unlock()
+
 	if global := wormhole.BestTrackers(); len(global) > 0 {
 		tm.globalTrackers = [][]string{global}
 		log.Info("Global trackers update", "size", len(global), "cap", wormhole.CAP)
@@ -846,7 +842,7 @@ func NewTorrentManager(config *params.Config, fsid uint64, cache, compress bool)
 		activeChan:  make(chan *Torrent, torrentChanSize),
 		pendingChan: make(chan *Torrent, torrentChanSize),
 		//pendingRemoveChan: make(chan string, torrentChanSize),
-		droppingChan: make(chan string),
+		droppingChan: make(chan string, 1),
 		mode:         config.Mode,
 		//boost:             config.Boost,
 		id:             fsid,
@@ -1033,7 +1029,6 @@ func (tm *TorrentManager) commit(ctx context.Context, hex string, request uint64
 	case <-ctx.Done():
 		return ctx.Err()
 	case <-tm.closeAll:
-		return nil
 	}
 
 	return nil
@@ -1069,6 +1064,7 @@ func (tm *TorrentManager) mainLoop() {
 						t.Torrent = tt
 						t.start = mclock.Now()
 						t.Unlock()
+
 						tm.forPending(t)
 						tm.recovery.Add(1)
 						tm.stops.Add(-1)
@@ -1129,7 +1125,7 @@ func (tm *TorrentManager) pendingLoop() {
 					}
 
 					if err := t.Start(); err != nil {
-						log.Error("Nas start failed", "ih", t.InfoHash())
+						log.Error("Nas start failed", "ih", t.InfoHash(), "err", err)
 						// TODO
 					}
 
@@ -1191,37 +1187,6 @@ func (tm *TorrentManager) finish(t *Torrent) {
 	}
 }
 
-var _cache uint64
-
-func (tm *TorrentManager) total() (ret uint64) {
-	/*tm.lock.RLock()
-	defer tm.lock.RUnlock()
-
-	for _, t := range tm.torrents {
-		if t.Torrent.Info() != nil {
-			ret += uint64(t.Torrent.BytesCompleted())
-		}
-	}*/
-
-	tm.torrents.Range(func(_ string, t *Torrent) bool {
-		if t.Torrent.Info() != nil {
-			t.RLock()
-			ret += uint64(t.Torrent.BytesCompleted())
-			t.RUnlock()
-		}
-
-		return true
-	})
-
-	if _cache > ret {
-		ret = _cache
-	} else {
-		_cache = ret
-	}
-
-	return
-}
-
 /*func (tm *TorrentManager) dur() uint64 {
 	return tm.seconds.Load()
 }
@@ -1237,12 +1202,14 @@ func (tm *TorrentManager) activeLoop() {
 		//timer_2 = time.NewTicker(time.Second * params.QueryTimeInterval * 3600 * 18)
 		//clean = []*Torrent{}
 	)
+
 	defer func() {
 		tm.wg.Done()
 		timer.Stop()
 		timer_1.Stop()
 		//timer_2.Stop()
 	}()
+
 	for {
 		select {
 		case t := <-tm.activeChan:
@@ -1253,7 +1220,7 @@ func (tm *TorrentManager) activeLoop() {
 			//tm.activeTorrents.Set(t.InfoHash(), t)
 
 			if t.QuotaFull() { //t.Length() <= t.BytesRequested() {
-				t.Leech()
+				//t.Leech()
 			}
 
 			n := tm.blockCaculate(t.Torrent.Length())

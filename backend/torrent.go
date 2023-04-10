@@ -20,6 +20,7 @@ import (
 	"errors"
 	//"bytes"
 	//"context"
+	"context"
 	"os"
 	"path/filepath"
 	"sync"
@@ -92,7 +93,7 @@ func NewTorrent(t *torrent.Torrent, requested int64, ih string, path string, slo
 		infohash:       ih,
 		filepath:       path,
 		start:          mclock.Now(),
-		taskCh:         make(chan task, 1),
+		taskCh:         make(chan task, 8),
 		closeAll:       make(chan any),
 		slot:           slot,
 		spec:           spec,
@@ -160,9 +161,6 @@ func (t *Torrent) CitedDec() {
 }
 
 func (t *Torrent) BytesRequested() int64 {
-	//t.RLock()
-	//defer t.RUnlock()
-
 	return t.bytesRequested
 }
 
@@ -230,9 +228,10 @@ func (t *Torrent) Seed() bool {
 	//}
 	if t.Torrent.Seeding() {
 		t.Lock()
+		defer t.Unlock()
+
 		t.status = torrentSeeding
 		t.stopListen()
-		t.Unlock()
 
 		elapsed := time.Duration(mclock.Now()) - time.Duration(t.start)
 		//if active, ok := params.GoodFiles[t.InfoHash()]; !ok {
@@ -255,6 +254,8 @@ func (t *Torrent) IsSeeding() bool {
 }
 
 func (t *Torrent) Pause() {
+	t.Lock()
+	defer t.Unlock()
 	//if t.currentConns > t.minEstablishedConns {
 	//t.setCurrentConns(t.minEstablishedConns)
 	//t.Torrent.SetMaxEstablishedConns(t.minEstablishedConns)
@@ -267,6 +268,9 @@ func (t *Torrent) Pause() {
 }
 
 func (t *Torrent) Paused() bool {
+	t.RLock()
+	defer t.RUnlock()
+
 	return t.status == torrentPaused
 }
 
@@ -335,8 +339,17 @@ func (t *Torrent) download(p int) error {
 	e = s + p
 
 	if t.taskCh != nil {
-		t.taskCh <- task{s, e}
-		log.Info(ScaleBar(s, e, t.Torrent.NumPieces()), "ih", t.InfoHash(), "slot", t.slot, "s", s, "e", e, "p", p, "total", t.Torrent.NumPieces())
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		select {
+		case t.taskCh <- task{s, e}:
+			log.Info(ScaleBar(s, e, t.Torrent.NumPieces()), "ih", t.InfoHash(), "slot", t.slot, "s", s, "e", e, "p", p, "total", t.Torrent.NumPieces())
+		case <-ctx.Done():
+			return ctx.Err()
+		case <-t.closeAll:
+		}
+	} else {
+		return errors.New("task channel is nil")
 	}
 	return nil
 }
