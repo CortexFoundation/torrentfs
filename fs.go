@@ -271,7 +271,7 @@ func (fs *TorrentFS) listen() {
 	log.Info("Bitsflow listener starting ...")
 	defer fs.wg.Done()
 	ttl := time.NewTimer(3 * time.Second)
-	ticker := time.NewTicker(60 * time.Second)
+	ticker := time.NewTicker(600 * time.Second)
 	defer ttl.Stop()
 	defer ticker.Stop()
 	for {
