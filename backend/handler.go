@@ -1048,6 +1048,20 @@ func (tm *TorrentManager) forPending(t *Torrent) {
 	}
 }
 
+func (tm *TorrentManager) forRunning(t *Torrent) {
+	select {
+	case tm.activeChan <- t:
+	case <-tm.closeAll:
+	}
+}
+
+func (tm *TorrentManager) forSeeding(t *Torrent) {
+	select {
+	case tm.seedingChan <- t:
+	case <-tm.closeAll:
+	}
+}
+
 func (tm *TorrentManager) mainLoop() {
 	defer tm.wg.Done()
 	timer := time.NewTimer(time.Second * params.QueryTimeInterval * 3600 * 24)
@@ -1066,8 +1080,9 @@ func (tm *TorrentManager) mainLoop() {
 				if t.Stopping() {
 					log.Info("Nas recovery", "ih", t.InfoHash(), "status", t.Status(), "complete", common.StorageSize(t.Torrent.BytesCompleted()))
 					if tt, err := tm.injectSpec(t.InfoHash(), t.Spec()); err == nil && tt != nil {
+						t.status.Store(torrentPending)
 						t.Lock()
-						t.status = torrentPending
+						//t.status = torrentPending
 						t.Torrent = tt
 						t.start = mclock.Now()
 						t.Unlock()
@@ -1171,7 +1186,8 @@ func (tm *TorrentManager) pendingLoop() {
 					//tm.pending_lock.Unlock()
 					//tm.pendingTorrents.Delete(t.InfoHash())
 
-					tm.activeChan <- t
+					//tm.activeChan <- t
+					tm.forRunning(t)
 				case <-t.Closed():
 				case <-tm.closeAll:
 				case <-ctx.Done():
@@ -1191,14 +1207,16 @@ func (tm *TorrentManager) finish(t *Torrent) {
 
 	if _, err := os.Stat(filepath.Join(tm.DataDir, t.InfoHash())); err == nil {
 		//tm.activeTorrents.Delete(t.InfoHash())
-		tm.seedingChan <- t
+		//tm.seedingChan <- t
+		tm.forSeeding(t)
 	} else {
 		if err := os.Symlink(
 			filepath.Join(params.DefaultTmpPath, t.InfoHash()),
 			filepath.Join(tm.DataDir, t.InfoHash()),
 		); err == nil {
 			//tm.activeTorrents.Delete(t.InfoHash())
-			tm.seedingChan <- t
+			//tm.seedingChan <- t
+			tm.forSeeding(t)
 		}
 	}
 }
