@@ -541,10 +541,12 @@ func (tm *TorrentManager) loadSpec(ih string, filePath string) *torrent.TorrentS
 		return nil
 	}
 
-	TmpDir := filepath.Join(tm.TmpDataDir, ih)
-	ExistDir := filepath.Join(tm.DataDir, ih)
+	var (
+		TmpDir   = filepath.Join(tm.TmpDataDir, ih)
+		ExistDir = filepath.Join(tm.DataDir, ih)
 
-	var useExistDir bool
+		useExistDir bool
+	)
 	if _, err := os.Stat(ExistDir); err == nil {
 		log.Debug("Seeding from existing file.", "ih", ih)
 		info, err := mi.UnmarshalInfo()
