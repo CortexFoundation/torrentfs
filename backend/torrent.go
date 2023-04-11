@@ -173,16 +173,13 @@ func (t *Torrent) SetBytesRequested(bytesRequested int64) {
 }
 
 func (t *Torrent) Ready() bool {
-	t.RLock()
-	defer t.RUnlock()
-
 	if _, ok := params.BadFiles[t.InfoHash()]; ok {
 		return false
 	}
 
 	ret := t.IsSeeding()
 	if !ret {
-		log.Debug("Not ready", "ih", t.InfoHash(), "status", t.status, "seed", t.Torrent.Seeding(), "seeding", torrentSeeding)
+		//log.Debug("Not ready", "ih", t.InfoHash(), "status", t.status, "seed", t.Torrent.Seeding(), "seeding", torrentSeeding)
 	}
 
 	return ret
@@ -224,7 +221,7 @@ func (t *Torrent) Seed() bool {
 		return false
 	}
 	if t.status == torrentSeeding {
-		log.Debug("Nas status is", "status", t.status, "ih", t.InfoHash())
+		//log.Debug("Nas status is", "status", t.status, "ih", t.InfoHash())
 		return true
 	}
 	//if t.currentConns <= t.minEstablishedConns {
@@ -251,6 +248,9 @@ func (t *Torrent) Seed() bool {
 }
 
 func (t *Torrent) IsSeeding() bool {
+	t.RLock()
+	defer t.RUnlock()
+
 	return t.status == torrentSeeding && t.Torrent.Seeding()
 }
 
@@ -276,9 +276,6 @@ func (t *Torrent) Leech() error {
 		return errors.New("info is nil")
 	}
 
-	t.Lock()
-	defer t.Unlock()
-
 	if t.status != torrentRunning {
 		return errors.New("nas is not running")
 	}
@@ -291,6 +288,9 @@ func (t *Torrent) Leech() error {
 	if limitPieces > t.Torrent.NumPieces() {
 		limitPieces = t.Torrent.NumPieces()
 	}
+
+	t.Lock()
+	defer t.Unlock()
 
 	//if limitPieces <= t.maxPieces && t.status == torrentRunning {
 	//	return
@@ -372,10 +372,16 @@ func (t *Torrent) listen() {
 }
 
 func (t *Torrent) Running() bool {
+	t.RLock()
+	defer t.RUnlock()
+
 	return t.status == torrentRunning
 }
 
 func (t *Torrent) Pending() bool {
+	t.RLock()
+	defer t.RUnlock()
+
 	return t.status == torrentPending
 }
 
@@ -422,7 +428,10 @@ func (t *Torrent) stopListen() {
 }
 
 func (t *Torrent) Close() {
-	t.Stop()
+	t.Lock()
+	defer t.Unlock()
+
+	defer t.Torrent.Drop()
 
 	log.Info("Nas closed", "ih", t.InfoHash(), "total", common.StorageSize(t.Torrent.Length()), "req", common.StorageSize(t.BytesRequested()), "finish", common.StorageSize(t.Torrent.BytesCompleted()), "status", t.Status(), "cited", t.Cited())
 	t = nil
