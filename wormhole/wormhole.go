@@ -57,7 +57,7 @@ func BestTrackers() (ret []string) {
 			log.Warn("Global tracker lost", "err", err)
 			continue
 		}
-		client.SetTimeout(time.Second * 3)
+		client.SetTimeout(time.Second * 2)
 
 		retCh := make(chan string)
 		//var wg sync.WaitGroup
