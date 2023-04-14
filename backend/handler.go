@@ -1048,7 +1048,7 @@ func (tm *TorrentManager) forPending(t *Torrent) {
 
 func (tm *TorrentManager) mainLoop() {
 	defer tm.wg.Done()
-	timer := time.NewTimer(time.Second * params.QueryTimeInterval * 3600 * 18)
+	timer := time.NewTimer(time.Second * params.QueryTimeInterval * 3600 * 24)
 	defer timer.Stop()
 	for {
 		select {
@@ -1085,7 +1085,7 @@ func (tm *TorrentManager) mainLoop() {
 			go func() {
 				defer tm.wg.Done()
 				if err := tm.updateGlobalTrackers(); err == nil {
-					timer.Reset(time.Second * params.QueryTimeInterval * 3600 * 18)
+					timer.Reset(time.Second * params.QueryTimeInterval * 3600 * 24)
 				} else {
 					log.Error("No global tracker found", "err", err)
 					timer.Reset(time.Second * params.QueryTimeInterval * 3600)
