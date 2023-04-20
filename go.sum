@@ -575,8 +575,8 @@ github.com/ucwong/filecache v1.0.5-0.20230402204106-c6ff7d7930ef h1:bbArCHS5UrTT
 github.com/ucwong/filecache v1.0.5-0.20230402204106-c6ff7d7930ef/go.mod h1:ddwX+NCjMZPdpzcGh1fcEbNTUTCtKgt2hC2rqvmLKgA=
 github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb h1:dVZH3AH9f7zB3VBmsjn25B7lfcAyMP4QxdFYTrfj7tg=
 github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb/go.mod h1:3yswsBsVuwsOjDvFfC5Na9XSEf4HC7mj3W3g6jvSY/s=
-github.com/ucwong/golang-kv v1.0.16-0.20230420022227-55629d4173fc h1:WO23vpzFOYv6M2iDC+hreH8PMpgs1CdEToQWDfoL1fs=
-github.com/ucwong/golang-kv v1.0.16-0.20230420022227-55629d4173fc/go.mod h1:30cMOyY29NBwtYV2oblXs/5YwA5QpLi3xcoWZZ5mWtw=
+github.com/ucwong/golang-kv v1.0.16-0.20230420140948-f85ce47d4928 h1:CbZ1HSx9YG6dHRbMCWS30d9evLzTWK2/hm3fZTNaU3I=
+github.com/ucwong/golang-kv v1.0.16-0.20230420140948-f85ce47d4928/go.mod h1:pFPRDx8PPYFli7tBrpt5+ltAzRbWccwUnba5y5wrn/M=
 github.com/ucwong/shard v0.0.0-20230406003402-a003024d1f4f h1:q9Y7MB/zxaHiR3Bxp8/qp9iRju/2cCFIE2RM1o79NWo=
 github.com/ucwong/shard v0.0.0-20230406003402-a003024d1f4f/go.mod h1:Y/x75znJgnXLUzsTENLnGpiUPVEeizYyg6qwpx9M3T0=
 github.com/ugorji/go v1.1.4/go.mod h1:uQMGLiO92mf5W77hV/PUCpI3pbzQx3CRekS0kk+RGrc=

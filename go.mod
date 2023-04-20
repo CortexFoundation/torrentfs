@@ -26,7 +26,7 @@ require (
 	github.com/prometheus/client_golang v1.14.0
 	github.com/ucwong/filecache v1.0.5-0.20230402204106-c6ff7d7930ef
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
-	github.com/ucwong/golang-kv v1.0.16-0.20230420022227-55629d4173fc
+	github.com/ucwong/golang-kv v1.0.16-0.20230420140948-f85ce47d4928
 	github.com/ucwong/shard v0.0.0-20230406003402-a003024d1f4f
 	github.com/urfave/cli/v2 v2.25.1
 	go.etcd.io/bbolt v1.3.7
