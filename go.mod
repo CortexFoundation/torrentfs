@@ -10,7 +10,7 @@ require (
 	github.com/anacrolix/log v0.13.2-0.20221123232138-02e2764801c3
 	github.com/anacrolix/missinggo/v2 v2.7.1
 	github.com/anacrolix/tagflag v1.3.1-0.20210717093243-41ae76143afa
-	github.com/anacrolix/torrent v1.49.1-0.20230404091314-fdb0911e28c6
+	github.com/anacrolix/torrent v1.50.1-0.20230429045449-7e65e55c3501
 	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/deckarep/golang-set/v2 v2.3.0
@@ -24,10 +24,10 @@ require (
 	github.com/jedib0t/go-pretty/v6 v6.4.6
 	github.com/otiai10/copy v1.11.0
 	github.com/prometheus/client_golang v1.15.0
-	github.com/ucwong/filecache v1.0.5
+	github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
-	github.com/ucwong/golang-kv v1.0.18-0.20230422174549-58fd9504744b
-	github.com/ucwong/shard v1.0.0
+	github.com/ucwong/golang-kv v1.0.16-0.20230504223014-a602760006d6
+	github.com/ucwong/shard v1.0.1-0.20230505153952-911e99b5f0c2
 	github.com/urfave/cli/v2 v2.25.1
 	go.etcd.io/bbolt v1.3.7
 	golang.org/x/time v0.3.0
@@ -61,11 +61,11 @@ require (
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/cockroachdb/errors v1.9.1 // indirect
 	github.com/cockroachdb/logtags v0.0.0-20230118201751-21c54148d20b // indirect
-	github.com/cockroachdb/pebble v0.0.0-20230420172751-f87a15b23a26 // indirect
+	github.com/cockroachdb/pebble v0.0.0-20230503231107-9e575c4c10ae // indirect
 	github.com/cockroachdb/redact v1.1.3 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.2.0 // indirect
-	github.com/dgraph-io/badger/v4 v4.0.2-0.20230411083900-1bbd08dd2637 // indirect
+	github.com/dgraph-io/badger/v4 v4.0.2-0.20230504174847-9afd0a093523 // indirect
 	github.com/dgraph-io/ristretto v0.1.1 // indirect
 	github.com/elliotchance/orderedmap v1.5.0 // indirect
 	github.com/getsentry/sentry-go v0.20.0 // indirect
@@ -134,7 +134,7 @@ require (
 	golang.org/x/mod v0.10.0 // indirect
 	golang.org/x/net v0.9.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
-	golang.org/x/sys v0.7.0 // indirect
+	golang.org/x/sys v0.8.0 // indirect
 	golang.org/x/text v0.9.0 // indirect
 	google.golang.org/protobuf v1.30.0 // indirect
 	gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce // indirect
