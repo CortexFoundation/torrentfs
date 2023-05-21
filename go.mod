@@ -26,13 +26,20 @@ require (
 	github.com/prometheus/client_golang v1.15.0
 	github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
-	github.com/ucwong/golang-kv v1.0.16-0.20230519222850-0b164cf90fa9
+	github.com/ucwong/golang-kv v1.0.16-0.20230521160444-95f5ef4c0a22
 	github.com/ucwong/shard v1.0.1-0.20230505153952-911e99b5f0c2
 	github.com/urfave/cli/v2 v2.25.1
 	go.etcd.io/bbolt v1.3.7
 	golang.org/x/time v0.3.0
 	golang.org/x/tools v0.8.0
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2
+)
+
+require (
+	github.com/bwmarrin/snowflake v0.3.0 // indirect
+	github.com/nutsdb/nutsdb v0.12.3-0.20230521084054-b0a6e1ba0c39 // indirect
+	github.com/xujiajun/mmap-go v1.0.1 // indirect
+	github.com/xujiajun/utils v0.0.0-20220904132955-5f7c5b914235 // indirect
 )
 
 require (
