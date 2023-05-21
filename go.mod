@@ -7,10 +7,10 @@ require (
 	github.com/CortexFoundation/merkletree v0.0.0-20230401054716-73abfa6f740b
 	github.com/anacrolix/envpprof v1.3.0
 	github.com/anacrolix/fuse v0.2.0
-	github.com/anacrolix/log v0.13.2-0.20221123232138-02e2764801c3
+	github.com/anacrolix/log v0.13.2-0.20230518105052-6aef2c4c91f1
 	github.com/anacrolix/missinggo/v2 v2.7.1
 	github.com/anacrolix/tagflag v1.3.1-0.20210717093243-41ae76143afa
-	github.com/anacrolix/torrent v1.50.1-0.20230509054651-5703f9b5eb9a
+	github.com/anacrolix/torrent v1.51.1-0.20230519042334-e6a38b1cd194
 	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/deckarep/golang-set/v2 v2.3.0
@@ -26,7 +26,7 @@ require (
 	github.com/prometheus/client_golang v1.15.0
 	github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
-	github.com/ucwong/golang-kv v1.0.16-0.20230420140948-f85ce47d4928
+	github.com/ucwong/golang-kv v1.0.16-0.20230519222850-0b164cf90fa9
 	github.com/ucwong/shard v1.0.1-0.20230505153952-911e99b5f0c2
 	github.com/urfave/cli/v2 v2.25.1
 	go.etcd.io/bbolt v1.3.7
@@ -61,11 +61,11 @@ require (
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/cockroachdb/errors v1.9.1 // indirect
 	github.com/cockroachdb/logtags v0.0.0-20230118201751-21c54148d20b // indirect
-	github.com/cockroachdb/pebble v0.0.0-20230510135629-fe7ae7a62e0f // indirect
+	github.com/cockroachdb/pebble v0.0.0-20230519195609-e892f45bc7e2 // indirect
 	github.com/cockroachdb/redact v1.1.3 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.2.0 // indirect
-	github.com/dgraph-io/badger/v4 v4.0.2-0.20230509100715-ef0e55289cf7 // indirect
+	github.com/dgraph-io/badger/v4 v4.0.2-0.20230519043050-44b59785a8cd // indirect
 	github.com/dgraph-io/ristretto v0.1.1 // indirect
 	github.com/elliotchance/orderedmap v1.5.0 // indirect
 	github.com/getsentry/sentry-go v0.20.0 // indirect
