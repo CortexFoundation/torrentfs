@@ -8,9 +8,10 @@ require (
 	github.com/anacrolix/envpprof v1.3.0
 	github.com/anacrolix/fuse v0.2.0
 	github.com/anacrolix/log v0.14.0
-	github.com/anacrolix/missinggo/v2 v2.7.1
+	github.com/anacrolix/missinggo/v2 v2.7.2-0.20230527121029-a582b4f397b9
 	github.com/anacrolix/tagflag v1.4.0
-	github.com/anacrolix/torrent v1.51.3
+	github.com/anacrolix/torrent v1.51.4-0.20230528035322-5efb4dd9410e
+	github.com/anacrolix/torrent/fs v0.0.0-20230528100733-5380337f869e
 	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/deckarep/golang-set/v2 v2.3.0
