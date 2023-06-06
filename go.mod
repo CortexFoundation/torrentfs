@@ -10,7 +10,7 @@ require (
 	github.com/anacrolix/log v0.14.0
 	github.com/anacrolix/missinggo/v2 v2.7.2-0.20230527121029-a582b4f397b9
 	github.com/anacrolix/tagflag v1.4.0
-	github.com/anacrolix/torrent v1.52.1-0.20230529090101-ac086bb3bd3b
+	github.com/anacrolix/torrent v1.52.1-0.20230606004015-3901c3144bba
 	github.com/anacrolix/torrent/fs v0.0.0-20230528100733-5380337f869e
 	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
@@ -27,7 +27,7 @@ require (
 	github.com/prometheus/client_golang v1.15.1
 	github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
-	github.com/ucwong/golang-kv v1.0.20-0.20230602222843-8b99257bea3e
+	github.com/ucwong/golang-kv v1.0.20-0.20230606121006-896a0dc1e8bc
 	github.com/ucwong/shard v1.0.1-0.20230505153952-911e99b5f0c2
 	github.com/urfave/cli/v2 v2.25.3
 	go.etcd.io/bbolt v1.3.7
@@ -73,11 +73,11 @@ require (
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/cockroachdb/errors v1.9.1 // indirect
 	github.com/cockroachdb/logtags v0.0.0-20230118201751-21c54148d20b // indirect
-	github.com/cockroachdb/pebble v0.0.0-20230602203259-f98d3df2f002 // indirect
+	github.com/cockroachdb/pebble v0.0.0-20230605022253-ec5ff92b741d // indirect
 	github.com/cockroachdb/redact v1.1.4 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.2.0 // indirect
-	github.com/dgraph-io/badger/v4 v4.0.2-0.20230530182009-f9b9e4d05538 // indirect
+	github.com/dgraph-io/badger/v4 v4.0.2-0.20230603134200-4b0d919b30ab // indirect
 	github.com/dgraph-io/ristretto v0.1.1 // indirect
 	github.com/elliotchance/orderedmap v1.5.0 // indirect
 	github.com/getsentry/sentry-go v0.21.0 // indirect
