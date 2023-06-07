@@ -3,15 +3,15 @@ module github.com/CortexFoundation/torrentfs
 go 1.20
 
 require (
-	github.com/CortexFoundation/CortexTheseus v1.10.42
+	github.com/CortexFoundation/CortexTheseus v1.10.43
 	github.com/CortexFoundation/merkletree v0.0.0-20230401054716-73abfa6f740b
 	github.com/anacrolix/envpprof v1.3.0
 	github.com/anacrolix/fuse v0.2.0
 	github.com/anacrolix/log v0.14.0
 	github.com/anacrolix/missinggo/v2 v2.7.2-0.20230527121029-a582b4f397b9
 	github.com/anacrolix/tagflag v1.4.0
-	github.com/anacrolix/torrent v1.52.1-0.20230529090101-ac086bb3bd3b
-	github.com/anacrolix/torrent/fs v0.0.0-20230528100733-5380337f869e
+	github.com/anacrolix/torrent v1.52.1-0.20230606004015-3901c3144bba
+	github.com/anacrolix/torrent/fs v0.0.0-20230606004015-3901c3144bba
 	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/deckarep/golang-set/v2 v2.3.0
@@ -27,12 +27,12 @@ require (
 	github.com/prometheus/client_golang v1.15.1
 	github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
-	github.com/ucwong/golang-kv v1.0.20-0.20230531082438-595530c1673b
+	github.com/ucwong/golang-kv v1.0.20-0.20230606121006-896a0dc1e8bc
 	github.com/ucwong/shard v1.0.1-0.20230505153952-911e99b5f0c2
-	github.com/urfave/cli/v2 v2.25.3
+	github.com/urfave/cli/v2 v2.25.5
 	go.etcd.io/bbolt v1.3.7
 	golang.org/x/time v0.3.0
-	golang.org/x/tools v0.9.1
+	golang.org/x/tools v0.9.3
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2
 )
 
@@ -40,7 +40,7 @@ require (
 	github.com/bwmarrin/snowflake v0.3.0 // indirect
 	github.com/nutsdb/nutsdb v0.12.3-0.20230521084054-b0a6e1ba0c39 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/stretchr/testify v1.8.3 // indirect
+	github.com/stretchr/testify v1.8.4 // indirect
 	github.com/xujiajun/mmap-go v1.0.1 // indirect
 	github.com/xujiajun/utils v0.0.0-20220904132955-5f7c5b914235 // indirect
 	go.opentelemetry.io/otel/metric v1.16.0 // indirect
@@ -73,11 +73,11 @@ require (
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/cockroachdb/errors v1.9.1 // indirect
 	github.com/cockroachdb/logtags v0.0.0-20230118201751-21c54148d20b // indirect
-	github.com/cockroachdb/pebble v0.0.0-20230530230020-1880f18801dd // indirect
+	github.com/cockroachdb/pebble v0.0.0-20230605022253-ec5ff92b741d // indirect
 	github.com/cockroachdb/redact v1.1.4 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.2.0 // indirect
-	github.com/dgraph-io/badger/v4 v4.0.2-0.20230530182009-f9b9e4d05538 // indirect
+	github.com/dgraph-io/badger/v4 v4.0.2-0.20230603134200-4b0d919b30ab // indirect
 	github.com/dgraph-io/ristretto v0.1.1 // indirect
 	github.com/elliotchance/orderedmap v1.5.0 // indirect
 	github.com/getsentry/sentry-go v0.21.0 // indirect
@@ -97,7 +97,7 @@ require (
 	github.com/huin/goupnp v1.2.0 // indirect
 	github.com/jackpal/go-nat-pmp v1.0.2 // indirect
 	github.com/klauspost/compress v1.16.5 // indirect
-	github.com/klauspost/cpuid/v2 v2.2.4 // indirect
+	github.com/klauspost/cpuid/v2 v2.2.5 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/lispad/go-generics-tools v1.1.0 // indirect
@@ -106,7 +106,7 @@ require (
 	github.com/mschoch/smat v0.2.0 // indirect
 	github.com/pion/datachannel v1.5.5 // indirect
 	github.com/pion/dtls/v2 v2.2.7 // indirect
-	github.com/pion/ice/v2 v2.3.5 // indirect
+	github.com/pion/ice/v2 v2.3.6 // indirect
 	github.com/pion/interceptor v0.1.17 // indirect
 	github.com/pion/logging v0.2.2 // indirect
 	github.com/pion/mdns v0.0.7 // indirect
@@ -119,11 +119,11 @@ require (
 	github.com/pion/stun v0.6.0 // indirect
 	github.com/pion/transport/v2 v2.2.1 // indirect
 	github.com/pion/turn/v2 v2.1.0 // indirect
-	github.com/pion/webrtc/v3 v3.2.6 // indirect
+	github.com/pion/webrtc/v3 v3.2.9 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/prometheus/client_model v0.4.0 // indirect
 	github.com/prometheus/common v0.44.0 // indirect
-	github.com/prometheus/procfs v0.10.0 // indirect
+	github.com/prometheus/procfs v0.10.1 // indirect
 	github.com/rivo/uniseg v0.4.4 // indirect
 	github.com/rogpeppe/go-internal v1.10.0 // indirect
 	github.com/rs/dnscache v0.0.0-20211102005908-e0241e321417 // indirect
@@ -133,7 +133,7 @@ require (
 	github.com/tidwall/btree v1.6.0 // indirect
 	github.com/tidwall/hashmap v1.8.1 // indirect
 	github.com/tklauser/go-sysconf v0.3.11 // indirect
-	github.com/tklauser/numcpus v0.6.0 // indirect
+	github.com/tklauser/numcpus v0.6.1 // indirect
 	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
 	github.com/yusufpapurcu/wmi v1.2.3 // indirect
 	github.com/zeebo/xxh3 v1.0.3-0.20230105190837-8b1e819c6d4d // indirect
