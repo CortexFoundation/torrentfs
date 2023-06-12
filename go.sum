@@ -164,8 +164,8 @@ github.com/decred/dcrd/crypto/blake256 v1.0.1 h1:7PltbUIQB7u/FfZ39+DGa/ShuMyJ5il
 github.com/decred/dcrd/dcrec/secp256k1/v4 v4.2.0 h1:8UrgZ3GkP4i/CLijOJx79Yu+etlyjdBU4sfcs2WYQMs=
 github.com/decred/dcrd/dcrec/secp256k1/v4 v4.2.0/go.mod h1:v57UDF4pDQJcEfFUCRop3lJL149eHGSe9Jvczhzjo/0=
 github.com/dgraph-io/badger v1.6.0/go.mod h1:zwt7syl517jmP8s94KqSxTlM6IMsdhYy6psNgSztDR4=
-github.com/dgraph-io/badger/v4 v4.0.2-0.20230608034636-d85287bfd1be h1:RO2eeooIGn/tSSgtGDC3ZVv23uYA2/PjLEmevOYfwX8=
-github.com/dgraph-io/badger/v4 v4.0.2-0.20230608034636-d85287bfd1be/go.mod h1:P50u28d39ibBRmIJuQC/NSdBOg46HnHw7al2SW5QRHg=
+github.com/dgraph-io/badger/v4 v4.0.2-0.20230612050215-907dd6578d56 h1:tleGQQ8pfQZTkNJcJWp+NY8IMWyCzZJfMli1pS2uoeo=
+github.com/dgraph-io/badger/v4 v4.0.2-0.20230612050215-907dd6578d56/go.mod h1:P50u28d39ibBRmIJuQC/NSdBOg46HnHw7al2SW5QRHg=
 github.com/dgraph-io/ristretto v0.1.1 h1:6CWw5tJNgpegArSHpNHJKldNeq03FQCwYvfMVWajOK8=
 github.com/dgraph-io/ristretto v0.1.1/go.mod h1:S1GPSBCYCIhmVNfcth17y2zZtQT6wzkzgwUve0VDWWA=
 github.com/dgryski/go-farm v0.0.0-20190423205320-6a90982ecee2 h1:tdlZCpZ/P9DhczCTSixgIKmwPv6+wP5DGjqLYw5SUiA=
@@ -579,8 +579,8 @@ github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd h1:gBtlvLAsgLk+
 github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd/go.mod h1:ddwX+NCjMZPdpzcGh1fcEbNTUTCtKgt2hC2rqvmLKgA=
 github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb h1:dVZH3AH9f7zB3VBmsjn25B7lfcAyMP4QxdFYTrfj7tg=
 github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb/go.mod h1:3yswsBsVuwsOjDvFfC5Na9XSEf4HC7mj3W3g6jvSY/s=
-github.com/ucwong/golang-kv v1.0.20-0.20230610084455-364e6383ecda h1:tEj3gHIIGnjCuzBozn2mszzAaLkHQFzaAGMk2MDB/CQ=
-github.com/ucwong/golang-kv v1.0.20-0.20230610084455-364e6383ecda/go.mod h1:9aNWp+DfKQ+cU0rHH/wNGnQJxKQDyxP59Quq7G/8p5k=
+github.com/ucwong/golang-kv v1.0.20-0.20230612093743-b34c03efe1f2 h1:Yh6JL0vWeCeQekAzakzpO2mqDbk6hFYD/1tBCgiPkVM=
+github.com/ucwong/golang-kv v1.0.20-0.20230612093743-b34c03efe1f2/go.mod h1:p9I/J4UTLjVclrHId1JgEsGJYXONDGWHHnEkUkJ2uRE=
 github.com/ucwong/shard v1.0.1-0.20230505153952-911e99b5f0c2 h1:acJy1dkbYAeCLrwUyn6GmsCWB+hENQxS6slU0Ozrecc=
 github.com/ucwong/shard v1.0.1-0.20230505153952-911e99b5f0c2/go.mod h1:qJLbdT4XYdXJEaeV6Gz7PI8vWhtDSk+6fiLVqEryG4s=
 github.com/ugorji/go v1.1.4/go.mod h1:uQMGLiO92mf5W77hV/PUCpI3pbzQx3CRekS0kk+RGrc=
