@@ -27,7 +27,7 @@ require (
 	github.com/prometheus/client_golang v1.16.0
 	github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
-	github.com/ucwong/golang-kv v1.0.22-0.20230623105226-450b57ba7ec3
+	github.com/ucwong/golang-kv v1.0.22-0.20230624102742-dd4535f79244
 	github.com/ucwong/shard v1.0.1-0.20230505153952-911e99b5f0c2
 	github.com/urfave/cli/v2 v2.25.7
 	go.etcd.io/bbolt v1.3.7
@@ -41,7 +41,7 @@ require (
 	github.com/cockroachdb/tokenbucket v0.0.0-20230613231145-182959a1fad6 // indirect
 	github.com/gofrs/flock v0.8.1 // indirect
 	github.com/hashicorp/golang-lru/v2 v2.0.4 // indirect
-	github.com/nutsdb/nutsdb v0.12.3-0.20230616011030-aa141e49591d // indirect
+	github.com/nutsdb/nutsdb v0.12.3 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rosedblabs/go-immutable-radix/v2 v2.0.1-0.20230614125820-f2a7bc058c90 // indirect
 	github.com/rosedblabs/rosedb/v2 v2.2.0 // indirect
@@ -55,7 +55,7 @@ require (
 
 require (
 	crawshaw.io/sqlite v0.3.3-0.20220618202545-d1964889ea3c // indirect
-	github.com/DataDog/zstd v1.5.5 // indirect
+	github.com/DataDog/zstd v1.5.6-0.20230622172052-ea68dcab66c0 // indirect
 	github.com/RoaringBitmap/roaring v1.3.0 // indirect
 	github.com/ajwerner/btree v0.0.0-20211221152037-f427b3e689c0 // indirect
 	github.com/alecthomas/atomic v0.1.0-alpha2 // indirect
@@ -79,7 +79,7 @@ require (
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/cockroachdb/errors v1.10.0 // indirect
 	github.com/cockroachdb/logtags v0.0.0-20230118201751-21c54148d20b // indirect
-	github.com/cockroachdb/pebble v0.0.0-20230622193631-b77606f72b19 // indirect
+	github.com/cockroachdb/pebble v0.0.0-20230623143751-975fbcb07b92 // indirect
 	github.com/cockroachdb/redact v1.1.5 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.2.0 // indirect
