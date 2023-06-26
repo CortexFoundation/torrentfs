@@ -85,10 +85,10 @@ github.com/anacrolix/tagflag v1.0.0/go.mod h1:1m2U/K6ZT+JZG0+bdMK6qauP49QT4wE5pm
 github.com/anacrolix/tagflag v1.1.0/go.mod h1:Scxs9CV10NQatSmbyjqmqmeQNwGzlNe0CMUMIxqHIG8=
 github.com/anacrolix/tagflag v1.4.0 h1:OlpkharT7bRqLyMkZs0XAkdb2QM/eG7Aagg0c/8Kijs=
 github.com/anacrolix/tagflag v1.4.0/go.mod h1:jNpc4zGvJgIXIw9xcOtYLMz4iSRYn1XKUkTlbPwwZGg=
-github.com/anacrolix/torrent v1.52.1 h1:y5MW2EkXgkVyWbmoYFj2qVpy/3TchYpCEEulxrV45cE=
-github.com/anacrolix/torrent v1.52.1/go.mod h1:3FzugiL498Wp8yMm064ZjARChHXAtlgk36/TrkYhzio=
-github.com/anacrolix/torrent/fs v0.0.0-20230606004015-3901c3144bba h1:i2iTVw7bPzHkloFGPW98TaCGcgtE62I6qOK6hrY4XxM=
-github.com/anacrolix/torrent/fs v0.0.0-20230606004015-3901c3144bba/go.mod h1:Ai1UOztkS0GRrCZmNEApAgeCccWXHirG/NqdngUD/aI=
+github.com/anacrolix/torrent v1.52.2 h1:1vf7XtmVET3UbzwYVoOoSnX1ZHoMqfHgWs+jb0KQA4c=
+github.com/anacrolix/torrent v1.52.2/go.mod h1:yBUcBuIOlttGEgAW/6gamzQGD+k2+wUh65fOPPzxvC4=
+github.com/anacrolix/torrent/fs v0.0.0-20230626002406-8d527a827407 h1:y8EY5jz6VWFs8W2zt+ublQGNqHg9g2jQ5LY9SV6Chh4=
+github.com/anacrolix/torrent/fs v0.0.0-20230626002406-8d527a827407/go.mod h1:Ai1UOztkS0GRrCZmNEApAgeCccWXHirG/NqdngUD/aI=
 github.com/anacrolix/upnp v0.1.3-0.20220123035249-922794e51c96 h1:QAVZ3pN/J4/UziniAhJR2OZ9Ox5kOY2053tBbbqUPYA=
 github.com/anacrolix/upnp v0.1.3-0.20220123035249-922794e51c96/go.mod h1:Wa6n8cYIdaG35x15aH3Zy6d03f7P728QfdcDeD/IEOs=
 github.com/anacrolix/utp v0.2.0 h1:65Cdmr6q9WSw2KsM+rtJFu7rqDzLl2bdysf4KlNPcFI=
