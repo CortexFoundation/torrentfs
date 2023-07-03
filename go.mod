@@ -27,7 +27,7 @@ require (
 	github.com/prometheus/client_golang v1.16.0
 	github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
-	github.com/ucwong/golang-kv v1.0.22-0.20230702083746-8078861abd03
+	github.com/ucwong/golang-kv v1.0.22-0.20230702214711-bd3089dc589a
 	github.com/ucwong/shard v1.0.1-0.20230505153952-911e99b5f0c2
 	github.com/urfave/cli/v2 v2.25.7
 	go.etcd.io/bbolt v1.3.7
@@ -44,7 +44,7 @@ require (
 	github.com/nutsdb/nutsdb v0.12.4-0.20230628143711-3843ce89fa65 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rosedblabs/go-immutable-radix/v2 v2.0.1-0.20230614125820-f2a7bc058c90 // indirect
-	github.com/rosedblabs/rosedb/v2 v2.2.1-0.20230626152404-b94114c4dd1e // indirect
+	github.com/rosedblabs/rosedb/v2 v2.2.1-0.20230702154935-8a7240b2cb35 // indirect
 	github.com/rosedblabs/wal v1.2.0 // indirect
 	github.com/stretchr/testify v1.8.4 // indirect
 	github.com/xujiajun/mmap-go v1.0.1 // indirect
