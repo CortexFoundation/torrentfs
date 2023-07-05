@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/CortexFoundation/CortexTheseus v1.10.45
-	github.com/CortexFoundation/merkletree v0.0.0-20230401054716-73abfa6f740b
+	github.com/CortexFoundation/robot v0.0.0-20230705100148-1ba788a9ea5a
 	github.com/anacrolix/envpprof v1.3.0
 	github.com/anacrolix/fuse v0.2.0
 	github.com/anacrolix/log v0.14.0
@@ -20,8 +20,6 @@ require (
 	github.com/fsnotify/fsnotify v1.6.0
 	github.com/go-resty/resty/v2 v2.7.1-0.20230321093543-15cedd4f9ee3
 	github.com/golang/snappy v0.0.5-0.20220116011046-fa5810519dcb
-	github.com/google/uuid v1.3.0
-	github.com/hashicorp/golang-lru v0.5.5-0.20221011183528-d4900dc688bf
 	github.com/jedib0t/go-pretty/v6 v6.4.6
 	github.com/otiai10/copy v1.12.0
 	github.com/prometheus/client_golang v1.16.0
@@ -30,16 +28,18 @@ require (
 	github.com/ucwong/golang-kv v1.0.22-0.20230702214711-bd3089dc589a
 	github.com/ucwong/shard v1.0.1-0.20230505153952-911e99b5f0c2
 	github.com/urfave/cli/v2 v2.25.7
-	go.etcd.io/bbolt v1.3.7
 	golang.org/x/time v0.3.0
 	golang.org/x/tools v0.10.0
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2
 )
 
 require (
+	github.com/CortexFoundation/merkletree v0.0.0-20230401054716-73abfa6f740b // indirect
 	github.com/bwmarrin/snowflake v0.3.0 // indirect
 	github.com/cockroachdb/tokenbucket v0.0.0-20230613231145-182959a1fad6 // indirect
 	github.com/gofrs/flock v0.8.1 // indirect
+	github.com/google/uuid v1.3.0 // indirect
+	github.com/hashicorp/golang-lru v0.5.5-0.20221011183528-d4900dc688bf // indirect
 	github.com/hashicorp/golang-lru/v2 v2.0.4 // indirect
 	github.com/nutsdb/nutsdb v0.12.4-0.20230628143711-3843ce89fa65 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
@@ -49,6 +49,7 @@ require (
 	github.com/stretchr/testify v1.8.4 // indirect
 	github.com/xujiajun/mmap-go v1.0.1 // indirect
 	github.com/xujiajun/utils v0.0.0-20220904132955-5f7c5b914235 // indirect
+	go.etcd.io/bbolt v1.3.7 // indirect
 	go.opentelemetry.io/otel/metric v1.16.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
