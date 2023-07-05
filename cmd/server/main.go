@@ -128,10 +128,13 @@ func run(conf *Config) error {
 
 	//wormhole.BestTrackers()
 
-	if err := http.ListenAndServe("127.0.0.1:"+conf.port, mux); err != nil {
-		log.Error("Failed to start server", "err", err)
-		return err
-	}
+	go func() {
+		if err := http.ListenAndServe("127.0.0.1:"+conf.port, mux); err != nil {
+			//log.Error("Failed to start server", "err", err)
+			//return err
+			panic(err)
+		}
+	}()
 
 	var c = make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
