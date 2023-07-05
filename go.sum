@@ -11,8 +11,8 @@ github.com/CortexFoundation/CortexTheseus v1.10.45 h1:Y8J+R34zCI9Rs+Dtinj2zEOERn
 github.com/CortexFoundation/CortexTheseus v1.10.45/go.mod h1:+Mr47xTwFHzTeFkZB1UN40jVt2XSvRUtwCwgGDEnrVc=
 github.com/CortexFoundation/merkletree v0.0.0-20230401054716-73abfa6f740b h1:ioI6D7oyKuSjzz54oPCT8ew2BoEz3isiVh5DXRvLEdQ=
 github.com/CortexFoundation/merkletree v0.0.0-20230401054716-73abfa6f740b/go.mod h1:OwfhC316GcEJ9QVNWPqj6QV7sorcXBnc0P9p8dPfSbM=
-github.com/CortexFoundation/robot v0.0.0-20230705111622-781c440e010c h1:VUI67fwfnY2X808uzUTvm+V/JHqhf4KZpIJ4Esf2qr0=
-github.com/CortexFoundation/robot v0.0.0-20230705111622-781c440e010c/go.mod h1:dKvm/Ntj3jabtiLakJ4Od71IJ7qbw/DqXr8PKo0Bey8=
+github.com/CortexFoundation/robot v0.0.0-20230705130529-6c0840a9a325 h1:sO8spBzUC+m6QoyXwCtw09xBgqvL4wr3yQbkAIP6JCA=
+github.com/CortexFoundation/robot v0.0.0-20230705130529-6c0840a9a325/go.mod h1:dKvm/Ntj3jabtiLakJ4Od71IJ7qbw/DqXr8PKo0Bey8=
 github.com/DataDog/zstd v1.5.6-0.20230622172052-ea68dcab66c0 h1:ye3LRgDs6Og7SKC1wBQH8oMaGczhCRpPpnU74l4rma8=
 github.com/DataDog/zstd v1.5.6-0.20230622172052-ea68dcab66c0/go.mod h1:g4AWEaM3yOg3HYfnJ3YIawPnVdXJh9QME85blwSAmyw=
 github.com/Julusian/godocdown v0.0.0-20170816220326-6d19f8ff2df8/go.mod h1:INZr5t32rG59/5xeltqoCJoNY7e5x/3xoY9WSWVWg74=
