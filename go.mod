@@ -3,8 +3,8 @@ module github.com/CortexFoundation/torrentfs
 go 1.20
 
 require (
-	github.com/CortexFoundation/CortexTheseus v1.10.45
-	github.com/CortexFoundation/robot v1.0.3-0.20230711085303-ef9ca29f6fe3
+	github.com/CortexFoundation/CortexTheseus v1.10.46
+	github.com/CortexFoundation/robot v1.0.3-0.20230716143502-8ce6a8bd48ab
 	github.com/anacrolix/envpprof v1.3.0
 	github.com/anacrolix/fuse v0.2.0
 	github.com/anacrolix/log v0.14.0
@@ -99,7 +99,7 @@ require (
 	github.com/google/btree v1.1.2 // indirect
 	github.com/google/flatbuffers v23.5.26+incompatible // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
-	github.com/holiman/uint256 v1.2.3-0.20230331162826-e42b95a00943 // indirect
+	github.com/holiman/uint256 v1.2.3 // indirect
 	github.com/huandu/xstrings v1.4.0 // indirect
 	github.com/huin/goupnp v1.2.0 // indirect
 	github.com/jackpal/go-nat-pmp v1.0.2 // indirect
