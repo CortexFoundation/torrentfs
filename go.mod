@@ -4,13 +4,13 @@ go 1.20
 
 require (
 	github.com/CortexFoundation/CortexTheseus v1.10.46
-	github.com/CortexFoundation/robot v1.0.3-0.20230711085303-ef9ca29f6fe3
+	github.com/CortexFoundation/robot v1.0.3-0.20230724125218-aa0281646537
 	github.com/anacrolix/envpprof v1.3.0
 	github.com/anacrolix/fuse v0.2.0
 	github.com/anacrolix/log v0.14.0
 	github.com/anacrolix/missinggo/v2 v2.7.2-0.20230527121029-a582b4f397b9
 	github.com/anacrolix/tagflag v1.4.0
-	github.com/anacrolix/torrent v1.52.4-0.20230709231311-8229ac4b3f58
+	github.com/anacrolix/torrent v1.52.4
 	github.com/anacrolix/torrent/fs v0.0.0-20230709231311-8229ac4b3f58
 	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
@@ -25,7 +25,7 @@ require (
 	github.com/prometheus/client_golang v1.16.0
 	github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
-	github.com/ucwong/golang-kv v1.0.22-0.20230716065016-8b0628ed69a4
+	github.com/ucwong/golang-kv v1.0.22-0.20230722073244-66070a1ddace
 	github.com/ucwong/shard v1.0.1-0.20230505153952-911e99b5f0c2
 	github.com/urfave/cli/v2 v2.25.7
 	golang.org/x/time v0.3.0
@@ -34,7 +34,7 @@ require (
 )
 
 require (
-	github.com/CortexFoundation/merkletree v0.0.0-20230401054716-73abfa6f740b // indirect
+	github.com/CortexFoundation/merkletree v0.0.0-20230724124840-b6e80265a137 // indirect
 	github.com/bwmarrin/snowflake v0.3.0 // indirect
 	github.com/cockroachdb/tokenbucket v0.0.0-20230613231145-182959a1fad6 // indirect
 	github.com/gofrs/flock v0.8.1 // indirect
@@ -63,7 +63,7 @@ require (
 	github.com/anacrolix/chansync v0.3.0 // indirect
 	github.com/anacrolix/dht/v2 v2.20.0
 	github.com/anacrolix/generics v0.0.0-20230428105757-683593396d68 // indirect
-	github.com/anacrolix/go-libutp v1.3.0 // indirect
+	github.com/anacrolix/go-libutp v1.3.1 // indirect
 	github.com/anacrolix/missinggo v1.3.0
 	github.com/anacrolix/missinggo/perf v1.0.0 // indirect
 	github.com/anacrolix/mmsg v1.0.0 // indirect
@@ -80,7 +80,7 @@ require (
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/cockroachdb/errors v1.10.0 // indirect
 	github.com/cockroachdb/logtags v0.0.0-20230118201751-21c54148d20b // indirect
-	github.com/cockroachdb/pebble v0.0.0-20230716025533-809057a10ee4 // indirect
+	github.com/cockroachdb/pebble v0.0.0-20230721221451-fcaeb47a50e0 // indirect
 	github.com/cockroachdb/redact v1.1.5 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.2.0 // indirect
