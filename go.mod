@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/CortexFoundation/CortexTheseus v1.10.46
-	github.com/CortexFoundation/robot v1.0.4-0.20230726115343-bbd209dbe87a
+	github.com/CortexFoundation/robot v1.0.4-0.20230728101152-d848e1c9d6b9
 	github.com/anacrolix/envpprof v1.3.0
 	github.com/anacrolix/fuse v0.2.0
 	github.com/anacrolix/log v0.14.0
@@ -25,7 +25,7 @@ require (
 	github.com/prometheus/client_golang v1.16.0
 	github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
-	github.com/ucwong/golang-kv v1.0.22-0.20230727072107-f4d27c624a29
+	github.com/ucwong/golang-kv v1.0.22-0.20230728200654-c88ade56dcdd
 	github.com/ucwong/shard v1.0.1-0.20230505153952-911e99b5f0c2
 	github.com/urfave/cli/v2 v2.25.7
 	golang.org/x/time v0.3.0
@@ -40,11 +40,11 @@ require (
 	github.com/gofrs/flock v0.8.1 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/hashicorp/golang-lru v0.5.5-0.20221011183528-d4900dc688bf // indirect
-	github.com/hashicorp/golang-lru/v2 v2.0.4 // indirect
-	github.com/nutsdb/nutsdb v0.12.7-0.20230727064127-fb0527b349bc // indirect
+	github.com/hashicorp/golang-lru/v2 v2.0.5-0.20230705200825-f4cd393e7b29 // indirect
+	github.com/nutsdb/nutsdb v0.12.7-0.20230727095039-1951f280925a // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rosedblabs/go-immutable-radix/v2 v2.0.1-0.20230614125820-f2a7bc058c90 // indirect
-	github.com/rosedblabs/rosedb/v2 v2.2.2-0.20230727032548-89438b91039e // indirect
+	github.com/rosedblabs/rosedb/v2 v2.2.2-0.20230728140315-2e1cfd7cf460 // indirect
 	github.com/rosedblabs/wal v1.2.1-0.20230720135650-d5d56517e0a3 // indirect
 	github.com/stretchr/testify v1.8.4 // indirect
 	github.com/xujiajun/mmap-go v1.0.1 // indirect
@@ -80,7 +80,7 @@ require (
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/cockroachdb/errors v1.10.0 // indirect
 	github.com/cockroachdb/logtags v0.0.0-20230118201751-21c54148d20b // indirect
-	github.com/cockroachdb/pebble v0.0.0-20230725232348-7a4ed3c57cc5 // indirect
+	github.com/cockroachdb/pebble v0.0.0-20230728153158-ce43e6535942 // indirect
 	github.com/cockroachdb/redact v1.1.5 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.2.0 // indirect
