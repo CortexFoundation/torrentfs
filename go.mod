@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/CortexFoundation/CortexTheseus v1.10.46
-	github.com/CortexFoundation/robot v1.0.3-0.20230729205504-8a2286d92522
+	github.com/CortexFoundation/robot v1.0.4-0.20230730073236-074161bbaa06
 	github.com/anacrolix/envpprof v1.3.0
 	github.com/anacrolix/fuse v0.2.0
 	github.com/anacrolix/log v0.14.0
