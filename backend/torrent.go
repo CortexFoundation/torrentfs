@@ -417,7 +417,7 @@ func (t *Torrent) Stop() {
 	defer t.Torrent.Drop()
 
 	if t.Status() != torrentStopping {
-		log.Info(ProgressBar(t.BytesCompleted(), t.Torrent.Length(), ""), "ih", t.InfoHash(), "total", common.StorageSize(t.Torrent.Length()), "req", common.StorageSize(t.BytesRequested()), "finish", common.StorageSize(t.Torrent.BytesCompleted()), "status", t.Status(), "cited", t.Cited())
+		log.Debug(ProgressBar(t.BytesCompleted(), t.Torrent.Length(), ""), "ih", t.InfoHash(), "total", common.StorageSize(t.Torrent.Length()), "req", common.StorageSize(t.BytesRequested()), "finish", common.StorageSize(t.Torrent.BytesCompleted()), "status", t.Status(), "cited", t.Cited())
 		//t.status = torrentStopping
 		t.status.Store(torrentStopping)
 	}
