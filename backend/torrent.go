@@ -433,7 +433,7 @@ func (t *Torrent) stopListen() {
 
 		t.taskCh = nil
 
-		log.Info("Nas listener stopped", "ih", t.InfoHash(), "status", t.Status())
+		log.Debug("Nas listener stopped", "ih", t.InfoHash(), "status", t.Status())
 	})
 }
 
