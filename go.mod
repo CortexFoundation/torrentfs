@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/CortexFoundation/CortexTheseus v1.10.46
-	github.com/CortexFoundation/robot v1.0.5-0.20230804155714-62b5334cd91f
+	github.com/CortexFoundation/robot v1.0.5-0.20230806100035-808e561fa5d4
 	github.com/anacrolix/envpprof v1.3.0
 	github.com/anacrolix/fuse v0.2.0
 	github.com/anacrolix/log v0.14.0
@@ -25,7 +25,7 @@ require (
 	github.com/prometheus/client_golang v1.16.0
 	github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
-	github.com/ucwong/golang-kv v1.0.23-0.20230805075412-50201768d48f
+	github.com/ucwong/golang-kv v1.0.23-0.20230806100313-8093edf686fb
 	github.com/ucwong/shard v1.0.1-0.20230505153952-911e99b5f0c2
 	github.com/urfave/cli/v2 v2.25.7
 	golang.org/x/time v0.3.0
@@ -44,7 +44,7 @@ require (
 	github.com/nutsdb/nutsdb v0.13.1-0.20230803123437-a81dd1afaf2f // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rosedblabs/go-immutable-radix/v2 v2.0.1-0.20230614125820-f2a7bc058c90 // indirect
-	github.com/rosedblabs/rosedb/v2 v2.2.2-0.20230729072225-0ac294e9358f // indirect
+	github.com/rosedblabs/rosedb/v2 v2.2.2 // indirect
 	github.com/rosedblabs/wal v1.3.1 // indirect
 	github.com/stretchr/testify v1.8.4 // indirect
 	github.com/xujiajun/mmap-go v1.0.1 // indirect
