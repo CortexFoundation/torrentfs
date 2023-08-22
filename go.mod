@@ -4,13 +4,13 @@ go 1.20
 
 require (
 	github.com/CortexFoundation/CortexTheseus v1.10.46
-	github.com/CortexFoundation/robot v1.0.5-0.20230817151905-224841d4d3a0
+	github.com/CortexFoundation/robot v1.0.5-0.20230820223944-e4ee2c132f4d
 	github.com/anacrolix/envpprof v1.3.0
 	github.com/anacrolix/fuse v0.2.0
 	github.com/anacrolix/log v0.14.0
 	github.com/anacrolix/missinggo/v2 v2.7.2-0.20230527121029-a582b4f397b9
 	github.com/anacrolix/tagflag v1.4.0
-	github.com/anacrolix/torrent v1.52.6-0.20230817081446-de3309319f03
+	github.com/anacrolix/torrent v1.52.6-0.20230822025354-78cd5a1c0aef
 	github.com/anacrolix/torrent/fs v0.0.0-20230709231311-8229ac4b3f58
 	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
@@ -25,7 +25,7 @@ require (
 	github.com/prometheus/client_golang v1.16.0
 	github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
-	github.com/ucwong/golang-kv v1.0.23-0.20230819181037-df7b60be8c35
+	github.com/ucwong/golang-kv v1.0.23-0.20230821221447-47119bb83917
 	github.com/ucwong/shard v1.0.1-0.20230505153952-911e99b5f0c2
 	github.com/urfave/cli/v2 v2.25.7
 	golang.org/x/time v0.3.0
@@ -42,8 +42,8 @@ require (
 	github.com/emirpasic/gods v1.18.1 // indirect
 	github.com/gofrs/flock v0.8.1 // indirect
 	github.com/google/uuid v1.3.0 // indirect
-	github.com/hashicorp/golang-lru/v2 v2.0.5-0.20230807184434-3b3d2595eca1 // indirect
-	github.com/nutsdb/nutsdb v0.13.2-0.20230819142949-0eae1bce39fe // indirect
+	github.com/hashicorp/golang-lru/v2 v2.0.6-0.20230808191114-3afaa48530f7 // indirect
+	github.com/nutsdb/nutsdb v0.13.2-0.20230821150130-94e5b25d1d64 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rosedblabs/go-immutable-radix/v2 v2.0.1-0.20230614125820-f2a7bc058c90 // indirect
 	github.com/rosedblabs/rosedb/v2 v2.2.2 // indirect
