@@ -1,4 +1,4 @@
-// Copyright 2021 The CortexTheseus Authors
+// Copyright 2022 The CortexTheseus Authors
 // This file is part of the CortexTheseus library.
 //
 // The CortexTheseus library is free software: you can redistribute it and/or modify
@@ -51,12 +51,12 @@ func main() {
 	}
 	if *output == "-" {
 		os.Stdout.Write(code)
-	} else if err := os.WriteFile(*output, code, 0644); err != nil {
+	} else if err := os.WriteFile(*output, code, 0600); err != nil {
 		fatal(err)
 	}
 }
 
-func fatal(args ...any) {
+func fatal(args ...interface{}) {
 	fmt.Fprintln(os.Stderr, args...)
 	os.Exit(1)
 }
@@ -106,7 +106,7 @@ func (cfg *Config) process() (code []byte, err error) {
 	// Find the type and generate.
 	typ, err := lookupStructType(pkg.Scope(), cfg.Type)
 	if err != nil {
-		return nil, fmt.Errorf("can't find %s in %s: %v", typ, pkg, err)
+		return nil, fmt.Errorf("can't find %s in %s: %v", cfg.Type, pkg, err)
 	}
 	code, err = bctx.generate(typ, cfg.GenerateEncoder, cfg.GenerateDecoder)
 	if err != nil {
