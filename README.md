@@ -4,7 +4,7 @@ Torrentfs is a elastic file system, you can pull or push any files by following 
 
 ## Install
 ```
-go install github.com/CortexFoundation/torrent/cmd/torrentfs@latest
+go install github.com/CortexFoundation/torrentfs/cmd/torrent@latest
 ```
 
 ## Import
