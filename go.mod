@@ -1,11 +1,11 @@
 module github.com/CortexFoundation/torrentfs
 
-go 1.21.0
+go 1.20
 
 require (
 	github.com/CortexFoundation/CortexTheseus v1.10.48
 	github.com/CortexFoundation/robot v1.0.5-0.20230828094447-91dadd9d34b7
-	github.com/CortexFoundation/wormhole v0.0.0-20230908084448-ffa06d649f77
+	github.com/CortexFoundation/wormhole v0.0.0-20230908085523-44aea02f16f8
 	github.com/anacrolix/dht/v2 v2.20.0
 	github.com/anacrolix/envpprof v1.3.0
 	github.com/anacrolix/fuse v0.2.0
