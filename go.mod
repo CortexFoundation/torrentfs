@@ -1,10 +1,11 @@
 module github.com/CortexFoundation/torrentfs
 
-go 1.20
+go 1.21.0
 
 require (
-	github.com/CortexFoundation/CortexTheseus v1.10.48-0.20230831063737-f66986facdf2
+	github.com/CortexFoundation/CortexTheseus v1.10.48
 	github.com/CortexFoundation/robot v1.0.5-0.20230828094447-91dadd9d34b7
+	github.com/CortexFoundation/wormhole v0.0.0-20230908084448-ffa06d649f77
 	github.com/anacrolix/dht/v2 v2.20.0
 	github.com/anacrolix/envpprof v1.3.0
 	github.com/anacrolix/fuse v0.2.0
@@ -90,7 +91,7 @@ require (
 	github.com/hashicorp/golang-lru/v2 v2.0.6-0.20230823180716-8f8764ff4ea3 // indirect
 	github.com/holiman/uint256 v1.2.3 // indirect
 	github.com/huandu/xstrings v1.4.0 // indirect
-	github.com/huin/goupnp v1.2.0 // indirect
+	github.com/huin/goupnp v1.3.0 // indirect
 	github.com/jackpal/go-nat-pmp v1.0.2 // indirect
 	github.com/klauspost/compress v1.16.7 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.5 // indirect
@@ -148,7 +149,7 @@ require (
 	go.opentelemetry.io/otel/metric v1.16.0 // indirect
 	go.opentelemetry.io/otel/trace v1.16.0 // indirect
 	golang.org/x/crypto v0.12.0 // indirect
-	golang.org/x/exp v0.0.0-20230811145659-89c5cff77bcb // indirect
+	golang.org/x/exp v0.0.0-20230817173708-d852ddb80c63 // indirect
 	golang.org/x/mod v0.12.0 // indirect
 	golang.org/x/net v0.14.0 // indirect
 	golang.org/x/sync v0.3.0 // indirect
