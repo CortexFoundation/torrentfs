@@ -1,6 +1,8 @@
 module github.com/CortexFoundation/torrentfs
 
-go 1.20
+go 1.21
+
+toolchain go1.21.1
 
 require (
 	github.com/CortexFoundation/CortexTheseus v1.10.48
@@ -13,7 +15,7 @@ require (
 	github.com/anacrolix/missinggo v1.3.0
 	github.com/anacrolix/missinggo/v2 v2.7.2
 	github.com/anacrolix/tagflag v1.4.0
-	github.com/anacrolix/torrent v1.52.6-0.20230910112943-dc0e7d9c14cb
+	github.com/anacrolix/torrent v1.52.6-0.20230911001013-87f6cdc1e96f
 	github.com/anacrolix/torrent/fs v0.0.0-20230709231311-8229ac4b3f58
 	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
@@ -72,8 +74,8 @@ require (
 	github.com/elliotchance/orderedmap v1.5.0 // indirect
 	github.com/emirpasic/gods v1.18.1 // indirect
 	github.com/getsentry/sentry-go v0.22.0 // indirect
-	github.com/go-llsqlite/adapter v0.0.0-20230905083127-a7568332b3ac // indirect
-	github.com/go-llsqlite/crawshaw v0.0.0-20230908140959-2f614f0fc470 // indirect
+	github.com/go-llsqlite/adapter v0.0.0-20230910110622-f955011c1e41 // indirect
+	github.com/go-llsqlite/crawshaw v0.0.0-20230910110433-7e901377eb6c // indirect
 	github.com/go-logr/logr v1.2.4 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
