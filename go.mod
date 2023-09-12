@@ -2,8 +2,6 @@ module github.com/CortexFoundation/torrentfs
 
 go 1.21
 
-toolchain go1.21.1
-
 require (
 	github.com/CortexFoundation/CortexTheseus v1.10.48
 	github.com/CortexFoundation/robot v1.0.5-0.20230828094447-91dadd9d34b7
