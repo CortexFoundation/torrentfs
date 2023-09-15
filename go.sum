@@ -90,8 +90,8 @@ github.com/anacrolix/tagflag v1.0.0/go.mod h1:1m2U/K6ZT+JZG0+bdMK6qauP49QT4wE5pm
 github.com/anacrolix/tagflag v1.1.0/go.mod h1:Scxs9CV10NQatSmbyjqmqmeQNwGzlNe0CMUMIxqHIG8=
 github.com/anacrolix/tagflag v1.4.0 h1:OlpkharT7bRqLyMkZs0XAkdb2QM/eG7Aagg0c/8Kijs=
 github.com/anacrolix/tagflag v1.4.0/go.mod h1:jNpc4zGvJgIXIw9xcOtYLMz4iSRYn1XKUkTlbPwwZGg=
-github.com/anacrolix/torrent v1.52.6-0.20230913111536-bd2839cb9ca1 h1:t7IiL4GakRC5LQoBR9ZZdoFNOk85okJHrNv+gMx/AJs=
-github.com/anacrolix/torrent v1.52.6-0.20230913111536-bd2839cb9ca1/go.mod h1:U1BtbBNsjLeOGIukQaqXV5OqjOwkHaaWKFUThinxkE0=
+github.com/anacrolix/torrent v1.52.6-0.20230914125831-4fb12d06b31b h1:Asaf/ETwCIEIYya0+oX2ZCIhHsV6Zt77VGHCP82fchA=
+github.com/anacrolix/torrent v1.52.6-0.20230914125831-4fb12d06b31b/go.mod h1:6lKyJNzkkY68p+LeSfv62auyyceWn12Uji+kme5cpaI=
 github.com/anacrolix/torrent/fs v0.0.0-20230709231311-8229ac4b3f58 h1:gs65N620i/2YpmMiRWqjHN14YRQhGGFcM2cIHMEe67s=
 github.com/anacrolix/torrent/fs v0.0.0-20230709231311-8229ac4b3f58/go.mod h1:Ai1UOztkS0GRrCZmNEApAgeCccWXHirG/NqdngUD/aI=
 github.com/anacrolix/upnp v0.1.3-0.20220123035249-922794e51c96 h1:QAVZ3pN/J4/UziniAhJR2OZ9Ox5kOY2053tBbbqUPYA=
@@ -140,8 +140,8 @@ github.com/cockroachdb/errors v1.10.0 h1:lfxS8zZz1+OjtV4MtNWgboi/W5tyLEB6VQZBXN+
 github.com/cockroachdb/errors v1.10.0/go.mod h1:lknhIsEVQ9Ss/qKDBQS/UqFSvPQjOwNq2qyKAxtHRqE=
 github.com/cockroachdb/logtags v0.0.0-20230118201751-21c54148d20b h1:r6VH0faHjZeQy818SGhaone5OnYfxFR/+AzdY3sf5aE=
 github.com/cockroachdb/logtags v0.0.0-20230118201751-21c54148d20b/go.mod h1:Vz9DsVWQQhf3vs21MhPMZpMGSht7O/2vFW2xusFUVOs=
-github.com/cockroachdb/pebble v0.0.0-20230913170726-3db8edc31693 h1:538FMQLRjL4Q+hLIFkmCEnw56JRAD7grMpK/UJ1b/Nc=
-github.com/cockroachdb/pebble v0.0.0-20230913170726-3db8edc31693/go.mod h1:nindLFinxeDPjP4qI9LtVHAwDef57/0s5KMfWgdktQc=
+github.com/cockroachdb/pebble v0.0.0-20230915084130-336c99798a6d h1:mjzaC4nhcXdT14czQqI4klj/+aExMh3g5pb1EQHbwys=
+github.com/cockroachdb/pebble v0.0.0-20230915084130-336c99798a6d/go.mod h1:nindLFinxeDPjP4qI9LtVHAwDef57/0s5KMfWgdktQc=
 github.com/cockroachdb/redact v1.1.5 h1:u1PMllDkdFfPWaNGMyLD1+so+aq3uUItthCFqzwPJ30=
 github.com/cockroachdb/redact v1.1.5/go.mod h1:BVNblN9mBWFyMyqK1k3AAiSxhvhfK2oOZZ2lK+dpvRg=
 github.com/cockroachdb/tokenbucket v0.0.0-20230807174530-cc333fc44b06 h1:zuQyyAKVxetITBuuhv3BI9cMrmStnpT18zmgmTxunpo=
@@ -186,8 +186,8 @@ github.com/envoyproxy/go-control-plane v0.9.1-0.20191026205805-5f8ba28d4473/go.m
 github.com/envoyproxy/go-control-plane v0.9.4/go.mod h1:6rpuAdCZL397s3pYoYcLgu1mIlRU8Am5FuJP05cCM98=
 github.com/envoyproxy/protoc-gen-validate v0.1.0/go.mod h1:iSmxcyjqTsJpI2R4NaDN7+kN2VEUnK/pcBlmesArF7c=
 github.com/frankban/quicktest v1.9.0/go.mod h1:ui7WezCLWMWxVWr1GETZY3smRy0G4KWq9vcPtJmFl7Y=
-github.com/frankban/quicktest v1.14.4 h1:g2rn0vABPOOXmZUj+vbmUp0lPoXEMuhTpIluN0XL9UY=
-github.com/frankban/quicktest v1.14.4/go.mod h1:4ptaffx2x8+WTWXmUCuVU6aPUX1/Mz7zb5vbUoiM6w0=
+github.com/frankban/quicktest v1.14.6 h1:7Xjx+VpznH+oBnejlPUj8oUpdxnVs4f8XU8WnHkI4W8=
+github.com/frankban/quicktest v1.14.6/go.mod h1:4ptaffx2x8+WTWXmUCuVU6aPUX1/Mz7zb5vbUoiM6w0=
 github.com/fsnotify/fsnotify v1.4.7/go.mod h1:jwhsz4b93w/PPRr/qN1Yymfu8t87LnFCMoQvtojpjFo=
 github.com/fsnotify/fsnotify v1.4.9/go.mod h1:znqG4EE+3YCdAaPaxE2ZRY/06pZUdp0tY4IgpuI1SZQ=
 github.com/fsnotify/fsnotify v1.5.4/go.mod h1:OVB6XrOHzAwXMpEM7uPOzcehqUV2UqJxmVXmkdnm1bU=
@@ -205,8 +205,8 @@ github.com/go-errors/errors v1.4.2 h1:J6MZopCL4uSllY1OfXM374weqZFFItUbrImctkmUxI
 github.com/go-errors/errors v1.4.2/go.mod h1:sIVyrIiJhuEF+Pj9Ebtd6P/rEYROXFi3BopGUQ5a5Og=
 github.com/go-kit/kit v0.8.0/go.mod h1:xBxKIO96dXMWWy0MnWVtmwkA9/13aqxPnvrjFYMA2as=
 github.com/go-kit/kit v0.9.0/go.mod h1:xBxKIO96dXMWWy0MnWVtmwkA9/13aqxPnvrjFYMA2as=
-github.com/go-llsqlite/adapter v0.0.0-20230910110622-f955011c1e41 h1:1Us730PRZRfoXzS6fVIog/HNtQwZbMWfHgHfIPOuRuo=
-github.com/go-llsqlite/adapter v0.0.0-20230910110622-f955011c1e41/go.mod h1:DADrR88ONKPPeSGjFp5iEN55Arx3fi2qXZeKCYDpbmU=
+github.com/go-llsqlite/adapter v0.0.0-20230912124304-94ed0e573c23 h1:7krbnPREaxbmEaAkZovTNCMjmiZXEy/Gz9isFbqFK0I=
+github.com/go-llsqlite/adapter v0.0.0-20230912124304-94ed0e573c23/go.mod h1:DADrR88ONKPPeSGjFp5iEN55Arx3fi2qXZeKCYDpbmU=
 github.com/go-llsqlite/crawshaw v0.0.0-20230910110433-7e901377eb6c h1:pm7z8uwA2q3s8fAsJmKuGckNohqIrw2PRtv6yJ6z0Ro=
 github.com/go-llsqlite/crawshaw v0.0.0-20230910110433-7e901377eb6c/go.mod h1:UdTSzmN3nr5dJNuZCsbPLfhSQB76u16rWh8pn+WFx9Q=
 github.com/go-logfmt/logfmt v0.3.0/go.mod h1:Qt1PoO58o5twSAckw1HlFXLmHsOX5/0LbT9GBnD5lWE=
@@ -523,8 +523,8 @@ github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd h1:gBtlvLAsgLk+
 github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd/go.mod h1:ddwX+NCjMZPdpzcGh1fcEbNTUTCtKgt2hC2rqvmLKgA=
 github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb h1:dVZH3AH9f7zB3VBmsjn25B7lfcAyMP4QxdFYTrfj7tg=
 github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb/go.mod h1:3yswsBsVuwsOjDvFfC5Na9XSEf4HC7mj3W3g6jvSY/s=
-github.com/ucwong/golang-kv v1.0.23-0.20230914080359-4f6598d896b9 h1:79AxVXG4Y/wbFXyXZYNkwoM4uhVvdXK1631iqx9gFRM=
-github.com/ucwong/golang-kv v1.0.23-0.20230914080359-4f6598d896b9/go.mod h1:xg9ilaeJDxhh39RW7VZgYNzEos5gfA/g6RplnKMLOfQ=
+github.com/ucwong/golang-kv v1.0.23-0.20230915085246-c67539220a59 h1:fMcvIaopvpEZ07oc05KEzOruRT9eTx/oaZLd7i1HhqM=
+github.com/ucwong/golang-kv v1.0.23-0.20230915085246-c67539220a59/go.mod h1:0jx7UE8mJhqH6YmhJ++055ctsw4TJIorapX049ps750=
 github.com/ucwong/shard v1.0.1-0.20230902205521-676c0c9c1dd2 h1:aLhuaWVl4L+mhsYO52QflDb3OukXRy/aAg6qP2MuVRM=
 github.com/ucwong/shard v1.0.1-0.20230902205521-676c0c9c1dd2/go.mod h1:pZgA0970EQMQuCyAjCs3Q+9ne2QqnBBiirrTyw+zYiE=
 github.com/urfave/cli/v2 v2.25.7 h1:VAzn5oq403l5pHjc4OhD54+XGO9cdKVL/7lDjF+iKUs=
