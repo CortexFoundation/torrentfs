@@ -13,7 +13,7 @@ require (
 	github.com/anacrolix/missinggo v1.3.0
 	github.com/anacrolix/missinggo/v2 v2.7.2
 	github.com/anacrolix/tagflag v1.4.0
-	github.com/anacrolix/torrent v1.52.6-0.20230914125831-4fb12d06b31b
+	github.com/anacrolix/torrent v1.52.6-0.20230916034836-b84b19cc4c45
 	github.com/anacrolix/torrent/fs v0.0.0-20230709231311-8229ac4b3f58
 	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
@@ -25,9 +25,9 @@ require (
 	github.com/jedib0t/go-pretty/v6 v6.4.6
 	github.com/otiai10/copy v1.12.0
 	github.com/prometheus/client_golang v1.16.0
-	github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd
+	github.com/ucwong/filecache v1.0.6-0.20230916065457-63847b20001a
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
-	github.com/ucwong/golang-kv v1.0.23-0.20230915085246-c67539220a59
+	github.com/ucwong/golang-kv v1.0.23-0.20230916064351-555db8b6f0e1
 	github.com/ucwong/shard v1.0.1-0.20230902205521-676c0c9c1dd2
 	github.com/urfave/cli/v2 v2.25.7
 	golang.org/x/time v0.3.0
@@ -62,7 +62,7 @@ require (
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/cockroachdb/errors v1.10.0 // indirect
 	github.com/cockroachdb/logtags v0.0.0-20230118201751-21c54148d20b // indirect
-	github.com/cockroachdb/pebble v0.0.0-20230915084130-336c99798a6d // indirect
+	github.com/cockroachdb/pebble v0.0.0-20230915152238-6d6570bf1e25 // indirect
 	github.com/cockroachdb/redact v1.1.5 // indirect
 	github.com/cockroachdb/tokenbucket v0.0.0-20230807174530-cc333fc44b06 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
@@ -101,7 +101,7 @@ require (
 	github.com/mattn/go-runewidth v0.0.15 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.4 // indirect
 	github.com/mschoch/smat v0.2.0 // indirect
-	github.com/nutsdb/nutsdb v0.14.1-0.20230907051708-51c9f276ec7b // indirect
+	github.com/nutsdb/nutsdb v0.14.1-0.20230915093218-a1a81e6a48a8 // indirect
 	github.com/pion/datachannel v1.5.5 // indirect
 	github.com/pion/dtls/v2 v2.2.7 // indirect
 	github.com/pion/ice/v2 v2.3.9 // indirect
