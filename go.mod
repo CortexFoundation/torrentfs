@@ -25,9 +25,9 @@ require (
 	github.com/jedib0t/go-pretty/v6 v6.4.6
 	github.com/otiai10/copy v1.12.0
 	github.com/prometheus/client_golang v1.16.0
-	github.com/ucwong/filecache v1.0.6-0.20230916065457-63847b20001a
+	github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
-	github.com/ucwong/golang-kv v1.0.23-0.20230916064351-555db8b6f0e1
+	github.com/ucwong/golang-kv v1.0.23-0.20230916174929-65d054a7d48f
 	github.com/ucwong/shard v1.0.1-0.20230902205521-676c0c9c1dd2
 	github.com/urfave/cli/v2 v2.25.7
 	golang.org/x/time v0.3.0
@@ -101,7 +101,7 @@ require (
 	github.com/mattn/go-runewidth v0.0.15 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.4 // indirect
 	github.com/mschoch/smat v0.2.0 // indirect
-	github.com/nutsdb/nutsdb v0.14.1-0.20230915093218-a1a81e6a48a8 // indirect
+	github.com/nutsdb/nutsdb v0.14.1 // indirect
 	github.com/pion/datachannel v1.5.5 // indirect
 	github.com/pion/dtls/v2 v2.2.7 // indirect
 	github.com/pion/ice/v2 v2.3.9 // indirect
