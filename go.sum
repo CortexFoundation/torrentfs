@@ -10,8 +10,8 @@ github.com/CortexFoundation/CortexTheseus v1.10.48 h1:VuoZuLeIQj35NMgD5Hjf5NI03R
 github.com/CortexFoundation/CortexTheseus v1.10.48/go.mod h1:jx5fhu+wmI9L3uWFOfaZstyH+9ISwgu5Cr9QDMR6T38=
 github.com/CortexFoundation/merkletree v0.0.0-20230724124840-b6e80265a137 h1:GdrLwJRKPrUSd4V/cBpPyzhNQEo8IDT7Le15hmuC+/4=
 github.com/CortexFoundation/merkletree v0.0.0-20230724124840-b6e80265a137/go.mod h1:OwfhC316GcEJ9QVNWPqj6QV7sorcXBnc0P9p8dPfSbM=
-github.com/CortexFoundation/robot v1.0.5-0.20230917084521-3553591d07e8 h1:UDm+TAWw6GFuYAzYQswcR1aXZj9vnPGNpThCtLJHPKI=
-github.com/CortexFoundation/robot v1.0.5-0.20230917084521-3553591d07e8/go.mod h1:woeWmwwGA6H/AYwBP7sbVcJY2gg57ZZZo1O0nGmUNhM=
+github.com/CortexFoundation/robot v1.0.5 h1:L5xe4eGRtJIEQy2Uy3uBy3jhYXj2oQZoDoHMzvut9MQ=
+github.com/CortexFoundation/robot v1.0.5/go.mod h1:woeWmwwGA6H/AYwBP7sbVcJY2gg57ZZZo1O0nGmUNhM=
 github.com/CortexFoundation/wormhole v0.0.0-20230908085523-44aea02f16f8 h1:Cvtqm62iaQx0KBC2ZuEseIsuBh3v1BvIpcHvwIe4yq8=
 github.com/CortexFoundation/wormhole v0.0.0-20230908085523-44aea02f16f8/go.mod h1:62dTMtfdf0W71ZfM7xDFJTFdzMfaKeYUrx7fB5/iQ1s=
 github.com/DataDog/zstd v1.5.6-0.20230622172052-ea68dcab66c0 h1:ye3LRgDs6Og7SKC1wBQH8oMaGczhCRpPpnU74l4rma8=
@@ -140,8 +140,8 @@ github.com/cockroachdb/errors v1.10.0 h1:lfxS8zZz1+OjtV4MtNWgboi/W5tyLEB6VQZBXN+
 github.com/cockroachdb/errors v1.10.0/go.mod h1:lknhIsEVQ9Ss/qKDBQS/UqFSvPQjOwNq2qyKAxtHRqE=
 github.com/cockroachdb/logtags v0.0.0-20230118201751-21c54148d20b h1:r6VH0faHjZeQy818SGhaone5OnYfxFR/+AzdY3sf5aE=
 github.com/cockroachdb/logtags v0.0.0-20230118201751-21c54148d20b/go.mod h1:Vz9DsVWQQhf3vs21MhPMZpMGSht7O/2vFW2xusFUVOs=
-github.com/cockroachdb/pebble v0.0.0-20230915152238-6d6570bf1e25 h1:3TmXZ906ySGZMwTAS0YWzP8hNg4gUIeDmXvu5gEU2PQ=
-github.com/cockroachdb/pebble v0.0.0-20230915152238-6d6570bf1e25/go.mod h1:nindLFinxeDPjP4qI9LtVHAwDef57/0s5KMfWgdktQc=
+github.com/cockroachdb/pebble v0.0.0-20230917032534-be1586403c9b h1:7xayquCpBglP/EAWRN1VElxZM45cT7lR/w7nC9Zv01A=
+github.com/cockroachdb/pebble v0.0.0-20230917032534-be1586403c9b/go.mod h1:nindLFinxeDPjP4qI9LtVHAwDef57/0s5KMfWgdktQc=
 github.com/cockroachdb/redact v1.1.5 h1:u1PMllDkdFfPWaNGMyLD1+so+aq3uUItthCFqzwPJ30=
 github.com/cockroachdb/redact v1.1.5/go.mod h1:BVNblN9mBWFyMyqK1k3AAiSxhvhfK2oOZZ2lK+dpvRg=
 github.com/cockroachdb/tokenbucket v0.0.0-20230807174530-cc333fc44b06 h1:zuQyyAKVxetITBuuhv3BI9cMrmStnpT18zmgmTxunpo=
@@ -523,8 +523,8 @@ github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd h1:gBtlvLAsgLk+
 github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd/go.mod h1:ddwX+NCjMZPdpzcGh1fcEbNTUTCtKgt2hC2rqvmLKgA=
 github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb h1:dVZH3AH9f7zB3VBmsjn25B7lfcAyMP4QxdFYTrfj7tg=
 github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb/go.mod h1:3yswsBsVuwsOjDvFfC5Na9XSEf4HC7mj3W3g6jvSY/s=
-github.com/ucwong/golang-kv v1.0.23-0.20230916174929-65d054a7d48f h1:Zwm82EeAA2KDEOyRU92HVBZzG9MthMgbwae+hnQ/tlg=
-github.com/ucwong/golang-kv v1.0.23-0.20230916174929-65d054a7d48f/go.mod h1:I8u0M9xJTSHuFHPX2XkrlHquQPeW17H4kj94rqAGekI=
+github.com/ucwong/golang-kv v1.0.23-0.20230918073357-9e2fb31f639e h1:hk6vLRLJS078nmXropCWd72beK3lQJnr0wfuGzq2IMU=
+github.com/ucwong/golang-kv v1.0.23-0.20230918073357-9e2fb31f639e/go.mod h1:ck7TFIfEIhmF1WoyFYm59yXy20YGxqozW3oNEkKUrL8=
 github.com/ucwong/shard v1.0.1-0.20230902205521-676c0c9c1dd2 h1:aLhuaWVl4L+mhsYO52QflDb3OukXRy/aAg6qP2MuVRM=
 github.com/ucwong/shard v1.0.1-0.20230902205521-676c0c9c1dd2/go.mod h1:pZgA0970EQMQuCyAjCs3Q+9ne2QqnBBiirrTyw+zYiE=
 github.com/urfave/cli/v2 v2.25.7 h1:VAzn5oq403l5pHjc4OhD54+XGO9cdKVL/7lDjF+iKUs=
