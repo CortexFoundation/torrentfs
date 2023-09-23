@@ -28,7 +28,7 @@ import (
 	"time"
 )
 
-func (tm *TorrentManager) ExistsOrActive(ih string, rawSize uint64) (bool, uint64, mclock.AbsTime, error) {
+func (tm *TorrentManager) ExistsOrActive(ctx context.Context, ih string, rawSize uint64) (bool, uint64, mclock.AbsTime, error) {
 	availableMeter.Mark(1)
 
 	if !common.IsHexAddress(ih) {
