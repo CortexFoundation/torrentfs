@@ -1467,6 +1467,7 @@ func (tm *TorrentManager) Drop(ih string) error {
 	return nil
 }
 
+/*
 func (tm *TorrentManager) Exists(ih string, rawSize uint64) (bool, uint64, mclock.AbsTime, error) {
 	availableMeter.Mark(1)
 
@@ -1539,7 +1540,7 @@ func (tm *TorrentManager) GetFile(ctx context.Context, infohash, subpath string)
 	}
 
 	return
-}
+}*/
 
 func (tm *TorrentManager) unzip(data []byte) ([]byte, error) {
 	if tm.compress {
