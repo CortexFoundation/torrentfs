@@ -911,7 +911,7 @@ func (fs *TorrentFS) download(ctx context.Context, ih string, request uint64) er
 	if err != nil {
 		return err
 	}
-	if exist, _, _, _ := fs.storage().Exists(ih, request); !exist {
+	if exist, _, _, _ := fs.storage().ExistsOrActive(ih, request); !exist {
 		fs.wg.Add(1)
 		go func(ih string, p uint64) {
 			defer fs.wg.Done()
