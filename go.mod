@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	github.com/CortexFoundation/CortexTheseus v1.10.48
-	github.com/CortexFoundation/robot v1.0.7-0.20230924125846-1107e38e6edd
+	github.com/CortexFoundation/robot v1.0.7-0.20230924130929-01afc8203c14
 	github.com/CortexFoundation/wormhole v0.0.2-0.20230922082251-f97b53242e48
 	github.com/anacrolix/dht/v2 v2.20.0
 	github.com/anacrolix/envpprof v1.3.0
