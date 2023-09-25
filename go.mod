@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	github.com/CortexFoundation/CortexTheseus v1.10.48
-	github.com/CortexFoundation/robot v1.0.7-0.20230924130929-01afc8203c14
+	github.com/CortexFoundation/robot v1.0.7-0.20230924205950-05c3925242ed
 	github.com/CortexFoundation/wormhole v0.0.2-0.20230922082251-f97b53242e48
 	github.com/anacrolix/dht/v2 v2.20.0
 	github.com/anacrolix/envpprof v1.3.0
@@ -28,7 +28,7 @@ require (
 	github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
 	github.com/ucwong/golang-kv v1.0.23-0.20230922195406-1f1883da3532
-	github.com/ucwong/shard v1.0.1-0.20230902205521-676c0c9c1dd2
+	github.com/ucwong/shard v1.0.1-0.20230924231639-2ac2d8ab288c
 	github.com/urfave/cli/v2 v2.25.7
 	golang.org/x/time v0.3.0
 	golang.org/x/tools v0.12.1-0.20230815132531-74c255bcf846
@@ -141,7 +141,7 @@ require (
 	github.com/xujiajun/mmap-go v1.0.1 // indirect
 	github.com/xujiajun/utils v0.0.0-20220904132955-5f7c5b914235 // indirect
 	github.com/yusufpapurcu/wmi v1.2.3 // indirect
-	github.com/zeebo/xxh3 v1.0.3-0.20230105190837-8b1e819c6d4d // indirect
+	github.com/zeebo/xxh3 v1.0.3-0.20230502181907-3808c706a06a // indirect
 	go.etcd.io/bbolt v1.3.7 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	go.opentelemetry.io/otel v1.16.0 // indirect
