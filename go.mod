@@ -13,8 +13,7 @@ require (
 	github.com/anacrolix/missinggo v1.3.0
 	github.com/anacrolix/missinggo/v2 v2.7.2
 	github.com/anacrolix/tagflag v1.4.0
-	github.com/anacrolix/torrent v1.52.6-0.20230916034836-b84b19cc4c45
-	github.com/anacrolix/torrent/fs v0.0.0-20230709231311-8229ac4b3f58
+	github.com/anacrolix/torrent v1.52.6-0.20230926122046-f009e1d583cb
 	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/deckarep/golang-set/v2 v2.3.1
