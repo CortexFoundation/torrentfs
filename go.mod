@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	github.com/CortexFoundation/CortexTheseus v1.10.48
-	github.com/CortexFoundation/robot v1.0.7-0.20230925095445-ed66eab85b41
+	github.com/CortexFoundation/robot v1.0.7-0.20231001204802-6299a9ffd845
 	github.com/CortexFoundation/wormhole v0.0.2-0.20230922082251-f97b53242e48
 	github.com/anacrolix/dht/v2 v2.20.0
 	github.com/anacrolix/envpprof v1.3.0
@@ -86,7 +86,7 @@ require (
 	github.com/google/flatbuffers v23.5.26+incompatible // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
-	github.com/hashicorp/golang-lru/v2 v2.0.7-0.20230914134745-d46c1d97e263 // indirect
+	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
 	github.com/holiman/uint256 v1.2.3 // indirect
 	github.com/huandu/xstrings v1.4.0 // indirect
 	github.com/huin/goupnp v1.3.0 // indirect
