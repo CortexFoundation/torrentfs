@@ -305,13 +305,13 @@ func (fs *TorrentFS) listen() {
 	}
 }
 
-func (fs *TorrentFS) Records() map[string]uint64 {
+/*func (fs *TorrentFS) Records() map[string]uint64 {
 	if progs, err := fs.monitor.DB().InitTorrents(); err == nil {
 		return progs
 	}
 
 	return nil
-}
+}*/
 
 // Protocols implements the node.Service interface.
 func (fs *TorrentFS) Protocols() []p2p.Protocol { return []p2p.Protocol{fs.protocol} }
