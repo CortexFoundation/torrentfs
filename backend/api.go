@@ -188,12 +188,12 @@ func (tm *TorrentManager) IsSeeding(ih string) bool {
 	return false //tm.seedingTorrents.Has(ih)
 }
 
-func (tm *TorrentManager) GlobalTrackers() [][]string {
+/*func (tm *TorrentManager) GlobalTrackers() [][]string {
 	tm.lock.RLock()
 	defer tm.lock.RUnlock()
 
 	return tm.globalTrackers
-}
+}*/
 
 // Search and donwload files from torrent
 func (tm *TorrentManager) Search(ctx context.Context, hex string, request uint64) error {
