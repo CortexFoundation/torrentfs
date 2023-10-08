@@ -31,19 +31,6 @@ func (fs *TorrentFS) MaxMessageSize() uint32 {
 	return params.DefaultMaxMessageSize
 }
 
-/*func (fs *TorrentFS) find(ih string) (*Peer, error) {
-        for s, p := range fs.peers {
-                if p.seeding.Contains(ih) {
-                        // TODO
-                        log.Debug("Seed found !!!", "from", s, "ih", ih)
-                        return p, nil
-                }
-        }
-
-        log.Debug("Seed not found !!!", "neighbors", len(fs.peers), "ih", ih)
-        return nil, nil
-}*/
-
 func (fs *TorrentFS) HandlePeer(peer *p2p.Peer, rw p2p.MsgReadWriter) error {
 	//tfsPeer := newPeer(fmt.Sprintf("%x", peer.ID().Bytes()[:8]), fs, peer, rw)
 	tfsPeer := newPeer(peer.ID().String(), fs, peer, rw)
@@ -146,47 +133,6 @@ func (fs *TorrentFS) handleMsg(p *Peer) error {
 
 	return nil
 }
-
-/*func (fs *TorrentFS) collapse(ih string, rawSize uint64) bool {
-	if s, err := fs.tunnel.Get(ih); err == nil && s.Value().(uint64) >= rawSize {
-		return true
-	}
-
-	return false
-}
-
-func (fs *TorrentFS) traverse(ih string, rawSize uint64) error {
-	if err := fs.tunnel.Set(ih, ttlmap.NewItem(rawSize, ttlmap.WithTTL(60*time.Second)), nil); err == nil {
-		log.Trace("Wormhole traverse", "ih", ih, "size", common.StorageSize(rawSize))
-	} else {
-		return err
-	}
-	return nil
-}
-
-func (fs *TorrentFS) broadcast(ih string, rawSize uint64) bool {
-	if !common.IsHexAddress(ih) {
-		return false
-	}
-
-	//if s, err := fs.tunnel.Get(ih); err == nil && s.Value().(uint64) >= rawSize {
-	if fs.collapse(ih, rawSize) {
-		return false
-	}
-
-	//fs.tunnel.Set(ih, ttlmap.NewItem(rawSize, ttlmap.WithTTL(60*time.Second)), nil)
-	if err := fs.traverse(ih, rawSize); err != nil {
-		return false
-	}
-
-	return true
-}
-
-func (fs *TorrentFS) record(id string) {
-        if !fs.history.Contains(id) {
-                fs.history.Add(id)
-        }
-}*/
 
 func (fs *TorrentFS) Neighbors() int {
 	if fs.net != nil {

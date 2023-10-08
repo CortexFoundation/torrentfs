@@ -254,31 +254,6 @@ func (fs *TorrentFS) Drop(ih string) error {
 	return nil
 }
 
-// Download is used to download file with request, broadcast when not found locally
-/*func (fs *TorrentFS) download(ctx context.Context, ih string, request uint64) error {
-	ih = strings.ToLower(ih)
-	_, p, err := fs.monitor.DB().SetTorrentProgress(ih, request)
-	if err != nil {
-		return err
-	}
-	if exist, _, _, _ := fs.storage().ExistsOrActive(ctx, ih, request); !exist {
-		fs.wg.Add(1)
-		go func(ih string, p uint64) {
-			defer fs.wg.Done()
-			s := fs.broadcast(ih, p)
-			if s {
-				log.Debug("Nas "+params.ProtocolVersionStr+" tunnel", "ih", ih, "request", common.StorageSize(float64(p)), "tunnel", fs.tunnel.Len(), "peers", fs.Neighbors())
-			}
-		}(ih, p)
-	}
-	// local search
-	if err := fs.storage().Search(ctx, ih, p); err != nil {
-		return err
-	}
-
-	return nil
-}*/
-
 func (fs *TorrentFS) Download(ctx context.Context, ih string, request uint64) error {
 	return fs.bitsflow(ctx, ih, request)
 	//return fs.download(ctx, ih, request)
