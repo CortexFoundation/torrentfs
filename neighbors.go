@@ -19,13 +19,11 @@ package torrentfs
 import (
 	"context"
 	"errors"
-	"time"
 
 	"github.com/CortexFoundation/CortexTheseus/common"
 	"github.com/CortexFoundation/CortexTheseus/log"
 	"github.com/CortexFoundation/CortexTheseus/p2p"
 	"github.com/CortexFoundation/torrentfs/params"
-
 	"github.com/ucwong/go-ttlmap"
 )
 
@@ -118,10 +116,12 @@ func (fs *TorrentFS) handleMsg(p *Peer) error {
 				return errors.New("invalid address")
 			}
 
+			// already in
 			if ok := fs.collapse(info.Hash, info.Size); ok {
 				return nil
 			}
 
+			// wake up service
 			if err := fs.wakeup(context.Background(), info.Hash); err == nil {
 				if err := fs.traverse(info.Hash, info.Size); err == nil {
 					fs.received.Add(1)
@@ -147,7 +147,7 @@ func (fs *TorrentFS) handleMsg(p *Peer) error {
 	return nil
 }
 
-func (fs *TorrentFS) collapse(ih string, rawSize uint64) bool {
+/*func (fs *TorrentFS) collapse(ih string, rawSize uint64) bool {
 	if s, err := fs.tunnel.Get(ih); err == nil && s.Value().(uint64) >= rawSize {
 		return true
 	}
@@ -182,12 +182,11 @@ func (fs *TorrentFS) broadcast(ih string, rawSize uint64) bool {
 	return true
 }
 
-func (fs *TorrentFS) Envelopes() *ttlmap.Map {
-	fs.peerMu.RLock()
-	defer fs.peerMu.RUnlock()
-
-	return fs.tunnel
-}
+func (fs *TorrentFS) record(id string) {
+        if !fs.history.Contains(id) {
+                fs.history.Add(id)
+        }
+}*/
 
 func (fs *TorrentFS) Neighbors() int {
 	if fs.net != nil {
@@ -197,8 +196,9 @@ func (fs *TorrentFS) Neighbors() int {
 	return len(fs.peers)
 }
 
-func (fs *TorrentFS) record(id string) {
-	if !fs.history.Contains(id) {
-		fs.history.Add(id)
-	}
+func (fs *TorrentFS) Envelopes() *ttlmap.Map {
+	fs.peerMu.RLock()
+	defer fs.peerMu.RUnlock()
+
+	return fs.tunnel
 }
