@@ -18,6 +18,8 @@ package backend
 
 import (
 	"errors"
+	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/CortexFoundation/CortexTheseus/common"
@@ -280,4 +282,27 @@ func (t *Torrent) Close() {
 
 	log.Info("Nas closed", "ih", t.InfoHash(), "total", common.StorageSize(t.Torrent.Length()), "req", common.StorageSize(t.BytesRequested()), "finish", common.StorageSize(t.Torrent.BytesCompleted()), "status", t.Status(), "cited", t.Cited())
 	t = nil
+}
+
+func (t *Torrent) WriteTorrent() error {
+	t.Lock()
+	defer t.Unlock()
+	if _, err := os.Stat(filepath.Join(t.filepath, TORRENT)); err == nil {
+		//t.Pause()
+		return nil
+	}
+
+	if f, err := os.OpenFile(filepath.Join(t.filepath, TORRENT), os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0777); err == nil {
+		defer f.Close()
+		log.Debug("Write seed file", "path", t.filepath)
+		if err := t.Metainfo().Write(f); err != nil {
+			log.Warn("Write seed error", "err", err)
+			return err
+		}
+	} else {
+		log.Warn("Create Path error", "err", err)
+		return err
+	}
+
+	return nil
 }
