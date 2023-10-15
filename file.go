@@ -193,9 +193,9 @@ func (fs *TorrentFS) SeedingLocal(ctx context.Context, filePath string, isLinkMo
 
 		}
 	} else {
-
 		if fileMode {
 			//TODO
+			log.Error("Not support", "link", isLinkMode)
 			return
 		}
 		// check if symbol link exist
