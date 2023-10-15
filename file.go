@@ -248,7 +248,7 @@ func (fs *TorrentFS) Tunnel(ctx context.Context, ih string) error {
 }
 
 func (fs *TorrentFS) Drop(ih string) error {
-	if err := fs.storage().Drop(ih); err != nil {
+	if err := fs.storage().Dropping(ih); err != nil {
 		return err
 	}
 	return nil
