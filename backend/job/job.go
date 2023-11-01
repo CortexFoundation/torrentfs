@@ -16,6 +16,10 @@
 
 package job
 
+import (
+	"time"
+)
+
 type Job struct {
 	id       uint64
 	status   int
@@ -23,8 +27,9 @@ type Job struct {
 	ref      string
 }
 
-func New() *Job {
+func New(_ref string) *Job {
 	job := new(Job)
+	job.ref = _ref
 	return job
 }
 
@@ -41,4 +46,24 @@ func (j *Job) Status() int {
 }
 
 func (j *Job) End() {
+}
+
+func (j *Job) Ref() string {
+	return j.ref
+}
+
+func (j *Job) Complete(fn func() bool) (result chan bool) {
+	result = make(chan bool)
+	tick := time.NewTicker(time.Second)
+	defer tick.Stop()
+	for {
+		select {
+		case <-tick.C:
+			if fn() {
+				result <- true
+				break
+			}
+		}
+	}
+	return
 }

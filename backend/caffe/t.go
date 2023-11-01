@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the CortexTheseus library. If not, see <http://www.gnu.org/licenses/>.
 
-package backend
+package caffe
 
 import (
 	"errors"
@@ -46,6 +46,10 @@ func (t *Torrent) Birth() mclock.AbsTime {
 	return t.start
 }
 
+func (t *Torrent) SetStart(s mclock.AbsTime) {
+	t.start = s
+}
+
 func (t *Torrent) Lock() {
 	t.lock.Lock()
 }
@@ -75,6 +79,10 @@ func (t *Torrent) InfoHash() string {
 
 func (t *Torrent) Status() int {
 	return int(t.status.Load())
+}
+
+func (t *Torrent) SetStatus(s int32) {
+	t.status.Store(s)
 }
 
 func (t *Torrent) Cited() int32 {
@@ -121,7 +129,7 @@ func (t *Torrent) Seed() bool {
 		log.Debug("Nas info is nil", "ih", t.InfoHash())
 		return false
 	}
-	if t.status.Load() == torrentSeeding {
+	if t.status.Load() == TorrentSeeding {
 		//log.Debug("Nas status is", "status", t.status, "ih", t.InfoHash())
 		return true
 	}
@@ -133,7 +141,7 @@ func (t *Torrent) Seed() bool {
 		//t.Lock()
 		//defer t.Unlock()
 
-		t.status.Store(torrentSeeding)
+		t.status.Store(TorrentSeeding)
 		t.stopListen()
 
 		elapsed := time.Duration(mclock.Now()) - time.Duration(t.start)
@@ -153,7 +161,7 @@ func (t *Torrent) IsSeeding() bool {
 	//t.RLock()
 	//defer t.RUnlock()
 
-	return t.status.Load() == torrentSeeding // && t.Torrent.Seeding()
+	return t.status.Load() == TorrentSeeding // && t.Torrent.Seeding()
 }
 
 func (t *Torrent) Pause() {
@@ -163,8 +171,8 @@ func (t *Torrent) Pause() {
 	//t.setCurrentConns(t.minEstablishedConns)
 	//t.Torrent.SetMaxEstablishedConns(t.minEstablishedConns)
 	//}
-	if t.status.Load() != torrentPaused {
-		t.status.Store(torrentPaused)
+	if t.status.Load() != TorrentPaused {
+		t.status.Store(TorrentPaused)
 		//t.maxPieces = 0 //t.minEstablishedConns
 		t.maxPieces.Store(0)
 		t.Torrent.CancelPieces(0, t.Torrent.NumPieces())
@@ -175,7 +183,7 @@ func (t *Torrent) Paused() bool {
 	//t.RLock()
 	//defer t.RUnlock()
 
-	return t.status.Load() == torrentPaused
+	return t.status.Load() == TorrentPaused
 }
 
 func (t *Torrent) Leech() error {
@@ -184,7 +192,7 @@ func (t *Torrent) Leech() error {
 		return errors.New("info is nil")
 	}
 
-	if t.status.Load() != torrentRunning {
+	if t.status.Load() != TorrentRunning {
 		return errors.New("nas is not running")
 	}
 
@@ -216,21 +224,21 @@ func (t *Torrent) Running() bool {
 	//t.RLock()
 	//defer t.RUnlock()
 
-	return t.status.Load() == torrentRunning
+	return t.status.Load() == TorrentRunning
 }
 
 func (t *Torrent) Pending() bool {
 	//t.RLock()
 	//defer t.RUnlock()
 
-	return t.status.Load() == torrentPending
+	return t.status.Load() == TorrentPending
 }
 
 func (t *Torrent) Stopping() bool {
 	//t.RLock()
 	//defer t.RUnlock()
 
-	return t.status.Load() == torrentStopping
+	return t.status.Load() == TorrentStopping
 }
 
 func (t *Torrent) Start() error {
@@ -251,9 +259,9 @@ func (t *Torrent) Stop() {
 
 	defer t.Torrent.Drop()
 
-	if t.Status() != torrentStopping {
-		log.Debug(ProgressBar(t.BytesCompleted(), t.Torrent.Length(), ""), "ih", t.InfoHash(), "total", common.StorageSize(t.Torrent.Length()), "req", common.StorageSize(t.BytesRequested()), "finish", common.StorageSize(t.Torrent.BytesCompleted()), "status", t.Status(), "cited", t.Cited())
-		t.status.Store(torrentStopping)
+	if t.Status() != TorrentStopping {
+		//log.Debug(ProgressBar(t.BytesCompleted(), t.Torrent.Length(), ""), "ih", t.InfoHash(), "total", common.StorageSize(t.Torrent.Length()), "req", common.StorageSize(t.BytesRequested()), "finish", common.StorageSize(t.Torrent.BytesCompleted()), "status", t.Status(), "cited", t.Cited())
+		t.status.Store(TorrentStopping)
 	}
 }
 
@@ -280,6 +288,8 @@ func (t *Torrent) Close() {
 	log.Info("Nas closed", "ih", t.InfoHash(), "total", common.StorageSize(t.Torrent.Length()), "req", common.StorageSize(t.BytesRequested()), "finish", common.StorageSize(t.Torrent.BytesCompleted()), "status", t.Status(), "cited", t.Cited())
 	t = nil
 }
+
+const TORRENT = "torrent"
 
 func (t *Torrent) WriteTorrent() error {
 	t.Lock()
