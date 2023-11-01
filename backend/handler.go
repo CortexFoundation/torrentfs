@@ -37,7 +37,7 @@ import (
 	"github.com/CortexFoundation/CortexTheseus/common/mclock"
 	"github.com/CortexFoundation/CortexTheseus/log"
 	"github.com/CortexFoundation/torrentfs/backend/caffe"
-	"github.com/CortexFoundation/torrentfs/backend/job"
+	//"github.com/CortexFoundation/torrentfs/backend/job"
 	"github.com/CortexFoundation/torrentfs/params"
 	"github.com/CortexFoundation/torrentfs/tool"
 	"github.com/CortexFoundation/torrentfs/types"
@@ -1020,7 +1020,7 @@ func (tm *TorrentManager) pendingLoop() {
 							}(t, b)
 
 							// job TODO
-							log.Info("Job started", "ih", t.InfoHash())
+							/*log.Info("Job started", "ih", t.InfoHash())
 							finish := func(a *caffe.Torrent) bool {
 								if a.Seed() {
 									return true
@@ -1049,7 +1049,7 @@ func (tm *TorrentManager) pendingLoop() {
 									log.Info("Job quit", "ih", t.InfoHash(), "id", j.ID())
 								case <-ctx.Done():
 								}
-							}(t)
+							}(t)*/
 						}
 						//t.lock.Lock()
 						//t.Birth() = mclock.Now()
