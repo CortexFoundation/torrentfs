@@ -1037,7 +1037,7 @@ func (tm *TorrentManager) pendingLoop() {
 								t.SetJob(ct)
 								defer func() {
 									if ct != nil {
-										close(ct)
+										//close(ct)
 									}
 								}()
 

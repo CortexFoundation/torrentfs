@@ -280,6 +280,8 @@ func (t *Torrent) stopListen() {
 		t.Lock()
 		defer t.Unlock()
 
+		//close(t.jobCh)
+
 		close(t.closeAll)
 		t.wg.Wait()
 
