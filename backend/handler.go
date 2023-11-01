@@ -37,6 +37,7 @@ import (
 	"github.com/CortexFoundation/CortexTheseus/common/mclock"
 	"github.com/CortexFoundation/CortexTheseus/log"
 	"github.com/CortexFoundation/torrentfs/backend/caffe"
+	"github.com/CortexFoundation/torrentfs/backend/job"
 	"github.com/CortexFoundation/torrentfs/params"
 	"github.com/CortexFoundation/torrentfs/tool"
 	"github.com/CortexFoundation/torrentfs/types"
@@ -1017,6 +1018,8 @@ func (tm *TorrentManager) pendingLoop() {
 									tm.kvdb.Set([]byte(SEED_PRE+t.InfoHash()), bb)
 								}
 							}(t, b)
+
+							job.New(t).End()
 						}
 						//t.lock.Lock()
 						//t.Birth() = mclock.Now()

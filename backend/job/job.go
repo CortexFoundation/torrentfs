@@ -17,6 +17,7 @@
 package job
 
 import (
+	"github.com/CortexFoundation/torrentfs/backend/caffe"
 	"time"
 )
 
@@ -24,10 +25,10 @@ type Job struct {
 	id       uint64
 	status   int
 	category int
-	ref      string
+	ref      *caffe.Torrent
 }
 
-func New(_ref string) *Job {
+func New(_ref *caffe.Torrent) *Job {
 	job := new(Job)
 	job.ref = _ref
 	return job
@@ -48,22 +49,21 @@ func (j *Job) Status() int {
 func (j *Job) End() {
 }
 
-func (j *Job) Ref() string {
+func (j *Job) Ref() *caffe.Torrent {
 	return j.ref
 }
 
-func (j *Job) Complete(fn func() bool) (result chan bool) {
+func (j *Job) Complete(fn func(t *caffe.Torrent) bool) (result chan bool) {
 	result = make(chan bool)
 	tick := time.NewTicker(time.Second)
 	defer tick.Stop()
 	for {
 		select {
 		case <-tick.C:
-			if fn() {
+			if fn(j.ref) {
 				result <- true
-				break
+				return
 			}
 		}
 	}
-	return
 }
