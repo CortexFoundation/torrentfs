@@ -25,7 +25,9 @@ import (
 
 	"github.com/CortexFoundation/CortexTheseus/common"
 	"github.com/CortexFoundation/CortexTheseus/log"
+	"github.com/CortexFoundation/torrentfs/backend/job"
 	"github.com/CortexFoundation/torrentfs/params"
+	"github.com/CortexFoundation/torrentfs/types"
 )
 
 // can only call by fs.go: 'SeedingLocal()'
@@ -222,4 +224,16 @@ func (tm *TorrentManager) Search(ctx context.Context, hex string, request uint64
 	downloadMeter.Mark(1)
 
 	return tm.commit(ctx, hex, request)
+}
+
+func (tm *TorrentManager) commit(ctx context.Context, hex string, request uint64) error {
+	select {
+	case tm.taskChan <- types.NewBitsFlow(hex, request):
+		// TODO
+	case <-ctx.Done():
+		return ctx.Err()
+	case <-tm.closeAll:
+	}
+
+	return nil
 }

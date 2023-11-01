@@ -895,7 +895,7 @@ func (tm *TorrentManager) init() error {
 		tm.simulate = true
 	}
 	log.Info("Do simulate")
-}*/
+}
 
 func (tm *TorrentManager) commit(ctx context.Context, hex string, request uint64) error {
 	select {
@@ -907,7 +907,7 @@ func (tm *TorrentManager) commit(ctx context.Context, hex string, request uint64
 	}
 
 	return nil
-}
+}*/
 
 func (tm *TorrentManager) Pending(t *Torrent) {
 	select {
