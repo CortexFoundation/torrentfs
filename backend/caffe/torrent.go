@@ -72,7 +72,7 @@ type Torrent struct {
 
 	spec *torrent.TorrentSpec
 
-	jobCh chan bool
+	//jobCh chan bool
 }
 
 type task struct {

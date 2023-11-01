@@ -85,9 +85,9 @@ func (t *Torrent) SetStatus(s int32) {
 	t.status.Store(s)
 }
 
-func (t *Torrent) SetJob(ch chan bool) {
-	t.jobCh = ch
-}
+//func (t *Torrent) SetJob(ch chan bool) {
+//	t.jobCh = ch
+//}
 
 func (t *Torrent) Cited() int32 {
 	return t.cited.Load()
@@ -262,9 +262,9 @@ func (t *Torrent) Stop() {
 	defer t.Unlock()
 
 	defer func() {
-		if t.jobCh != nil {
-			close(t.jobCh)
-		}
+		//if t.jobCh != nil {
+		//close(t.jobCh)
+		//}
 	}()
 
 	defer t.Torrent.Drop()

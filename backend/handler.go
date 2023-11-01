@@ -1034,18 +1034,20 @@ func (tm *TorrentManager) pendingLoop() {
 
 								j := job.New(t)
 								ct := j.Completed(finish)
-								t.SetJob(ct)
+								//t.SetJob(ct)
 								defer func() {
-									if ct != nil {
-										//close(ct)
-									}
+									close(ct)
 								}()
+
+								ctx, cancel := context.WithTimeout(context.Background(), 15*time.Minute)
+								defer cancel()
 
 								select {
 								case suc := <-ct:
 									log.Info("Job has been completed", "ih", t.InfoHash(), "suc", suc, "id", j.ID())
 								case <-tm.closeAll:
 									log.Info("Job quit", "ih", t.InfoHash(), "id", j.ID())
+								case <-ctx.Done():
 								}
 							}(t)
 						}
