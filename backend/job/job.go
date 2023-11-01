@@ -17,9 +17,14 @@
 package job
 
 import (
+	"github.com/CortexFoundation/CortexTheseus/log"
 	"github.com/CortexFoundation/torrentfs/backend/caffe"
+
+	"sync/atomic"
 	"time"
 )
+
+var seq atomic.Uint64
 
 type Job struct {
 	id       uint64
@@ -30,6 +35,7 @@ type Job struct {
 
 func New(_ref *caffe.Torrent) *Job {
 	job := new(Job)
+	job.id = seq.Add(1)
 	job.ref = _ref
 	return job
 }
@@ -53,17 +59,26 @@ func (j *Job) Ref() *caffe.Torrent {
 	return j.ref
 }
 
-func (j *Job) Complete(fn func(t *caffe.Torrent) bool) (result chan bool) {
+func (j *Job) Completed(fn func(t *caffe.Torrent) bool) (result chan bool) {
 	result = make(chan bool)
-	tick := time.NewTicker(time.Second)
-	defer tick.Stop()
-	for {
-		select {
-		case <-tick.C:
-			if fn(j.ref) {
-				result <- true
+	go func() {
+		tick := time.NewTicker(time.Second)
+		defer tick.Stop()
+		for {
+			select {
+			case <-tick.C:
+				if fn(j.ref) {
+					result <- true
+					return
+				} else {
+					log.Info("Waiting ... ...", "ih", j.ref.InfoHash())
+				}
+			case <-result:
+				log.Info("Job channel closed", "ih", j.ref.InfoHash(), "id", j.id)
 				return
 			}
 		}
-	}
+	}()
+
+	return
 }

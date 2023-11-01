@@ -1019,7 +1019,35 @@ func (tm *TorrentManager) pendingLoop() {
 								}
 							}(t, b)
 
-							job.New(t).End()
+							// job TODO
+							log.Info("Job started", "ih", t.InfoHash())
+							finish := func(a *caffe.Torrent) bool {
+								if a.Seed() {
+									return true
+								}
+								return false
+							}
+
+							tm.wg.Add(1)
+							go func(t *caffe.Torrent) {
+								defer tm.wg.Done()
+
+								j := job.New(t)
+								ct := j.Completed(finish)
+								t.SetJob(ct)
+								defer func() {
+									if ct != nil {
+										close(ct)
+									}
+								}()
+
+								select {
+								case suc := <-ct:
+									log.Info("Job has been completed", "ih", t.InfoHash(), "suc", suc, "id", j.ID())
+								case <-tm.closeAll:
+									log.Info("Job quit", "ih", t.InfoHash(), "id", j.ID())
+								}
+							}(t)
 						}
 						//t.lock.Lock()
 						//t.Birth() = mclock.Now()

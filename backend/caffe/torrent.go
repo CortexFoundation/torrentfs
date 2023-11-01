@@ -71,6 +71,8 @@ type Torrent struct {
 	stopOnce  sync.Once
 
 	spec *torrent.TorrentSpec
+
+	jobCh chan bool
 }
 
 type task struct {
