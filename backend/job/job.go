@@ -77,7 +77,7 @@ func (j *Job) Completed(fn func(t *caffe.Torrent) bool) (result chan bool) {
 					log.Trace("Waiting ... ...", "ih", j.ref.InfoHash())
 				}
 			case <-result:
-				log.Info("Job channel closed", "ih", j.ref.InfoHash(), "id", j.id)
+				log.Info("Job channel closed", "ih", j.ref.InfoHash(), "id", j.id, "status", j.ref.Status(), "complete", j.ref.BytesCompleted(), "miss", j.ref.BytesMissing())
 				return
 			}
 		}
