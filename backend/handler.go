@@ -1048,9 +1048,9 @@ func (tm *TorrentManager) pendingLoop() {
 								defer tm.wg.Done()
 
 								j := job.New(t)
-								ct := j.Completed(fn)
+								ch := j.Completed(fn)
 								defer func() {
-									close(ct)
+									close(ch)
 									// TODO
 								}()
 
@@ -1058,7 +1058,7 @@ func (tm *TorrentManager) pendingLoop() {
 								defer cancel()
 
 								select {
-								case suc := <-ct:
+								case suc := <-ch:
 									log.Info("Job has been completed", "ih", t.InfoHash(), "suc", suc, "id", j.ID())
 								case <-ctx.Done():
 								case <-tm.closeAll:
