@@ -75,7 +75,11 @@ func (j *Job) Completed(fn func(t *caffe.Torrent) bool) (result chan bool) {
 			select {
 			case <-tick.C:
 				if fn(j.ref) {
-					result <- true
+					if j.ref.IsSeeding() {
+						result <- true
+					} else {
+						result <- false
+					}
 					return
 				} else {
 					log.Trace("Waiting ... ...", "ih", j.ref.InfoHash())
