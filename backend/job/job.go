@@ -80,7 +80,7 @@ func (j *Job) Completed(fn func(t *caffe.Torrent) bool) (result chan bool) {
 					} else {
 						result <- false
 					}*/
-					result <- j.ref.IsSeeding()
+					result <- j.ref.BytesRequested() <= j.ref.BytesCompleted()
 					return
 				} else {
 					log.Trace("Waiting ... ...", "ih", j.ref.InfoHash())
