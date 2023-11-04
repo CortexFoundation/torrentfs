@@ -1051,6 +1051,7 @@ func (tm *TorrentManager) pendingLoop() {
 								ct := j.Completed(fn)
 								defer func() {
 									close(ct)
+									// TODO
 								}()
 
 								ctx, cancel := context.WithTimeout(context.Background(), timeout*time.Minute)
@@ -1064,8 +1065,6 @@ func (tm *TorrentManager) pendingLoop() {
 									log.Info("Job quit", "ih", t.InfoHash(), "id", j.ID())
 								}
 							}(t, valid)
-						} else {
-							//
 						}
 						//t.lock.Lock()
 						//t.Birth() = mclock.Now()
@@ -1231,7 +1230,7 @@ func (tm *TorrentManager) activeLoop() {
 
 			//if tm.dur() > 0 {
 			//stopped := int32(tm.torrents.Len()) - tm.seeds.Load() - tm.actives.Load() - tm.pends.Load()
-			log.Info("Fs status", "pending", tm.pends.Load(), "downloading", tm.actives.Load(), "seeding", tm.seeds.Load(), "stopping", tm.stops.Load(), "all", tm.torrents.Len(), "recovery", tm.recovery.Load(), "metrics", common.PrettyDuration(tm.Updates)) //, "total", common.StorageSize(tm.total()), "cost", common.PrettyDuration(time.Duration(tm.dur())), "speed", common.StorageSize(float64(tm.total()*1000*1000*1000)/float64(tm.dur())).String()+"/s")
+			log.Info("Fs status", "pending", tm.pends.Load(), "downloading", tm.actives.Load(), "seeding", tm.seeds.Load(), "stopping", tm.stops.Load(), "all", tm.torrents.Len(), "recovery", tm.recovery.Load(), "metrics", common.PrettyDuration(tm.Updates), "job", job.SEQ()) //, "total", common.StorageSize(tm.total()), "cost", common.PrettyDuration(time.Duration(tm.dur())), "speed", common.StorageSize(float64(tm.total()*1000*1000*1000)/float64(tm.dur())).String()+"/s")
 			//}
 		//case <-timer_2.C:
 		//	go tm.updateGlobalTrackers()

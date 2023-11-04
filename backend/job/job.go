@@ -62,6 +62,10 @@ func (j *Job) Ref() *caffe.Torrent {
 	return j.ref
 }
 
+func SEQ() uint64 {
+	return seq.Load()
+}
+
 func (j *Job) Completed(fn func(t *caffe.Torrent) bool) (result chan bool) {
 	result = make(chan bool)
 	go func() {
