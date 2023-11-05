@@ -22,6 +22,7 @@ import (
 
 	"sync/atomic"
 	"time"
+	//"sync"
 )
 
 var seq atomic.Uint64
@@ -31,6 +32,8 @@ type Job struct {
 	status   int
 	category int
 	ref      *caffe.Torrent
+
+	//wg sync.WaitGroup
 }
 
 func New(_ref *caffe.Torrent) *Job {
@@ -59,22 +62,31 @@ func (j *Job) Ref() *caffe.Torrent {
 	return j.ref
 }
 
+func SEQ() uint64 {
+	return seq.Load()
+}
+
 func (j *Job) Completed(fn func(t *caffe.Torrent) bool) (result chan bool) {
 	result = make(chan bool)
 	go func() {
-		tick := time.NewTicker(time.Second)
+		tick := time.NewTicker(time.Second * 10)
 		defer tick.Stop()
 		for {
 			select {
 			case <-tick.C:
 				if fn(j.ref) {
-					result <- true
+					/*if j.ref.IsSeeding() {
+						result <- true
+					} else {
+						result <- false
+					}*/
+					result <- j.ref.BytesRequested() <= j.ref.BytesCompleted()
 					return
 				} else {
-					log.Info("Waiting ... ...", "ih", j.ref.InfoHash())
+					log.Trace("Waiting ... ...", "ih", j.ref.InfoHash())
 				}
 			case <-result:
-				log.Info("Job channel closed", "ih", j.ref.InfoHash(), "id", j.id)
+				log.Info("Job channel closed", "ih", j.ref.InfoHash(), "id", j.id, "status", j.ref.Status(), "complete", j.ref.BytesCompleted(), "miss", j.ref.BytesMissing())
 				return
 			}
 		}
