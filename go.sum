@@ -345,8 +345,8 @@ github.com/mschoch/smat v0.0.0-20160514031455-90eadee771ae/go.mod h1:qAyveg+e4CE
 github.com/mschoch/smat v0.2.0 h1:8imxQsjDm8yFEAVBe7azKmKSgzSkZXDuKkSq9374khM=
 github.com/mschoch/smat v0.2.0/go.mod h1:kc9mz7DoBKqDyiRL7VZN8KvXQMWeTaVnttLRXOlotKw=
 github.com/mwitkow/go-conntrack v0.0.0-20161129095857-cc309e4a2223/go.mod h1:qRWi+5nqEBWmkhHvq77mSJWrCKwh8bxhgT7d/eI7P4U=
-github.com/nutsdb/nutsdb v1.0.2-0.20231202041844-6a3bb4076cbb h1:tuo6MbD37tLzDlJuTWwbBRDln8hvMEpZuIx7gQ7ULlM=
-github.com/nutsdb/nutsdb v1.0.2-0.20231202041844-6a3bb4076cbb/go.mod h1:6inOji9rFBporXeHDjJny4g50RpQbkjSK5jI1hht0j8=
+github.com/nutsdb/nutsdb v1.0.2-0.20231203103502-0940bfe266a2 h1:uxqMEtw38fmIpXsvIT861Qb7Q2SF76DT29Kt9F8u1kk=
+github.com/nutsdb/nutsdb v1.0.2-0.20231203103502-0940bfe266a2/go.mod h1:6inOji9rFBporXeHDjJny4g50RpQbkjSK5jI1hht0j8=
 github.com/nxadm/tail v1.4.4/go.mod h1:kenIhsEOeOJmVchQTgglprH7qJGnHDVpk1VPCcaMI8A=
 github.com/nxadm/tail v1.4.8 h1:nPr65rt6Y5JFSKQO7qToXr7pePgD6Gwiw05lkbyAQTE=
 github.com/nxadm/tail v1.4.8/go.mod h1:+ncqLTQzXmGhMZNUePPaPqPvBxHAIsmXswZKocGu+AU=
@@ -520,8 +520,8 @@ github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd h1:gBtlvLAsgLk+
 github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd/go.mod h1:ddwX+NCjMZPdpzcGh1fcEbNTUTCtKgt2hC2rqvmLKgA=
 github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb h1:dVZH3AH9f7zB3VBmsjn25B7lfcAyMP4QxdFYTrfj7tg=
 github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb/go.mod h1:3yswsBsVuwsOjDvFfC5Na9XSEf4HC7mj3W3g6jvSY/s=
-github.com/ucwong/golang-kv v1.0.23-0.20231202144924-3192b356ec6d h1:ouIzIVv57d3Av0a2yFL6hjL8yjQCEemGXi94aNxIm4o=
-github.com/ucwong/golang-kv v1.0.23-0.20231202144924-3192b356ec6d/go.mod h1:ykfF1TQLSm4kiSzsRe/d/kiWmUqamRlCsg1AH4JFMRM=
+github.com/ucwong/golang-kv v1.0.23-0.20231203142559-1c12ee0f9d79 h1:vnP0hlQNqzF4D+meOTfmBWZXsBbkpGx2DHbPgKvr/aI=
+github.com/ucwong/golang-kv v1.0.23-0.20231203142559-1c12ee0f9d79/go.mod h1:DA+p6e/JUBcl9/2GohRNYbWCdg9+eaTi2ePuN3phZbw=
 github.com/ucwong/shard v1.0.1-0.20230924231639-2ac2d8ab288c h1:6amFZXt8Md3xghS4RfqbYYHhURr0wlnS1e5YDW20Kqs=
 github.com/ucwong/shard v1.0.1-0.20230924231639-2ac2d8ab288c/go.mod h1:zt2/4NyVHn3xGgm8ybwqlgOn5ApkB5eR1UziTpnLmVM=
 github.com/urfave/cli/v2 v2.25.7 h1:VAzn5oq403l5pHjc4OhD54+XGO9cdKVL/7lDjF+iKUs=
