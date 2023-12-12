@@ -72,10 +72,7 @@ func main() {
 }
 
 func run(conf *Config) error {
-	glogger := log.NewGlogHandler(log.StreamHandler(os.Stderr, log.TerminalFormat(true)))
-	glogger.Verbosity(log.LvlInfo)
-	glogger.Vmodule("")
-	log.Root().SetHandler(glogger)
+	log.SetDefault(log.NewLogger(log.NewTerminalHandlerWithLevel(os.Stderr, log.LevelInfo, true)))
 	conf.db = kv.Badger("")
 	//conf.db = kv.Bolt("")
 	//conf.db = kv.LevelDB("")
