@@ -76,7 +76,7 @@ func SEQ() uint64 {
 func (j *Job) Completed(fn func(t *caffe.Torrent) bool) (result chan bool) {
 	result = make(chan bool)
 	go func() {
-		tick := time.NewTicker(time.Second * 5)
+		tick := time.NewTicker(time.Second * 1)
 		defer tick.Stop()
 		for {
 			select {
