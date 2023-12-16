@@ -3,7 +3,7 @@ module github.com/CortexFoundation/torrentfs
 go 1.21
 
 require (
-	github.com/CortexFoundation/CortexTheseus v1.10.52-0.20231212112525-03131017b7b5
+	github.com/CortexFoundation/CortexTheseus v1.10.52-0.20231216115323-6ff33675fe9b
 	github.com/CortexFoundation/robot v1.0.7-0.20231001204802-6299a9ffd845
 	github.com/CortexFoundation/wormhole v0.0.2-0.20231018202213-693acd0cc941
 	github.com/anacrolix/dht/v2 v2.21.0
@@ -26,7 +26,7 @@ require (
 	github.com/prometheus/client_golang v1.17.0
 	github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
-	github.com/ucwong/golang-kv v1.0.23-0.20231212115239-d45c3e24ca4a
+	github.com/ucwong/golang-kv v1.0.23-0.20231216115725-4f38a0fd08a6
 	github.com/ucwong/shard v1.0.1-0.20230924231639-2ac2d8ab288c
 	github.com/urfave/cli/v2 v2.26.0
 	golang.org/x/time v0.5.0
@@ -61,7 +61,7 @@ require (
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/cockroachdb/errors v1.11.1 // indirect
 	github.com/cockroachdb/logtags v0.0.0-20230118201751-21c54148d20b // indirect
-	github.com/cockroachdb/pebble v0.0.0-20231211223132-9848bcdb0fe9 // indirect
+	github.com/cockroachdb/pebble v0.0.0-20231214172447-ab4952c5f87b // indirect
 	github.com/cockroachdb/redact v1.1.5 // indirect
 	github.com/cockroachdb/tokenbucket v0.0.0-20230807174530-cc333fc44b06 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.3 // indirect
@@ -98,7 +98,7 @@ require (
 	github.com/mattn/go-runewidth v0.0.15 // indirect
 	github.com/matttproud/golang_protobuf_extensions/v2 v2.0.0 // indirect
 	github.com/mschoch/smat v0.2.0 // indirect
-	github.com/nutsdb/nutsdb v1.0.2-0.20231211145816-3468fe949461 // indirect
+	github.com/nutsdb/nutsdb v1.0.3-0.20231216104420-099901a09ea1 // indirect
 	github.com/pion/datachannel v1.5.5 // indirect
 	github.com/pion/dtls/v2 v2.2.8 // indirect
 	github.com/pion/ice/v2 v2.3.11 // indirect
@@ -156,7 +156,7 @@ require (
 	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	modernc.org/libc v1.37.0 // indirect
+	modernc.org/libc v1.37.1 // indirect
 	modernc.org/mathutil v1.6.0 // indirect
 	modernc.org/memory v1.7.2 // indirect
 	modernc.org/sqlite v1.27.0 // indirect
