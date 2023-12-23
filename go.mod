@@ -5,7 +5,7 @@ go 1.21
 require (
 	github.com/CortexFoundation/CortexTheseus v1.10.52
 	github.com/CortexFoundation/robot v1.0.7-0.20231001204802-6299a9ffd845
-	github.com/CortexFoundation/wormhole v0.0.2-0.20231221153655-0321e1fe971c
+	github.com/CortexFoundation/wormhole v0.0.2-0.20231221155549-5c938553b5fc
 	github.com/anacrolix/dht/v2 v2.21.0
 	github.com/anacrolix/envpprof v1.3.0
 	github.com/anacrolix/fuse v0.2.0
@@ -26,7 +26,7 @@ require (
 	github.com/prometheus/client_golang v1.17.0
 	github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
-	github.com/ucwong/golang-kv v1.0.23-0.20231220222728-54b1adf96ed4
+	github.com/ucwong/golang-kv v1.0.23-0.20231222222740-defcb8a0f3c3
 	github.com/ucwong/shard v1.0.1-0.20230924231639-2ac2d8ab288c
 	github.com/urfave/cli/v2 v2.26.0
 	golang.org/x/time v0.5.0
@@ -61,7 +61,7 @@ require (
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/cockroachdb/errors v1.11.1 // indirect
 	github.com/cockroachdb/logtags v0.0.0-20230118201751-21c54148d20b // indirect
-	github.com/cockroachdb/pebble v0.0.0-20231220182916-5be92739e7bb // indirect
+	github.com/cockroachdb/pebble v0.0.0-20231222152533-1cce3d01f6d9 // indirect
 	github.com/cockroachdb/redact v1.1.5 // indirect
 	github.com/cockroachdb/tokenbucket v0.0.0-20230807174530-cc333fc44b06 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.3 // indirect
@@ -72,7 +72,7 @@ require (
 	github.com/getsentry/sentry-go v0.25.0 // indirect
 	github.com/go-llsqlite/adapter v0.1.0 // indirect
 	github.com/go-llsqlite/crawshaw v0.5.0 // indirect
-	github.com/go-logr/logr v1.4.0 // indirect
+	github.com/go-logr/logr v1.4.1 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-ole/go-ole v1.3.0 // indirect
 	github.com/go-resty/resty/v2 v2.10.0 // indirect
@@ -98,7 +98,7 @@ require (
 	github.com/mattn/go-runewidth v0.0.15 // indirect
 	github.com/matttproud/golang_protobuf_extensions/v2 v2.0.0 // indirect
 	github.com/mschoch/smat v0.2.0 // indirect
-	github.com/nutsdb/nutsdb v1.0.3-0.20231219150513-49211584c107 // indirect
+	github.com/nutsdb/nutsdb v1.0.3-0.20231221141626-fde58c6021dd // indirect
 	github.com/pion/datachannel v1.5.5 // indirect
 	github.com/pion/dtls/v2 v2.2.8 // indirect
 	github.com/pion/ice/v2 v2.3.11 // indirect
