@@ -27,7 +27,7 @@ require (
 	github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
 	github.com/ucwong/golang-kv v1.0.23-0.20231224113956-6a69cd5e3b7e
-	github.com/ucwong/shard v1.0.1-0.20230924231639-2ac2d8ab288c
+	github.com/ucwong/shard v1.0.1-0.20231225143310-3022d14f9c3e
 	github.com/urfave/cli/v2 v2.26.0
 	golang.org/x/time v0.5.0
 	golang.org/x/tools v0.16.1

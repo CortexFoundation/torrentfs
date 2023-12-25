@@ -528,8 +528,8 @@ github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb h1:dVZH3AH9f7zB
 github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb/go.mod h1:3yswsBsVuwsOjDvFfC5Na9XSEf4HC7mj3W3g6jvSY/s=
 github.com/ucwong/golang-kv v1.0.23-0.20231224113956-6a69cd5e3b7e h1:xx0dgYyVxAJYVJFt1/DSKqwULpRBflH+BPR9gsSNm8Q=
 github.com/ucwong/golang-kv v1.0.23-0.20231224113956-6a69cd5e3b7e/go.mod h1:NIoExDF1Ze3izpX/8NBVrTtg4AihCvCWq2R/sOIELW8=
-github.com/ucwong/shard v1.0.1-0.20230924231639-2ac2d8ab288c h1:6amFZXt8Md3xghS4RfqbYYHhURr0wlnS1e5YDW20Kqs=
-github.com/ucwong/shard v1.0.1-0.20230924231639-2ac2d8ab288c/go.mod h1:zt2/4NyVHn3xGgm8ybwqlgOn5ApkB5eR1UziTpnLmVM=
+github.com/ucwong/shard v1.0.1-0.20231225143310-3022d14f9c3e h1:n8BlAEMpLj9pM5f8UA5gALCUcJ5JPilTyf60eH283m4=
+github.com/ucwong/shard v1.0.1-0.20231225143310-3022d14f9c3e/go.mod h1:8e3DwoC4qXxVcZuwAugpt7sOFwCIxMPVvrHdjA6hj7g=
 github.com/urfave/cli/v2 v2.26.0 h1:3f3AMg3HpThFNT4I++TKOejZO8yU55t3JnnSr4S4QEI=
 github.com/urfave/cli/v2 v2.26.0/go.mod h1:8qnjx1vcq5s2/wpsqoZFndg2CE5tNFyrTvS6SinrnYQ=
 github.com/valyala/bytebufferpool v1.0.0 h1:GqA5TC/0021Y/b9FG4Oi9Mr3q7XYx6KllzawFIhcdPw=
