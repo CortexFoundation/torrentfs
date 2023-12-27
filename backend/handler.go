@@ -943,7 +943,11 @@ func (tm *TorrentManager) mainLoop() {
 	for {
 		select {
 		case msg := <-tm.taskChan:
-			meta := msg.(*types.BitsFlow)
+			meta, ok := msg.(*types.BitsFlow)
+			if !ok {
+				continue
+			}
+
 			if params.IsBad(meta.InfoHash()) {
 				continue
 			}
