@@ -1030,16 +1030,16 @@ func (tm *TorrentManager) pendingLoop() {
 							valid := func(a *caffe.Torrent) bool {
 								switch a.Status() {
 								case caffe.TorrentPending:
-									log.Info("Caffe is pending", "ih", t.InfoHash())
+									log.Trace("Caffe is pending", "ih", t.InfoHash(), "complete", t.BytesCompleted(), "miss", t.BytesMissing(), "request", t.BytesRequested())
 								case caffe.TorrentPaused:
-									log.Info("Caffe is pausing", "ih", t.InfoHash())
+									log.Trace("Caffe is pausing", "ih", t.InfoHash(), "complete", t.BytesCompleted(), "miss", t.BytesMissing(), "request", t.BytesRequested())
 								case caffe.TorrentRunning:
-									log.Trace("Caffe is running", "ih", t.InfoHash())
+									log.Trace("Caffe is running", "ih", t.InfoHash(), "complete", t.BytesCompleted(), "miss", t.BytesMissing(), "request", t.BytesRequested())
 								case caffe.TorrentSeeding:
-									log.Info("Caffe is seeding", "ih", t.InfoHash())
+									log.Info("Caffe is seeding", "ih", t.InfoHash(), "complete", t.BytesCompleted(), "miss", t.BytesMissing(), "request", t.BytesRequested())
 									return true
 								case caffe.TorrentStopping:
-									log.Info("Caffe is stopping", "ih", t.InfoHash(), "complete", t.BytesCompleted(), "miss", t.BytesMissing())
+									log.Info("Caffe is stopping", "ih", t.InfoHash(), "complete", t.BytesCompleted(), "miss", t.BytesMissing(), "request", t.BytesRequested())
 									return true
 								}
 								return false
