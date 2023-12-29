@@ -109,6 +109,17 @@ func (t *Torrent) SetBytesRequested(bytesRequested int64) {
 	//t.Lock()
 	//defer t.Unlock()
 	//t.bytesRequested = bytesRequested
+	if bytesRequested <= t.bytesRequested.Load() {
+		return
+	}
+
+	if t.Info() != nil {
+		if bytesRequested > t.Length() {
+			t.bytesRequested.Store(t.Length())
+			return
+		}
+	}
+
 	t.bytesRequested.Store(bytesRequested)
 }
 
