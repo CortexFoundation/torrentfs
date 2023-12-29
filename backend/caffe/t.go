@@ -117,10 +117,6 @@ func (t *Torrent) SetBytesRequested(bytesRequested int64) {
 		}
 	}
 
-	if bytesRequested <= t.bytesRequested.Load() {
-		return
-	}
-
 	t.bytesRequested.Store(bytesRequested)
 }
 
