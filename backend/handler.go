@@ -918,21 +918,30 @@ func (tm *TorrentManager) commit(ctx context.Context, hex string, request uint64
 func (tm *TorrentManager) Pending(t *caffe.Torrent) {
 	select {
 	case tm.pendingChan <- t:
+		log.Trace("Stable pending", "ih", t.InfoHash())
 	case <-tm.closeAll:
+	default:
+		log.Trace("Unstable pending", "ih", t.InfoHash())
 	}
 }
 
 func (tm *TorrentManager) Running(t *caffe.Torrent) {
 	select {
 	case tm.activeChan <- t:
+		log.Trace("Stable running", "ih", t.InfoHash())
 	case <-tm.closeAll:
+	default:
+		log.Trace("Unstable running", "ih", t.InfoHash())
 	}
 }
 
 func (tm *TorrentManager) Seeding(t *caffe.Torrent) {
 	select {
 	case tm.seedingChan <- t:
+		log.Debug("Stable seeding", "ih", t.InfoHash())
 	case <-tm.closeAll:
+	default:
+		log.Debug("Unstable seeding", "ih", t.InfoHash())
 	}
 }
 
@@ -1334,6 +1343,7 @@ func (tm *TorrentManager) Dropping(ih string) error {
 	select {
 	case tm.droppingChan <- ih:
 	case <-tm.closeAll:
+	default:
 	}
 	return nil
 }
