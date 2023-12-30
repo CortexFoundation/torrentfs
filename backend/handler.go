@@ -945,6 +945,15 @@ func (tm *TorrentManager) Seeding(t *caffe.Torrent) {
 	}
 }
 
+func (tm *TorrentManager) Dropping(ih string) error {
+	select {
+	case tm.droppingChan <- ih:
+	case <-tm.closeAll:
+	default:
+	}
+	return nil
+}
+
 func (tm *TorrentManager) mainLoop() {
 	defer tm.wg.Done()
 	timer := time.NewTimer(time.Second * params.QueryTimeInterval * 3600 * 24)
@@ -1337,15 +1346,6 @@ func (tm *TorrentManager) droppingLoop() {
 			return
 		}
 	}
-}
-
-func (tm *TorrentManager) Dropping(ih string) error {
-	select {
-	case tm.droppingChan <- ih:
-	case <-tm.closeAll:
-	default:
-	}
-	return nil
 }
 
 /*
