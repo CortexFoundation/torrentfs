@@ -82,11 +82,11 @@ func (tm *TorrentManager) GetFile(ctx context.Context, infohash, subpath string)
 			return nil, t.Mux(), ErrUnfinished
 		}
 
-		mu = t.Mux()
 		// Data protection when torrent is active
 		t.RLock()
 		defer t.RUnlock()
 
+		mu = t.Mux()
 	}
 
 	diskReadMeter.Mark(1)
