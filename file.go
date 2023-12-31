@@ -55,7 +55,6 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 					select {
 					//case <-t.C:
 					case <-sub.Chan():
-						log.Info(".......................", "ih", infohash)
 						if ret, _, err := fs.storage().GetFile(ctx, infohash, subpath); err != nil {
 							log.Debug("File downloading ... ...", "ih", infohash, "size", common.StorageSize(rawSize), "path", subpath, "err", err)
 							//t.Reset(100 * time.Millisecond)
