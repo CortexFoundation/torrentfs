@@ -46,18 +46,38 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 		if params.IsGood(infohash) {
 			start := mclock.Now()
 			log.Info("Downloading ... ...", "ih", infohash, "size", common.StorageSize(rawSize), "neighbors", fs.Neighbors(), "current", fs.monitor.CurrentNumber())
-			//t := time.NewTimer(1000 * time.Millisecond)
-			//defer t.Stop()
 
 			if mux != nil {
 				sub := mux.Subscribe(0)
+				select {
+				case <-sub.Chan():
+					if ret, _, err := fs.storage().GetFile(ctx, infohash, subpath); err != nil {
+						log.Debug("File downloading ... ...", "ih", infohash, "size", common.StorageSize(rawSize), "path", subpath, "err", err)
+					} else {
+						elapsed := time.Duration(mclock.Now()) - time.Duration(start)
+						log.Info("Downloaded", "ih", infohash, "size", common.StorageSize(rawSize), "neighbors", fs.Neighbors(), "elapsed", common.PrettyDuration(elapsed), "current", fs.monitor.CurrentNumber())
+						if uint64(len(ret)) > rawSize {
+							return nil, backend.ErrInvalidRawSize
+						}
+						return ret, err
+					}
+				case <-ctx.Done():
+					fs.retry.Add(1)
+					ex, co, to, _ := fs.storage().ExistsOrActive(ctx, infohash, rawSize)
+					log.Warn("Timeout", "ih", infohash, "size", common.StorageSize(rawSize), "err", ctx.Err(), "retry", fs.retry.Load(), "complete", common.StorageSize(co), "timeout", to, "exist", ex)
+					return nil, ctx.Err()
+				case <-fs.closeAll:
+					return nil, nil
+				}
+			} else {
+				/*t := time.NewTimer(1000 * time.Millisecond)
+				defer t.Stop()
 				for {
 					select {
-					//case <-t.C:
-					case <-sub.Chan():
+					case <-t.C:
 						if ret, _, err := fs.storage().GetFile(ctx, infohash, subpath); err != nil {
 							log.Debug("File downloading ... ...", "ih", infohash, "size", common.StorageSize(rawSize), "path", subpath, "err", err)
-							//t.Reset(100 * time.Millisecond)
+							t.Reset(1000 * time.Millisecond)
 						} else {
 							elapsed := time.Duration(mclock.Now()) - time.Duration(start)
 							log.Info("Downloaded", "ih", infohash, "size", common.StorageSize(rawSize), "neighbors", fs.Neighbors(), "elapsed", common.PrettyDuration(elapsed), "current", fs.monitor.CurrentNumber())
@@ -74,7 +94,7 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 					case <-fs.closeAll:
 						return nil, nil
 					}
-				}
+				}*/
 			}
 		}
 
