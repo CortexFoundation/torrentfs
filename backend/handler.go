@@ -1049,7 +1049,7 @@ func (tm *TorrentManager) pendingLoop() {
 							}
 
 							// job TODO
-							valid := func(a *caffe.Torrent) bool {
+							/* valid := func(a *caffe.Torrent) bool {
 								switch a.Status() {
 								case caffe.TorrentPending:
 									log.Trace("Caffe is pending", "ih", t.InfoHash(), "complete", t.BytesCompleted(), "miss", t.BytesMissing(), "request", t.BytesRequested())
@@ -1076,11 +1076,7 @@ func (tm *TorrentManager) pendingLoop() {
 								ch := j.Completed(fn)
 								defer func() {
 									close(ch)
-									// TODO
 								}()
-
-								//ctx, cancel := context.WithTimeout(context.Background(), timeout*time.Minute)
-								//defer cancel()
 
 								select {
 								case suc := <-ch:
@@ -1089,11 +1085,10 @@ func (tm *TorrentManager) pendingLoop() {
 									} else {
 										log.Info("Job has been completed", "ih", t.InfoHash(), "suc", suc, "job", j.ID(), "ready", common.PrettyDuration(time.Duration(j.Birth()-t.Birth())), "elapse", common.PrettyDuration(time.Duration(mclock.Now()-j.Birth())))
 									}
-								//case <-ctx.Done():
 								case <-tm.closeAll:
 									log.Info("Job quit", "ih", t.InfoHash(), "id", j.ID())
 								}
-							}(t, valid)
+							}(t, valid)*/
 						}
 						//t.lock.Lock()
 						//t.Birth() = mclock.Now()
