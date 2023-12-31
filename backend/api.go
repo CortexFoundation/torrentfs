@@ -224,7 +224,9 @@ func (tm *TorrentManager) Search(ctx context.Context, hex string, request uint64
 	downloadMeter.Mark(1)
 
 	if request == 0 {
-		// TODO
+		// sync create torrent
+		tm.addInfoHash(hex, int64(request))
+		return nil
 	}
 
 	return tm.commit(ctx, hex, request)

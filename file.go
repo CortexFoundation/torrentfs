@@ -282,8 +282,10 @@ func (fs *TorrentFS) Drop(ih string) error {
 }
 
 func (fs *TorrentFS) Download(ctx context.Context, ih string, request uint64) error {
-	return fs.bitsflow(ctx, ih, request)
-	//return fs.download(ctx, ih, request)
+	if request > 0 {
+		return fs.bitsflow(ctx, ih, request)
+	}
+	return fs.download(ctx, ih, request)
 }
 
 func (fs *TorrentFS) Status(ctx context.Context, ih string) (int, error) {
