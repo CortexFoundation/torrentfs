@@ -225,8 +225,8 @@ func (tm *TorrentManager) Search(ctx context.Context, hex string, request uint64
 
 	if request == 0 {
 		// sync create torrent
-	//	tm.addInfoHash(hex, int64(request))
-	//	return nil
+		//	tm.addInfoHash(hex, int64(request))
+		//	return nil
 	}
 
 	return tm.commit(ctx, hex, request)

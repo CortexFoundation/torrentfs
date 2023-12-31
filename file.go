@@ -51,6 +51,7 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 				sub := mux.Subscribe(0)
 				select {
 				case <-sub.Chan():
+					log.Info("Seeding notify !!! !!!", "ih", infohash, "size", common.StorageSize(rawSize), "neighbors", fs.Neighbors(), "current", fs.monitor.CurrentNumber())
 					if ret, _, err := fs.storage().GetFile(ctx, infohash, subpath); err != nil {
 						log.Debug("File downloading ... ...", "ih", infohash, "size", common.StorageSize(rawSize), "path", subpath, "err", err)
 					} else {
