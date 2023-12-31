@@ -537,6 +537,7 @@ func (tm *TorrentManager) injectSpec(ih string, spec *torrent.TorrentSpec) (*tor
 	if t, n, err := tm.client.AddTorrentSpec(spec); err == nil {
 		if !n {
 			log.Warn("Try to add a dupliated torrent", "ih", ih)
+			return t, errors.New("Try to add a dupliated torrent")
 		}
 
 		t.AddTrackers(tm.trackers)
@@ -920,8 +921,6 @@ func (tm *TorrentManager) Pending(t *caffe.Torrent) {
 	case tm.pendingChan <- t:
 		log.Trace("Stable pending", "ih", t.InfoHash())
 	case <-tm.closeAll:
-	default:
-		log.Trace("Unstable pending", "ih", t.InfoHash())
 	}
 }
 
