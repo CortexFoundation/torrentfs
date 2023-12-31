@@ -746,7 +746,7 @@ func NewTorrentManager(config *params.Config, fsid uint64, cache, compress bool)
 		closeAll: make(chan struct{}),
 		//initCh:              make(chan struct{}),
 		//simulate:          false,
-		taskChan:    make(chan any, taskChanBuffer),
+		taskChan:    make(chan any), //, taskChanBuffer),
 		seedingChan: make(chan *caffe.Torrent, torrentChanSize),
 		activeChan:  make(chan *caffe.Torrent, torrentChanSize),
 		pendingChan: make(chan *caffe.Torrent, torrentChanSize),
