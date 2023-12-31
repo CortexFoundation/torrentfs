@@ -1319,7 +1319,8 @@ func (tm *TorrentManager) seedingLoop() {
 				tm.actives.Add(-1)
 				tm.seeds.Add(1)
 
-				// TODO
+				// TODO to notification center
+				go t.Mux().Post(0)
 			}
 		case <-tm.closeAll:
 			log.Info("Seeding loop closed")

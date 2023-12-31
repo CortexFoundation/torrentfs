@@ -36,42 +36,49 @@ import (
 
 func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSize uint64, subpath string) ([]byte, error) {
 	log.Debug("Get file with size", "ih", infohash, "size", common.StorageSize(rawSize), "path", subpath)
-	if ret, err := fs.storage().GetFile(ctx, infohash, subpath); err != nil {
+	if ret, mux, err := fs.storage().GetFile(ctx, infohash, subpath); err != nil {
 		fs.wg.Add(1)
 		go func(ctx context.Context, ih string) {
 			defer fs.wg.Done()
 			fs.wakeup(ctx, ih)
 		}(ctx, infohash)
-		//if fs.config.Mode == params.LAZY && params.IsGood(infohash) {
+
 		if params.IsGood(infohash) {
 			start := mclock.Now()
 			log.Info("Downloading ... ...", "ih", infohash, "size", common.StorageSize(rawSize), "neighbors", fs.Neighbors(), "current", fs.monitor.CurrentNumber())
-			t := time.NewTimer(500 * time.Millisecond)
-			defer t.Stop()
-			for {
-				select {
-				case <-t.C:
-					if ret, err := fs.storage().GetFile(ctx, infohash, subpath); err != nil {
-						log.Debug("File downloading ... ...", "ih", infohash, "size", common.StorageSize(rawSize), "path", subpath, "err", err)
-						t.Reset(100 * time.Millisecond)
-					} else {
-						elapsed := time.Duration(mclock.Now()) - time.Duration(start)
-						log.Info("Downloaded", "ih", infohash, "size", common.StorageSize(rawSize), "neighbors", fs.Neighbors(), "elapsed", common.PrettyDuration(elapsed), "current", fs.monitor.CurrentNumber())
-						if uint64(len(ret)) > rawSize {
-							return nil, backend.ErrInvalidRawSize
+			//t := time.NewTimer(1000 * time.Millisecond)
+			//defer t.Stop()
+
+			if mux != nil {
+				sub := mux.Subscribe(0)
+				for {
+					select {
+					//case <-t.C:
+					case <-sub.Chan():
+						log.Info(".......................", "ih", infohash)
+						if ret, _, err := fs.storage().GetFile(ctx, infohash, subpath); err != nil {
+							log.Debug("File downloading ... ...", "ih", infohash, "size", common.StorageSize(rawSize), "path", subpath, "err", err)
+							//t.Reset(100 * time.Millisecond)
+						} else {
+							elapsed := time.Duration(mclock.Now()) - time.Duration(start)
+							log.Info("Downloaded", "ih", infohash, "size", common.StorageSize(rawSize), "neighbors", fs.Neighbors(), "elapsed", common.PrettyDuration(elapsed), "current", fs.monitor.CurrentNumber())
+							if uint64(len(ret)) > rawSize {
+								return nil, backend.ErrInvalidRawSize
+							}
+							return ret, err
 						}
-						return ret, err
+					case <-ctx.Done():
+						fs.retry.Add(1)
+						ex, co, to, _ := fs.storage().ExistsOrActive(ctx, infohash, rawSize)
+						log.Warn("Timeout", "ih", infohash, "size", common.StorageSize(rawSize), "err", ctx.Err(), "retry", fs.retry.Load(), "complete", common.StorageSize(co), "timeout", to, "exist", ex)
+						return nil, ctx.Err()
+					case <-fs.closeAll:
+						return nil, nil
 					}
-				case <-ctx.Done():
-					fs.retry.Add(1)
-					ex, co, to, _ := fs.storage().ExistsOrActive(ctx, infohash, rawSize)
-					log.Warn("Timeout", "ih", infohash, "size", common.StorageSize(rawSize), "err", ctx.Err(), "retry", fs.retry.Load(), "complete", common.StorageSize(co), "timeout", to, "exist", ex)
-					return nil, ctx.Err()
-				case <-fs.closeAll:
-					return nil, nil
 				}
 			}
 		}
+
 		return nil, err
 	} else {
 		if uint64(len(ret)) > rawSize {
