@@ -82,8 +82,8 @@ type TorrentManager struct {
 	DataDir    string
 	TmpDataDir string
 	closeAll   chan struct{}
-	taskChan   chan any
-	lock       sync.RWMutex
+	//taskChan   chan any
+	lock sync.RWMutex
 	//pending_lock sync.RWMutex
 	//active_lock  sync.RWMutex
 	//seeding_lock sync.RWMutex
@@ -751,7 +751,7 @@ func NewTorrentManager(config *params.Config, fsid uint64, cache, compress bool)
 		closeAll: make(chan struct{}),
 		//initCh:              make(chan struct{}),
 		//simulate:          false,
-		taskChan: make(chan any), //, taskChanBuffer),
+		//taskChan: make(chan any), //, taskChanBuffer),
 		//seedingChan: make(chan *caffe.Torrent, torrentChanSize),
 		//activeChan:  make(chan *caffe.Torrent, torrentChanSize),
 		//pendingChan: make(chan *caffe.Torrent, torrentChanSize),
@@ -981,18 +981,24 @@ func (tm *TorrentManager) Dropping(ih string) error {
 	return nil*/
 }
 
+type mainEvent struct {
+	t *types.BitsFlow
+}
+
 func (tm *TorrentManager) mainLoop() {
 	defer tm.wg.Done()
 	timer := time.NewTimer(time.Second * params.QueryTimeInterval * 3600 * 24)
 	defer timer.Stop()
+
+	sub := tm.taskEvent.Subscribe(mainEvent{})
+	defer sub.Unsubscribe()
+
 	for {
 		select {
-		case msg := <-tm.taskChan:
-			meta, ok := msg.(*types.BitsFlow)
-			if !ok {
-				continue
-			}
-
+		//case msg := <-tm.taskChan:
+		case ev := <-sub.Chan():
+			//meta, ok := msg.(*types.BitsFlow)
+			meta := ev.Data.(mainEvent).t
 			if params.IsBad(meta.InfoHash()) {
 				continue
 			}
