@@ -1315,7 +1315,8 @@ func (tm *TorrentManager) seedingLoop() {
 				tm.seeds.Add(1)
 
 				// TODO to notification center
-				go t.Mux().Post(0)
+				ev := caffe.TorrentEvent{t.Status()}
+				go t.Mux().Post(ev)
 			}
 		case <-tm.closeAll:
 			log.Info("Seeding loop closed")

@@ -28,6 +28,7 @@ import (
 	"github.com/CortexFoundation/CortexTheseus/common/mclock"
 	"github.com/CortexFoundation/CortexTheseus/log"
 	"github.com/CortexFoundation/torrentfs/backend"
+	"github.com/CortexFoundation/torrentfs/backend/caffe"
 	"github.com/CortexFoundation/torrentfs/params"
 	"github.com/anacrolix/torrent/bencode"
 	"github.com/anacrolix/torrent/metainfo"
@@ -48,12 +49,12 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 			log.Info("Downloading ... ...", "ih", infohash, "size", common.StorageSize(rawSize), "neighbors", fs.Neighbors(), "current", fs.monitor.CurrentNumber())
 
 			if mux != nil {
-				sub := mux.Subscribe(0)
+				sub := mux.Subscribe(caffe.TorrentEvent{})
 				defer sub.Unsubscribe()
 
 				select {
-				case <-sub.Chan():
-					log.Info("Seeding notify !!! !!!", "ih", infohash, "size", common.StorageSize(rawSize), "neighbors", fs.Neighbors(), "current", fs.monitor.CurrentNumber())
+				case ev := <-sub.Chan():
+					log.Info("Seeding notify !!! !!!", "ih", infohash, "size", common.StorageSize(rawSize), "neighbors", fs.Neighbors(), "current", fs.monitor.CurrentNumber(), "ev", ev.Data)
 					if ret, _, err := fs.storage().GetFile(ctx, infohash, subpath); err != nil {
 						log.Debug("File downloading ... ...", "ih", infohash, "size", common.StorageSize(rawSize), "path", subpath, "err", err)
 					} else {
