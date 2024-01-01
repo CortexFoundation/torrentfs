@@ -73,7 +73,7 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 					return nil, nil
 				}
 			} else {
-				/*t := time.NewTimer(1000 * time.Millisecond)
+				t := time.NewTimer(1000 * time.Millisecond)
 				defer t.Stop()
 				for {
 					select {
@@ -97,7 +97,7 @@ func (fs *TorrentFS) GetFileWithSize(ctx context.Context, infohash string, rawSi
 					case <-fs.closeAll:
 						return nil, nil
 					}
-				}*/
+				}
 			}
 		}
 
