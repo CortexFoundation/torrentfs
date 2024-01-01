@@ -77,7 +77,7 @@ type task struct {
 }
 
 type TorrentEvent struct {
-	Status int
+	S int
 }
 
 func NewTorrent(t *torrent.Torrent, requested int64, ih string, path string, slot int, spec *torrent.TorrentSpec) *Torrent {

@@ -35,6 +35,7 @@ import (
 
 	"github.com/CortexFoundation/CortexTheseus/common"
 	"github.com/CortexFoundation/CortexTheseus/common/mclock"
+	"github.com/CortexFoundation/CortexTheseus/event"
 	"github.com/CortexFoundation/CortexTheseus/log"
 	"github.com/CortexFoundation/torrentfs/backend/caffe"
 	"github.com/CortexFoundation/torrentfs/backend/job"
@@ -86,13 +87,15 @@ type TorrentManager struct {
 	//pending_lock sync.RWMutex
 	//active_lock  sync.RWMutex
 	//seeding_lock sync.RWMutex
-	wg          sync.WaitGroup
-	seedingChan chan *caffe.Torrent
-	activeChan  chan *caffe.Torrent
-	pendingChan chan *caffe.Torrent
+	wg sync.WaitGroup
+	//seedingChan chan *caffe.Torrent
+	//activeChan chan *caffe.Torrent
+	//pendingChan chan *caffe.Torrent
+
+	taskEvent *event.TypeMux
 	//pendingRemoveChan chan string
-	droppingChan chan string
-	mode         string
+	//droppingChan chan string
+	mode string
 	//boost               bool
 	id   uint64
 	slot int
@@ -267,6 +270,8 @@ func (tm *TorrentManager) Close() error {
 		if tm.fc != nil {
 			tm.fc.Stop()
 		}
+
+		tm.taskEvent.Stop()
 		log.Info("Fs Download Manager Closed")
 	})
 
@@ -746,13 +751,15 @@ func NewTorrentManager(config *params.Config, fsid uint64, cache, compress bool)
 		closeAll: make(chan struct{}),
 		//initCh:              make(chan struct{}),
 		//simulate:          false,
-		taskChan:    make(chan any), //, taskChanBuffer),
-		seedingChan: make(chan *caffe.Torrent, torrentChanSize),
-		activeChan:  make(chan *caffe.Torrent, torrentChanSize),
-		pendingChan: make(chan *caffe.Torrent, torrentChanSize),
+		taskChan: make(chan any), //, taskChanBuffer),
+		//seedingChan: make(chan *caffe.Torrent, torrentChanSize),
+		//activeChan:  make(chan *caffe.Torrent, torrentChanSize),
+		//pendingChan: make(chan *caffe.Torrent, torrentChanSize),
+
+		taskEvent: new(event.TypeMux),
 		//pendingRemoveChan: make(chan string, torrentChanSize),
-		droppingChan: make(chan string, 1),
-		mode:         config.Mode,
+		//droppingChan: make(chan string, 1),
+		mode: config.Mode,
 		//boost:             config.Boost,
 		id:             fsid,
 		slot:           int(fsid & (bucket - 1)),
@@ -917,41 +924,61 @@ func (tm *TorrentManager) commit(ctx context.Context, hex string, request uint64
 }*/
 
 func (tm *TorrentManager) Pending(t *caffe.Torrent) {
-	select {
+	/*select {
 	case tm.pendingChan <- t:
 		log.Trace("Stable pending", "ih", t.InfoHash())
 	case <-tm.closeAll:
 	default:
-	}
+	}*/
+	tm.taskEvent.Post(pendingEvent{t})
 }
 
 func (tm *TorrentManager) Running(t *caffe.Torrent) {
-	select {
+	/*select {
 	case tm.activeChan <- t:
 		log.Trace("Stable running", "ih", t.InfoHash())
 	case <-tm.closeAll:
 	default:
 		log.Trace("Unstable running", "ih", t.InfoHash())
-	}
+	}*/
+	tm.taskEvent.Post(runningEvent{t})
+}
+
+type pendingEvent struct {
+	t *caffe.Torrent
+}
+
+type runningEvent struct {
+	t *caffe.Torrent
+}
+
+type seedingEvent struct {
+	t *caffe.Torrent
+}
+
+type droppingEvent struct {
+	t string
 }
 
 func (tm *TorrentManager) Seeding(t *caffe.Torrent) {
-	select {
+	tm.taskEvent.Post(seedingEvent{t})
+	/*select {
 	case tm.seedingChan <- t:
 		log.Debug("Stable seeding", "ih", t.InfoHash())
 	case <-tm.closeAll:
 	default:
 		log.Debug("Unstable seeding", "ih", t.InfoHash())
-	}
+	}*/
 }
 
 func (tm *TorrentManager) Dropping(ih string) error {
-	select {
+	return tm.taskEvent.Post(droppingEvent{ih})
+	/*select {
 	case tm.droppingChan <- ih:
 	case <-tm.closeAll:
 	default:
 	}
-	return nil
+	return nil*/
 }
 
 func (tm *TorrentManager) mainLoop() {
@@ -1009,9 +1036,13 @@ func (tm *TorrentManager) mainLoop() {
 
 func (tm *TorrentManager) pendingLoop() {
 	defer tm.wg.Done()
+	sub := tm.taskEvent.Subscribe(pendingEvent{})
+	defer sub.Unsubscribe()
 	for {
 		select {
-		case t := <-tm.pendingChan:
+		//case t := <-tm.pendingChan:
+		case ev := <-sub.Chan():
+			t := ev.Data.(pendingEvent).t
 			//tm.pending_lock.Lock()
 			//tm.pendingTorrents[t.InfoHash()] = t
 			//tm.pending_lock.Unlock()
@@ -1188,9 +1219,14 @@ func (tm *TorrentManager) activeLoop() {
 		//timer_2.Stop()
 	}()
 
+	sub := tm.taskEvent.Subscribe(runningEvent{})
+	defer sub.Unsubscribe()
+
 	for {
 		select {
-		case t := <-tm.activeChan:
+		//case t := <-tm.activeChan:
+		case ev := <-sub.Chan():
+			t := ev.Data.(runningEvent).t
 			//tm.active_lock.Lock()
 			//tm.activeTorrents[t.InfoHash()] = t
 			//tm.active_lock.Unlock()
@@ -1300,9 +1336,13 @@ func (tm *TorrentManager) activeLoop() {
 
 func (tm *TorrentManager) seedingLoop() {
 	defer tm.wg.Done()
+	sub := tm.taskEvent.Subscribe(seedingEvent{})
+	defer sub.Unsubscribe()
 	for {
 		select {
-		case t := <-tm.seedingChan:
+		//case t := <-tm.seedingChan:
+		case ev := <-sub.Chan():
+			t := ev.Data.(seedingEvent).t
 			//tm.seeding_lock.Lock()
 			//tm.seedingTorrents[t.InfoHash()] = t
 			//tm.seeding_lock.Unlock()
@@ -1327,9 +1367,13 @@ func (tm *TorrentManager) seedingLoop() {
 
 func (tm *TorrentManager) droppingLoop() {
 	defer tm.wg.Done()
+	sub := tm.taskEvent.Subscribe(droppingEvent{})
+	defer sub.Unsubscribe()
 	for {
 		select {
-		case ih := <-tm.droppingChan:
+		//case ih := <-tm.droppingChan:
+		case ev := <-sub.Chan():
+			ih := ev.Data.(droppingEvent).t
 			if t := tm.getTorrent(ih); t != nil { //&& t.Ready() {
 				tm.dropTorrent(t)
 
