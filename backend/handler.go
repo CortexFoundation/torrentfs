@@ -945,19 +945,19 @@ func (tm *TorrentManager) Running(t *caffe.Torrent) {
 }
 
 type pendingEvent struct {
-	t *caffe.Torrent
+	T *caffe.Torrent
 }
 
 type runningEvent struct {
-	t *caffe.Torrent
+	T *caffe.Torrent
 }
 
 type seedingEvent struct {
-	t *caffe.Torrent
+	T *caffe.Torrent
 }
 
 type droppingEvent struct {
-	t string
+	S string
 }
 
 func (tm *TorrentManager) Seeding(t *caffe.Torrent) {
@@ -982,7 +982,7 @@ func (tm *TorrentManager) Dropping(ih string) error {
 }
 
 type mainEvent struct {
-	t *types.BitsFlow
+	B *types.BitsFlow
 }
 
 func (tm *TorrentManager) mainLoop() {
@@ -998,7 +998,7 @@ func (tm *TorrentManager) mainLoop() {
 		//case msg := <-tm.taskChan:
 		case ev := <-sub.Chan():
 			if m, ok := ev.Data.(mainEvent); ok {
-				meta := m.t
+				meta := m.B
 				if params.IsBad(meta.InfoHash()) {
 					continue
 				}
@@ -1049,7 +1049,7 @@ func (tm *TorrentManager) pendingLoop() {
 		select {
 		case ev := <-sub.Chan():
 			if m, ok := ev.Data.(pendingEvent); ok {
-				t := m.t
+				t := m.T
 				tm.wg.Add(1)
 				tm.pends.Add(1)
 				go func(t *caffe.Torrent) {
@@ -1197,7 +1197,7 @@ func (tm *TorrentManager) activeLoop() {
 		select {
 		case ev := <-sub.Chan():
 			if m, ok := ev.Data.(runningEvent); ok {
-				t := m.t
+				t := m.T
 				n := tm.blockCaculate(t.Torrent.Length())
 				if n < 300 {
 					n += 300
@@ -1295,22 +1295,13 @@ func (tm *TorrentManager) seedingLoop() {
 	defer sub.Unsubscribe()
 	for {
 		select {
-		//case t := <-tm.seedingChan:
 		case ev := <-sub.Chan():
 			if m, ok := ev.Data.(seedingEvent); ok {
-				t := m.t
-				//tm.seeding_lock.Lock()
-				//tm.seedingTorrents[t.InfoHash()] = t
-				//tm.seeding_lock.Unlock()
-
-				//tm.seedingTorrents.Set(t.InfoHash(), t)
-
+				t := m.T
 				if t.Seed() {
-					// count
 					tm.actives.Add(-1)
 					tm.seeds.Add(1)
 
-					// TODO to notification center
 					evn := caffe.TorrentEvent{S: t.Status()}
 					go t.Mux().Post(evn)
 				}
@@ -1331,7 +1322,7 @@ func (tm *TorrentManager) droppingLoop() {
 		//case ih := <-tm.droppingChan:
 		case ev := <-sub.Chan():
 			if m, ok := ev.Data.(droppingEvent); ok {
-				ih := m.t
+				ih := m.S
 				if t := tm.getTorrent(ih); t != nil { //&& t.Ready() {
 					tm.dropTorrent(t)
 
