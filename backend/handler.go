@@ -997,29 +997,30 @@ func (tm *TorrentManager) mainLoop() {
 		select {
 		//case msg := <-tm.taskChan:
 		case ev := <-sub.Chan():
-			//meta, ok := msg.(*types.BitsFlow)
-			meta := ev.Data.(mainEvent).t
-			if params.IsBad(meta.InfoHash()) {
-				continue
-			}
+			if m, ok := ev.Data.(mainEvent); ok {
+				meta := m.t
+				if params.IsBad(meta.InfoHash()) {
+					continue
+				}
 
-			if t := tm.addInfoHash(meta.InfoHash(), int64(meta.Request())); t == nil {
-				log.Error("Seed [create] failed", "ih", meta.InfoHash(), "request", meta.Request())
-			} else {
-				if t.Stopping() {
-					log.Debug("Nas recovery", "ih", t.InfoHash(), "status", t.Status(), "complete", common.StorageSize(t.Torrent.BytesCompleted()))
-					if tt, err := tm.injectSpec(t.InfoHash(), t.Spec()); err == nil && tt != nil {
-						t.SetStatus(caffe.TorrentPending)
-						t.Lock()
-						t.Torrent = tt
-						t.SetStart(mclock.Now())
-						t.Unlock()
+				if t := tm.addInfoHash(meta.InfoHash(), int64(meta.Request())); t == nil {
+					log.Error("Seed [create] failed", "ih", meta.InfoHash(), "request", meta.Request())
+				} else {
+					if t.Stopping() {
+						log.Debug("Nas recovery", "ih", t.InfoHash(), "status", t.Status(), "complete", common.StorageSize(t.Torrent.BytesCompleted()))
+						if tt, err := tm.injectSpec(t.InfoHash(), t.Spec()); err == nil && tt != nil {
+							t.SetStatus(caffe.TorrentPending)
+							t.Lock()
+							t.Torrent = tt
+							t.SetStart(mclock.Now())
+							t.Unlock()
 
-						tm.Pending(t)
-						tm.recovery.Add(1)
-						tm.stops.Add(-1)
-					} else {
-						log.Warn("Nas recovery failed", "ih", t.InfoHash(), "status", t.Status(), "complete", common.StorageSize(t.Torrent.BytesCompleted()), "err", err)
+							tm.Pending(t)
+							tm.recovery.Add(1)
+							tm.stops.Add(-1)
+						} else {
+							log.Warn("Nas recovery failed", "ih", t.InfoHash(), "status", t.Status(), "complete", common.StorageSize(t.Torrent.BytesCompleted()), "err", err)
+						}
 					}
 				}
 			}
@@ -1046,135 +1047,99 @@ func (tm *TorrentManager) pendingLoop() {
 	defer sub.Unsubscribe()
 	for {
 		select {
-		//case t := <-tm.pendingChan:
 		case ev := <-sub.Chan():
-			t := ev.Data.(pendingEvent).t
-			//tm.pending_lock.Lock()
-			//tm.pendingTorrents[t.InfoHash()] = t
-			//tm.pending_lock.Unlock()
-			//tm.pendingTorrents.Set(t.InfoHash(), t)
-			tm.wg.Add(1)
-			tm.pends.Add(1)
-			go func(t *caffe.Torrent) {
-				defer func() {
-					tm.wg.Done()
-					tm.pends.Add(-1)
-				}()
-				var timeout time.Duration = 10 + time.Duration(tm.slot&9)
-				if tm.mode == params.FULL {
-					//timeout *= 2
-				}
-				ctx, cancel := context.WithTimeout(context.Background(), timeout*time.Minute)
-				defer cancel()
-				select {
-				case <-t.Torrent.GotInfo():
-					if b, err := bencode.Marshal(t.Torrent.Info()); err == nil {
-						log.Debug("Record full nas in history", "ih", t.InfoHash(), "info", len(b))
-						if tm.kvdb != nil && tm.kvdb.Get([]byte(SEED_PRE+t.InfoHash())) == nil {
-							elapsed := time.Duration(mclock.Now()) - time.Duration(t.Birth())
-							log.Debug("Imported new seed", "ih", t.InfoHash(), "request", common.StorageSize(t.Length()), "ts", common.StorageSize(len(b)), "good", params.IsGood(t.InfoHash()), "elapsed", common.PrettyDuration(elapsed))
-							/*tm.wg.Add(1)
-							go func(tt *caffe.Torrent, bb []byte) {
-								tm.wg.Done()
-								if err := tt.WriteTorrent(); err == nil {
-									tm.kvdb.Set([]byte(SEED_PRE+t.InfoHash()), bb)
+			if m, ok := ev.Data.(pendingEvent); ok {
+				t := m.t
+				tm.wg.Add(1)
+				tm.pends.Add(1)
+				go func(t *caffe.Torrent) {
+					defer func() {
+						tm.wg.Done()
+						tm.pends.Add(-1)
+					}()
+					var timeout time.Duration = 10 + time.Duration(tm.slot&9)
+					ctx, cancel := context.WithTimeout(context.Background(), timeout*time.Minute)
+					defer cancel()
+					select {
+					case <-t.Torrent.GotInfo():
+						if b, err := bencode.Marshal(t.Torrent.Info()); err == nil {
+							log.Debug("Record full nas in history", "ih", t.InfoHash(), "info", len(b))
+							if tm.kvdb != nil && tm.kvdb.Get([]byte(SEED_PRE+t.InfoHash())) == nil {
+								elapsed := time.Duration(mclock.Now()) - time.Duration(t.Birth())
+								log.Debug("Imported new seed", "ih", t.InfoHash(), "request", common.StorageSize(t.Length()), "ts", common.StorageSize(len(b)), "good", params.IsGood(t.InfoHash()), "elapsed", common.PrettyDuration(elapsed))
+								if err := t.WriteTorrent(); err == nil {
+									tm.kvdb.Set([]byte(SEED_PRE+t.InfoHash()), b)
 								}
-							}(t, b)*/
 
-							if err := t.WriteTorrent(); err == nil {
-								tm.kvdb.Set([]byte(SEED_PRE+t.InfoHash()), b)
-							}
-
-							// job TODO
-							/* valid := func(a *caffe.Torrent) bool {
-								switch a.Status() {
-								case caffe.TorrentPending:
-									log.Trace("Caffe is pending", "ih", t.InfoHash(), "complete", t.BytesCompleted(), "miss", t.BytesMissing(), "request", t.BytesRequested())
-								case caffe.TorrentPaused:
-									log.Trace("Caffe is pausing", "ih", t.InfoHash(), "complete", t.BytesCompleted(), "miss", t.BytesMissing(), "request", t.BytesRequested())
-								case caffe.TorrentRunning:
-									log.Trace("Caffe is running", "ih", t.InfoHash(), "complete", t.BytesCompleted(), "miss", t.BytesMissing(), "request", t.BytesRequested())
-								case caffe.TorrentSeeding:
-									log.Info("Caffe is seeding", "ih", t.InfoHash(), "complete", t.BytesCompleted(), "miss", t.BytesMissing(), "request", t.BytesRequested())
-									return true
-								case caffe.TorrentStopping:
-									log.Info("Caffe is stopping", "ih", t.InfoHash(), "complete", t.BytesCompleted(), "miss", t.BytesMissing(), "request", t.BytesRequested())
-									return true
-								}
-								return false
-							}
-
-							tm.wg.Add(1)
-							go func(t *caffe.Torrent, fn func(t *caffe.Torrent) bool) {
-								defer tm.wg.Done()
-
-								j := job.New(t)
-								log.Info("Job started", "ih", t.InfoHash(), "id", j.ID())
-								ch := j.Completed(fn)
-								defer func() {
-									close(ch)
-								}()
-
-								select {
-								case suc := <-ch:
-									if !suc {
-										log.Warn("Uncompleted jobs", "ih", t.InfoHash(), "suc", suc, "job", j.ID(), "ready", common.PrettyDuration(time.Duration(j.Birth()-t.Birth())), "elapse", common.PrettyDuration(time.Duration(mclock.Now()-j.Birth())))
-									} else {
-										log.Info("Job has been completed", "ih", t.InfoHash(), "suc", suc, "job", j.ID(), "ready", common.PrettyDuration(time.Duration(j.Birth()-t.Birth())), "elapse", common.PrettyDuration(time.Duration(mclock.Now()-j.Birth())))
+								/* valid := func(a *caffe.Torrent) bool {
+									switch a.Status() {
+									case caffe.TorrentPending:
+										log.Trace("Caffe is pending", "ih", t.InfoHash(), "complete", t.BytesCompleted(), "miss", t.BytesMissing(), "request", t.BytesRequested())
+									case caffe.TorrentPaused:
+										log.Trace("Caffe is pausing", "ih", t.InfoHash(), "complete", t.BytesCompleted(), "miss", t.BytesMissing(), "request", t.BytesRequested())
+									case caffe.TorrentRunning:
+										log.Trace("Caffe is running", "ih", t.InfoHash(), "complete", t.BytesCompleted(), "miss", t.BytesMissing(), "request", t.BytesRequested())
+									case caffe.TorrentSeeding:
+										log.Info("Caffe is seeding", "ih", t.InfoHash(), "complete", t.BytesCompleted(), "miss", t.BytesMissing(), "request", t.BytesRequested())
+										return true
+									case caffe.TorrentStopping:
+										log.Info("Caffe is stopping", "ih", t.InfoHash(), "complete", t.BytesCompleted(), "miss", t.BytesMissing(), "request", t.BytesRequested())
+										return true
 									}
-								case <-tm.closeAll:
-									log.Info("Job quit", "ih", t.InfoHash(), "id", j.ID())
+									return false
 								}
-							}(t, valid)*/
-						}
-						//t.lock.Lock()
-						//t.Birth() = mclock.Now()
-						//t.lock.Unlock()
-					} else {
-						log.Error("Meta info marshal failed", "ih", t.InfoHash(), "err", err)
-						tm.Dropping(t.InfoHash())
-						return
-					}
 
-					if err := t.Start(); err != nil {
-						log.Error("Nas start failed", "ih", t.InfoHash(), "err", err)
-						// TODO
-					}
+								tm.wg.Add(1)
+								go func(t *caffe.Torrent, fn func(t *caffe.Torrent) bool) {
+									defer tm.wg.Done()
 
-					//if err := t.WriteTorrent(); err != nil {
-					//	log.Warn("Write torrent file error", "ih", t.InfoHash(), "err", err)
-					//}
+									j := job.New(t)
+									log.Info("Job started", "ih", t.InfoHash(), "id", j.ID())
+									ch := j.Completed(fn)
+									defer func() {
+										close(ch)
+									}()
 
-					if params.IsGood(t.InfoHash()) || tm.mode == params.FULL { //|| tm.colaList.Contains(t.InfoHash()) {
-						//t.lock.Lock()
-						//t.bytesRequested = t.Length()
-						//t.bytesLimitation = tm.getLimitation(t.Length())
-						//t.lock.Unlock()
-
-						t.SetBytesRequested(t.Length())
-					} else {
-						if t.BytesRequested() > t.Length() {
+									select {
+									case suc := <-ch:
+										if !suc {
+											log.Warn("Uncompleted jobs", "ih", t.InfoHash(), "suc", suc, "job", j.ID(), "ready", common.PrettyDuration(time.Duration(j.Birth()-t.Birth())), "elapse", common.PrettyDuration(time.Duration(mclock.Now()-j.Birth())))
+										} else {
+											log.Info("Job has been completed", "ih", t.InfoHash(), "suc", suc, "job", j.ID(), "ready", common.PrettyDuration(time.Duration(j.Birth()-t.Birth())), "elapse", common.PrettyDuration(time.Duration(mclock.Now()-j.Birth())))
+										}
+									case <-tm.closeAll:
+										log.Info("Job quit", "ih", t.InfoHash(), "id", j.ID())
+									}
+								}(t, valid)*/
+							}
 							//t.lock.Lock()
-							//t.bytesRequested = t.Length()
-							//t.bytesLimitation = tm.getLimitation(t.Length())
+							//t.Birth() = mclock.Now()
 							//t.lock.Unlock()
-
-							t.SetBytesRequested(t.Length())
+						} else {
+							log.Error("Meta info marshal failed", "ih", t.InfoHash(), "err", err)
+							tm.Dropping(t.InfoHash())
+							return
 						}
-					}
-					//tm.pending_lock.Lock()
-					//delete(tm.pendingTorrents, t.InfoHash())
-					//tm.pending_lock.Unlock()
-					//tm.pendingTorrents.Delete(t.InfoHash())
 
-					//tm.activeChan <- t
-					tm.Running(t)
-				case <-t.Closed():
-				case <-tm.closeAll:
-				case <-ctx.Done():
-					tm.Dropping(t.InfoHash())
-				}
-			}(t)
+						if err := t.Start(); err != nil {
+							log.Error("Nas start failed", "ih", t.InfoHash(), "err", err)
+						}
+
+						if params.IsGood(t.InfoHash()) || tm.mode == params.FULL { //|| tm.colaList.Contains(t.InfoHash()) {
+							t.SetBytesRequested(t.Length())
+						} else {
+							if t.BytesRequested() > t.Length() {
+								t.SetBytesRequested(t.Length())
+							}
+						}
+						tm.Running(t)
+					case <-t.Closed():
+					case <-tm.closeAll:
+					case <-ctx.Done():
+						tm.Dropping(t.InfoHash())
+					}
+				}(t)
+			}
 		case <-tm.closeAll:
 			log.Info("Pending seed loop closed")
 			return
@@ -1230,60 +1195,44 @@ func (tm *TorrentManager) activeLoop() {
 
 	for {
 		select {
-		//case t := <-tm.activeChan:
 		case ev := <-sub.Chan():
-			t := ev.Data.(runningEvent).t
-			//tm.active_lock.Lock()
-			//tm.activeTorrents[t.InfoHash()] = t
-			//tm.active_lock.Unlock()
+			if m, ok := ev.Data.(runningEvent); ok {
+				t := m.t
+				n := tm.blockCaculate(t.Torrent.Length())
+				if n < 300 {
+					n += 300
+				}
 
-			//tm.activeTorrents.Set(t.InfoHash(), t)
-
-			if t.QuotaFull() { //t.Length() <= t.BytesRequested() {
-				//t.Leech()
-			}
-
-			n := tm.blockCaculate(t.Torrent.Length())
-			if n < 300 {
-				n += 300
-			}
-
-			n += tool.Rand(300)
-			if tm.mode == params.FULL {
-				n *= 2
-			}
-			tm.actives.Add(1)
-			tm.wg.Add(1)
-			go func(i string, n int64) {
-				defer tm.wg.Done()
-				timer := time.NewTicker(time.Duration(n) * time.Second)
-				defer timer.Stop()
-				for {
-					select {
-					// TODO download operation check case
-					//case <-t.leechCh:
-					//	t.Leech()
-					case <-timer.C:
-						if t := tm.getTorrent(i); t != nil { //&& t.Ready() {
-							if t.Cited() <= 0 {
-								tm.Dropping(i)
-								return
+				n += tool.Rand(300)
+				if tm.mode == params.FULL {
+					n *= 2
+				}
+				tm.actives.Add(1)
+				tm.wg.Add(1)
+				go func(i string, n int64) {
+					defer tm.wg.Done()
+					timer := time.NewTicker(time.Duration(n) * time.Second)
+					defer timer.Stop()
+					for {
+						select {
+						case <-timer.C:
+							if t := tm.getTorrent(i); t != nil { //&& t.Ready() {
+								if t.Cited() <= 0 {
+									tm.Dropping(i)
+									return
+								} else {
+									t.CitedDec()
+									log.Debug("Seed cited has been decreased", "ih", i, "cited", t.Cited(), "n", n, "status", t.Status(), "elapsed", common.PrettyDuration(time.Duration(mclock.Now())-time.Duration(t.Birth())))
+								}
 							} else {
-								t.CitedDec()
-								log.Debug("Seed cited has been decreased", "ih", i, "cited", t.Cited(), "n", n, "status", t.Status(), "elapsed", common.PrettyDuration(time.Duration(mclock.Now())-time.Duration(t.Birth())))
+								return
 							}
-						} else {
+						case <-tm.closeAll:
 							return
 						}
-					case <-tm.closeAll:
-						return
-						//case <-t.Closed():
-						//	return
-						//case <-t.closeAll:
-						//	return
 					}
-				}
-			}(t.InfoHash(), n)
+				}(t.InfoHash(), n)
+			}
 		case <-timer_1.C:
 			if tm.fc != nil {
 				log.Debug("Cache status", "total", common.StorageSize(tm.fc.FileSize()), "itms", tm.fc.Size())
@@ -1348,21 +1297,23 @@ func (tm *TorrentManager) seedingLoop() {
 		select {
 		//case t := <-tm.seedingChan:
 		case ev := <-sub.Chan():
-			t := ev.Data.(seedingEvent).t
-			//tm.seeding_lock.Lock()
-			//tm.seedingTorrents[t.InfoHash()] = t
-			//tm.seeding_lock.Unlock()
+			if m, ok := ev.Data.(seedingEvent); ok {
+				t := m.t
+				//tm.seeding_lock.Lock()
+				//tm.seedingTorrents[t.InfoHash()] = t
+				//tm.seeding_lock.Unlock()
 
-			//tm.seedingTorrents.Set(t.InfoHash(), t)
+				//tm.seedingTorrents.Set(t.InfoHash(), t)
 
-			if t.Seed() {
-				// count
-				tm.actives.Add(-1)
-				tm.seeds.Add(1)
+				if t.Seed() {
+					// count
+					tm.actives.Add(-1)
+					tm.seeds.Add(1)
 
-				// TODO to notification center
-				ev := caffe.TorrentEvent{S: t.Status()}
-				go t.Mux().Post(ev)
+					// TODO to notification center
+					evn := caffe.TorrentEvent{S: t.Status()}
+					go t.Mux().Post(evn)
+				}
 			}
 		case <-tm.closeAll:
 			log.Info("Seeding loop closed")
@@ -1379,14 +1330,16 @@ func (tm *TorrentManager) droppingLoop() {
 		select {
 		//case ih := <-tm.droppingChan:
 		case ev := <-sub.Chan():
-			ih := ev.Data.(droppingEvent).t
-			if t := tm.getTorrent(ih); t != nil { //&& t.Ready() {
-				tm.dropTorrent(t)
+			if m, ok := ev.Data.(droppingEvent); ok {
+				ih := m.t
+				if t := tm.getTorrent(ih); t != nil { //&& t.Ready() {
+					tm.dropTorrent(t)
 
-				elapsed := time.Duration(mclock.Now()) - time.Duration(t.Birth())
-				log.Debug("Seed has been dropped", "ih", ih, "cited", t.Cited(), "status", t.Status(), "elapsed", common.PrettyDuration(elapsed))
-			} else {
-				log.Warn("Drop seed not found", "ih", ih)
+					elapsed := time.Duration(mclock.Now()) - time.Duration(t.Birth())
+					log.Debug("Seed has been dropped", "ih", ih, "cited", t.Cited(), "status", t.Status(), "elapsed", common.PrettyDuration(elapsed))
+				} else {
+					log.Warn("Drop seed not found", "ih", ih)
+				}
 			}
 		case <-tm.closeAll:
 			log.Info("Dropping loop closed")
