@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	github.com/CortexFoundation/CortexTheseus v1.10.52
-	github.com/CortexFoundation/robot v1.0.7-0.20231001204802-6299a9ffd845
+	github.com/CortexFoundation/robot v1.0.7-0.20240101144533-02756bceae73
 	github.com/CortexFoundation/wormhole v0.0.2-0.20231221155549-5c938553b5fc
 	github.com/anacrolix/dht/v2 v2.21.0
 	github.com/anacrolix/envpprof v1.3.0
@@ -100,7 +100,7 @@ require (
 	github.com/mschoch/smat v0.2.0 // indirect
 	github.com/nutsdb/nutsdb v1.0.3 // indirect
 	github.com/pion/datachannel v1.5.5 // indirect
-	github.com/pion/dtls/v2 v2.2.8 // indirect
+	github.com/pion/dtls/v2 v2.2.9 // indirect
 	github.com/pion/ice/v2 v2.3.11 // indirect
 	github.com/pion/interceptor v0.1.25 // indirect
 	github.com/pion/logging v0.2.2 // indirect
