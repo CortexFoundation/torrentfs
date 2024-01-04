@@ -26,7 +26,7 @@ require (
 	github.com/prometheus/client_golang v1.17.0
 	github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
-	github.com/ucwong/golang-kv v1.0.24-0.20231227101232-3f231e2de6c0
+	github.com/ucwong/golang-kv v1.0.24-0.20240104091440-e73726fd22ed
 	github.com/ucwong/shard v1.0.1-0.20231225143310-3022d14f9c3e
 	github.com/urfave/cli/v2 v2.27.0
 	golang.org/x/time v0.5.0
@@ -61,7 +61,7 @@ require (
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/cockroachdb/errors v1.11.1 // indirect
 	github.com/cockroachdb/logtags v0.0.0-20230118201751-21c54148d20b // indirect
-	github.com/cockroachdb/pebble v0.0.0-20231222152533-1cce3d01f6d9 // indirect
+	github.com/cockroachdb/pebble v0.0.0-20240104030847-a0dc847c7bea // indirect
 	github.com/cockroachdb/redact v1.1.5 // indirect
 	github.com/cockroachdb/tokenbucket v0.0.0-20230807174530-cc333fc44b06 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.3 // indirect
@@ -98,7 +98,7 @@ require (
 	github.com/mattn/go-runewidth v0.0.15 // indirect
 	github.com/matttproud/golang_protobuf_extensions/v2 v2.0.0 // indirect
 	github.com/mschoch/smat v0.2.0 // indirect
-	github.com/nutsdb/nutsdb v1.0.3 // indirect
+	github.com/nutsdb/nutsdb v1.0.4-0.20240103112809-3f3942234879 // indirect
 	github.com/pion/datachannel v1.5.5 // indirect
 	github.com/pion/dtls/v2 v2.2.9 // indirect
 	github.com/pion/ice/v2 v2.3.11 // indirect
@@ -143,7 +143,7 @@ require (
 	go.opentelemetry.io/otel/metric v1.21.0 // indirect
 	go.opentelemetry.io/otel/trace v1.21.0 // indirect
 	golang.org/x/crypto v0.17.0 // indirect
-	golang.org/x/exp v0.0.0-20231226003508-02704c960a9b // indirect
+	golang.org/x/exp v0.0.0-20240103183307-be819d1f06fc // indirect
 	golang.org/x/mod v0.14.0 // indirect
 	golang.org/x/net v0.19.0 // indirect
 	golang.org/x/sync v0.5.0 // indirect
