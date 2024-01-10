@@ -26,7 +26,7 @@ require (
 	github.com/prometheus/client_golang v1.17.0
 	github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
-	github.com/ucwong/golang-kv v1.0.24-0.20240109191552-ad68ec34ee74
+	github.com/ucwong/golang-kv v1.0.24-0.20240110100932-ea83dd0d0537
 	github.com/ucwong/shard v1.0.1-0.20231225143310-3022d14f9c3e
 	github.com/urfave/cli/v2 v2.27.0
 	golang.org/x/time v0.5.0
@@ -61,7 +61,7 @@ require (
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/cockroachdb/errors v1.11.1 // indirect
 	github.com/cockroachdb/logtags v0.0.0-20230118201751-21c54148d20b // indirect
-	github.com/cockroachdb/pebble v0.0.0-20240109173520-f93e739e51c8 // indirect
+	github.com/cockroachdb/pebble v0.0.0-20240109224641-d50db878632e // indirect
 	github.com/cockroachdb/redact v1.1.5 // indirect
 	github.com/cockroachdb/tokenbucket v0.0.0-20230807174530-cc333fc44b06 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.3 // indirect
