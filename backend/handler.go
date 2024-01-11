@@ -999,40 +999,40 @@ func (tm *TorrentManager) mainLoop() {
 			if ev == nil {
 				continue
 			}
-			switch ev.Data.(type) {
-			case mainEvent:
-				if m, ok := ev.Data.(mainEvent); ok {
-					meta := m.B
-					if params.IsBad(meta.InfoHash()) {
-						continue
-					}
+			//switch ev.Data.(type) {
+			//case mainEvent:
+			if m, ok := ev.Data.(mainEvent); ok {
+				meta := m.B
+				if params.IsBad(meta.InfoHash()) {
+					continue
+				}
 
-					if t := tm.addInfoHash(meta.InfoHash(), int64(meta.Request())); t == nil {
-						log.Error("Seed [create] failed", "ih", meta.InfoHash(), "request", meta.Request())
-					} else {
-						if t.Stopping() {
-							log.Debug("Nas recovery", "ih", t.InfoHash(), "status", t.Status(), "complete", common.StorageSize(t.Torrent.BytesCompleted()))
-							if tt, err := tm.injectSpec(t.InfoHash(), t.Spec()); err == nil && tt != nil {
-								t.SetStatus(caffe.TorrentPending)
-								t.Lock()
-								t.Torrent = tt
-								t.SetStart(mclock.Now())
-								t.Unlock()
+				if t := tm.addInfoHash(meta.InfoHash(), int64(meta.Request())); t == nil {
+					log.Error("Seed [create] failed", "ih", meta.InfoHash(), "request", meta.Request())
+				} else {
+					if t.Stopping() {
+						log.Debug("Nas recovery", "ih", t.InfoHash(), "status", t.Status(), "complete", common.StorageSize(t.Torrent.BytesCompleted()))
+						if tt, err := tm.injectSpec(t.InfoHash(), t.Spec()); err == nil && tt != nil {
+							t.SetStatus(caffe.TorrentPending)
+							t.Lock()
+							t.Torrent = tt
+							t.SetStart(mclock.Now())
+							t.Unlock()
 
-								tm.Pending(t)
-								tm.recovery.Add(1)
-								tm.stops.Add(-1)
-							} else {
-								log.Warn("Nas recovery failed", "ih", t.InfoHash(), "status", t.Status(), "complete", common.StorageSize(t.Torrent.BytesCompleted()), "err", err)
-							}
+							tm.Pending(t)
+							tm.recovery.Add(1)
+							tm.stops.Add(-1)
+						} else {
+							log.Warn("Nas recovery failed", "ih", t.InfoHash(), "status", t.Status(), "complete", common.StorageSize(t.Torrent.BytesCompleted()), "err", err)
 						}
 					}
 				}
-				//case pendingEvent:
-				//case runningEvent:
-				//case seedingEvent:
-				//case droppingEvent:
 			}
+			//case pendingEvent:
+			//case runningEvent:
+			//case seedingEvent:
+			//case droppingEvent:
+			//}
 		case <-timer.C:
 			tm.wg.Add(1)
 			go func() {
