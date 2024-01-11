@@ -1057,6 +1057,9 @@ func (tm *TorrentManager) pendingLoop() {
 	for {
 		select {
 		case ev := <-sub.Chan():
+			if ev == nil {
+				continue
+			}
 			if m, ok := ev.Data.(pendingEvent); ok {
 				t := m.T
 				tm.wg.Add(1)
@@ -1205,6 +1208,9 @@ func (tm *TorrentManager) activeLoop() {
 	for {
 		select {
 		case ev := <-sub.Chan():
+			if ev == nil {
+				continue
+			}
 			if m, ok := ev.Data.(runningEvent); ok {
 				t := m.T
 				n := tm.blockCaculate(t.Torrent.Length())
