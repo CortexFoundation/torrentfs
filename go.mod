@@ -9,7 +9,7 @@ require (
 	github.com/anacrolix/dht/v2 v2.21.0
 	github.com/anacrolix/envpprof v1.3.0
 	github.com/anacrolix/fuse v0.2.0
-	github.com/anacrolix/log v0.14.5
+	github.com/anacrolix/log v0.14.6-0.20231202035202-ed7a02cad0b4
 	github.com/anacrolix/missinggo v1.3.0
 	github.com/anacrolix/missinggo/v2 v2.7.3
 	github.com/anacrolix/tagflag v1.4.0
@@ -26,7 +26,7 @@ require (
 	github.com/prometheus/client_golang v1.18.0
 	github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
-	github.com/ucwong/golang-kv v1.0.24-0.20240111222739-0f3ca8ca889f
+	github.com/ucwong/golang-kv v1.0.24-0.20240117222732-b8c244870f8d
 	github.com/ucwong/shard v1.0.1-0.20231225143310-3022d14f9c3e
 	github.com/urfave/cli/v2 v2.27.1
 	golang.org/x/time v0.5.0
@@ -40,7 +40,7 @@ require (
 	github.com/RoaringBitmap/roaring v1.7.0 // indirect
 	github.com/ajwerner/btree v0.0.0-20211221152037-f427b3e689c0 // indirect
 	github.com/alecthomas/atomic v0.1.0-alpha2 // indirect
-	github.com/anacrolix/chansync v0.3.0 // indirect
+	github.com/anacrolix/chansync v0.4.0 // indirect
 	github.com/anacrolix/generics v0.0.0-20230911070922-5dd7545c6b13 // indirect
 	github.com/anacrolix/go-libutp v1.3.1 // indirect
 	github.com/anacrolix/missinggo/perf v1.0.0 // indirect
@@ -61,7 +61,7 @@ require (
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/cockroachdb/errors v1.11.1 // indirect
 	github.com/cockroachdb/logtags v0.0.0-20230118201751-21c54148d20b // indirect
-	github.com/cockroachdb/pebble v0.0.0-20240111153635-f8fae4476ad7 // indirect
+	github.com/cockroachdb/pebble v0.0.0-20240117215457-3b7293fd73d7 // indirect
 	github.com/cockroachdb/redact v1.1.5 // indirect
 	github.com/cockroachdb/tokenbucket v0.0.0-20230807174530-cc333fc44b06 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.3 // indirect
@@ -139,9 +139,9 @@ require (
 	github.com/zeebo/xxh3 v1.0.3-0.20230502181907-3808c706a06a // indirect
 	go.etcd.io/bbolt v1.3.8 // indirect
 	go.opencensus.io v0.24.0 // indirect
-	go.opentelemetry.io/otel v1.21.0 // indirect
-	go.opentelemetry.io/otel/metric v1.21.0 // indirect
-	go.opentelemetry.io/otel/trace v1.21.0 // indirect
+	go.opentelemetry.io/otel v1.22.0 // indirect
+	go.opentelemetry.io/otel/metric v1.22.0 // indirect
+	go.opentelemetry.io/otel/trace v1.22.0 // indirect
 	golang.org/x/crypto v0.18.0 // indirect
 	golang.org/x/exp v0.0.0-20240112132812-db7319d0e0e3 // indirect
 	golang.org/x/mod v0.14.0 // indirect
@@ -153,9 +153,9 @@ require (
 	google.golang.org/protobuf v1.32.0 // indirect
 	gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	modernc.org/libc v1.40.1 // indirect
+	modernc.org/libc v1.40.5 // indirect
 	modernc.org/mathutil v1.6.0 // indirect
 	modernc.org/memory v1.7.2 // indirect
 	modernc.org/sqlite v1.28.0 // indirect
-	zombiezen.com/go/sqlite v1.0.0 // indirect
+	zombiezen.com/go/sqlite v1.1.0 // indirect
 )
