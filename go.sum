@@ -7,6 +7,8 @@ filippo.io/edwards25519 v1.0.0-rc.1/go.mod h1:N1IkdkCkiLB6tki+MYJoSx2JTY9NUlxZE7
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/CortexFoundation/CortexTheseus v1.10.53 h1:cQbg9f+iQKMt5flcZeHktTqJDFWcqDvYz8pX64mmonQ=
 github.com/CortexFoundation/CortexTheseus v1.10.53/go.mod h1:aFMRkQLPmpgP2lFcUERfIHDBaeHdeDUe+dZnwoS3qEE=
+github.com/CortexFoundation/compress v0.0.0-20240218153512-9074bdc2397c h1:NPMTQiCmHtWC/68LASsYRtzcvxIwJ8ZI3LANYZ/rXpc=
+github.com/CortexFoundation/compress v0.0.0-20240218153512-9074bdc2397c/go.mod h1:ytKxJqa16SAYZcc4PMcdZpfrcYVmhrEKNaaqz7zta0I=
 github.com/CortexFoundation/merkletree v0.0.0-20230724124840-b6e80265a137 h1:GdrLwJRKPrUSd4V/cBpPyzhNQEo8IDT7Le15hmuC+/4=
 github.com/CortexFoundation/merkletree v0.0.0-20230724124840-b6e80265a137/go.mod h1:OwfhC316GcEJ9QVNWPqj6QV7sorcXBnc0P9p8dPfSbM=
 github.com/CortexFoundation/robot v1.0.7-0.20240101144533-02756bceae73 h1:Sb9+gOMxmehMziDZ2XTn6V+ZCIxrKX3W3kXiNJnV0/c=

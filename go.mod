@@ -4,6 +4,7 @@ go 1.21
 
 require (
 	github.com/CortexFoundation/CortexTheseus v1.10.53
+	github.com/CortexFoundation/compress v0.0.0-20240218153512-9074bdc2397c
 	github.com/CortexFoundation/robot v1.0.7-0.20240101144533-02756bceae73
 	github.com/CortexFoundation/wormhole v0.0.2-0.20231221155549-5c938553b5fc
 	github.com/anacrolix/dht/v2 v2.21.0
@@ -20,7 +21,6 @@ require (
 	github.com/dustin/go-humanize v1.0.1
 	github.com/edsrzf/mmap-go v1.1.1-0.20220903035803-8e5d0fe06024
 	github.com/fsnotify/fsnotify v1.7.0
-	github.com/golang/snappy v0.0.5-0.20220116011046-fa5810519dcb
 	github.com/jedib0t/go-pretty/v6 v6.5.4
 	github.com/otiai10/copy v1.14.0
 	github.com/prometheus/client_golang v1.18.0
@@ -81,6 +81,7 @@ require (
 	github.com/golang/glog v1.2.0 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
+	github.com/golang/snappy v0.0.5-0.20220116011046-fa5810519dcb // indirect
 	github.com/google/btree v1.1.2 // indirect
 	github.com/google/flatbuffers v23.5.26+incompatible // indirect
 	github.com/google/uuid v1.6.0 // indirect
