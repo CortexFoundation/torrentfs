@@ -4,10 +4,9 @@ import (
 	"fmt"
 
 	"github.com/anacrolix/tagflag"
-	"github.com/davecgh/go-spew/spew"
-
 	"github.com/anacrolix/torrent"
 	"github.com/anacrolix/torrent/tracker"
+	"github.com/davecgh/go-spew/spew"
 )
 
 func announceErr(args []string, parent *tagflag.Parser) error {

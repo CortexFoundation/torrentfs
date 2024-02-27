@@ -5,10 +5,10 @@ import (
 	"os"
 
 	"github.com/anacrolix/tagflag"
-
-	"github.com/CortexFoundation/torrentfs/params"
 	"github.com/anacrolix/torrent/bencode"
 	"github.com/anacrolix/torrent/metainfo"
+
+	"github.com/CortexFoundation/torrentfs/params"
 )
 
 var (

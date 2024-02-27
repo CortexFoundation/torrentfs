@@ -2,27 +2,28 @@
 package main
 
 import (
-	//xlog "github.com/anacrolix/log"
-	"github.com/anacrolix/missinggo/v2"
-	"github.com/fsnotify/fsnotify"
 	"log"
+	//xlog "github.com/anacrolix/log"
 	"net"
 	"os"
 	"os/signal"
-	//"os/user"
 	"path/filepath"
 	"syscall"
 	"time"
 
-	//"github.com/anacrolix/missinggo/v2/slices"
+	"github.com/anacrolix/missinggo/v2"
 	"github.com/anacrolix/torrent/metainfo"
+	"github.com/fsnotify/fsnotify"
+
+	//"os/user"
 	"github.com/anacrolix/torrent/storage"
 
+	//"github.com/anacrolix/missinggo/v2/slices"
 	"github.com/anacrolix/tagflag"
-
-	"github.com/CortexFoundation/torrentfs/params"
 	"github.com/anacrolix/torrent"
 	"github.com/anacrolix/torrent/fs"
+
+	"github.com/CortexFoundation/torrentfs/params"
 )
 
 var (
