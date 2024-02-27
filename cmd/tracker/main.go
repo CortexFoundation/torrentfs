@@ -2,14 +2,15 @@ package main
 
 import (
 	"encoding/json"
-	cli "github.com/urfave/cli/v2"
+	"fmt"
 	"net/http"
 	"os"
-	"time"
-	//"os/exec"
 	"sync"
+	"time"
+
+	cli "github.com/urfave/cli/v2"
+	//"os/exec"
 	//        "sync/atomic"
-	"fmt"
 )
 
 type tracker_stats struct {

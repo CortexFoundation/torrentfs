@@ -2,8 +2,9 @@ package backend
 
 import (
 	"fmt"
-	"github.com/jedib0t/go-pretty/v6/progress"
 	"testing"
+
+	"github.com/jedib0t/go-pretty/v6/progress"
 )
 
 func TestProgress(t *testing.T) {

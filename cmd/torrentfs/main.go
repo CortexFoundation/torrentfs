@@ -17,7 +17,6 @@ import (
 	"github.com/anacrolix/fuse"
 	fusefs "github.com/anacrolix/fuse/fs"
 	"github.com/anacrolix/tagflag"
-
 	"github.com/anacrolix/torrent"
 	"github.com/anacrolix/torrent/fs"
 	"github.com/anacrolix/torrent/util/dirwatch"

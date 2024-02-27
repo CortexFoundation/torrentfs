@@ -12,21 +12,19 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/anacrolix/missinggo/v2"
-	"github.com/dustin/go-humanize"
-	"golang.org/x/xerrors"
-
-	"github.com/anacrolix/log"
-
 	"github.com/anacrolix/envpprof"
+	"github.com/anacrolix/log"
+	"github.com/anacrolix/missinggo/v2"
 	"github.com/anacrolix/tagflag"
-	"golang.org/x/time/rate"
-
-	"github.com/CortexFoundation/torrentfs/params"
 	"github.com/anacrolix/torrent"
 	"github.com/anacrolix/torrent/iplist"
 	"github.com/anacrolix/torrent/metainfo"
 	"github.com/anacrolix/torrent/storage"
+	"github.com/dustin/go-humanize"
+	"golang.org/x/time/rate"
+	"golang.org/x/xerrors"
+
+	"github.com/CortexFoundation/torrentfs/params"
 )
 
 var (
