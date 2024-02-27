@@ -3,7 +3,6 @@ package main
 
 import (
 	"log"
-	//xlog "github.com/anacrolix/log"
 	"net"
 	"os"
 	"os/signal"
@@ -12,16 +11,12 @@ import (
 	"time"
 
 	"github.com/anacrolix/missinggo/v2"
-	"github.com/anacrolix/torrent/metainfo"
-	"github.com/fsnotify/fsnotify"
-
-	//"os/user"
-	"github.com/anacrolix/torrent/storage"
-
-	//"github.com/anacrolix/missinggo/v2/slices"
 	"github.com/anacrolix/tagflag"
 	"github.com/anacrolix/torrent"
 	"github.com/anacrolix/torrent/fs"
+	"github.com/anacrolix/torrent/metainfo"
+	"github.com/anacrolix/torrent/storage"
+	"github.com/fsnotify/fsnotify"
 
 	"github.com/CortexFoundation/torrentfs/params"
 )

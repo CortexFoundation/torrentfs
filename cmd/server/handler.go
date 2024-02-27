@@ -10,8 +10,6 @@ import (
 	"strings"
 	"time"
 
-	//"strconv"
-
 	"github.com/CortexFoundation/CortexTheseus/common"
 	"github.com/CortexFoundation/CortexTheseus/log"
 

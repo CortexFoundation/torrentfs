@@ -9,14 +9,13 @@ import (
 	"github.com/CortexFoundation/CortexTheseus/log"
 	xprometheus "github.com/anacrolix/missinggo/v2/prometheus"
 	"github.com/prometheus/client_golang/prometheus"
-
-	//"github.com/CortexFoundation/torrentfs/wormhole"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/ucwong/golang-kv"
 	cli "github.com/urfave/cli/v2"
 
 	t "github.com/CortexFoundation/torrentfs"
 	"github.com/CortexFoundation/torrentfs/params"
+	//"github.com/CortexFoundation/torrentfs/wormhole"
 )
 
 type Config struct {
