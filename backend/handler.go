@@ -571,14 +571,17 @@ func (tm *TorrentManager) updateGlobalTrackers() error {
 		//return nil
 	}
 
+	var total uint64
+
 	if global := tm.worm.BestTrackers(); len(global) > 0 {
 		tm.globalTrackers = [][]string{global}
-		log.Info("Global trackers update", "size", len(global), "cap", wormhole.CAP, "health", float32(len(global))/float32(wormhole.CAP))
 
 		for _, url := range global {
 			score, _ := tm.wormScore(url)
 			log.Info("Tracker status", "url", url, "score", score)
+			total += score
 		}
+		log.Info("Global trackers update", "size", len(global), "cap", wormhole.CAP, "health", float32(len(global))/float32(wormhole.CAP), "total", total)
 	} else {
 		// TODO
 		return errors.New("best trackers failed")
