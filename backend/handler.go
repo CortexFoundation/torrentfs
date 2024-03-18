@@ -1237,19 +1237,24 @@ func (tm *TorrentManager) activeLoop() {
 					for {
 						select {
 						case <-timer.C:
-							if t := tm.getTorrent(i); t != nil { //&& t.Ready() {
-								if t.Cited() <= 0 {
+							if t := tm.getTorrent(i); t != nil {
+								if t.Cited() == 0 {
 									if t.Paused() || t.IsSeeding() || tm.mode == params.LAZY {
 										tm.Dropping(i)
 										return
 									} else {
+										t.CitedDec()
 										log.Info("File can't be dropped for leeching", "ih", i, "request", t.BytesRequested(), "complete", t.Torrent.BytesCompleted(), "total", t.Length(), "status", t.Status())
 									}
+								} else if t.Cited() < 0 {
+									tm.Dropping(i)
+									return
 								} else {
 									t.CitedDec()
 									log.Debug("Seed cited has been decreased", "ih", i, "cited", t.Cited(), "n", n, "status", t.Status(), "elapsed", common.PrettyDuration(time.Duration(mclock.Now())-time.Duration(t.Birth())))
 								}
 							} else {
+								log.Error("Nil tor found", "ih", i)
 								return
 							}
 						case <-tm.closeAll:
