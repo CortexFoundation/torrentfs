@@ -1197,6 +1197,7 @@ func (tm *TorrentManager) activeLoop() {
 		timer_1 = time.NewTicker(time.Second * params.QueryTimeInterval * 60)
 		//timer_2 = time.NewTicker(time.Second * params.QueryTimeInterval * 3600 * 18)
 		//clean = []*Torrent{}
+		counter = 0
 	)
 
 	defer func() {
@@ -1236,15 +1237,25 @@ func (tm *TorrentManager) activeLoop() {
 					for {
 						select {
 						case <-timer.C:
-							if t := tm.getTorrent(i); t != nil { //&& t.Ready() {
-								if t.Cited() <= 0 {
+							if t := tm.getTorrent(i); t != nil {
+								if t.Cited() == 0 {
+									if t.Paused() || t.IsSeeding() || tm.mode == params.LAZY {
+										tm.Dropping(i)
+										return
+									} else {
+										t.CitedDec()
+										log.Info("File can't be dropped for leeching", "ih", i, "request", t.BytesRequested(), "complete", t.Torrent.BytesCompleted(), "total", t.Length(), "status", t.Status())
+									}
+								} else if t.Cited() < 0 {
 									tm.Dropping(i)
+									log.Info("File timeout dropped", "ih", i, "request", t.BytesRequested(), "complete", t.Torrent.BytesCompleted(), "total", t.Length(), "status", t.Status())
 									return
 								} else {
 									t.CitedDec()
 									log.Debug("Seed cited has been decreased", "ih", i, "cited", t.Cited(), "n", n, "status", t.Status(), "elapsed", common.PrettyDuration(time.Duration(mclock.Now())-time.Duration(t.Birth())))
 								}
 							} else {
+								log.Error("Nil tor found", "ih", i)
 								return
 							}
 						case <-tm.closeAll:
@@ -1282,16 +1293,21 @@ func (tm *TorrentManager) activeLoop() {
 				}
 			}*/
 
+			counter++
 			tm.torrents.Range(func(ih string, t *caffe.Torrent) bool {
 				if t.Running() {
 					if t.Torrent.BytesMissing() == 0 {
-						//clean = append(clean, t)
 						tm.finish(t)
 					} else {
 						if t.Torrent.BytesCompleted() < t.BytesRequested() {
 							t.Leech()
 						}
 					}
+				}
+
+				if counter%60 == 0 {
+					log.Debug("All torrents print", "ih", ih, "request", t.BytesRequested(), "complete", t.Torrent.BytesCompleted(), "total", t.Length(), "status", t.Status())
+					counter = 0
 				}
 
 				return true
