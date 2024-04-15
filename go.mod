@@ -28,7 +28,7 @@ require (
 	github.com/prometheus/client_golang v1.19.0
 	github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
-	github.com/ucwong/golang-kv v1.0.24-0.20240409185626-04209674d87f
+	github.com/ucwong/golang-kv v1.0.24-0.20240415092841-3f038fb744f3
 	github.com/ucwong/shard v1.0.1-0.20240327124306-59a521744cae
 	github.com/urfave/cli/v2 v2.27.1
 	golang.org/x/time v0.5.0
@@ -110,7 +110,7 @@ require (
 	github.com/pion/datachannel v1.5.6 // indirect
 	github.com/pion/dtls/v2 v2.2.10 // indirect
 	github.com/pion/ice/v2 v2.3.14 // indirect
-	github.com/pion/interceptor v0.1.27 // indirect
+	github.com/pion/interceptor v0.1.28 // indirect
 	github.com/pion/logging v0.2.2 // indirect
 	github.com/pion/mdns v0.0.12 // indirect
 	github.com/pion/randutil v0.1.0 // indirect
@@ -122,11 +122,11 @@ require (
 	github.com/pion/stun v0.6.1 // indirect
 	github.com/pion/transport/v2 v2.2.4 // indirect
 	github.com/pion/turn/v2 v2.1.5 // indirect
-	github.com/pion/webrtc/v3 v3.2.36 // indirect
+	github.com/pion/webrtc/v3 v3.2.37 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/client_model v0.6.1 // indirect
-	github.com/prometheus/common v0.52.2 // indirect
+	github.com/prometheus/common v0.52.3 // indirect
 	github.com/prometheus/procfs v0.13.0 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
