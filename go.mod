@@ -16,7 +16,7 @@ require (
 	github.com/anacrolix/missinggo v1.3.0
 	github.com/anacrolix/missinggo/v2 v2.7.3
 	github.com/anacrolix/tagflag v1.4.0
-	github.com/anacrolix/torrent v1.55.1-0.20240404012922-bee117611d7f
+	github.com/anacrolix/torrent v1.55.1-0.20240419234247-505551d27de2
 	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/deckarep/golang-set/v2 v2.6.0
@@ -109,7 +109,7 @@ require (
 	github.com/nutsdb/nutsdb v1.0.4 // indirect
 	github.com/pion/datachannel v1.5.6 // indirect
 	github.com/pion/dtls/v2 v2.2.10 // indirect
-	github.com/pion/ice/v2 v2.3.15 // indirect
+	github.com/pion/ice/v2 v2.3.17 // indirect
 	github.com/pion/interceptor v0.1.29 // indirect
 	github.com/pion/logging v0.2.2 // indirect
 	github.com/pion/mdns v0.0.12 // indirect
@@ -121,7 +121,7 @@ require (
 	github.com/pion/srtp/v2 v2.0.18 // indirect
 	github.com/pion/stun v0.6.1 // indirect
 	github.com/pion/transport/v2 v2.2.4 // indirect
-	github.com/pion/turn/v2 v2.1.5 // indirect
+	github.com/pion/turn/v2 v2.1.6 // indirect
 	github.com/pion/webrtc/v3 v3.2.38 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
@@ -166,6 +166,6 @@ require (
 	modernc.org/libc v1.49.3 // indirect
 	modernc.org/mathutil v1.6.0 // indirect
 	modernc.org/memory v1.8.0 // indirect
-	modernc.org/sqlite v1.29.7 // indirect
+	modernc.org/sqlite v1.29.8 // indirect
 	zombiezen.com/go/sqlite v1.2.0 // indirect
 )
