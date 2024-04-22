@@ -22,6 +22,7 @@ require (
 	github.com/deckarep/golang-set/v2 v2.6.0
 	github.com/dustin/go-humanize v1.0.1
 	github.com/edsrzf/mmap-go v1.1.1-0.20220903035803-8e5d0fe06024
+	github.com/fjl/gencodec v0.0.0-20230517082657-f9840df7b83e
 	github.com/fsnotify/fsnotify v1.7.0
 	github.com/holiman/uint256 v1.2.4
 	github.com/jedib0t/go-pretty/v6 v6.5.4
@@ -32,9 +33,11 @@ require (
 	github.com/ucwong/golang-kv v1.0.24-0.20240420125514-98cc44499984
 	github.com/ucwong/shard v1.0.1-0.20240327124306-59a521744cae
 	github.com/urfave/cli/v2 v2.27.1
+	golang.org/x/mobile v0.0.0-20201217150744-e6ae53a27f4f
 	golang.org/x/time v0.5.0
 	golang.org/x/tools v0.20.0
 	golang.org/x/xerrors v0.0.0-20231012003039-104605ab7028
+	google.golang.org/protobuf v1.33.0
 )
 
 require (
@@ -73,6 +76,7 @@ require (
 	github.com/dgraph-io/badger/v4 v4.2.1-0.20240119135526-6acc8e801739 // indirect
 	github.com/dgraph-io/ristretto v0.1.1 // indirect
 	github.com/elliotchance/orderedmap v1.5.1 // indirect
+	github.com/garslo/gogen v0.0.0-20170306192744-1d203ffc1f61 // indirect
 	github.com/getsentry/sentry-go v0.27.0 // indirect
 	github.com/go-llsqlite/adapter v0.1.0 // indirect
 	github.com/go-llsqlite/crawshaw v0.5.1 // indirect
@@ -159,7 +163,6 @@ require (
 	golang.org/x/sys v0.19.0 // indirect
 	golang.org/x/term v0.19.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
-	google.golang.org/protobuf v1.33.0 // indirect
 	gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	lukechampine.com/blake3 v1.2.2 // indirect
