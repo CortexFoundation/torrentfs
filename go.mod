@@ -33,7 +33,6 @@ require (
 	github.com/ucwong/golang-kv v1.0.24-0.20240420125514-98cc44499984
 	github.com/ucwong/shard v1.0.1-0.20240327124306-59a521744cae
 	github.com/urfave/cli/v2 v2.27.1
-	golang.org/x/mobile v0.0.0-20201217150744-e6ae53a27f4f
 	golang.org/x/time v0.5.0
 	golang.org/x/tools v0.20.0
 	golang.org/x/xerrors v0.0.0-20231012003039-104605ab7028
