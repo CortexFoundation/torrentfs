@@ -16,7 +16,7 @@ require (
 	github.com/anacrolix/missinggo v1.3.0
 	github.com/anacrolix/missinggo/v2 v2.7.3
 	github.com/anacrolix/tagflag v1.4.0
-	github.com/anacrolix/torrent v1.55.1-0.20240419234247-505551d27de2
+	github.com/anacrolix/torrent v1.55.1-0.20240424091243-7d0acb5460e9
 	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/deckarep/golang-set/v2 v2.6.0
@@ -118,7 +118,7 @@ require (
 	github.com/pion/mdns v0.0.12 // indirect
 	github.com/pion/randutil v0.1.0 // indirect
 	github.com/pion/rtcp v1.2.14 // indirect
-	github.com/pion/rtp v1.8.5 // indirect
+	github.com/pion/rtp v1.8.6 // indirect
 	github.com/pion/sctp v1.8.16 // indirect
 	github.com/pion/sdp/v3 v3.0.9 // indirect
 	github.com/pion/srtp/v2 v2.0.18 // indirect
@@ -151,9 +151,9 @@ require (
 	github.com/zeebo/xxh3 v1.0.3-0.20230502181907-3808c706a06a // indirect
 	go.etcd.io/bbolt v1.3.9 // indirect
 	go.opencensus.io v0.24.0 // indirect
-	go.opentelemetry.io/otel v1.25.0 // indirect
-	go.opentelemetry.io/otel/metric v1.25.0 // indirect
-	go.opentelemetry.io/otel/trace v1.25.0 // indirect
+	go.opentelemetry.io/otel v1.26.0 // indirect
+	go.opentelemetry.io/otel/metric v1.26.0 // indirect
+	go.opentelemetry.io/otel/trace v1.26.0 // indirect
 	golang.org/x/crypto v0.22.0 // indirect
 	golang.org/x/exp v0.0.0-20240416160154-fe59bbe5cc7f // indirect
 	golang.org/x/mod v0.17.0 // indirect
