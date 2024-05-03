@@ -1293,11 +1293,10 @@ func (tm *TorrentManager) activeLoop() {
 				}
 			}*/
 
-			var clean = []*caffe.Torrent{}
+			var clean = make([]*caffe.Torrent, 0, tm.torrents.Len())
 			tm.torrents.Range(func(ih string, t *caffe.Torrent) bool {
 				if t.Running() {
 					if t.Torrent.BytesMissing() == 0 {
-						//tm.finish(t)
 						clean = append(clean, t)
 					} else {
 						if t.Torrent.BytesCompleted() < t.BytesRequested() {
