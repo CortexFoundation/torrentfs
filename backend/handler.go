@@ -60,6 +60,8 @@ import (
 	"github.com/CortexFoundation/torrentfs/backend/job"
 	"github.com/CortexFoundation/torrentfs/params"
 	"github.com/CortexFoundation/torrentfs/types"
+
+	"golang.org/x/sync/errgroup"
 )
 
 type TorrentManager struct {
@@ -1163,24 +1165,21 @@ func (tm *TorrentManager) pendingLoop() {
 	}
 }
 
-func (tm *TorrentManager) finish(t *caffe.Torrent) {
+func (tm *TorrentManager) finish(t *caffe.Torrent) error {
 	t.Lock()
 	defer t.Unlock()
 
 	if _, err := os.Stat(filepath.Join(tm.DataDir, t.InfoHash())); err == nil {
-		//tm.activeTorrents.Delete(t.InfoHash())
-		//tm.seedingChan <- t
-		tm.Seeding(t)
+		return tm.Seeding(t)
 	} else {
 		if err := os.Symlink(
 			filepath.Join(params.DefaultTmpPath, t.InfoHash()),
 			filepath.Join(tm.DataDir, t.InfoHash()),
 		); err == nil {
-			//tm.activeTorrents.Delete(t.InfoHash())
-			//tm.seedingChan <- t
-			tm.Seeding(t)
+			return tm.Seeding(t)
 		}
 	}
+	return nil
 }
 
 /*func (tm *TorrentManager) dur() uint64 {
@@ -1198,6 +1197,8 @@ func (tm *TorrentManager) activeLoop() {
 		//timer_2 = time.NewTicker(time.Second * params.QueryTimeInterval * 3600 * 18)
 		//clean = []*Torrent{}
 		counter = 0
+
+		workers errgroup.Group
 	)
 
 	defer func() {
@@ -1300,7 +1301,7 @@ func (tm *TorrentManager) activeLoop() {
 						clean = append(clean, t)
 					} else {
 						if t.Torrent.BytesCompleted() < t.BytesRequested() {
-							t.Leech()
+							workers.Go(func() error { return t.Leech() })
 						}
 					}
 				}
@@ -1313,8 +1314,16 @@ func (tm *TorrentManager) activeLoop() {
 				return true
 			})
 
+			if err := workers.Wait(); err != nil {
+				log.Warn("Leech error", "err", err)
+			}
+
 			for _, i := range clean {
-				tm.finish(i)
+				workers.Go(func() error { return tm.finish(i) })
+			}
+
+			if err := workers.Wait(); err != nil {
+				log.Warn("Finished error", "err", err)
 			}
 
 			counter++
