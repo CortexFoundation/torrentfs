@@ -1257,14 +1257,16 @@ func (tm *TorrentManager) activeLoop() {
 				}
 			}*/
 
-			var clean = make([]*caffe.Torrent, 0, tm.torrents.Len())
+			//var clean = make([]*caffe.Torrent, 0, tm.torrents.Len())
 			tm.torrents.Range(func(ih string, t *caffe.Torrent) bool {
 				if t.Running() {
 					if t.Torrent.BytesMissing() == 0 {
-						clean = append(clean, t)
+						//clean = append(clean, t)
+						workers.Go(func() error { return tm.finish(t) })
 					} else {
 						if t.Torrent.BytesCompleted() < t.BytesRequested() {
 							workers.Go(func() error { return t.Leech() })
+							//t.Leech()
 						}
 					}
 				}
@@ -1281,13 +1283,13 @@ func (tm *TorrentManager) activeLoop() {
 				log.Warn("Leech error", "err", err)
 			}
 
-			for _, i := range clean {
+			/*for _, i := range clean {
 				workers.Go(func() error { return tm.finish(i) })
 			}
 
 			if err := workers.Wait(); err != nil {
 				log.Warn("Finished error", "err", err)
-			}
+			}*/
 
 			counter++
 
