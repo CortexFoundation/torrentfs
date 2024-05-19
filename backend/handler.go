@@ -1075,11 +1075,13 @@ func (tm *TorrentManager) pendingLoop() {
 func (tm *TorrentManager) meta(t *caffe.Torrent) error {
 	if b, err := bencode.Marshal(t.Torrent.Info()); err == nil {
 		if tm.kvdb != nil && tm.kvdb.Get([]byte(SEED_PRE+t.InfoHash())) == nil {
-			tm.wg.Add(1)
-			go func() {
-				defer tm.wg.Done()
-				t.WriteTorrent()
-			}()
+			if tm.mode != params.LAZY {
+				tm.wg.Add(1)
+				go func() {
+					defer tm.wg.Done()
+					t.WriteTorrent()
+				}()
+			}
 			tm.kvdb.Set([]byte(SEED_PRE+t.InfoHash()), b)
 		}
 	} else {
