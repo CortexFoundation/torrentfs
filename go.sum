@@ -139,8 +139,8 @@ github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDk
 github.com/cncf/udpa/go v0.0.0-20191209042840-269d4d468f6f/go.mod h1:M8M6+tZqaGXZJjfX53e64911xZQV5JYwmTeXPW+k8Sc=
 github.com/cockroachdb/datadriven v1.0.3-0.20230413201302-be42291fc80f h1:otljaYPt5hWxV3MUfO5dFPFiOXg9CyG5/kCfayTqsJ4=
 github.com/cockroachdb/datadriven v1.0.3-0.20230413201302-be42291fc80f/go.mod h1:a9RdTaap04u637JoCzcUoIcDmvwSUtcUFtT/C3kJlTU=
-github.com/cockroachdb/errors v1.11.1 h1:xSEW75zKaKCWzR3OfxXUxgrk/NtT4G1MiOv5lWZazG8=
-github.com/cockroachdb/errors v1.11.1/go.mod h1:8MUxA3Gi6b25tYlFEBGLf+D8aISL+M4MIpiWMSNRfxw=
+github.com/cockroachdb/errors v1.11.2 h1:M5ABT/WDVqXk0FJwkfw/W+8d7dX55482qrq9dowO8Ks=
+github.com/cockroachdb/errors v1.11.2/go.mod h1:g3dHDvKosgdwac1Yz8UPKvmk2yxXvk9M2bBfnwc9Oaw=
 github.com/cockroachdb/logtags v0.0.0-20230118201751-21c54148d20b h1:r6VH0faHjZeQy818SGhaone5OnYfxFR/+AzdY3sf5aE=
 github.com/cockroachdb/logtags v0.0.0-20230118201751-21c54148d20b/go.mod h1:Vz9DsVWQQhf3vs21MhPMZpMGSht7O/2vFW2xusFUVOs=
 github.com/cockroachdb/pebble v1.1.0 h1:pcFh8CdCIt2kmEpK0OIatq67Ln9uGDYY3d5XnE0LJG4=
@@ -535,8 +535,8 @@ github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd h1:gBtlvLAsgLk+
 github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd/go.mod h1:ddwX+NCjMZPdpzcGh1fcEbNTUTCtKgt2hC2rqvmLKgA=
 github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb h1:dVZH3AH9f7zB3VBmsjn25B7lfcAyMP4QxdFYTrfj7tg=
 github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb/go.mod h1:3yswsBsVuwsOjDvFfC5Na9XSEf4HC7mj3W3g6jvSY/s=
-github.com/ucwong/golang-kv v1.0.24-0.20240516111454-2b75a20c4c6b h1:Npb+Ze6vYiegpPaeoBXcnqI+30BSgKAmcJUUeaJpbTs=
-github.com/ucwong/golang-kv v1.0.24-0.20240516111454-2b75a20c4c6b/go.mod h1:imM8dDztRcIIowC8LX4yZktfXedsQd5vx12rvjLd5yA=
+github.com/ucwong/golang-kv v1.0.24-0.20240526160259-ef630c06892e h1:/ZzdhL9NeC4ZQqSWNCVthxs/sh2L6mfOHWsT/Uaniyw=
+github.com/ucwong/golang-kv v1.0.24-0.20240526160259-ef630c06892e/go.mod h1:UlksTP3dk+1JhhKwssAsgYxZJKxRdqHM3jzh6ZjQyzE=
 github.com/ucwong/shard v1.0.1-0.20240327124306-59a521744cae h1:2G/6RvsOF5FkvsBc0UWOxHf3tfmL+n4IQYvlQ862yuk=
 github.com/ucwong/shard v1.0.1-0.20240327124306-59a521744cae/go.mod h1:IlWVVAJmS8RrvapgE37IuF1R/j1arGuYtulVWa9ZGJw=
 github.com/urfave/cli/v2 v2.27.1 h1:8xSQ6szndafKVRmfyeUMxkNUJQMjL1F2zmsZ+qHpfho=
