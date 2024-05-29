@@ -501,10 +501,10 @@ func (tm *TorrentManager) injectSpec(ih string, spec *torrent.TorrentSpec) (*tor
 		}
 
 		if t.Info() == nil && tm.kvdb != nil {
-                        if v := tm.kvdb.Get([]byte(SEED_PRE + ih)); v != nil {
-                                t.SetInfoBytes(v)
-                        }
-                }
+			if v := tm.kvdb.Get([]byte(SEED_PRE + ih)); v != nil {
+				t.SetInfoBytes(v)
+			}
+		}
 
 		if len(spec.Trackers) == 0 {
 			t.AddTrackers(slices.Clone(tm.trackers))
@@ -974,8 +974,8 @@ func (tm *TorrentManager) mainLoop() {
 					if t.Stopping() {
 						log.Debug("Nas recovery", "ih", t.InfoHash(), "status", t.Status(), "complete", common.StorageSize(t.Torrent.BytesCompleted()))
 						if tt, err := tm.injectSpec(t.InfoHash(), t.Spec()); err == nil && tt != nil {
-							t.SetStatus(caffe.TorrentPending)
 							t.Lock()
+							t.SetStatus(caffe.TorrentPending)
 							t.Torrent = tt
 							t.SetStart(mclock.Now())
 							t.Unlock()
