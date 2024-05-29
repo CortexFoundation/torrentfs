@@ -500,16 +500,20 @@ func (tm *TorrentManager) injectSpec(ih string, spec *torrent.TorrentSpec) (*tor
 			return t, errors.New("Try to add a dupliated torrent")
 		}
 
-		t.AddTrackers(slices.Clone(tm.trackers))
-		//t.ModifyTrackers(slices.Clone(tm.trackers))
+		if t.Info() == nil && tm.kvdb != nil {
+                        if v := tm.kvdb.Get([]byte(SEED_PRE + ih)); v != nil {
+                                t.SetInfoBytes(v)
+                        }
+                }
+
+		if len(spec.Trackers) == 0 {
+			t.AddTrackers(slices.Clone(tm.trackers))
+		} else {
+			t.ModifyTrackers(slices.Clone(tm.trackers))
+		}
 
 		log.Debug("Meta", "ih", ih, "mi", t.Metainfo().AnnounceList)
 
-		if t.Info() == nil && tm.kvdb != nil {
-			if v := tm.kvdb.Get([]byte(SEED_PRE + ih)); v != nil {
-				t.SetInfoBytes(v)
-			}
-		}
 		return t, nil
 	} else {
 		return nil, err
