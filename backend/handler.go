@@ -974,8 +974,8 @@ func (tm *TorrentManager) mainLoop() {
 					if t.Stopping() {
 						log.Debug("Nas recovery", "ih", t.InfoHash(), "status", t.Status(), "complete", common.StorageSize(t.Torrent.BytesCompleted()))
 						if tt, err := tm.injectSpec(t.InfoHash(), t.Spec()); err == nil && tt != nil {
-							t.Lock()
 							t.SetStatus(caffe.TorrentPending)
+							t.Lock()
 							t.Torrent = tt
 							t.SetStart(mclock.Now())
 							t.Unlock()
@@ -1220,7 +1220,6 @@ func (tm *TorrentManager) activeLoop() {
 					} else {
 						if t.Torrent.BytesCompleted() < t.BytesRequested() {
 							workers.Go(func() error { return t.Leech() })
-							//t.Leech()
 						}
 					}
 				}
