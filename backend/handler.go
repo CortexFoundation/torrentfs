@@ -1114,8 +1114,8 @@ func (tm *TorrentManager) cost(s uint64) {
 
 func (tm *TorrentManager) activeLoop() {
 	var (
-		timer   = time.NewTicker(time.Second * params.QueryTimeInterval)
-		timer_1 = time.NewTicker(time.Second * params.QueryTimeInterval * 60)
+		timer   = time.NewTimer(time.Second * params.QueryTimeInterval)
+		timer_1 = time.NewTimer(time.Second * params.QueryTimeInterval * 60)
 		counter = 0
 
 		workers errgroup.Group
@@ -1198,6 +1198,7 @@ func (tm *TorrentManager) activeLoop() {
 			//stopped := int32(tm.torrents.Len()) - tm.seeds.Load() - tm.actives.Load() - tm.pends.Load()
 			log.Info("Fs status", "pending", tm.pends.Load(), "downloading", tm.actives.Load(), "seeding", tm.seeds.Load(), "stopping", tm.stops.Load(), "all", tm.torrents.Len(), "recovery", tm.recovery.Load(), "metrics", common.PrettyDuration(tm.Updates), "job", job.SEQ()) //, "total", common.StorageSize(tm.total()), "cost", common.PrettyDuration(time.Duration(tm.dur())), "speed", common.StorageSize(float64(tm.total()*1000*1000*1000)/float64(tm.dur())).String()+"/s")
 			//}
+			timer_1.Reset(time.Second * params.QueryTimeInterval * 60)
 		case <-timer.C:
 			/*for ih, t := range tm.activeTorrents {
 				if t.Torrent.BytesMissing() == 0 {
@@ -1245,6 +1246,7 @@ func (tm *TorrentManager) activeLoop() {
 			}*/
 
 			counter++
+			timer.Reset(time.Second * params.QueryTimeInterval)
 
 		case <-tm.closeAll:
 			log.Info("Active seed loop closed")
