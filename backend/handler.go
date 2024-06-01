@@ -1225,8 +1225,8 @@ func (tm *TorrentManager) activeLoop() {
 					if t.Torrent.BytesMissing() == 0 {
 						//clean = append(clean, t)
 						//delete(filter, ih)
+						log.Trace("Finish", "ih", ih)
 						workers.Go(func() error { return tm.finish(t) })
-						log.Info("Finish", "ih", ih)
 					} else {
 						//if t.Torrent.BytesCompleted() < t.BytesRequested() {
 						//if v, ok := tm.filter[ih]; ok {
