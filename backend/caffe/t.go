@@ -224,7 +224,12 @@ func (t *Torrent) Paused() bool {
 }
 
 func (t *Torrent) Leech() error {
-	defer t.dirty.Store(false)
+	t.Lock()
+	defer t.Unlock()
+
+	defer func() {
+		t.dirty.Store(false)
+	}()
 	// Make sure the torrent info exists
 	if t.Torrent.Info() == nil {
 		return errors.New("info is nil")
@@ -308,6 +313,10 @@ func (t *Torrent) Stop() {
 	}
 	t.Torrent.Drop()
 	clear(t.spec.Trackers)
+	if !t.IsSeeding() {
+		log.Info("Not complete, set dirty", "ih", t.InfoHash(), "request", t.BytesRequested(), "complete", t.BytesCompleted(), "total", t.Length())
+		t.dirty.Store(true)
+	}
 }
 
 func (t *Torrent) stopListen() {
