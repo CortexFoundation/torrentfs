@@ -1085,7 +1085,7 @@ func (tm *TorrentManager) meta(t *caffe.Torrent) error {
 	}
 
 	if params.IsGood(t.InfoHash()) || tm.mode == params.FULL || t.BytesRequested() > t.Length() {
-		t.SetBytesRequested(t.Length())
+		t.SetBytesRequested(t.Length()) // request bytes fix after meta information got
 	}
 
 	return tm.Running(t)

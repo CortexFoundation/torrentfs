@@ -98,11 +98,12 @@ func NewTorrent(t *torrent.Torrent, requested int64, ih string, path string, slo
 		mux:      new(event.TypeMux),
 	}
 
-	tor.bytesRequested.Store(requested)
+	//tor.bytesRequested.Store(requested)
 	tor.status.Store(TorrentPending)
 
 	if requested > 0 {
-		tor.dirty.Store(true)
+		//tor.dirty.Store(true)
+		tor.SetBytesRequested(requested)
 	}
 
 	return &tor
