@@ -101,9 +101,9 @@ func NewTorrent(t *torrent.Torrent, requested int64, ih string, path string, slo
 	tor.bytesRequested.Store(requested)
 	tor.status.Store(TorrentPending)
 
-	//if requested > 0 {
-	tor.dirty.Store(true)
-	//}
+	if requested > 0 {
+		tor.dirty.Store(true)
+	}
 
 	return &tor
 }

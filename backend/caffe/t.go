@@ -313,7 +313,8 @@ func (t *Torrent) Stop() {
 	}
 	t.Torrent.Drop()
 	clear(t.spec.Trackers)
-	if !t.IsSeeding() {
+	//if !t.IsSeeding() {
+	if t.BytesRequested() > t.BytesCompleted() {
 		log.Info("Not complete, set dirty", "ih", t.InfoHash(), "request", t.BytesRequested(), "complete", t.BytesCompleted(), "total", t.Length())
 		t.dirty.Store(true)
 	}
