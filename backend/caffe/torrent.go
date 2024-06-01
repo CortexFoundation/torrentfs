@@ -70,6 +70,8 @@ type Torrent struct {
 	priority int
 
 	mux *event.TypeMux
+
+	dirty atomic.Bool
 }
 
 type task struct {
@@ -89,7 +91,7 @@ func NewTorrent(t *torrent.Torrent, requested int64, ih string, path string, slo
 		infohash: ih,
 		filepath: path,
 		start:    mclock.Now(),
-		taskCh:   make(chan task, 8),
+		taskCh:   make(chan task, 1),
 		closeAll: make(chan any),
 		slot:     slot,
 		spec:     spec,
@@ -98,6 +100,10 @@ func NewTorrent(t *torrent.Torrent, requested int64, ih string, path string, slo
 
 	tor.bytesRequested.Store(requested)
 	tor.status.Store(TorrentPending)
+
+	if requested > 0 {
+		tor.dirty.Store(true)
+	}
 
 	return &tor
 }
