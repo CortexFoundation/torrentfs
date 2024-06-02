@@ -23,12 +23,12 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"math"
+	//"math"
 	"math/rand"
 	"net"
 	"os"
 	"path/filepath"
-	"runtime"
+	//"runtime"
 	"slices"
 	"strconv"
 	"sync"
@@ -656,8 +656,8 @@ func NewTorrentManager(config *params.Config, fsid uint64, cache, compress bool)
 	//cfg.HTTPUserAgent = "Cortex"
 	cfg.Seed = true
 
-	cfg.EstablishedConnsPerTorrent = int(math.Min(float64(runtime.NumCPU()*2), float64(50))) //4 //len(config.DefaultTrackers)
-	cfg.HalfOpenConnsPerTorrent = cfg.EstablishedConnsPerTorrent / 2
+	//cfg.EstablishedConnsPerTorrent = 128 //int(math.Min(float64(runtime.NumCPU()*2), float64(50))) //4 //len(config.DefaultTrackers)
+	//cfg.HalfOpenConnsPerTorrent = cfg.EstablishedConnsPerTorrent / 2
 
 	cfg.ListenPort = config.Port
 	if !config.Quiet {
