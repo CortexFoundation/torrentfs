@@ -24,7 +24,6 @@ require (
 	github.com/edsrzf/mmap-go v1.1.1-0.20220903035803-8e5d0fe06024
 	github.com/fjl/gencodec v0.0.0-20230517082657-f9840df7b83e
 	github.com/fsnotify/fsnotify v1.7.0
-	github.com/holiman/uint256 v1.2.4
 	github.com/jedib0t/go-pretty/v6 v6.5.4
 	github.com/otiai10/copy v1.14.0
 	github.com/prometheus/client_golang v1.19.1
@@ -95,7 +94,8 @@ require (
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/websocket v1.5.2-0.20231113005423-6f5d2139f4b9 // indirect
 	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
-	github.com/huandu/xstrings v1.4.0 // indirect
+	github.com/holiman/uint256 v1.2.4 // indirect
+	github.com/huandu/xstrings v1.5.0 // indirect
 	github.com/huin/goupnp v1.3.0 // indirect
 	github.com/jackpal/go-nat-pmp v1.0.2 // indirect
 	github.com/klauspost/compress v1.17.8 // indirect
@@ -165,7 +165,7 @@ require (
 	gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	lukechampine.com/blake3 v1.3.0 // indirect
-	modernc.org/libc v1.51.0 // indirect
+	modernc.org/libc v1.52.1 // indirect
 	modernc.org/mathutil v1.6.0 // indirect
 	modernc.org/memory v1.8.0 // indirect
 	modernc.org/sqlite v1.30.0 // indirect
