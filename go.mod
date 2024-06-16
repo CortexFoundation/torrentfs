@@ -16,7 +16,7 @@ require (
 	github.com/anacrolix/missinggo v1.3.0
 	github.com/anacrolix/missinggo/v2 v2.7.3
 	github.com/anacrolix/tagflag v1.4.0
-	github.com/anacrolix/torrent v1.56.0
+	github.com/anacrolix/torrent v1.56.1
 	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/deckarep/golang-set/v2 v2.6.0
@@ -78,7 +78,7 @@ require (
 	github.com/garslo/gogen v0.0.0-20170306192744-1d203ffc1f61 // indirect
 	github.com/getsentry/sentry-go v0.28.1 // indirect
 	github.com/go-llsqlite/adapter v0.1.0 // indirect
-	github.com/go-llsqlite/crawshaw v0.5.2 // indirect
+	github.com/go-llsqlite/crawshaw v0.5.3 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-ole/go-ole v1.3.0 // indirect

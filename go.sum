@@ -93,8 +93,8 @@ github.com/anacrolix/tagflag v1.0.0/go.mod h1:1m2U/K6ZT+JZG0+bdMK6qauP49QT4wE5pm
 github.com/anacrolix/tagflag v1.1.0/go.mod h1:Scxs9CV10NQatSmbyjqmqmeQNwGzlNe0CMUMIxqHIG8=
 github.com/anacrolix/tagflag v1.4.0 h1:OlpkharT7bRqLyMkZs0XAkdb2QM/eG7Aagg0c/8Kijs=
 github.com/anacrolix/tagflag v1.4.0/go.mod h1:jNpc4zGvJgIXIw9xcOtYLMz4iSRYn1XKUkTlbPwwZGg=
-github.com/anacrolix/torrent v1.56.0 h1:g/sM0K/BaWUv4Htu2bblLBhIxGdFZ1MUCoD7lcvemlo=
-github.com/anacrolix/torrent v1.56.0/go.mod h1:5DMHbeIM1TuC5wTQ99XieKKLiYZYz6iB2lyZpKZEr6w=
+github.com/anacrolix/torrent v1.56.1 h1:QeJMOP0NuhpQ5dATsOqEL0vUO85aPMNMGP2FACNt0Eg=
+github.com/anacrolix/torrent v1.56.1/go.mod h1:5DMHbeIM1TuC5wTQ99XieKKLiYZYz6iB2lyZpKZEr6w=
 github.com/anacrolix/upnp v0.1.4 h1:+2t2KA6QOhm/49zeNyeVwDu1ZYS9dB9wfxyVvh/wk7U=
 github.com/anacrolix/upnp v0.1.4/go.mod h1:Qyhbqo69gwNWvEk1xNTXsS5j7hMHef9hdr984+9fIic=
 github.com/anacrolix/utp v0.2.0 h1:65Cdmr6q9WSw2KsM+rtJFu7rqDzLl2bdysf4KlNPcFI=
@@ -213,8 +213,8 @@ github.com/go-kit/kit v0.8.0/go.mod h1:xBxKIO96dXMWWy0MnWVtmwkA9/13aqxPnvrjFYMA2
 github.com/go-kit/kit v0.9.0/go.mod h1:xBxKIO96dXMWWy0MnWVtmwkA9/13aqxPnvrjFYMA2as=
 github.com/go-llsqlite/adapter v0.1.0 h1:wGSQNsu/rtYeu/lqZNZQMjwUdEF3OW66xTLvsFwJQUw=
 github.com/go-llsqlite/adapter v0.1.0/go.mod h1:DADrR88ONKPPeSGjFp5iEN55Arx3fi2qXZeKCYDpbmU=
-github.com/go-llsqlite/crawshaw v0.5.2 h1:BBaPo/efobAJMO7RF0aYPVtYzkfXt3Lh3460S9+5oww=
-github.com/go-llsqlite/crawshaw v0.5.2/go.mod h1:/YJdV7uBQaYDE0fwe4z3wwJIZBJxdYzd38ICggWqtaE=
+github.com/go-llsqlite/crawshaw v0.5.3 h1:PmHXJjjxHodMoFWs3dEcJ1I1m9a+J0TCMNiHjGbXy1o=
+github.com/go-llsqlite/crawshaw v0.5.3/go.mod h1:/YJdV7uBQaYDE0fwe4z3wwJIZBJxdYzd38ICggWqtaE=
 github.com/go-logfmt/logfmt v0.3.0/go.mod h1:Qt1PoO58o5twSAckw1HlFXLmHsOX5/0LbT9GBnD5lWE=
 github.com/go-logfmt/logfmt v0.4.0/go.mod h1:3RMwSq7FuexP4Kalkev3ejPJsZTpXXBr9+V4qmtdjCk=
 github.com/go-logr/logr v1.2.2/go.mod h1:jdQByPbusPIv2/zmleS9BjJVeZ6kBagPoEUsqbVz/1A=
