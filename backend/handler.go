@@ -1192,15 +1192,6 @@ func (tm *TorrentManager) activeLoop() {
 				}(t.InfoHash(), n)
 			}
 		case <-timer_1.C:
-			if tm.fc != nil {
-				log.Debug("Cache status", "total", common.StorageSize(tm.fc.FileSize()), "itms", tm.fc.Size())
-				if tm.mode == params.LAZY {
-					for _, itm := range tm.fc.MostAccessed(4) {
-						log.Debug("Cache status", "key", itm.Key(), "acc", itm.AccessCount, "dur", common.PrettyDuration(itm.Dur()))
-					}
-				}
-			}
-
 			//if tm.dur() > 0 {
 			//stopped := int32(tm.torrents.Len()) - tm.seeds.Load() - tm.actives.Load() - tm.pends.Load()
 			log.Info("Fs status", "pending", tm.pends.Load(), "downloading", tm.actives.Load(), "seeding", tm.seeds.Load(), "stopping", tm.stops.Load(), "all", tm.torrents.Len(), "recovery", tm.recovery.Load(), "metrics", common.PrettyDuration(tm.Updates)) //, "total", common.StorageSize(tm.total()), "cost", common.PrettyDuration(time.Duration(tm.dur())), "speed", common.StorageSize(float64(tm.total()*1000*1000*1000)/float64(tm.dur())).String()+"/s")
