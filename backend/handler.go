@@ -1028,6 +1028,7 @@ func (tm *TorrentManager) pendingLoop() {
 			}
 			if m, ok := ev.Data.(pendingEvent); ok {
 				t := m.T
+				log.Debug("Searching", "ih", t.InfoHash())
 				if t.Torrent.Info() != nil {
 					tm.meta(t)
 					continue
@@ -1084,7 +1085,8 @@ func (tm *TorrentManager) meta(t *caffe.Torrent) error {
 		return err
 	}
 
-	if params.IsGood(t.InfoHash()) || tm.mode == params.FULL || t.BytesRequested() > t.Length() {
+	log.Debug("Meta found", "ih", t.InfoHash(), "len", t.Length())
+	if params.IsGood(t.InfoHash()) || tm.mode == params.FULL {
 		t.SetBytesRequested(t.Length()) // request bytes fix after meta information got
 	}
 
