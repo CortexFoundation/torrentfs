@@ -972,6 +972,11 @@ func (tm *TorrentManager) mainLoop() {
 					continue
 				}
 
+				if tm.mode == params.LAZY {
+					if meta.Request() == 0 {
+						continue
+					}
+				}
 				if t := tm.addInfoHash(meta.InfoHash(), int64(meta.Request())); t == nil {
 					log.Error("Seed [create] failed", "ih", meta.InfoHash(), "request", meta.Request())
 				} else {
