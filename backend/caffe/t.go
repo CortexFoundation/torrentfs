@@ -127,13 +127,6 @@ func (t *Torrent) BytesRequested() int64 {
 func (t *Torrent) SetBytesRequested(bytesRequested int64) {
 	t.lock.Lock()
 	defer t.lock.Unlock()
-	// Check if the torrent has associated information
-	if t.Info() != nil {
-		// Limit the requested bytes to the total length of the torrent
-		if bytesRequested > t.Length() {
-			bytesRequested = t.Length()
-		}
-	}
 
 	if bytesRequested > t.bytesRequested.Load() {
 		t.dirty.Store(true)
