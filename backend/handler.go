@@ -1152,6 +1152,10 @@ func (tm *TorrentManager) activeLoop() {
 
 			if m, ok := ev.Data.(runningEvent); ok {
 				t := m.T
+				if t.Dirty() {
+					log.Debug("Leech", "ih", t.InfoHash(), "request", t.BytesRequested(), "total", t.Length())
+					t.Leech()
+				}
 				n := tm.blockCaculate(t.Torrent.Length())
 				if n < 300 {
 					n += 300
