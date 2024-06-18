@@ -49,7 +49,7 @@ import (
 	"github.com/anacrolix/torrent/iplist"
 	"github.com/anacrolix/torrent/metainfo"
 	"github.com/anacrolix/torrent/mmap_span"
-	pp "github.com/anacrolix/torrent/peer_protocol"
+	//pp "github.com/anacrolix/torrent/peer_protocol"
 	"github.com/anacrolix/torrent/storage"
 	"github.com/bradfitz/iter"
 	"github.com/edsrzf/mmap-go"
