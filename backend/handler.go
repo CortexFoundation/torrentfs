@@ -632,12 +632,12 @@ func NewTorrentManager(config *params.Config, fsid uint64, cache, compress bool)
 		cfg.IPBlocklist = blocklist
 	}
 
-	cfg.MinPeerExtensions.SetBit(pp.ExtensionBitFast, true)
+	//cfg.MinPeerExtensions.SetBit(pp.ExtensionBitFast, true)
 	//cfg.DisableWebtorrent = false
 	//cfg.DisablePEX = false
 	//cfg.DisableWebseeds = false
-	cfg.DisableIPv4 = false
-	cfg.DisableAcceptRateLimiting = true
+	//cfg.DisableIPv4 = false
+	//cfg.DisableAcceptRateLimiting = true
 	//cfg.DisableWebtorrent = false
 	//cfg.HeaderObfuscationPolicy.Preferred = true
 	//cfg.HeaderObfuscationPolicy.RequirePreferred = true
@@ -656,7 +656,7 @@ func NewTorrentManager(config *params.Config, fsid uint64, cache, compress bool)
 	//cfg.HTTPUserAgent = "Cortex"
 	cfg.Seed = true
 
-	cfg.EstablishedConnsPerTorrent = 128 //int(math.Min(float64(runtime.NumCPU()*2), float64(50))) //4 //len(config.DefaultTrackers)
+	//cfg.EstablishedConnsPerTorrent = 128 //int(math.Min(float64(runtime.NumCPU()*2), float64(50))) //4 //len(config.DefaultTrackers)
 	//cfg.HalfOpenConnsPerTorrent = cfg.EstablishedConnsPerTorrent / 2
 
 	cfg.ListenPort = config.Port
