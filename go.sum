@@ -13,8 +13,8 @@ github.com/CortexFoundation/merkletree v0.0.0-20240227124831-3a649e633271 h1:Jc8
 github.com/CortexFoundation/merkletree v0.0.0-20240227124831-3a649e633271/go.mod h1:OwfhC316GcEJ9QVNWPqj6QV7sorcXBnc0P9p8dPfSbM=
 github.com/CortexFoundation/robot v1.0.7-0.20240227124625-67fbc38a2059 h1:vChyVR0sibPsrTMhubedhh3W8d4YmV4pkcNYIEXynII=
 github.com/CortexFoundation/robot v1.0.7-0.20240227124625-67fbc38a2059/go.mod h1:kEJDioniiGBcIGCOsBPiWXavKHYw5EwHHe+gWHz4J48=
-github.com/CortexFoundation/wormhole v0.0.2-0.20240503144741-71d4d22383f0 h1:pePXS+/6usgcC1G2Ma3pX7fJwoRcgLPyu5SLawrTszc=
-github.com/CortexFoundation/wormhole v0.0.2-0.20240503144741-71d4d22383f0/go.mod h1:ipzmPabDgzYKUbXkGVe2gTkBEp+MsDx6pXGiuYzmP6s=
+github.com/CortexFoundation/wormhole v0.0.2-0.20240618210803-ddeb4e75d65a h1:uvpJ29a1fKDI71Qz9znhVlgDI6QZJiEhIBGboMqGSGA=
+github.com/CortexFoundation/wormhole v0.0.2-0.20240618210803-ddeb4e75d65a/go.mod h1:ipzmPabDgzYKUbXkGVe2gTkBEp+MsDx6pXGiuYzmP6s=
 github.com/DataDog/zstd v1.5.6-0.20230622172052-ea68dcab66c0 h1:ye3LRgDs6Og7SKC1wBQH8oMaGczhCRpPpnU74l4rma8=
 github.com/DataDog/zstd v1.5.6-0.20230622172052-ea68dcab66c0/go.mod h1:g4AWEaM3yOg3HYfnJ3YIawPnVdXJh9QME85blwSAmyw=
 github.com/Julusian/godocdown v0.0.0-20170816220326-6d19f8ff2df8/go.mod h1:INZr5t32rG59/5xeltqoCJoNY7e5x/3xoY9WSWVWg74=

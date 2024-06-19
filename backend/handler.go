@@ -77,8 +77,8 @@ type TorrentManager struct {
 	//pendingTorrents *shard.Map[*Torrent]
 	//maxSeedTask         int
 	//maxEstablishedConns int
-	trackers [][]string
-	//globalTrackers []string
+	trackers       [][]string
+	globalTrackers [][]string
 	//boostFetcher        *BoostDataFetcher
 	DataDir    string
 	TmpDataDir string
@@ -536,11 +536,13 @@ func (tm *TorrentManager) updateGlobalTrackers() error {
 	var total uint64
 
 	if global := tm.worm.BestTrackers(); len(global) > 0 {
-		if len(tm.trackers) > 1 {
+		/*if len(tm.trackers) > 1 {
 			tm.trackers = append(tm.trackers[:1], global)
 		} else {
 			tm.trackers = append(tm.trackers, global)
-		}
+		}*/
+
+		tm.globalTrackers = [][]string{global}
 
 		for _, url := range global {
 			score, _ := tm.wormScore(url)
@@ -1049,13 +1051,26 @@ func (tm *TorrentManager) pendingLoop() {
 
 					ctx, cancel := context.WithTimeout(context.Background(), (10+time.Duration(tm.slot&9))*time.Minute)
 					defer cancel()
-					select {
-					case <-t.Torrent.GotInfo():
-						tm.meta(t)
-					case <-t.Closed():
-					case <-tm.closeAll:
-					case <-ctx.Done():
-						tm.Dropping(t.InfoHash())
+					timer := time.NewTimer(time.Second * 15)
+					defer timer.Stop()
+					for {
+						select {
+						case <-t.Torrent.GotInfo():
+							tm.meta(t)
+							return
+						case <-t.Closed():
+							return
+						case <-tm.closeAll:
+							return
+						case <-ctx.Done():
+							tm.Dropping(t.InfoHash())
+							return
+						case <-timer.C:
+							// Invoked once
+							log.Info("Add new global trackers", "ih", t.InfoHash())
+							t.AddTrackers(slices.Clone(tm.globalTrackers))
+							timer.Stop()
+						}
 					}
 				}(t)
 			}
@@ -1299,6 +1314,9 @@ func (tm *TorrentManager) seedingLoop() {
 
 						evn := caffe.TorrentEvent{S: t.Status()}
 						t.Mux().Post(evn)
+
+						// to global
+						t.AddTrackers(slices.Clone(tm.globalTrackers))
 					}
 				}
 			case droppingEvent:
