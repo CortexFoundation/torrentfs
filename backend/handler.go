@@ -1100,7 +1100,6 @@ func (tm *TorrentManager) meta(t *caffe.Torrent) error {
 		return err
 	}
 
-	// TODO
 	if err := t.Start(); err != nil {
 		tm.Dropping(t.InfoHash())
 		log.Error("Nas start failed", "ih", t.InfoHash(), "err", err)
