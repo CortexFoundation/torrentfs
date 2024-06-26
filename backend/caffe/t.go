@@ -229,8 +229,9 @@ func (t *Torrent) Leech() error {
 	}
 
 	if t.status.Load() != TorrentRunning {
-		log.Warn("Nas is not running", "ih", t.InfoHash(), "status", t.Status())
-		return errors.New("nas is not running")
+		//log.Warn("Nas is not running", "ih", t.InfoHash(), "status", t.Status())
+		//return errors.New("nas is not running")
+		t.status.Store(TorrentRunning)
 	}
 
 	if t.Torrent.BytesMissing() == 0 {
