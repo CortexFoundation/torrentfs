@@ -511,9 +511,9 @@ func (tm *TorrentManager) injectSpec(ih string, spec *torrent.TorrentSpec) (*tor
 		}
 
 		if len(spec.Trackers) == 0 {
-			t.AddTrackers(slices.Clone(tm.trackers))
+			t.AddTrackers(tm.trackers)
 		} else {
-			t.ModifyTrackers(slices.Clone(tm.trackers))
+			t.ModifyTrackers(tm.trackers)
 		}
 
 		log.Debug("Meta", "ih", ih, "mi", t.Metainfo().AnnounceList)
