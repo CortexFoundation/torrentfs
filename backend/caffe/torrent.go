@@ -67,7 +67,7 @@ type Torrent struct {
 	spec *torrent.TorrentSpec
 
 	//jobCh chan bool
-	priority int
+	//priority int
 
 	mux *event.TypeMux
 
