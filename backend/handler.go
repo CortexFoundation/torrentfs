@@ -498,22 +498,26 @@ func (tm *TorrentManager) addInfoHash(ih string, bytesRequested int64) *caffe.To
 
 // Start the torrent leeching
 func (tm *TorrentManager) injectSpec(ih string, spec *torrent.TorrentSpec) (*torrent.Torrent, error) {
-	if t, n, err := tm.client.AddTorrentSpec(spec); err == nil {
-		if !n {
+	if spec != nil {
+		spec.Trackers = tm.trackers
+	}
+
+	if t, _, err := tm.client.AddTorrentSpec(spec); err == nil {
+		/*if !n {
 			log.Warn("Try to add a dupliated torrent", "ih", ih)
 			return t, errors.New("Try to add a dupliated torrent")
-		}
+		}*/
+
+		/*if len(spec.Trackers) == 0 {
+		          t.AddTrackers(tm.trackers)
+		  } else {
+		          t.ModifyTrackers(tm.trackers)
+		  }*/
 
 		if t.Info() == nil && tm.kvdb != nil {
 			if v := tm.kvdb.Get([]byte(SEED_PRE + ih)); v != nil {
 				t.SetInfoBytes(v)
 			}
-		}
-
-		if len(spec.Trackers) == 0 {
-			t.AddTrackers(tm.trackers)
-		} else {
-			t.ModifyTrackers(tm.trackers)
 		}
 
 		log.Debug("Meta", "ih", ih, "mi", t.Metainfo().AnnounceList)
