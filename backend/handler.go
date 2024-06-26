@@ -1212,6 +1212,8 @@ func (tm *TorrentManager) activeLoop() {
 								return
 							}
 							timer.Reset(time.Duration(n) * time.Second)
+						case <-t.Closed():
+							return
 						case <-tm.closeAll:
 							return
 						}
@@ -1315,9 +1317,6 @@ func (tm *TorrentManager) seedingLoop() {
 
 						evn := caffe.TorrentEvent{S: t.Status()}
 						t.Mux().Post(evn)
-
-						// to global
-						// t.AddTrackers(slices.Clone(tm.globalTrackers))
 					}
 				}
 			case droppingEvent:
