@@ -500,6 +500,8 @@ func (tm *TorrentManager) addInfoHash(ih string, bytesRequested int64) *caffe.To
 func (tm *TorrentManager) injectSpec(ih string, spec *torrent.TorrentSpec) (*torrent.Torrent, error) {
 	if spec != nil {
 		spec.Trackers = tm.trackers
+	} else {
+		return nil, errors.New("Nil spec")
 	}
 
 	if t, _, err := tm.client.AddTorrentSpec(spec); err == nil {
