@@ -25,7 +25,7 @@ require (
 	github.com/fjl/gencodec v0.0.0-20230517082657-f9840df7b83e
 	github.com/fsnotify/fsnotify v1.7.0
 	github.com/jedib0t/go-pretty/v6 v6.5.4
-	github.com/otiai10/copy v1.14.0
+	github.com/otiai10/copy v1.14.1-0.20240615124421-e40f4e6d0e0b
 	github.com/prometheus/client_golang v1.19.1
 	github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
@@ -112,6 +112,7 @@ require (
 	github.com/multiformats/go-varint v0.0.7 // indirect
 	github.com/ncruces/go-strftime v0.1.9 // indirect
 	github.com/nutsdb/nutsdb v1.0.4 // indirect
+	github.com/otiai10/mint v1.6.3 // indirect
 	github.com/pion/datachannel v1.5.6 // indirect
 	github.com/pion/dtls/v2 v2.2.11 // indirect
 	github.com/pion/ice/v2 v2.3.25 // indirect
