@@ -12,3 +12,9 @@ func TestProgress(t *testing.T) {
 	fmt.Printf("%s\n", ProgressBar(54, 100, "progress"))
 	fmt.Printf("%s\n", ScaleBar(0, 10, 100))
 }
+
+func TestHash(t *testing.T) {
+	if _, err := Hash("caffe"); err != nil {
+		t.Error(err)
+	}
+}
