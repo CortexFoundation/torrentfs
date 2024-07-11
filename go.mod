@@ -45,8 +45,8 @@ require (
 	github.com/RoaringBitmap/roaring v1.9.4 // indirect
 	github.com/ajwerner/btree v0.0.0-20211221152037-f427b3e689c0 // indirect
 	github.com/alecthomas/atomic v0.1.0-alpha2 // indirect
-	github.com/anacrolix/chansync v0.4.1-0.20240627045151-1aa1ac392fe8 // indirect
-	github.com/anacrolix/generics v0.0.2-0.20240227122613-f95486179cab // indirect
+	github.com/anacrolix/chansync v0.5.1 // indirect
+	github.com/anacrolix/generics v0.0.2 // indirect
 	github.com/anacrolix/go-libutp v1.3.1 // indirect
 	github.com/anacrolix/missinggo/perf v1.0.0 // indirect
 	github.com/anacrolix/mmsg v1.0.0 // indirect
@@ -168,7 +168,7 @@ require (
 	gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	lukechampine.com/blake3 v1.3.0 // indirect
-	modernc.org/libc v1.54.3 // indirect
+	modernc.org/libc v1.54.4 // indirect
 	modernc.org/mathutil v1.6.0 // indirect
 	modernc.org/memory v1.8.0 // indirect
 	modernc.org/sqlite v1.30.1 // indirect
