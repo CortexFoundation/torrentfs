@@ -171,6 +171,6 @@ require (
 	modernc.org/libc v1.54.5 // indirect
 	modernc.org/mathutil v1.6.0 // indirect
 	modernc.org/memory v1.8.0 // indirect
-	modernc.org/sqlite v1.30.1 // indirect
+	modernc.org/sqlite v1.30.2 // indirect
 	zombiezen.com/go/sqlite v1.3.0 // indirect
 )
