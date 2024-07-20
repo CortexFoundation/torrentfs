@@ -1147,9 +1147,10 @@ func (tm *TorrentManager) cost(s uint64) {
 
 func (tm *TorrentManager) activeLoop() {
 	var (
-		timer   = time.NewTimer(time.Second * params.QueryTimeInterval)
-		timer_1 = time.NewTimer(time.Second * params.QueryTimeInterval * 60)
-		counter = 0
+		interval = time.Millisecond * 100
+		timer    = time.NewTimer(interval)
+		timer_1  = time.NewTimer(time.Second * params.QueryTimeInterval * 60)
+		counter  = 0
 
 		workers errgroup.Group
 	)
@@ -1293,7 +1294,7 @@ func (tm *TorrentManager) activeLoop() {
 			}*/
 
 			counter++
-			timer.Reset(time.Second * params.QueryTimeInterval)
+			timer.Reset(interval)
 
 		case <-tm.closeAll:
 			log.Info("Active seed loop closed")
