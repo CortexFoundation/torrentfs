@@ -1041,7 +1041,6 @@ func (tm *TorrentManager) pendingLoop() {
 			}
 			if m, ok := ev.Data.(pendingEvent); ok {
 				t := m.T
-				log.Debug("Searching", "ih", t.InfoHash())
 				if t.Torrent.Info() != nil {
 					t.AddTrackers(slices.Clone(tm.globalTrackers))
 					tm.meta(t)
@@ -1063,6 +1062,7 @@ func (tm *TorrentManager) pendingLoop() {
 					for {
 						select {
 						case <-t.Torrent.GotInfo():
+							log.Info("Searching", "ih", t.InfoHash(), "elapsed", common.PrettyDuration(time.Duration(mclock.Now())-time.Duration(t.Birth())))
 							tm.meta(t)
 							return
 						case <-t.Closed():
