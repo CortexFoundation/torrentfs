@@ -7,7 +7,7 @@ toolchain go1.22.1
 require (
 	github.com/CortexFoundation/CortexTheseus v1.10.58
 	github.com/CortexFoundation/compress v0.0.0-20240218153512-9074bdc2397c
-	github.com/CortexFoundation/robot v1.0.7-0.20240719132903-d52425bb9e09
+	github.com/CortexFoundation/robot v1.0.7-0.20240721110403-197e0e352406
 	github.com/CortexFoundation/wormhole v0.0.2-0.20240624201423-33e289eb7662
 	github.com/anacrolix/envpprof v1.3.0
 	github.com/anacrolix/fuse v0.2.0
