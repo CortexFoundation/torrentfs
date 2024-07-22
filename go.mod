@@ -7,7 +7,7 @@ toolchain go1.22.1
 require (
 	github.com/CortexFoundation/CortexTheseus v1.10.58
 	github.com/CortexFoundation/compress v0.0.0-20240218153512-9074bdc2397c
-	github.com/CortexFoundation/robot v1.0.7-0.20240722074809-b33ad9dc4b3e
+	github.com/CortexFoundation/robot v1.0.7-0.20240722131807-091a759dcf7d
 	github.com/CortexFoundation/wormhole v0.0.2-0.20240624201423-33e289eb7662
 	github.com/anacrolix/envpprof v1.3.0
 	github.com/anacrolix/fuse v0.2.0
@@ -171,6 +171,6 @@ require (
 	modernc.org/libc v1.55.3 // indirect
 	modernc.org/mathutil v1.6.0 // indirect
 	modernc.org/memory v1.8.0 // indirect
-	modernc.org/sqlite v1.30.2 // indirect
+	modernc.org/sqlite v1.31.1 // indirect
 	zombiezen.com/go/sqlite v1.3.0 // indirect
 )
