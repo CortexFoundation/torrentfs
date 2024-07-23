@@ -1043,7 +1043,7 @@ func (tm *TorrentManager) pendingLoop() {
 				t := m.T
 				if t.Torrent.Info() != nil {
 					t.AddTrackers(slices.Clone(tm.globalTrackers))
-					tm.meta(t)
+					tm.active(t)
 					continue
 				}
 
@@ -1057,13 +1057,13 @@ func (tm *TorrentManager) pendingLoop() {
 
 					ctx, cancel := context.WithTimeout(context.Background(), (10+time.Duration(tm.slot&9))*time.Minute)
 					defer cancel()
-					timer := time.NewTimer(time.Second * 15)
+					timer := time.NewTimer(time.Second * 5)
 					defer timer.Stop()
 					for {
 						select {
 						case <-t.Torrent.GotInfo():
 							log.Info("Searching", "ih", t.InfoHash(), "elapsed", common.PrettyDuration(time.Duration(mclock.Now())-time.Duration(t.Birth())))
-							tm.meta(t)
+							tm.active(t)
 							return
 						case <-t.Closed():
 							return
@@ -1088,7 +1088,7 @@ func (tm *TorrentManager) pendingLoop() {
 	}
 }
 
-func (tm *TorrentManager) meta(t *caffe.Torrent) error {
+func (tm *TorrentManager) active(t *caffe.Torrent) error {
 	if b, err := bencode.Marshal(t.Torrent.Info()); err == nil {
 		if tm.kvdb != nil && tm.kvdb.Get([]byte(SEED_PRE+t.InfoHash())) == nil {
 			if tm.mode != params.LAZY {
