@@ -1074,7 +1074,7 @@ func (tm *TorrentManager) pendingLoop() {
 							return
 						case <-timer.C:
 							// Invoked once
-							log.Debug("Add new global trackers", "ih", t.InfoHash())
+							log.Info("Global trackers added", "ih", t.InfoHash())
 							t.AddTrackers(slices.Clone(tm.globalTrackers))
 							timer.Stop()
 						}
