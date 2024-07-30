@@ -1062,7 +1062,7 @@ func (tm *TorrentManager) pendingLoop() {
 					for {
 						select {
 						case <-t.Torrent.GotInfo():
-							log.Info("Searching", "ih", t.InfoHash(), "elapsed", common.PrettyDuration(time.Duration(mclock.Now())-time.Duration(t.Birth())))
+							log.Info("Searching", "ih", t.InfoHash(), "elapsed", common.PrettyDuration(time.Duration(mclock.Now())-time.Duration(t.Birth())), "wait", tm.pends.Load())
 							tm.active(t)
 							return
 						case <-t.Closed():
