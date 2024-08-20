@@ -25,10 +25,10 @@ require (
 	github.com/fsnotify/fsnotify v1.7.0
 	github.com/jedib0t/go-pretty/v6 v6.5.9
 	github.com/otiai10/copy v1.14.1-0.20240615124421-e40f4e6d0e0b
-	github.com/prometheus/client_golang v1.19.1
+	github.com/prometheus/client_golang v1.20.1
 	github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
-	github.com/ucwong/golang-kv v1.0.24-0.20240804201102-3375c6827ad0
+	github.com/ucwong/golang-kv v1.0.24-0.20240820152136-515369bf005a
 	github.com/ucwong/shard v1.0.1-0.20240327124306-59a521744cae
 	github.com/urfave/cli/v2 v2.27.2
 	golang.org/x/sync v0.8.0
@@ -66,9 +66,9 @@ require (
 	github.com/cespare/xxhash v1.1.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/cockroachdb/errors v1.11.3 // indirect
-	github.com/cockroachdb/fifo v0.0.0-20240616162244-4768e80dfb9a // indirect
+	github.com/cockroachdb/fifo v0.0.0-20240816210425-c5d0cb0b6fc0 // indirect
 	github.com/cockroachdb/logtags v0.0.0-20230118201751-21c54148d20b // indirect
-	github.com/cockroachdb/pebble v1.1.1 // indirect
+	github.com/cockroachdb/pebble v1.1.2 // indirect
 	github.com/cockroachdb/redact v1.1.5 // indirect
 	github.com/cockroachdb/tokenbucket v0.0.0-20230807174530-cc333fc44b06 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.4 // indirect
