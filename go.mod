@@ -1,8 +1,8 @@
 module github.com/CortexFoundation/torrentfs
 
-go 1.22
+go 1.23
 
-toolchain go1.22.1
+toolchain go1.23.0
 
 require (
 	github.com/CortexFoundation/CortexTheseus v1.10.58
@@ -15,7 +15,7 @@ require (
 	github.com/anacrolix/missinggo v1.3.0
 	github.com/anacrolix/missinggo/v2 v2.7.3
 	github.com/anacrolix/tagflag v1.4.0
-	github.com/anacrolix/torrent v1.56.2-0.20240813010934-f4711825e84e
+	github.com/anacrolix/torrent v1.56.2-0.20240827020309-a5c90ab8b247
 	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/deckarep/golang-set/v2 v2.6.0
@@ -25,10 +25,10 @@ require (
 	github.com/fsnotify/fsnotify v1.7.0
 	github.com/jedib0t/go-pretty/v6 v6.5.9
 	github.com/otiai10/copy v1.14.1-0.20240615124421-e40f4e6d0e0b
-	github.com/prometheus/client_golang v1.20.1
+	github.com/prometheus/client_golang v1.20.2
 	github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
-	github.com/ucwong/golang-kv v1.0.24-0.20240820152136-515369bf005a
+	github.com/ucwong/golang-kv v1.0.24-0.20240826122618-f13557d13d87
 	github.com/ucwong/shard v1.0.1-0.20240327124306-59a521744cae
 	github.com/urfave/cli/v2 v2.27.2
 	golang.org/x/sync v0.8.0
@@ -154,13 +154,13 @@ require (
 	github.com/xujiajun/utils v0.0.0-20220904132955-5f7c5b914235 // indirect
 	github.com/yusufpapurcu/wmi v1.2.4 // indirect
 	github.com/zeebo/xxh3 v1.0.3-0.20230502181907-3808c706a06a // indirect
-	go.etcd.io/bbolt v1.3.10 // indirect
+	go.etcd.io/bbolt v1.3.11 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	go.opentelemetry.io/otel v1.28.0 // indirect
 	go.opentelemetry.io/otel/metric v1.28.0 // indirect
 	go.opentelemetry.io/otel/trace v1.28.0 // indirect
 	golang.org/x/crypto v0.26.0 // indirect
-	golang.org/x/exp v0.0.0-20240808152545-0cdaa3abc0fa // indirect
+	golang.org/x/exp v0.0.0-20240823005443-9b4947da3948 // indirect
 	golang.org/x/mod v0.20.0 // indirect
 	golang.org/x/net v0.28.0 // indirect
 	golang.org/x/sys v0.24.0 // indirect
