@@ -2,8 +2,6 @@ module github.com/CortexFoundation/torrentfs
 
 go 1.23
 
-toolchain go1.23.0
-
 require (
 	github.com/CortexFoundation/CortexTheseus v1.10.58
 	github.com/CortexFoundation/compress v0.0.0-20240218153512-9074bdc2397c
