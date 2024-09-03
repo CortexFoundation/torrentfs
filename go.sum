@@ -93,8 +93,8 @@ github.com/anacrolix/tagflag v1.0.0/go.mod h1:1m2U/K6ZT+JZG0+bdMK6qauP49QT4wE5pm
 github.com/anacrolix/tagflag v1.1.0/go.mod h1:Scxs9CV10NQatSmbyjqmqmeQNwGzlNe0CMUMIxqHIG8=
 github.com/anacrolix/tagflag v1.4.0 h1:OlpkharT7bRqLyMkZs0XAkdb2QM/eG7Aagg0c/8Kijs=
 github.com/anacrolix/tagflag v1.4.0/go.mod h1:jNpc4zGvJgIXIw9xcOtYLMz4iSRYn1XKUkTlbPwwZGg=
-github.com/anacrolix/torrent v1.56.2-0.20240830024017-285cfd3c7154 h1:9P3v6vHXoDoRo92YdKE7wr25J+2/MU2QSkoqBIjq79U=
-github.com/anacrolix/torrent v1.56.2-0.20240830024017-285cfd3c7154/go.mod h1:4o+rvZzf3M66/gihWR877SFs83GKsJxOQSHRgDmoLKg=
+github.com/anacrolix/torrent v1.56.2-0.20240903051854-2a77ecd5e7f2 h1:gwMwXyEfuz5UWUHBZJGthIQm6X9HzU0O1RD8TJZr5So=
+github.com/anacrolix/torrent v1.56.2-0.20240903051854-2a77ecd5e7f2/go.mod h1:SQZfGq/OCMMyIRCNfTpv9E/go4eE9WJR/YY7eC2HYok=
 github.com/anacrolix/upnp v0.1.4 h1:+2t2KA6QOhm/49zeNyeVwDu1ZYS9dB9wfxyVvh/wk7U=
 github.com/anacrolix/upnp v0.1.4/go.mod h1:Qyhbqo69gwNWvEk1xNTXsS5j7hMHef9hdr984+9fIic=
 github.com/anacrolix/utp v0.2.0 h1:65Cdmr6q9WSw2KsM+rtJFu7rqDzLl2bdysf4KlNPcFI=
@@ -469,6 +469,8 @@ github.com/prometheus/procfs v0.0.8/go.mod h1:7Qr8sr6344vo1JqZ6HhLceV9o3AJ1Ff+Gx
 github.com/prometheus/procfs v0.0.11/go.mod h1:lV6e/gmhEcM9IjHGsFOCxxuZ+z1YqCvr4OA4YeYWdaU=
 github.com/prometheus/procfs v0.15.1 h1:YagwOFzUgYfKKHX6Dr+sHT7km/hxC76UB0learggepc=
 github.com/prometheus/procfs v0.15.1/go.mod h1:fB45yRUv8NstnjriLhBQLuOUt+WW4BsoGhij/e3PBqk=
+github.com/protolambda/ctxlock v0.1.0 h1:rCUY3+vRdcdZXqT07iXgyr744J2DU2LCBIXowYAjBCE=
+github.com/protolambda/ctxlock v0.1.0/go.mod h1:vefhX6rIZH8rsg5ZpOJfEDYQOppZi19SfPiGOFrNnwM=
 github.com/rcrowley/go-metrics v0.0.0-20181016184325-3113b8401b8a/go.mod h1:bCqnVzQkZxMG4s8nGwiZ5l3QUCyqpo9Y+/ZMZ9VjZe4=
 github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec h1:W09IVJc94icq4NjY3clb7Lk8O1qJ8BdBEF8z0ibU0rE=
 github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec/go.mod h1:qqbHyh8v60DhA7CoWK5oRCqLrMHRGoxYCSS9EjAz6Eo=
