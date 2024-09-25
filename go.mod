@@ -5,7 +5,7 @@ go 1.23.0
 toolchain go1.23.1
 
 require (
-	github.com/CortexFoundation/CortexTheseus v1.10.58
+	github.com/CortexFoundation/CortexTheseus v1.10.59
 	github.com/CortexFoundation/compress v0.0.0-20240218153512-9074bdc2397c
 	github.com/CortexFoundation/robot v1.0.7-0.20240728100700-258c7a048a1f
 	github.com/CortexFoundation/wormhole v0.0.2-0.20240624201423-33e289eb7662
@@ -27,7 +27,7 @@ require (
 	github.com/prometheus/client_golang v1.20.4
 	github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
-	github.com/ucwong/golang-kv v1.0.24-0.20240918082513-1a48acf17d80
+	github.com/ucwong/golang-kv v1.0.24-0.20240924104915-310b749a4075
 	github.com/ucwong/shard v1.0.1-0.20240327124306-59a521744cae
 	github.com/urfave/cli/v2 v2.27.4
 	golang.org/x/sync v0.8.0
@@ -97,7 +97,7 @@ require (
 	github.com/huandu/xstrings v1.5.0 // indirect
 	github.com/huin/goupnp v1.3.0 // indirect
 	github.com/jackpal/go-nat-pmp v1.0.2 // indirect
-	github.com/klauspost/compress v1.17.9 // indirect
+	github.com/klauspost/compress v1.17.10 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.8 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/kr/text v0.2.0 // indirect
@@ -124,7 +124,7 @@ require (
 	github.com/pion/sctp v1.8.33 // indirect
 	github.com/pion/sdp/v3 v3.0.9 // indirect
 	github.com/pion/srtp/v2 v2.0.20 // indirect
-	github.com/pion/stun v0.6.1 // indirect
+	github.com/pion/stun v0.6.2-0.20230901070932-d1f1ac894921 // indirect
 	github.com/pion/transport/v2 v2.2.10 // indirect
 	github.com/pion/turn/v2 v2.1.6 // indirect
 	github.com/pion/webrtc/v3 v3.3.3 // indirect
@@ -136,7 +136,7 @@ require (
 	github.com/protolambda/ctxlock v0.1.0 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
-	github.com/rogpeppe/go-internal v1.12.0 // indirect
+	github.com/rogpeppe/go-internal v1.13.1 // indirect
 	github.com/rs/dnscache v0.0.0-20230804202142-fc85eb664529 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/shirou/gopsutil v3.21.11+incompatible // indirect
