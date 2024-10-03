@@ -14,7 +14,7 @@ require (
 	github.com/anacrolix/log v0.15.3-0.20240627045001-cd912c641d83
 	github.com/anacrolix/missinggo/v2 v2.7.4
 	github.com/anacrolix/tagflag v1.4.0
-	github.com/anacrolix/torrent v1.57.2-0.20240930021608-4af494e9c3f5
+	github.com/anacrolix/torrent v1.57.2-0.20241002020116-5fe6c49890fd
 	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/deckarep/golang-set/v2 v2.6.0
