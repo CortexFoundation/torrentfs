@@ -14,7 +14,7 @@ require (
 	github.com/anacrolix/log v0.15.3-0.20240627045001-cd912c641d83
 	github.com/anacrolix/missinggo/v2 v2.7.4
 	github.com/anacrolix/tagflag v1.4.0
-	github.com/anacrolix/torrent v1.57.2-0.20241014100415-05ab0cad4774
+	github.com/anacrolix/torrent v1.57.2-0.20241017235801-4d8437a05621
 	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/deckarep/golang-set/v2 v2.6.0
@@ -24,10 +24,10 @@ require (
 	github.com/fsnotify/fsnotify v1.7.0
 	github.com/jedib0t/go-pretty/v6 v6.5.9
 	github.com/otiai10/copy v1.14.1-0.20240615124421-e40f4e6d0e0b
-	github.com/prometheus/client_golang v1.20.4
+	github.com/prometheus/client_golang v1.20.5
 	github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
-	github.com/ucwong/golang-kv v1.0.24-0.20241013181450-613f8dd1b92b
+	github.com/ucwong/golang-kv v1.0.24-0.20241016100820-f20ccc488463
 	github.com/ucwong/shard v1.0.1-0.20240327124306-59a521744cae
 	github.com/urfave/cli/v2 v2.27.4
 	golang.org/x/sync v0.8.0
@@ -76,7 +76,7 @@ require (
 	github.com/dgraph-io/ristretto v1.0.0 // indirect
 	github.com/elliotchance/orderedmap v1.6.0 // indirect
 	github.com/garslo/gogen v0.0.0-20170306192744-1d203ffc1f61 // indirect
-	github.com/getsentry/sentry-go v0.29.0 // indirect
+	github.com/getsentry/sentry-go v0.29.1 // indirect
 	github.com/go-llsqlite/adapter v0.1.0 // indirect
 	github.com/go-llsqlite/crawshaw v0.5.5 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
