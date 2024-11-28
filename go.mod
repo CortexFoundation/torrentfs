@@ -8,13 +8,13 @@ require (
 	github.com/CortexFoundation/CortexTheseus v1.10.61
 	github.com/CortexFoundation/compress v0.0.0-20240218153512-9074bdc2397c
 	github.com/CortexFoundation/robot v1.0.7-0.20240728100700-258c7a048a1f
-	github.com/CortexFoundation/wormhole v0.0.2-0.20240624201423-33e289eb7662
+	github.com/CortexFoundation/wormhole v0.0.2-0.20241128010855-a23c88842cfa
 	github.com/anacrolix/envpprof v1.4.0
 	github.com/anacrolix/fuse v0.4.0
 	github.com/anacrolix/log v0.16.0
 	github.com/anacrolix/missinggo/v2 v2.8.0
 	github.com/anacrolix/tagflag v1.4.0
-	github.com/anacrolix/torrent v1.57.2-0.20241017235801-4d8437a05621
+	github.com/anacrolix/torrent v1.58.0
 	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/deckarep/golang-set/v2 v2.6.0

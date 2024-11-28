@@ -13,8 +13,8 @@ github.com/CortexFoundation/merkletree v0.0.0-20240407093305-416581a62b5b h1:PJv
 github.com/CortexFoundation/merkletree v0.0.0-20240407093305-416581a62b5b/go.mod h1:H/XQUOyyWqFweHqa39mLPewU3q9GTY4wvf8KQduuuPQ=
 github.com/CortexFoundation/robot v1.0.7-0.20240728100700-258c7a048a1f h1:Xmkrf0gGFtmOidWja2cfAkqRTzJoyq8wrhHCDKg/jLA=
 github.com/CortexFoundation/robot v1.0.7-0.20240728100700-258c7a048a1f/go.mod h1:o0QGALGkHIwjrz3YlDegPjOtIF5hL3BF7vgvmJnd7ZQ=
-github.com/CortexFoundation/wormhole v0.0.2-0.20240624201423-33e289eb7662 h1:rmM5WDx5UX7V4LF1D8LtAOPDzcCKulpZ++NkP8/+Ook=
-github.com/CortexFoundation/wormhole v0.0.2-0.20240624201423-33e289eb7662/go.mod h1:ipzmPabDgzYKUbXkGVe2gTkBEp+MsDx6pXGiuYzmP6s=
+github.com/CortexFoundation/wormhole v0.0.2-0.20241128010855-a23c88842cfa h1:46VAGWxOwpoLlPNcR9etAhK0NtT215skO9Wl4i14r4o=
+github.com/CortexFoundation/wormhole v0.0.2-0.20241128010855-a23c88842cfa/go.mod h1:ipzmPabDgzYKUbXkGVe2gTkBEp+MsDx6pXGiuYzmP6s=
 github.com/DataDog/zstd v1.5.6 h1:LbEglqepa/ipmmQJUDnSsfvA8e8IStVcGaFWDuxvGOY=
 github.com/DataDog/zstd v1.5.6/go.mod h1:g4AWEaM3yOg3HYfnJ3YIawPnVdXJh9QME85blwSAmyw=
 github.com/Julusian/godocdown v0.0.0-20170816220326-6d19f8ff2df8/go.mod h1:INZr5t32rG59/5xeltqoCJoNY7e5x/3xoY9WSWVWg74=
@@ -97,8 +97,8 @@ github.com/anacrolix/tagflag v1.0.0/go.mod h1:1m2U/K6ZT+JZG0+bdMK6qauP49QT4wE5pm
 github.com/anacrolix/tagflag v1.1.0/go.mod h1:Scxs9CV10NQatSmbyjqmqmeQNwGzlNe0CMUMIxqHIG8=
 github.com/anacrolix/tagflag v1.4.0 h1:OlpkharT7bRqLyMkZs0XAkdb2QM/eG7Aagg0c/8Kijs=
 github.com/anacrolix/tagflag v1.4.0/go.mod h1:jNpc4zGvJgIXIw9xcOtYLMz4iSRYn1XKUkTlbPwwZGg=
-github.com/anacrolix/torrent v1.57.2-0.20241017235801-4d8437a05621 h1:h8YDIq0VGMrFVBqdd1FgBzF6AXbSaTyosk40++Ub9dE=
-github.com/anacrolix/torrent v1.57.2-0.20241017235801-4d8437a05621/go.mod h1:n3SjHIE8oHXeH0Px0d5FXQ7cU4IgbEfTroen6B9KWJk=
+github.com/anacrolix/torrent v1.58.0 h1:cZGqEEEXYVXKIwnPfS56udd2BRaCH2iMPpct6Ao+Z8U=
+github.com/anacrolix/torrent v1.58.0/go.mod h1:n3SjHIE8oHXeH0Px0d5FXQ7cU4IgbEfTroen6B9KWJk=
 github.com/anacrolix/upnp v0.1.4 h1:+2t2KA6QOhm/49zeNyeVwDu1ZYS9dB9wfxyVvh/wk7U=
 github.com/anacrolix/upnp v0.1.4/go.mod h1:Qyhbqo69gwNWvEk1xNTXsS5j7hMHef9hdr984+9fIic=
 github.com/anacrolix/utp v0.2.0 h1:65Cdmr6q9WSw2KsM+rtJFu7rqDzLl2bdysf4KlNPcFI=
