@@ -167,8 +167,8 @@ github.com/decred/dcrd/crypto/blake256 v1.0.1 h1:7PltbUIQB7u/FfZ39+DGa/ShuMyJ5il
 github.com/decred/dcrd/crypto/blake256 v1.0.1/go.mod h1:2OfgNZ5wDpcsFmHmCK5gZTPcCXqlm2ArzUIkw9czNJo=
 github.com/decred/dcrd/dcrec/secp256k1/v4 v4.3.0 h1:rpfIENRNNilwHwZeG5+P150SMrnNEcHYvcCuK6dPZSg=
 github.com/decred/dcrd/dcrec/secp256k1/v4 v4.3.0/go.mod h1:v57UDF4pDQJcEfFUCRop3lJL149eHGSe9Jvczhzjo/0=
-github.com/dgraph-io/badger/v4 v4.5.1-0.20241211193550-9f07def77649 h1:ObjVxa64rp+Zj17aun+Zt9bV0bnkNQcDZw0JPAXIhdY=
-github.com/dgraph-io/badger/v4 v4.5.1-0.20241211193550-9f07def77649/go.mod h1:4oBHYGw/qPnHi1rq8pgK2RGrA3Fhk+qUEdE2FwAxz5A=
+github.com/dgraph-io/badger/v4 v4.5.1-0.20241218180057-b514761c7513 h1:RZpheqF7aV3R+BvEDol08LFqeqGQF1b3PA2+3yD3z7A=
+github.com/dgraph-io/badger/v4 v4.5.1-0.20241218180057-b514761c7513/go.mod h1:M1k3fzppTp3oNNksoxqy6Ayf+HC/M/KNLLZCjDxFBCE=
 github.com/dgraph-io/ristretto/v2 v2.0.1 h1:7W0LfEP+USCmtrUjJsk+Jv2jbhJmb72N4yRI7GrLdMI=
 github.com/dgraph-io/ristretto/v2 v2.0.1/go.mod h1:K7caLeufSdxm+ITp1n/73U+VbFVAHrexfLbz4n14hpo=
 github.com/dgryski/go-farm v0.0.0-20200201041132-a6ae2369ad13 h1:fAjc9m62+UWV/WAFKLNi6ZS0675eEUC9y3AlwSbQu1Y=
@@ -551,8 +551,8 @@ github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd h1:gBtlvLAsgLk+
 github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd/go.mod h1:ddwX+NCjMZPdpzcGh1fcEbNTUTCtKgt2hC2rqvmLKgA=
 github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb h1:dVZH3AH9f7zB3VBmsjn25B7lfcAyMP4QxdFYTrfj7tg=
 github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb/go.mod h1:3yswsBsVuwsOjDvFfC5Na9XSEf4HC7mj3W3g6jvSY/s=
-github.com/ucwong/golang-kv v1.0.24-0.20241213151752-de5bef396226 h1:+qVTF5kc2J4ATqagxUCb/tU/WpTuFh+YfxJA6bx/gJE=
-github.com/ucwong/golang-kv v1.0.24-0.20241213151752-de5bef396226/go.mod h1:FRBxciwFh1d+AcMSl94Rwk+7dOA+b1HcGP8SfYNuUxo=
+github.com/ucwong/golang-kv v1.0.24-0.20241221101151-b3efb577a1bf h1:ikMohp01+/uiyKGnNtE0RdhxeKuivcNZW/DsHarEmec=
+github.com/ucwong/golang-kv v1.0.24-0.20241221101151-b3efb577a1bf/go.mod h1:N1Jw4iiINpvRgguFMl1h2qK/P7jILhWGBPwFUdSJWLg=
 github.com/ucwong/shard v1.0.1-0.20240327124306-59a521744cae h1:2G/6RvsOF5FkvsBc0UWOxHf3tfmL+n4IQYvlQ862yuk=
 github.com/ucwong/shard v1.0.1-0.20240327124306-59a521744cae/go.mod h1:IlWVVAJmS8RrvapgE37IuF1R/j1arGuYtulVWa9ZGJw=
 github.com/urfave/cli/v2 v2.27.5 h1:WoHEJLdsXr6dDWoJgMq/CboDmyY/8HMMH1fTECbih+w=
@@ -756,8 +756,8 @@ google.golang.org/protobuf v1.23.1-0.20200526195155-81db48ad09cc/go.mod h1:EGpAD
 google.golang.org/protobuf v1.25.0/go.mod h1:9JNX74DMeImyA3h4bdi1ymwjUzf21/xIlbajtzgsN7c=
 google.golang.org/protobuf v1.26.0-rc.1/go.mod h1:jlhhOSvTdKEhbULTjvd4ARK9grFBp09yW+WbY/TyQbw=
 google.golang.org/protobuf v1.26.0/go.mod h1:9q0QmTI4eRPtz6boOQmLYwt+qCgq0jsYwAQnmE0givc=
-google.golang.org/protobuf v1.35.2 h1:8Ar7bF+apOIoThw1EdZl0p1oWvMqTHmpA2fRTyZO8io=
-google.golang.org/protobuf v1.35.2/go.mod h1:9fA7Ob0pmnwhb644+1+CVWFRbNajQ6iRojtC/QF5bRE=
+google.golang.org/protobuf v1.36.0 h1:mjIs9gYtt56AzC4ZaffQuh88TZurBGhIJMBZGSxNerQ=
+google.golang.org/protobuf v1.36.0/go.mod h1:9fA7Ob0pmnwhb644+1+CVWFRbNajQ6iRojtC/QF5bRE=
 gopkg.in/alecthomas/kingpin.v2 v2.2.6/go.mod h1:FMv+mEhP44yOT+4EoQTLFTRgOQ1FBLkstjWtayDeSgw=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=

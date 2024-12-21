@@ -27,14 +27,14 @@ require (
 	github.com/prometheus/client_golang v1.20.5
 	github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
-	github.com/ucwong/golang-kv v1.0.24-0.20241213151752-de5bef396226
+	github.com/ucwong/golang-kv v1.0.24-0.20241221101151-b3efb577a1bf
 	github.com/ucwong/shard v1.0.1-0.20240327124306-59a521744cae
 	github.com/urfave/cli/v2 v2.27.5
 	golang.org/x/sync v0.10.0
 	golang.org/x/time v0.8.0
 	golang.org/x/tools v0.27.0
 	golang.org/x/xerrors v0.0.0-20240903120638-7835f813f4da
-	google.golang.org/protobuf v1.35.2
+	google.golang.org/protobuf v1.36.0
 )
 
 require (
@@ -72,7 +72,7 @@ require (
 	github.com/cockroachdb/tokenbucket v0.0.0-20230807174530-cc333fc44b06 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.5 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.3.0 // indirect
-	github.com/dgraph-io/badger/v4 v4.5.1-0.20241211193550-9f07def77649 // indirect
+	github.com/dgraph-io/badger/v4 v4.5.1-0.20241218180057-b514761c7513 // indirect
 	github.com/dgraph-io/ristretto/v2 v2.0.1 // indirect
 	github.com/elliotchance/orderedmap v1.6.0 // indirect
 	github.com/garslo/gogen v0.0.0-20170306192744-1d203ffc1f61 // indirect
