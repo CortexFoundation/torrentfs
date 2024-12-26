@@ -27,14 +27,14 @@ require (
 	github.com/prometheus/client_golang v1.20.5
 	github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
-	github.com/ucwong/golang-kv v1.0.24-0.20241221101151-b3efb577a1bf
+	github.com/ucwong/golang-kv v1.0.24-0.20241226161542-979e6164edb6
 	github.com/ucwong/shard v1.0.1-0.20240327124306-59a521744cae
 	github.com/urfave/cli/v2 v2.27.5
 	golang.org/x/sync v0.10.0
 	golang.org/x/time v0.8.0
 	golang.org/x/tools v0.27.0
 	golang.org/x/xerrors v0.0.0-20240903120638-7835f813f4da
-	google.golang.org/protobuf v1.36.0
+	google.golang.org/protobuf v1.36.1
 )
 
 require (
@@ -72,7 +72,7 @@ require (
 	github.com/cockroachdb/tokenbucket v0.0.0-20230807174530-cc333fc44b06 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.5 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.3.0 // indirect
-	github.com/dgraph-io/badger/v4 v4.5.1-0.20241218180057-b514761c7513 // indirect
+	github.com/dgraph-io/badger/v4 v4.5.1-0.20241226055836-eba96a1b97c7 // indirect
 	github.com/dgraph-io/ristretto/v2 v2.0.1 // indirect
 	github.com/elliotchance/orderedmap v1.6.0 // indirect
 	github.com/garslo/gogen v0.0.0-20170306192744-1d203ffc1f61 // indirect
@@ -88,7 +88,7 @@ require (
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/snappy v0.0.5-0.20220116011046-fa5810519dcb // indirect
 	github.com/google/btree v1.1.3 // indirect
-	github.com/google/flatbuffers v24.3.25+incompatible // indirect
+	github.com/google/flatbuffers v24.12.23+incompatible // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/websocket v1.5.3 // indirect
 	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
@@ -155,10 +155,10 @@ require (
 	go.opentelemetry.io/otel v1.32.0 // indirect
 	go.opentelemetry.io/otel/metric v1.32.0 // indirect
 	go.opentelemetry.io/otel/trace v1.32.0 // indirect
-	golang.org/x/crypto v0.30.0 // indirect
+	golang.org/x/crypto v0.31.0 // indirect
 	golang.org/x/exp v0.0.0-20241108190413-2d47ceb2692f // indirect
 	golang.org/x/mod v0.22.0 // indirect
-	golang.org/x/net v0.32.0 // indirect
+	golang.org/x/net v0.33.0 // indirect
 	golang.org/x/sys v0.28.0 // indirect
 	golang.org/x/term v0.27.0 // indirect
 	golang.org/x/text v0.21.0 // indirect
