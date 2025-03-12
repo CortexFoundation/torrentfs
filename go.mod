@@ -5,7 +5,7 @@ go 1.23.4
 require (
 	github.com/CortexFoundation/CortexTheseus v1.10.63
 	github.com/CortexFoundation/compress v0.0.0-20240218153512-9074bdc2397c
-	github.com/CortexFoundation/robot v1.0.7-0.20240728100700-258c7a048a1f
+	github.com/CortexFoundation/robot v1.0.7-0.20250226143617-b3819ddaddc6
 	github.com/CortexFoundation/wormhole v0.0.2-0.20241128010855-a23c88842cfa
 	github.com/anacrolix/envpprof v1.4.0
 	github.com/anacrolix/fuse v0.4.0
@@ -25,7 +25,7 @@ require (
 	github.com/prometheus/client_golang v1.20.5
 	github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
-	github.com/ucwong/golang-kv v1.0.24-0.20250223163943-e9c513728ab1
+	github.com/ucwong/golang-kv v1.0.24-0.20250311205856-bf6be4c34641
 	github.com/ucwong/shard v1.0.1-0.20240327124306-59a521744cae
 	github.com/urfave/cli/v2 v2.27.5
 	golang.org/x/sync v0.11.0
@@ -70,7 +70,7 @@ require (
 	github.com/cockroachdb/tokenbucket v0.0.0-20230807174530-cc333fc44b06 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.6 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.3.0 // indirect
-	github.com/dgraph-io/badger/v4 v4.5.2-0.20250219023702-efe2eb3ebb36 // indirect
+	github.com/dgraph-io/badger/v4 v4.6.1-0.20250307192050-12bc62196753 // indirect
 	github.com/dgraph-io/ristretto/v2 v2.1.0 // indirect
 	github.com/elliotchance/orderedmap v1.8.0 // indirect
 	github.com/ethereum/go-ethereum v1.14.12 // indirect
@@ -94,7 +94,7 @@ require (
 	github.com/huandu/xstrings v1.5.0 // indirect
 	github.com/huin/goupnp v1.3.0 // indirect
 	github.com/jackpal/go-nat-pmp v1.0.2 // indirect
-	github.com/klauspost/compress v1.17.11 // indirect
+	github.com/klauspost/compress v1.18.0 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.9 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/kr/text v0.2.0 // indirect
@@ -160,7 +160,7 @@ require (
 	golang.org/x/exp v0.0.0-20250128182459-e0ece0dbea4c // indirect
 	golang.org/x/mod v0.22.0 // indirect
 	golang.org/x/net v0.35.0 // indirect
-	golang.org/x/sys v0.30.0 // indirect
+	golang.org/x/sys v0.31.0 // indirect
 	golang.org/x/term v0.29.0 // indirect
 	golang.org/x/text v0.22.0 // indirect
 	gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce // indirect
