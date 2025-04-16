@@ -35,7 +35,7 @@ func TestLocal(t *testing.T) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fs.Start(nil)
+	fs.Start()
 	//fs.Simulate()
 	defer fs.Stop()
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
