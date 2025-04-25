@@ -97,8 +97,8 @@ github.com/anacrolix/tagflag v1.0.0/go.mod h1:1m2U/K6ZT+JZG0+bdMK6qauP49QT4wE5pm
 github.com/anacrolix/tagflag v1.1.0/go.mod h1:Scxs9CV10NQatSmbyjqmqmeQNwGzlNe0CMUMIxqHIG8=
 github.com/anacrolix/tagflag v1.4.0 h1:OlpkharT7bRqLyMkZs0XAkdb2QM/eG7Aagg0c/8Kijs=
 github.com/anacrolix/tagflag v1.4.0/go.mod h1:jNpc4zGvJgIXIw9xcOtYLMz4iSRYn1XKUkTlbPwwZGg=
-github.com/anacrolix/torrent v1.58.2-0.20250409094824-b85facb2e9a7 h1:H25XwDJT291vQD8gzu8/bo7Jdmi+i5T2WJfpzWct8Pk=
-github.com/anacrolix/torrent v1.58.2-0.20250409094824-b85facb2e9a7/go.mod h1:kV6+k/1VfMOThhOLgedSyjsRd7GyC/lTggwEHJcP4yM=
+github.com/anacrolix/torrent v1.58.2-0.20250425050513-ddc29fedcde0 h1:w24/qOeF9HWiyPGVOowG1OVo+e1c+FwFeKqrjX0medE=
+github.com/anacrolix/torrent v1.58.2-0.20250425050513-ddc29fedcde0/go.mod h1:kV6+k/1VfMOThhOLgedSyjsRd7GyC/lTggwEHJcP4yM=
 github.com/anacrolix/upnp v0.1.4 h1:+2t2KA6QOhm/49zeNyeVwDu1ZYS9dB9wfxyVvh/wk7U=
 github.com/anacrolix/upnp v0.1.4/go.mod h1:Qyhbqo69gwNWvEk1xNTXsS5j7hMHef9hdr984+9fIic=
 github.com/anacrolix/utp v0.2.0 h1:65Cdmr6q9WSw2KsM+rtJFu7rqDzLl2bdysf4KlNPcFI=
@@ -165,8 +165,8 @@ github.com/decred/dcrd/crypto/blake256 v1.0.1 h1:7PltbUIQB7u/FfZ39+DGa/ShuMyJ5il
 github.com/decred/dcrd/crypto/blake256 v1.0.1/go.mod h1:2OfgNZ5wDpcsFmHmCK5gZTPcCXqlm2ArzUIkw9czNJo=
 github.com/decred/dcrd/dcrec/secp256k1/v4 v4.3.0 h1:rpfIENRNNilwHwZeG5+P150SMrnNEcHYvcCuK6dPZSg=
 github.com/decred/dcrd/dcrec/secp256k1/v4 v4.3.0/go.mod h1:v57UDF4pDQJcEfFUCRop3lJL149eHGSe9Jvczhzjo/0=
-github.com/dgraph-io/badger/v4 v4.7.1-0.20250411021723-85389e88bf30 h1:eg6GT2ed6KUNeQuSOER2OmueMacPHt+fWgasGOY/HJ0=
-github.com/dgraph-io/badger/v4 v4.7.1-0.20250411021723-85389e88bf30/go.mod h1:fG8zKdz39pTCsqmyrj0cKcpb3DI6Y1PXVoxLpvKsPcs=
+github.com/dgraph-io/badger/v4 v4.7.1-0.20250418053210-c49539fdff7d h1:Jqi1PskeOI4dqgH/G095suLN2jpoPfukOJj8JMdq/l4=
+github.com/dgraph-io/badger/v4 v4.7.1-0.20250418053210-c49539fdff7d/go.mod h1:fG8zKdz39pTCsqmyrj0cKcpb3DI6Y1PXVoxLpvKsPcs=
 github.com/dgraph-io/ristretto/v2 v2.2.0 h1:bkY3XzJcXoMuELV8F+vS8kzNgicwQFAaGINAEJdWGOM=
 github.com/dgraph-io/ristretto/v2 v2.2.0/go.mod h1:RZrm63UmcBAaYWC1DotLYBmTvgkrs0+XhBd7Npn7/zI=
 github.com/dgryski/go-farm v0.0.0-20240924180020-3414d57e47da h1:aIftn67I1fkbMa512G+w+Pxci9hJPB8oMnkcP3iZF38=
@@ -550,8 +550,8 @@ github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd h1:gBtlvLAsgLk+
 github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd/go.mod h1:ddwX+NCjMZPdpzcGh1fcEbNTUTCtKgt2hC2rqvmLKgA=
 github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb h1:dVZH3AH9f7zB3VBmsjn25B7lfcAyMP4QxdFYTrfj7tg=
 github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb/go.mod h1:3yswsBsVuwsOjDvFfC5Na9XSEf4HC7mj3W3g6jvSY/s=
-github.com/ucwong/golang-kv v1.0.24-0.20250413092139-da21b79ba97d h1:6N8IrVfbdXs2k/rlWVHGUS5qhhC1hWmnmld73lUsHD4=
-github.com/ucwong/golang-kv v1.0.24-0.20250413092139-da21b79ba97d/go.mod h1:lH6fDr9x8F/pMFY88m15msOUeXYsNKXTbbikccJVHDQ=
+github.com/ucwong/golang-kv v1.0.24-0.20250421221638-c97e903c247a h1:J40JKO3UxDjyBPOYSriOtOnHytHhjKR/4KlYRmVprV4=
+github.com/ucwong/golang-kv v1.0.24-0.20250421221638-c97e903c247a/go.mod h1:lF5x7iTKVaxBSZXxFYuQp/QN2UyTGpPwtYqdxwpo2Mo=
 github.com/ucwong/shard v1.0.1-0.20240327124306-59a521744cae h1:2G/6RvsOF5FkvsBc0UWOxHf3tfmL+n4IQYvlQ862yuk=
 github.com/ucwong/shard v1.0.1-0.20240327124306-59a521744cae/go.mod h1:IlWVVAJmS8RrvapgE37IuF1R/j1arGuYtulVWa9ZGJw=
 github.com/urfave/cli/v2 v2.27.5 h1:WoHEJLdsXr6dDWoJgMq/CboDmyY/8HMMH1fTECbih+w=
