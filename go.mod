@@ -13,7 +13,6 @@ require (
 	github.com/anacrolix/missinggo/v2 v2.8.0
 	github.com/anacrolix/tagflag v1.4.0
 	github.com/anacrolix/torrent v1.58.2-0.20250425050513-ddc29fedcde0
-	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/deckarep/golang-set/v2 v2.7.0
 	github.com/dustin/go-humanize v1.0.1
@@ -26,7 +25,7 @@ require (
 	github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
 	github.com/ucwong/golang-kv v1.0.24-0.20250421221638-c97e903c247a
-	github.com/ucwong/shard v1.0.1-0.20240327124306-59a521744cae
+	github.com/ucwong/shard v1.0.1-0.20250426172507-f1db2901f62c
 	github.com/urfave/cli/v2 v2.27.5
 	golang.org/x/sync v0.13.0
 	golang.org/x/time v0.9.0
@@ -59,6 +58,7 @@ require (
 	github.com/benbjohnson/immutable v0.4.3 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bits-and-blooms/bitset v1.20.0 // indirect
+	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8 // indirect
 	github.com/bwmarrin/snowflake v0.3.0 // indirect
 	github.com/cespare/xxhash v1.1.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
@@ -95,7 +95,7 @@ require (
 	github.com/huin/goupnp v1.3.0 // indirect
 	github.com/jackpal/go-nat-pmp v1.0.2 // indirect
 	github.com/klauspost/compress v1.18.0 // indirect
-	github.com/klauspost/cpuid/v2 v2.2.9 // indirect
+	github.com/klauspost/cpuid/v2 v2.2.10 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect

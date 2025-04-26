@@ -328,8 +328,8 @@ github.com/kisielk/errcheck v1.5.0/go.mod h1:pFxgyoBC7bSaBwPgfKdkLd5X25qrDl4LWUI
 github.com/kisielk/gotool v1.0.0/go.mod h1:XhKaO+MFFWcvkIS/tQcRk01m1F5IRFswLeQ+oQHNcck=
 github.com/klauspost/compress v1.18.0 h1:c/Cqfb0r+Yi+JtIEq73FWXVkRonBlf0CRNYc8Zttxdo=
 github.com/klauspost/compress v1.18.0/go.mod h1:2Pp+KzxcywXVXMr50+X0Q/Lsb43OQHYWRCY2AiWywWQ=
-github.com/klauspost/cpuid/v2 v2.2.9 h1:66ze0taIn2H33fBvCkXuv9BmCwDfafmiIVpKV9kKGuY=
-github.com/klauspost/cpuid/v2 v2.2.9/go.mod h1:rqkxqrZ1EhYM9G+hXH7YdowN5R5RGN6NK4QwQ3WMXF8=
+github.com/klauspost/cpuid/v2 v2.2.10 h1:tBs3QSyvjDyFTq3uoc/9xFpCuOsJQFNPiAhYdw2skhE=
+github.com/klauspost/cpuid/v2 v2.2.10/go.mod h1:hqwkgyIinND0mEev00jJYCxPNVRVXFQeu1XKlok6oO0=
 github.com/konsorten/go-windows-terminal-sequences v1.0.1/go.mod h1:T0+1ngSBFLxvqU3pZ+m/2kptfBszLMUkC4ZK/EgS/cQ=
 github.com/konsorten/go-windows-terminal-sequences v1.0.3/go.mod h1:T0+1ngSBFLxvqU3pZ+m/2kptfBszLMUkC4ZK/EgS/cQ=
 github.com/kr/logfmt v0.0.0-20140226030751-b84e30acd515/go.mod h1:+0opPa2QZZtGFBFZlji/RkVcI2GknAs/DXo4wKdlNEc=
@@ -552,8 +552,8 @@ github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb h1:dVZH3AH9f7zB
 github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb/go.mod h1:3yswsBsVuwsOjDvFfC5Na9XSEf4HC7mj3W3g6jvSY/s=
 github.com/ucwong/golang-kv v1.0.24-0.20250421221638-c97e903c247a h1:J40JKO3UxDjyBPOYSriOtOnHytHhjKR/4KlYRmVprV4=
 github.com/ucwong/golang-kv v1.0.24-0.20250421221638-c97e903c247a/go.mod h1:lF5x7iTKVaxBSZXxFYuQp/QN2UyTGpPwtYqdxwpo2Mo=
-github.com/ucwong/shard v1.0.1-0.20240327124306-59a521744cae h1:2G/6RvsOF5FkvsBc0UWOxHf3tfmL+n4IQYvlQ862yuk=
-github.com/ucwong/shard v1.0.1-0.20240327124306-59a521744cae/go.mod h1:IlWVVAJmS8RrvapgE37IuF1R/j1arGuYtulVWa9ZGJw=
+github.com/ucwong/shard v1.0.1-0.20250426172507-f1db2901f62c h1:U7Mu9tC9DJyEwuu62uGJSi09JdwgLjVpLO03zJnLUpU=
+github.com/ucwong/shard v1.0.1-0.20250426172507-f1db2901f62c/go.mod h1:itmCLVmb050+i2uFKiWQIwx1okD73JxMMI6xDeX/TR4=
 github.com/urfave/cli/v2 v2.27.5 h1:WoHEJLdsXr6dDWoJgMq/CboDmyY/8HMMH1fTECbih+w=
 github.com/urfave/cli/v2 v2.27.5/go.mod h1:3Sevf16NykTbInEnD0yKkjDAeZDS0A6bzhBH5hrMvTQ=
 github.com/willf/bitset v1.1.9/go.mod h1:RjeCKbqT1RxIR/KWY6phxZiaY1IyutSBfGjNPySAYV4=
