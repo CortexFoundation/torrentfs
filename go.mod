@@ -12,7 +12,7 @@ require (
 	github.com/anacrolix/log v0.16.0
 	github.com/anacrolix/missinggo/v2 v2.8.0
 	github.com/anacrolix/tagflag v1.4.0
-	github.com/anacrolix/torrent v1.58.2-0.20250425050513-ddc29fedcde0
+	github.com/anacrolix/torrent v1.58.2-0.20250506021736-1e3f1bf041ca
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/deckarep/golang-set/v2 v2.7.0
 	github.com/dustin/go-humanize v1.0.1
