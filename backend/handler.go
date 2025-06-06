@@ -1021,7 +1021,7 @@ func (tm *TorrentManager) mainLoop() {
 				if score, health, err := tm.updateGlobalTrackers(); err == nil && score > wormhole.CAP && health > 66 {
 					timer.Reset(time.Second * params.QueryTimeInterval * 3600 * 24)
 				} else {
-					log.Error("No global tracker found", "score", score, "health", health, "err", err)
+					log.Warn("Network weak, rescan one hour later", "score", score, "health", health, "err", err)
 					timer.Reset(time.Second * params.QueryTimeInterval * 3600)
 				}
 			}()
