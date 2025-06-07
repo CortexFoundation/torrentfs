@@ -40,7 +40,7 @@ func (conf *Config) DropHandler(w http.ResponseWriter, r *http.Request) {
 	default:
 		res = "method not found"
 	}
-	fmt.Fprintf(w, res)
+	fmt.Fprint(w, res)
 }
 
 func (conf *Config) TunnelHandler(w http.ResponseWriter, r *http.Request) {
@@ -75,7 +75,7 @@ func (conf *Config) TunnelHandler(w http.ResponseWriter, r *http.Request) {
 	default:
 		res = "method not found"
 	}
-	fmt.Fprintf(w, res)
+	fmt.Fprint(w, res)
 }
 
 func (conf *Config) DownloadHandler(w http.ResponseWriter, r *http.Request) {
@@ -100,7 +100,7 @@ func (conf *Config) DownloadHandler(w http.ResponseWriter, r *http.Request) {
 	default:
 		res = "method not found"
 	}
-	fmt.Fprintf(w, res)
+	fmt.Fprint(w, res)
 }
 
 func (conf *Config) SeedHandler(w http.ResponseWriter, r *http.Request) {
@@ -146,7 +146,7 @@ func (conf *Config) SeedHandler(w http.ResponseWriter, r *http.Request) {
 	default:
 		res = "method not found"
 	}
-	fmt.Fprintf(w, res)
+	fmt.Fprint(w, res)
 }
 
 func (conf *Config) ListHandler(w http.ResponseWriter, r *http.Request) {
@@ -191,7 +191,7 @@ func (conf *Config) ListHandler(w http.ResponseWriter, r *http.Request) {
 	default:
 		res = "method not found"
 	}
-	fmt.Fprintf(w, res)
+	fmt.Fprint(w, res)
 }
 
 /*func (conf *Config) FetchHandler(w http.ResponseWriter, r *http.Request) {
@@ -219,5 +219,5 @@ func (conf *Config) ListHandler(w http.ResponseWriter, r *http.Request) {
 	default:
 		res = "method not found"
 	}
-	fmt.Fprintf(w, res)
+	fmt.Fprint(w, res)
 }*/
