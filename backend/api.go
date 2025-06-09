@@ -131,6 +131,7 @@ func (tm *TorrentManager) ListAllTorrents() map[string]map[string]int {
 		tts[ih] = map[string]int{
 			"status": tt.Status(),
 			"type":   tType,
+			"period": int(tt.Cited()),
 		}
 		return true
 	})
