@@ -29,7 +29,6 @@ import (
 	"os"
 	"path/filepath"
 	//"runtime"
-	"slices"
 	"strconv"
 	"sync"
 	"sync/atomic"
@@ -1038,60 +1037,83 @@ func (tm *TorrentManager) mainLoop() {
 
 func (tm *TorrentManager) pendingLoop() {
 	defer tm.wg.Done()
+
 	sub := tm.taskEvent.Subscribe(pendingEvent{})
 	defer sub.Unsubscribe()
+
 	for {
 		select {
 		case ev := <-sub.Chan():
 			if ev == nil {
 				continue
 			}
-			if m, ok := ev.Data.(pendingEvent); ok {
-				t := m.T
-				if t.Torrent.Info() != nil {
-					// recovery
-					t.AddTrackers(slices.Clone(tm.globalTrackers))
-					tm.activeTor(t)
-					continue
-				}
 
-				tm.wg.Add(1)
-				tm.pends.Add(1)
-				go func(t *caffe.Torrent) {
-					defer func() {
-						tm.wg.Done()
-						tm.pends.Add(-1)
-					}()
-
-					ctx, cancel := context.WithTimeout(context.Background(), (10+time.Duration(tm.slot&9))*time.Minute)
-					defer cancel()
-					timer := time.NewTimer(time.Second * 5)
-					defer timer.Stop()
-					for {
-						select {
-						case <-t.Torrent.GotInfo():
-							log.Info("Searching", "ih", t.InfoHash(), "elapsed", common.PrettyDuration(time.Duration(mclock.Now())-time.Duration(t.Birth())), "wait", tm.pends.Load())
-							tm.activeTor(t)
-							return
-						case <-t.Closed():
-							return
-						case <-tm.closeAll:
-							return
-						case <-ctx.Done():
-							tm.Dropping(t.InfoHash())
-							return
-						case <-timer.C:
-							// Invoked once
-							log.Info("Global trackers added", "ih", t.InfoHash(), "wait", tm.pends.Load())
-							t.AddTrackers(slices.Clone(tm.globalTrackers))
-							timer.Stop()
-						}
-					}
-				}(t)
+			m, ok := ev.Data.(pendingEvent)
+			if !ok {
+				continue
 			}
+			t := m.T
+
+			if t.Torrent.Info() != nil {
+				// Already got info (recovery)
+				t.AddTrackersOnce(tm.globalTrackers)
+				tm.activeTor(t)
+				continue
+			}
+
+			tm.wg.Add(1)
+			tm.pends.Add(1)
+
+			go tm.handlePendingTorrent(t)
+
 		case <-tm.closeAll:
 			log.Info("Pending seed loop closed")
 			return
+		}
+	}
+}
+
+func (tm *TorrentManager) handlePendingTorrent(t *caffe.Torrent) {
+	defer func() {
+		tm.wg.Done()
+		tm.pends.Add(-1)
+	}()
+
+	timeout := (10 + time.Duration(tm.slot&9)) * time.Minute
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	defer cancel()
+
+	timer := time.NewTimer(5 * time.Second)
+	defer timer.Stop()
+
+	addedTrackers := false
+
+	for {
+		select {
+		case <-t.Torrent.GotInfo():
+			log.Info("Searching", "ih", t.InfoHash(), "elapsed", common.PrettyDuration(time.Duration(mclock.Now())-time.Duration(t.Birth())), "wait", tm.pends.Load())
+			tm.activeTor(t)
+			return
+
+		case <-t.Closed():
+			return
+
+		case <-tm.closeAll:
+			return
+
+		case <-ctx.Done():
+			tm.Dropping(t.InfoHash())
+			return
+
+		case <-timer.C:
+			if !addedTrackers {
+				log.Info("Adding global trackers to pending torrent",
+					"infoHash", t.InfoHash(),
+					"pending", tm.pends.Load(),
+				)
+				t.AddTrackersOnce(tm.globalTrackers)
+				addedTrackers = true
+			}
 		}
 	}
 }
