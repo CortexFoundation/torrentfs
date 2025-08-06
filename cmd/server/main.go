@@ -91,7 +91,7 @@ func run(conf *Config) error {
 	config.Engine = conf.engine
 	config.DisableDHT = false
 
-	//config.DisableUTP = false
+	config.DisableUTP = false
 
 	fs, err := t.New(config, true, false, false)
 	if err != nil {
