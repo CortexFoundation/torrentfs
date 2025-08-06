@@ -967,73 +967,90 @@ type mainEvent struct {
 
 func (tm *TorrentManager) mainLoop() {
 	defer tm.wg.Done()
-	timer := time.NewTimer(time.Second * params.QueryTimeInterval * 3600 * 12)
+
+	// Use a more readable timer duration.
+	const twelveHours = time.Hour * 12
+	timer := time.NewTimer(twelveHours)
 	defer timer.Stop()
 
-	sub := tm.taskEvent.Subscribe(mainEvent{}) //, pendingEvent{}, runningEvent{}, seedingEvent{}, droppingEvent{})
+	// Unsubscribe from event channel on function exit.
+	sub := tm.taskEvent.Subscribe(mainEvent{})
 	defer sub.Unsubscribe()
 
 	for {
 		select {
 		case ev := <-sub.Chan():
-			if ev == nil {
+			// Skip nil events or events with non-mainEvent data.
+			m, ok := ev.Data.(mainEvent)
+			if !ok {
 				continue
 			}
-			//switch ev.Data.(type) {
-			//case mainEvent:
-			if m, ok := ev.Data.(mainEvent); ok {
-				meta := m.B
-				if params.IsBad(meta.InfoHash()) {
-					continue
-				}
+			meta := m.B
+			ih := meta.InfoHash()
 
-				if tm.mode == params.LAZY {
-					if meta.Request() == 0 {
-						continue
-					}
-				}
-				if t := tm.addInfoHash(meta.InfoHash(), int64(meta.Request())); t == nil {
-					log.Error("Seed [create] failed", "ih", meta.InfoHash(), "request", meta.Request())
-				} else {
-					if t.Stopping() {
-						log.Debug("Nas recovery", "ih", t.InfoHash(), "status", t.Status(), "complete", common.StorageSize(t.Torrent.BytesCompleted()))
-						if tt, err := tm.injectSpec(t.InfoHash(), t.Spec()); err == nil && tt != nil {
-							t.SetStatus(caffe.TorrentPending)
-							t.Lock()
-							t.Torrent = tt
-							t.SetStart(mclock.Now())
-							t.Unlock()
-
-							if err := tm.Pending(t); err == nil {
-								tm.recovery.Add(1)
-								tm.stops.Add(-1)
-							}
-						} else {
-							log.Warn("Nas recovery failed", "ih", t.InfoHash(), "status", t.Status(), "complete", common.StorageSize(t.Torrent.BytesCompleted()), "err", err)
-						}
-					}
-				}
+			if params.IsBad(ih) || (tm.mode == params.LAZY && meta.Request() == 0) {
+				continue
 			}
-			//case pendingEvent:
-			//case runningEvent:
-			//case seedingEvent:
-			//case droppingEvent:
-			//}
+
+			t := tm.addInfoHash(ih, int64(meta.Request()))
+			if t == nil {
+				log.Error("Seed [create] failed", "ih", ih, "request", meta.Request())
+				continue
+			}
+
+			// Handle NAS recovery for a torrent that's stopping.
+			if t.Stopping() {
+				tm.handleNasRecovery(t)
+			}
+
 		case <-timer.C:
-			tm.wg.Add(1)
-			go func() {
-				defer tm.wg.Done()
-				if score, health, err := tm.updateGlobalTrackers(); err == nil && score > wormhole.CAP && health > 0.66 {
-					timer.Reset(time.Second * params.QueryTimeInterval * 3600 * 24)
-				} else {
-					log.Warn("Network weak, rescan one hour later", "score", score, "health", health, "err", err)
-					timer.Reset(time.Second * params.QueryTimeInterval * 3600)
-				}
-			}()
+			tm.handleTrackerUpdate(timer)
+
 		case <-tm.closeAll:
 			return
 		}
 	}
+}
+
+// handleNasRecovery encapsulates the logic for recovering a torrent.
+func (tm *TorrentManager) handleNasRecovery(t *caffe.Torrent) {
+	log.Debug("Nas recovery", "ih", t.InfoHash(), "status", t.Status(), "complete", common.StorageSize(t.Torrent.BytesCompleted()))
+
+	tt, err := tm.injectSpec(t.InfoHash(), t.Spec())
+	if err != nil {
+		log.Warn("Nas recovery failed", "ih", t.InfoHash(), "status", t.Status(), "complete", common.StorageSize(t.Torrent.BytesCompleted()), "err", err)
+		return
+	}
+
+	t.SetStatus(caffe.TorrentPending)
+	t.Lock()
+	t.Torrent = tt
+	t.SetStart(mclock.Now())
+	t.Unlock()
+
+	if err := tm.Pending(t); err == nil {
+		tm.recovery.Add(1)
+		tm.stops.Add(-1)
+	}
+}
+
+// handleTrackerUpdate encapsulates the logic for updating global trackers.
+func (tm *TorrentManager) handleTrackerUpdate(timer *time.Timer) {
+	tm.wg.Add(1)
+	go func() {
+		defer tm.wg.Done()
+
+		const oneHour = time.Hour
+		const oneDay = time.Hour * 24
+
+		score, health, err := tm.updateGlobalTrackers()
+		if err == nil && score > wormhole.CAP && health > 0.66 {
+			timer.Reset(oneDay)
+		} else {
+			log.Warn("Network weak, rescan one hour later", "score", score, "health", health, "err", err)
+			timer.Reset(oneHour)
+		}
+	}()
 }
 
 func (tm *TorrentManager) pendingLoop() {
