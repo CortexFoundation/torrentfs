@@ -35,7 +35,7 @@ require (
 )
 
 require (
-	github.com/CortexFoundation/merkletree v0.0.0-20240407093305-416581a62b5b // indirect
+	github.com/CortexFoundation/merkletree v0.0.0-20250806195321-a6665eed15e1 // indirect
 	github.com/DataDog/zstd v1.5.7 // indirect
 	github.com/RoaringBitmap/roaring v1.9.4 // indirect
 	github.com/ajwerner/btree v0.0.0-20211221152037-f427b3e689c0 // indirect
