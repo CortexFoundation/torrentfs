@@ -442,63 +442,64 @@ func (tm *TorrentManager) addInfoHash(ih string, bytesRequested int64) *caffe.To
 		return nil
 	}
 
+	// Start wormhole tunneling in a goroutine
 	if !server && enableWorm {
 		tm.wg.Add(1)
 		go func() {
 			defer tm.wg.Done()
-			err := tm.worm.Tunnel(ih)
-			if err != nil {
+			if err := tm.worm.Tunnel(ih); err != nil {
 				log.Error("Wormhole error", "err", err)
 			}
 		}()
 	}
 
-	var (
-		spec *torrent.TorrentSpec
-		v    []byte
-	)
+	// Try to load torrent spec from different locations
+	var spec *torrent.TorrentSpec
+	var infoBytes []byte
 
 	if tm.kvdb != nil {
-		if v = tm.kvdb.Get([]byte(SEED_PRE + ih)); v == nil {
-			seedTorrentPath := filepath.Join(tm.DataDir, ih, TORRENT)
-			if _, err := os.Stat(seedTorrentPath); err == nil {
-				spec = tm.loadSpec(ih, seedTorrentPath)
-			}
+		infoBytes = tm.kvdb.Get([]byte(SEED_PRE + ih))
+	}
 
-			if spec == nil {
-				tmpTorrentPath := filepath.Join(tm.TmpDataDir, ih, TORRENT)
-				if _, err := os.Stat(tmpTorrentPath); err == nil {
-					spec = tm.loadSpec(ih, tmpTorrentPath)
-				}
+	// If not found in KVDB, check local files
+	if infoBytes == nil {
+		seedTorrentPath := filepath.Join(tm.DataDir, ih, TORRENT)
+		if _, err := os.Stat(seedTorrentPath); err == nil {
+			spec = tm.loadSpec(ih, seedTorrentPath)
+		}
+
+		if spec == nil {
+			tmpTorrentPath := filepath.Join(tm.TmpDataDir, ih, TORRENT)
+			if _, err := os.Stat(tmpTorrentPath); err == nil {
+				spec = tm.loadSpec(ih, tmpTorrentPath)
 			}
 		}
 	}
 
+	// If spec is still not found, create a new one
 	if spec == nil {
 		tmpDataPath := filepath.Join(tm.TmpDataDir, ih)
-
-		if _, err := os.Stat(tmpDataPath); err != nil {
-			if err := os.MkdirAll(tmpDataPath, 0777); err != nil {
-				log.Warn("nas path create failed", "err", err)
-				return nil
-			}
+		if err := os.MkdirAll(tmpDataPath, 0777); err != nil {
+			log.Warn("nas path create failed", "err", err)
+			return nil
 		}
 
 		opts := torrent.AddTorrentOpts{
 			InfoHash:  metainfo.NewHashFromHex(ih),
 			Storage:   storage.NewMMap(tmpDataPath),
-			InfoBytes: v,
+			InfoBytes: infoBytes,
 		}
 		spec = &torrent.TorrentSpec{
 			AddTorrentOpts: opts,
 		}
 	}
 
-	if t, err := tm.injectSpec(ih, spec); err != nil {
+	// Inject the spec and register the torrent
+	t, err := tm.injectSpec(ih, spec)
+	if err != nil {
 		return nil
-	} else {
-		return tm.register(t, bytesRequested, ih, spec)
 	}
+	return tm.register(t, bytesRequested, ih, spec)
 }
 
 // Start the torrent leeching
