@@ -12,7 +12,7 @@ require (
 	github.com/anacrolix/log v0.16.1-0.20250526073428-5cb74e15092b
 	github.com/anacrolix/missinggo/v2 v2.8.1-0.20250626123431-aa4691b19d56
 	github.com/anacrolix/tagflag v1.4.0
-	github.com/anacrolix/torrent v1.58.2-0.20250720014114-dda1d97c6a22
+	github.com/anacrolix/torrent v1.58.2-0.20250805162008-f4dc49bf8c3c
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/deckarep/golang-set/v2 v2.8.0
 	github.com/dustin/go-humanize v1.0.1
@@ -24,7 +24,7 @@ require (
 	github.com/prometheus/client_golang v1.22.0
 	github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
-	github.com/ucwong/golang-kv v1.0.24-0.20250720145037-4c149701f3b8
+	github.com/ucwong/golang-kv v1.0.24-0.20250804095150-ac15440c344d
 	github.com/ucwong/shard v1.0.1-0.20250426172507-f1db2901f62c
 	github.com/urfave/cli/v2 v2.27.6
 	golang.org/x/sync v0.16.0
@@ -70,7 +70,7 @@ require (
 	github.com/cockroachdb/tokenbucket v0.0.0-20250429170803-42689b6311bb // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.7 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.4.0 // indirect
-	github.com/dgraph-io/badger/v4 v4.8.0 // indirect
+	github.com/dgraph-io/badger/v4 v4.8.1-0.20250802090453-7a4b511fb568 // indirect
 	github.com/dgraph-io/ristretto/v2 v2.2.0 // indirect
 	github.com/elliotchance/orderedmap v1.8.0 // indirect
 	github.com/ethereum/go-ethereum v1.15.11 // indirect
