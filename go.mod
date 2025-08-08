@@ -6,7 +6,7 @@ require (
 	github.com/CortexFoundation/CortexTheseus v1.10.64
 	github.com/CortexFoundation/compress v0.0.0-20240218153512-9074bdc2397c
 	github.com/CortexFoundation/robot v1.0.7-0.20250720133840-49217aa96f7e
-	github.com/CortexFoundation/wormhole v0.0.2-0.20250803013348-3576f8802690
+	github.com/CortexFoundation/wormhole v0.0.2-0.20250807143819-52807b74f358
 	github.com/anacrolix/envpprof v1.4.0
 	github.com/anacrolix/fuse v0.4.0
 	github.com/anacrolix/log v0.16.1-0.20250526073428-5cb74e15092b
