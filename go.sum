@@ -11,8 +11,8 @@ github.com/CortexFoundation/compress v0.0.0-20240218153512-9074bdc2397c h1:NPMTQ
 github.com/CortexFoundation/compress v0.0.0-20240218153512-9074bdc2397c/go.mod h1:ytKxJqa16SAYZcc4PMcdZpfrcYVmhrEKNaaqz7zta0I=
 github.com/CortexFoundation/merkletree v0.0.0-20250806195321-a6665eed15e1 h1:9TrSD8Ns6cu2+k7ZHFfDuF/CoNx6h6Qe37mjSCwlZjw=
 github.com/CortexFoundation/merkletree v0.0.0-20250806195321-a6665eed15e1/go.mod h1:H/XQUOyyWqFweHqa39mLPewU3q9GTY4wvf8KQduuuPQ=
-github.com/CortexFoundation/robot v1.0.7-0.20250720133840-49217aa96f7e h1:ZmPrKHb76Z16hXMeFYKv7oTm0jY8Q1Y9PdeD5FkjQvY=
-github.com/CortexFoundation/robot v1.0.7-0.20250720133840-49217aa96f7e/go.mod h1:o0QGALGkHIwjrz3YlDegPjOtIF5hL3BF7vgvmJnd7ZQ=
+github.com/CortexFoundation/robot v1.0.7-0.20250814144140-4a02e0869dd1 h1:AApKdKC209WqQN1mf+kqSFFkPZJZcrE/tofLEpMdVWQ=
+github.com/CortexFoundation/robot v1.0.7-0.20250814144140-4a02e0869dd1/go.mod h1:o0QGALGkHIwjrz3YlDegPjOtIF5hL3BF7vgvmJnd7ZQ=
 github.com/CortexFoundation/wormhole v0.0.2-0.20250807143819-52807b74f358 h1:y0QMrHsFxmrKBJDjYTnsXw8h/rtjO+tMnmK2OdUzZ/w=
 github.com/CortexFoundation/wormhole v0.0.2-0.20250807143819-52807b74f358/go.mod h1:R/2T+BS27RdmRWWhoDdgSlordZpUBjVTh8hi4fHoioE=
 github.com/DataDog/zstd v1.5.7 h1:ybO8RBeh29qrxIhCA9E8gKY6xfONU9T6G6aP9DTKfLE=
@@ -160,8 +160,8 @@ github.com/decred/dcrd/crypto/blake256 v1.1.0 h1:zPMNGQCm0g4QTY27fOCorQW7EryeQ/U
 github.com/decred/dcrd/crypto/blake256 v1.1.0/go.mod h1:2OfgNZ5wDpcsFmHmCK5gZTPcCXqlm2ArzUIkw9czNJo=
 github.com/decred/dcrd/dcrec/secp256k1/v4 v4.4.0 h1:NMZiJj8QnKe1LgsbDayM4UoHwbvwDRwnI3hwNaAHRnc=
 github.com/decred/dcrd/dcrec/secp256k1/v4 v4.4.0/go.mod h1:ZXNYxsqcloTdSy/rNShjYzMhyjf0LaoftYK0p+A3h40=
-github.com/dgraph-io/badger/v4 v4.8.1-0.20250802090453-7a4b511fb568 h1:3jWHcJIIXz4V8ns/Vvc9rNOWAji8soH8cbRm1O15D64=
-github.com/dgraph-io/badger/v4 v4.8.1-0.20250802090453-7a4b511fb568/go.mod h1:ch7TVZFJHVHWbbDbr2XLv9ugyNVDVj+9kcHVFMI6zKo=
+github.com/dgraph-io/badger/v4 v4.8.1-0.20250813063812-ba57eda11382 h1:0EbRlvESQ9LgDjiFe7yxEoRp0aZzDdswy904mFEfOHI=
+github.com/dgraph-io/badger/v4 v4.8.1-0.20250813063812-ba57eda11382/go.mod h1:ch7TVZFJHVHWbbDbr2XLv9ugyNVDVj+9kcHVFMI6zKo=
 github.com/dgraph-io/ristretto/v2 v2.2.0 h1:bkY3XzJcXoMuELV8F+vS8kzNgicwQFAaGINAEJdWGOM=
 github.com/dgraph-io/ristretto/v2 v2.2.0/go.mod h1:RZrm63UmcBAaYWC1DotLYBmTvgkrs0+XhBd7Npn7/zI=
 github.com/dgryski/go-farm v0.0.0-20240924180020-3414d57e47da h1:aIftn67I1fkbMa512G+w+Pxci9hJPB8oMnkcP3iZF38=
@@ -520,8 +520,8 @@ github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd h1:gBtlvLAsgLk+
 github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd/go.mod h1:ddwX+NCjMZPdpzcGh1fcEbNTUTCtKgt2hC2rqvmLKgA=
 github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb h1:dVZH3AH9f7zB3VBmsjn25B7lfcAyMP4QxdFYTrfj7tg=
 github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb/go.mod h1:3yswsBsVuwsOjDvFfC5Na9XSEf4HC7mj3W3g6jvSY/s=
-github.com/ucwong/golang-kv v1.0.24-0.20250804095150-ac15440c344d h1:rE+pkZQqDjuUgi6KBaMCIqAjrm+/pwKNiGPn6qIdNso=
-github.com/ucwong/golang-kv v1.0.24-0.20250804095150-ac15440c344d/go.mod h1:Gl7lcNqjS4wNQh7rjZ+iwOrxppKXIgQccSrHQ6XkDPQ=
+github.com/ucwong/golang-kv v1.0.24-0.20250813143538-d7c3af16d0ff h1:5kxvQ+dCXHftLBIh9tixbb3+qNtfT0aWFvBT98Awh4w=
+github.com/ucwong/golang-kv v1.0.24-0.20250813143538-d7c3af16d0ff/go.mod h1:xOaSX6r/Q9RHC3myStUvqPJKgkP8RjOzao267eOS4Mk=
 github.com/ucwong/shard v1.0.1-0.20250426172507-f1db2901f62c h1:U7Mu9tC9DJyEwuu62uGJSi09JdwgLjVpLO03zJnLUpU=
 github.com/ucwong/shard v1.0.1-0.20250426172507-f1db2901f62c/go.mod h1:itmCLVmb050+i2uFKiWQIwx1okD73JxMMI6xDeX/TR4=
 github.com/urfave/cli/v2 v2.27.6 h1:VdRdS98FNhKZ8/Az8B7MTyGQmpIr36O1EHybx/LaZ4g=
