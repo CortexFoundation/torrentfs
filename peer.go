@@ -136,7 +136,7 @@ func (peer *Peer) update() {
 				return
 			}
 		case <-peer.quit:
-			log.Info("Peer update loop terminated", "peer", peer.ID())
+			log.Debug("Peer update loop terminated", "peer", peer.ID())
 			return
 		}
 	}
