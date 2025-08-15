@@ -5,7 +5,7 @@ go 1.24.4
 require (
 	github.com/CortexFoundation/CortexTheseus v1.10.64
 	github.com/CortexFoundation/compress v0.0.0-20240218153512-9074bdc2397c
-	github.com/CortexFoundation/robot v1.0.7-0.20250815122949-18cb32c1302c
+	github.com/CortexFoundation/robot v1.0.7-0.20250815205431-19a6ffefe6e9
 	github.com/CortexFoundation/wormhole v0.0.2-0.20250807143819-52807b74f358
 	github.com/anacrolix/envpprof v1.4.0
 	github.com/anacrolix/fuse v0.4.0

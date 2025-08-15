@@ -11,8 +11,8 @@ github.com/CortexFoundation/compress v0.0.0-20240218153512-9074bdc2397c h1:NPMTQ
 github.com/CortexFoundation/compress v0.0.0-20240218153512-9074bdc2397c/go.mod h1:ytKxJqa16SAYZcc4PMcdZpfrcYVmhrEKNaaqz7zta0I=
 github.com/CortexFoundation/merkletree v0.0.0-20250806195321-a6665eed15e1 h1:9TrSD8Ns6cu2+k7ZHFfDuF/CoNx6h6Qe37mjSCwlZjw=
 github.com/CortexFoundation/merkletree v0.0.0-20250806195321-a6665eed15e1/go.mod h1:H/XQUOyyWqFweHqa39mLPewU3q9GTY4wvf8KQduuuPQ=
-github.com/CortexFoundation/robot v1.0.7-0.20250815122949-18cb32c1302c h1:2+GH63JU4OVRZ97P0zadGZYUohEkh2sR37OiDaC/eVA=
-github.com/CortexFoundation/robot v1.0.7-0.20250815122949-18cb32c1302c/go.mod h1:o0QGALGkHIwjrz3YlDegPjOtIF5hL3BF7vgvmJnd7ZQ=
+github.com/CortexFoundation/robot v1.0.7-0.20250815205431-19a6ffefe6e9 h1:kV8Fm+Qd0wcNGO54ipl7Wbrhu3L14m4dP6+QRPYtqZM=
+github.com/CortexFoundation/robot v1.0.7-0.20250815205431-19a6ffefe6e9/go.mod h1:o0QGALGkHIwjrz3YlDegPjOtIF5hL3BF7vgvmJnd7ZQ=
 github.com/CortexFoundation/wormhole v0.0.2-0.20250807143819-52807b74f358 h1:y0QMrHsFxmrKBJDjYTnsXw8h/rtjO+tMnmK2OdUzZ/w=
 github.com/CortexFoundation/wormhole v0.0.2-0.20250807143819-52807b74f358/go.mod h1:R/2T+BS27RdmRWWhoDdgSlordZpUBjVTh8hi4fHoioE=
 github.com/DataDog/zstd v1.5.7 h1:ybO8RBeh29qrxIhCA9E8gKY6xfONU9T6G6aP9DTKfLE=
