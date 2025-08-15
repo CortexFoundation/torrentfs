@@ -88,16 +88,21 @@ func (peer *Peer) start() error {
 }
 
 func (peer *Peer) expire() {
-	unmark := make(map[string]struct{})
-	peer.known.Each(func(k string) bool {
-		if _, ok := peer.host.Envelopes().Get(k); ok != nil {
-			unmark[k] = struct{}{}
+	// Use a slice to store keys to be removed, which is safer if the map's Each method
+	// doesn't guarantee safe concurrent modification.
+	var toRemove []string
+
+	// Iterate over all known keys.
+	peer.known.Each(func(key string) bool {
+		if _, err := peer.host.Envelopes().Get(key); err != nil {
+			toRemove = append(toRemove, key)
 		}
-		return true
+		return true // Continue the iteration.
 	})
-	// Dump all known but no longer cached
-	for hash := range unmark {
-		peer.known.Remove(hash)
+
+	// Remove all keys collected in the first step.
+	for _, key := range toRemove {
+		peer.known.Remove(key)
 	}
 }
 
