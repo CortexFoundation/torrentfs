@@ -101,32 +101,42 @@ func (peer *Peer) expire() {
 }
 
 func (peer *Peer) update() {
+	// Defer statements to ensure resources are cleaned up on function exit.
 	defer peer.wg.Done()
 	stateTicker := time.NewTicker(params.PeerStateCycle)
 	defer stateTicker.Stop()
+	transmitTicker := time.NewTicker(params.TransmissionCycle)
+	defer transmitTicker.Stop()
+	expireTicker := time.NewTicker(params.ExpirationCycle)
+	defer expireTicker.Stop()
 
-	transmit := time.NewTicker(params.TransmissionCycle)
-	defer transmit.Stop()
-
-	expire := time.NewTicker(params.ExpirationCycle)
-	defer expire.Stop()
-
-	// Loop and transmit until termination is requested
+	// The main event loop for peer operations.
 	for {
 		select {
-		case <-expire.C:
+		case <-expireTicker.C:
 			peer.expire()
-		case <-transmit.C:
+
+		case <-transmitTicker.C:
+			// Check for neighbors before attempting to broadcast to avoid unnecessary logs.
+			if peer.host.Neighbors() == 0 {
+				log.Warn("No neighbors found, skipping transmission", "peer", peer.ID())
+				continue
+			}
+
 			if err := peer.broadcast(); err != nil {
-				log.Trace("transmit broadcast failed", "reason", err, "peer", peer.ID())
+				// Use Trace for expected, non-critical failures.
+				log.Trace("Transmit broadcast failed", "reason", err, "peer", peer.ID())
+				// Return here as the failure might be critical.
 				return
 			}
+
 		case <-stateTicker.C:
 			if err := peer.state(); err != nil {
-				log.Trace("state broadcast failed", "reason", err, "peer", peer.ID())
+				log.Trace("State broadcast failed", "reason", err, "peer", peer.ID())
 				return
 			}
 		case <-peer.quit:
+			log.Info("Peer update loop terminated", "peer", peer.ID())
 			return
 		}
 	}

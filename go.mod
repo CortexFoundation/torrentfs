@@ -5,14 +5,14 @@ go 1.24.4
 require (
 	github.com/CortexFoundation/CortexTheseus v1.10.64
 	github.com/CortexFoundation/compress v0.0.0-20240218153512-9074bdc2397c
-	github.com/CortexFoundation/robot v1.0.7-0.20250814144140-4a02e0869dd1
+	github.com/CortexFoundation/robot v1.0.7-0.20250815122949-18cb32c1302c
 	github.com/CortexFoundation/wormhole v0.0.2-0.20250807143819-52807b74f358
 	github.com/anacrolix/envpprof v1.4.0
 	github.com/anacrolix/fuse v0.4.0
-	github.com/anacrolix/log v0.16.1-0.20250526073428-5cb74e15092b
-	github.com/anacrolix/missinggo/v2 v2.8.1-0.20250626123431-aa4691b19d56
+	github.com/anacrolix/log v0.17.0
+	github.com/anacrolix/missinggo/v2 v2.10.0
 	github.com/anacrolix/tagflag v1.4.0
-	github.com/anacrolix/torrent v1.58.2-0.20250805162008-f4dc49bf8c3c
+	github.com/anacrolix/torrent v1.59.0
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/deckarep/golang-set/v2 v2.8.0
 	github.com/dustin/go-humanize v1.0.1
@@ -25,7 +25,7 @@ require (
 	github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
 	github.com/ucwong/golang-kv v1.0.24-0.20250813143538-d7c3af16d0ff
-	github.com/ucwong/shard v1.0.1-0.20250426172507-f1db2901f62c
+	github.com/ucwong/shard v1.0.1-0.20250814204722-892131bad5ef
 	github.com/urfave/cli/v2 v2.27.6
 	golang.org/x/sync v0.16.0
 	golang.org/x/time v0.11.0
@@ -40,9 +40,9 @@ require (
 	github.com/RoaringBitmap/roaring v1.9.4 // indirect
 	github.com/ajwerner/btree v0.0.0-20211221152037-f427b3e689c0 // indirect
 	github.com/alecthomas/atomic v0.1.0-alpha2 // indirect
-	github.com/anacrolix/chansync v0.6.0 // indirect
-	github.com/anacrolix/dht/v2 v2.22.2-0.20250623060212-d7b7d8a52b01 // indirect
-	github.com/anacrolix/generics v0.0.3-0.20250526144502-593be7092deb // indirect
+	github.com/anacrolix/chansync v0.7.0 // indirect
+	github.com/anacrolix/dht/v2 v2.23.0 // indirect
+	github.com/anacrolix/generics v0.1.0 // indirect
 	github.com/anacrolix/go-libutp v1.3.2 // indirect
 	github.com/anacrolix/missinggo v1.3.0 // indirect
 	github.com/anacrolix/missinggo/perf v1.0.0 // indirect
@@ -95,7 +95,7 @@ require (
 	github.com/huin/goupnp v1.3.0 // indirect
 	github.com/jackpal/go-nat-pmp v1.0.2 // indirect
 	github.com/klauspost/compress v1.18.0 // indirect
-	github.com/klauspost/cpuid/v2 v2.2.10 // indirect
+	github.com/klauspost/cpuid/v2 v2.3.0 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
@@ -160,7 +160,7 @@ require (
 	golang.org/x/exp v0.0.0-20250531010427-b6e5de432a8b // indirect
 	golang.org/x/mod v0.25.0 // indirect
 	golang.org/x/net v0.42.0 // indirect
-	golang.org/x/sys v0.34.0 // indirect
+	golang.org/x/sys v0.35.0 // indirect
 	golang.org/x/term v0.33.0 // indirect
 	golang.org/x/text v0.27.0 // indirect
 	gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce // indirect
