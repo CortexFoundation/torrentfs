@@ -18,6 +18,7 @@ package torrentfs
 
 import (
 	"fmt"
+	"reflect"
 	"sync"
 	"time"
 
@@ -175,20 +176,44 @@ func (peer *Peer) marked(hash string) bool {
 }
 
 func (peer *Peer) broadcast() error {
-	for _, k := range peer.host.Envelopes().Keys() {
-		if v, err := peer.host.Envelopes().Get(k.Interface().(string)); err == nil {
-			if !peer.marked(k.Interface().(string)) {
-				query := Query{
-					Hash: k.Interface().(string),
-					Size: v.Value().(uint64),
-				}
-				if err := p2p.Send(peer.ws, params.QueryCode, &query); err != nil {
-					return err
-				}
-				peer.host.sent.Add(1)
-				peer.mark(k.Interface().(string))
-			}
+	keys := peer.host.Envelopes().Keys()
+
+	for _, k := range keys {
+		// Ensure the key is a string and handle potential type assertion failures.
+		keyStr, ok := k.Interface().(string)
+		if !ok {
+			// Log a warning if the key is not the expected type.
+			log.Warn("Envelopes key is not a string, skipping", "keyType", reflect.TypeOf(k.Interface()).String())
+			continue
 		}
+
+		// Check if the peer has already processed this key.
+		if peer.marked(keyStr) {
+			continue
+		}
+
+		// Get the value and handle potential errors.
+		v, err := peer.host.Envelopes().Get(keyStr)
+		if err != nil {
+			log.Warn("Failed to get envelope value, skipping", "key", keyStr, "err", err)
+			continue
+		}
+
+		// Construct the query object.
+		query := Query{
+			Hash: keyStr,
+			Size: v.Value().(uint64), // Assuming the value's type assertion is safe.
+		}
+
+		// Send the query and handle any transmission errors.
+		if err := p2p.Send(peer.ws, params.QueryCode, &query); err != nil {
+			// Return immediately on a send failure.
+			return err
+		}
+
+		// Update metrics and mark the key as sent.
+		peer.host.sent.Add(1)
+		peer.mark(keyStr)
 	}
 
 	return nil
@@ -304,7 +329,7 @@ func (peer *Peer) stop() error {
 	return nil
 }
 
-func (peer *Peer) ID() []byte {
+func (peer *Peer) ID() string {
 	id := peer.peer.ID()
-	return id[:]
+	return id.String()
 }
