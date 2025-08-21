@@ -5,14 +5,14 @@ go 1.24.4
 require (
 	github.com/CortexFoundation/CortexTheseus v1.10.64
 	github.com/CortexFoundation/compress v0.0.0-20240218153512-9074bdc2397c
-	github.com/CortexFoundation/robot v1.0.7-0.20250817140241-327c8c657fb5
+	github.com/CortexFoundation/robot v1.0.7-0.20250820155240-5eb79736c2fc
 	github.com/CortexFoundation/wormhole v0.0.2-0.20250807143819-52807b74f358
 	github.com/anacrolix/envpprof v1.4.0
 	github.com/anacrolix/fuse v0.4.0
 	github.com/anacrolix/log v0.17.0
 	github.com/anacrolix/missinggo/v2 v2.10.0
 	github.com/anacrolix/tagflag v1.4.0
-	github.com/anacrolix/torrent v1.59.1
+	github.com/anacrolix/torrent v1.59.2-0.20250821063244-c05e15124728
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/deckarep/golang-set/v2 v2.8.0
 	github.com/dustin/go-humanize v1.0.1
