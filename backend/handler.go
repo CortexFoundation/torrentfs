@@ -232,15 +232,15 @@ func (tm *TorrentManager) Close() error {
 
 	tm.closeOnce.Do(func() {
 		log.Info("Current running torrents", "size", tm.torrents.Len())
-		//tm.torrents.Range(func(_ string, t *Torrent) bool {
-		//	t.Close()
-		//	return true
-		//})
 
-		tm.client.Close()
-		tm.client.WaitAll()
+		if tm.client != nil {
+			tm.client.Close()
+			tm.client.WaitAll()
+		}
 
-		close(tm.closeAll)
+		if tm.closeAll != nil {
+			close(tm.closeAll)
+		}
 		tm.wg.Wait()
 
 		if tm.kvdb != nil {
@@ -252,7 +252,9 @@ func (tm *TorrentManager) Close() error {
 			tm.fc.Stop()
 		}
 
-		tm.taskEvent.Stop()
+		if tm.taskEvent != nil {
+			tm.taskEvent.Stop()
+		}
 		log.Info("Fs Download Manager Closed")
 	})
 
