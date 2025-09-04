@@ -11,8 +11,8 @@ github.com/CortexFoundation/compress v0.0.0-20240218153512-9074bdc2397c h1:NPMTQ
 github.com/CortexFoundation/compress v0.0.0-20240218153512-9074bdc2397c/go.mod h1:ytKxJqa16SAYZcc4PMcdZpfrcYVmhrEKNaaqz7zta0I=
 github.com/CortexFoundation/merkletree v0.0.0-20250807103550-396f9f0ba0f1 h1:Pl3f7uSQ6YgC8WJcjxU6uKJFC/9fTDOBLfK458UPemQ=
 github.com/CortexFoundation/merkletree v0.0.0-20250807103550-396f9f0ba0f1/go.mod h1:H/XQUOyyWqFweHqa39mLPewU3q9GTY4wvf8KQduuuPQ=
-github.com/CortexFoundation/robot v1.0.7-0.20250823113127-e1881bde59eb h1:vJR75WWzBJ4bODDny4JEwrHCJ0xIgSnOcGm9nOV16cs=
-github.com/CortexFoundation/robot v1.0.7-0.20250823113127-e1881bde59eb/go.mod h1:2O4ZF0E9FQR7BKVh8guqSghBzP7kDVLmISJeSIyiTc0=
+github.com/CortexFoundation/robot v1.0.7-0.20250903144910-6874970e0675 h1:rrq9kuuuLHkSV+7rsC+Q1s3LEVcp1bzp5zY/0HbTy50=
+github.com/CortexFoundation/robot v1.0.7-0.20250903144910-6874970e0675/go.mod h1:2O4ZF0E9FQR7BKVh8guqSghBzP7kDVLmISJeSIyiTc0=
 github.com/CortexFoundation/wormhole v0.0.2-0.20250807143819-52807b74f358 h1:y0QMrHsFxmrKBJDjYTnsXw8h/rtjO+tMnmK2OdUzZ/w=
 github.com/CortexFoundation/wormhole v0.0.2-0.20250807143819-52807b74f358/go.mod h1:R/2T+BS27RdmRWWhoDdgSlordZpUBjVTh8hi4fHoioE=
 github.com/DataDog/zstd v1.5.7 h1:ybO8RBeh29qrxIhCA9E8gKY6xfONU9T6G6aP9DTKfLE=
@@ -98,8 +98,8 @@ github.com/anacrolix/tagflag v1.0.0/go.mod h1:1m2U/K6ZT+JZG0+bdMK6qauP49QT4wE5pm
 github.com/anacrolix/tagflag v1.1.0/go.mod h1:Scxs9CV10NQatSmbyjqmqmeQNwGzlNe0CMUMIxqHIG8=
 github.com/anacrolix/tagflag v1.4.0 h1:OlpkharT7bRqLyMkZs0XAkdb2QM/eG7Aagg0c/8Kijs=
 github.com/anacrolix/tagflag v1.4.0/go.mod h1:jNpc4zGvJgIXIw9xcOtYLMz4iSRYn1XKUkTlbPwwZGg=
-github.com/anacrolix/torrent v1.59.2-0.20250831024100-5a4e71ecb3c3 h1:BVmTbvrRJ81R5mFR1kX3TPNs8WsZQDRJ0+hsIAn7RNQ=
-github.com/anacrolix/torrent v1.59.2-0.20250831024100-5a4e71ecb3c3/go.mod h1:6hGL5nOAk4j0zrPqyZ7GKYIkRPgehXFE9N8N6rAatQI=
+github.com/anacrolix/torrent v1.59.2-0.20250903105451-d922d78d2e61 h1:86zuTAMse1rzLq6hSGHad8gdZ0I4JRhFUuvZggvByMQ=
+github.com/anacrolix/torrent v1.59.2-0.20250903105451-d922d78d2e61/go.mod h1:6hGL5nOAk4j0zrPqyZ7GKYIkRPgehXFE9N8N6rAatQI=
 github.com/anacrolix/upnp v0.1.4 h1:+2t2KA6QOhm/49zeNyeVwDu1ZYS9dB9wfxyVvh/wk7U=
 github.com/anacrolix/upnp v0.1.4/go.mod h1:Qyhbqo69gwNWvEk1xNTXsS5j7hMHef9hdr984+9fIic=
 github.com/anacrolix/utp v0.2.0 h1:65Cdmr6q9WSw2KsM+rtJFu7rqDzLl2bdysf4KlNPcFI=
