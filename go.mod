@@ -3,7 +3,7 @@ module github.com/CortexFoundation/torrentfs
 go 1.24.4
 
 require (
-	github.com/CortexFoundation/CortexTheseus v1.10.65
+	github.com/CortexFoundation/CortexTheseus v1.10.66-0.20250919160118-e59fef9ae5b6
 	github.com/CortexFoundation/compress v0.0.0-20240218153512-9074bdc2397c
 	github.com/CortexFoundation/robot v1.0.7-0.20250905130629-dff2b3e3cd40
 	github.com/CortexFoundation/wormhole v0.0.2-0.20250807143819-52807b74f358
@@ -12,7 +12,7 @@ require (
 	github.com/anacrolix/log v0.17.0
 	github.com/anacrolix/missinggo/v2 v2.10.0
 	github.com/anacrolix/tagflag v1.4.0
-	github.com/anacrolix/torrent v1.59.2-0.20250903105451-d922d78d2e61
+	github.com/anacrolix/torrent v1.59.2-0.20250922075737-156da1b60830
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/deckarep/golang-set/v2 v2.8.0
 	github.com/dustin/go-humanize v1.0.1
@@ -22,13 +22,13 @@ require (
 	github.com/jedib0t/go-pretty/v6 v6.6.8
 	github.com/otiai10/copy v1.14.1
 	github.com/prometheus/client_golang v1.23.2
-	github.com/ucwong/filecache v1.0.6-0.20230405163841-810d53ced4bd
+	github.com/ucwong/filecache v1.0.6
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
 	github.com/ucwong/golang-kv v1.0.24-0.20250916084243-6e529c3671d1
 	github.com/ucwong/shard v1.0.1-0.20250814204722-892131bad5ef
 	github.com/urfave/cli/v2 v2.27.7
 	golang.org/x/sync v0.17.0
-	golang.org/x/time v0.12.0
+	golang.org/x/time v0.13.0
 	golang.org/x/tools v0.37.0
 	golang.org/x/xerrors v0.0.0-20240903120638-7835f813f4da
 	google.golang.org/protobuf v1.36.9
@@ -74,7 +74,6 @@ require (
 	github.com/dgraph-io/badger/v4 v4.8.1-0.20250905144248-6cbc8fde682c // indirect
 	github.com/dgraph-io/ristretto/v2 v2.3.0 // indirect
 	github.com/elliotchance/orderedmap v1.8.0 // indirect
-	github.com/ethereum/go-ethereum v1.16.2 // indirect
 	github.com/garslo/gogen v0.0.0-20170306192744-1d203ffc1f61 // indirect
 	github.com/getsentry/sentry-go v0.35.3 // indirect
 	github.com/go-llsqlite/adapter v0.2.0 // indirect
@@ -119,9 +118,9 @@ require (
 	github.com/pion/mdns/v2 v2.0.7 // indirect
 	github.com/pion/randutil v0.1.0 // indirect
 	github.com/pion/rtcp v1.2.15 // indirect
-	github.com/pion/rtp v1.8.21 // indirect
+	github.com/pion/rtp v1.8.22 // indirect
 	github.com/pion/sctp v1.8.39 // indirect
-	github.com/pion/sdp/v3 v3.0.15 // indirect
+	github.com/pion/sdp/v3 v3.0.16 // indirect
 	github.com/pion/srtp/v3 v3.0.7 // indirect
 	github.com/pion/stun/v2 v2.0.0 // indirect
 	github.com/pion/stun/v3 v3.0.0 // indirect
@@ -166,9 +165,9 @@ require (
 	golang.org/x/term v0.35.0 // indirect
 	golang.org/x/text v0.29.0 // indirect
 	lukechampine.com/blake3 v1.4.1 // indirect
-	modernc.org/libc v1.66.7 // indirect
+	modernc.org/libc v1.66.9 // indirect
 	modernc.org/mathutil v1.7.1 // indirect
 	modernc.org/memory v1.11.0 // indirect
-	modernc.org/sqlite v1.38.2 // indirect
+	modernc.org/sqlite v1.39.0 // indirect
 	zombiezen.com/go/sqlite v1.4.2 // indirect
 )
