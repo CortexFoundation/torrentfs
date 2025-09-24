@@ -132,7 +132,11 @@ func (fs *TorrentFS) SeedingLocal(ctx context.Context, filePath string, isLinkMo
 	iterateForValidFile = func(basePath string, dataInfo os.FileInfo) bool {
 		filePath := filepath.Join(basePath, dataInfo.Name())
 		if dataInfo.IsDir() {
-			dirFp, _ := os.Open(filePath)
+			dirFp, e := os.Open(filePath)
+			if e != nil {
+				return false
+			}
+			defer dirFp.Close()
 			if fInfos, err := dirFp.Readdir(0); err != nil {
 				log.Error("Read dir failed", "filePath", filePath, "err", err)
 				return false
@@ -188,12 +192,19 @@ func (fs *TorrentFS) SeedingLocal(ctx context.Context, filePath string, isLinkMo
 		torrentPath = filepath.Join("", "torrent")
 	}
 
-	var fileTorrent *os.File
-	fileTorrent, err = os.OpenFile(torrentPath, os.O_CREATE|os.O_WRONLY, 0644)
+	fileTorrent, err := os.OpenFile(torrentPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
 	if err != nil {
 		return
 	}
 	if err = mi.Write(fileTorrent); err != nil {
+		fileTorrent.Close()
+		return
+	}
+	if err = fileTorrent.Sync(); err != nil {
+		fileTorrent.Close()
+		return
+	}
+	if err = fileTorrent.Close(); err != nil {
 		return
 	}
 
