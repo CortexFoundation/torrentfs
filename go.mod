@@ -22,7 +22,7 @@ require (
 	github.com/jedib0t/go-pretty/v6 v6.6.8
 	github.com/otiai10/copy v1.14.1
 	github.com/prometheus/client_golang v1.23.2
-	github.com/ucwong/filecache v1.0.7-0.20250923151152-248417b997e6
+	github.com/ucwong/filecache v1.0.7
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
 	github.com/ucwong/golang-kv v1.0.24-0.20250916084243-6e529c3671d1
 	github.com/ucwong/shard v1.0.1-0.20250814204722-892131bad5ef
@@ -86,7 +86,7 @@ require (
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/snappy v1.0.0 // indirect
 	github.com/google/btree v1.1.3 // indirect
-	github.com/google/flatbuffers v25.2.10+incompatible // indirect
+	github.com/google/flatbuffers v25.9.23+incompatible // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/websocket v1.5.3 // indirect
 	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
