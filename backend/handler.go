@@ -413,15 +413,7 @@ func (tm *TorrentManager) loadSpec(ih string, filePath string) *torrent.TorrentS
 	)
 	if _, err := os.Stat(ExistDir); err == nil {
 		log.Debug("Seeding from existing file.", "ih", ih)
-		//info, err := mi.UnmarshalInfo()
-		if err != nil {
-			log.Error("error unmarshalling info: ", "info", err)
-			return nil
-		}
-
-		//if err := tm.verifyTorrent(&info, ExistDir); err == nil {
-		//	useExistDir = true
-		//}
+		useExistDir = true
 	}
 
 	if useExistDir {
