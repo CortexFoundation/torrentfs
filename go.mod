@@ -3,7 +3,7 @@ module github.com/CortexFoundation/torrentfs
 go 1.24.4
 
 require (
-	github.com/CortexFoundation/CortexTheseus v1.10.66-0.20250919160118-e59fef9ae5b6
+	github.com/CortexFoundation/CortexTheseus v1.10.66
 	github.com/CortexFoundation/compress v0.0.0-20240218153512-9074bdc2397c
 	github.com/CortexFoundation/robot v1.0.7-0.20250905130629-dff2b3e3cd40
 	github.com/CortexFoundation/wormhole v0.0.2-0.20250807143819-52807b74f358
@@ -24,14 +24,14 @@ require (
 	github.com/prometheus/client_golang v1.23.2
 	github.com/ucwong/filecache v1.0.7
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
-	github.com/ucwong/golang-kv v1.0.24-0.20250925225532-4a837ac883b7
+	github.com/ucwong/golang-kv v1.0.24-0.20251005143207-9b9ed4a224c8
 	github.com/ucwong/shard v1.0.1-0.20250814204722-892131bad5ef
 	github.com/urfave/cli/v2 v2.27.7
 	golang.org/x/sync v0.17.0
 	golang.org/x/time v0.13.0
 	golang.org/x/tools v0.37.0
 	golang.org/x/xerrors v0.0.0-20240903120638-7835f813f4da
-	google.golang.org/protobuf v1.36.9
+	google.golang.org/protobuf v1.36.10
 )
 
 require (
@@ -158,7 +158,7 @@ require (
 	go.opentelemetry.io/otel/trace v1.38.0 // indirect
 	go.yaml.in/yaml/v2 v2.4.3 // indirect
 	golang.org/x/crypto v0.42.0 // indirect
-	golang.org/x/exp v0.0.0-20250911091902-df9299821621 // indirect
+	golang.org/x/exp v0.0.0-20251002181428-27f1f14c8bb9 // indirect
 	golang.org/x/mod v0.28.0 // indirect
 	golang.org/x/net v0.44.0 // indirect
 	golang.org/x/sys v0.36.0 // indirect
