@@ -98,8 +98,8 @@ github.com/anacrolix/tagflag v1.0.0/go.mod h1:1m2U/K6ZT+JZG0+bdMK6qauP49QT4wE5pm
 github.com/anacrolix/tagflag v1.1.0/go.mod h1:Scxs9CV10NQatSmbyjqmqmeQNwGzlNe0CMUMIxqHIG8=
 github.com/anacrolix/tagflag v1.4.0 h1:OlpkharT7bRqLyMkZs0XAkdb2QM/eG7Aagg0c/8Kijs=
 github.com/anacrolix/tagflag v1.4.0/go.mod h1:jNpc4zGvJgIXIw9xcOtYLMz4iSRYn1XKUkTlbPwwZGg=
-github.com/anacrolix/torrent v1.59.2-0.20250925080637-414bd5781457 h1:/jMV08kHA/L0gMLgEsz1CD2A5FtyZL7aknC34rrlO6Q=
-github.com/anacrolix/torrent v1.59.2-0.20250925080637-414bd5781457/go.mod h1:6hGL5nOAk4j0zrPqyZ7GKYIkRPgehXFE9N8N6rAatQI=
+github.com/anacrolix/torrent v1.59.2-0.20251013034954-a6f1f60a7af4 h1:XYW/Sqd0btT+6BdGKdmFeV34vGQiJGp4oNmotwYv7bw=
+github.com/anacrolix/torrent v1.59.2-0.20251013034954-a6f1f60a7af4/go.mod h1:6hGL5nOAk4j0zrPqyZ7GKYIkRPgehXFE9N8N6rAatQI=
 github.com/anacrolix/upnp v0.1.4 h1:+2t2KA6QOhm/49zeNyeVwDu1ZYS9dB9wfxyVvh/wk7U=
 github.com/anacrolix/upnp v0.1.4/go.mod h1:Qyhbqo69gwNWvEk1xNTXsS5j7hMHef9hdr984+9fIic=
 github.com/anacrolix/utp v0.2.0 h1:65Cdmr6q9WSw2KsM+rtJFu7rqDzLl2bdysf4KlNPcFI=
@@ -228,8 +228,8 @@ github.com/go-resty/resty/v2 v2.16.5 h1:hBKqmWrr7uRc3euHVqmh1HTHcKn99Smr7o5spptd
 github.com/go-resty/resty/v2 v2.16.5/go.mod h1:hkJtXbA2iKHzJheXYvQ8snQES5ZLGKMwQ07xAwp/fiA=
 github.com/go-stack/stack v1.8.0/go.mod h1:v0f6uXyyMGvRgIKkXu+yp6POWl0qKG85gN/melR3HDY=
 github.com/go-task/slim-sprig v0.0.0-20210107165309-348f09dbbbc0/go.mod h1:fyg7847qk6SyHyPtNmDHnmrv/HOrqktSC+C9fM+CJOE=
-github.com/gofrs/flock v0.12.1 h1:MTLVXXHf8ekldpJk3AKicLij9MdwOWkZ+a/jHHZby9E=
-github.com/gofrs/flock v0.12.1/go.mod h1:9zxTsyu5xtJ9DK+1tFZyibEV7y3uwDxPPfbxeeHCoD0=
+github.com/gofrs/flock v0.13.0 h1:95JolYOvGMqeH31+FC7D2+uULf6mG61mEZ/A8dRYMzw=
+github.com/gofrs/flock v0.13.0/go.mod h1:jxeyy9R1auM5S6JYDBhDt+E2TCo7DkratH4Pgi8P+Z0=
 github.com/gogo/protobuf v1.1.1/go.mod h1:r8qH/GZQm5c6nD/R0oafs1akxWv10x8SbQlK7atdtwQ=
 github.com/gogo/protobuf v1.2.0/go.mod h1:r8qH/GZQm5c6nD/R0oafs1akxWv10x8SbQlK7atdtwQ=
 github.com/gogo/protobuf v1.3.2 h1:Ov1cvc58UF3b5XjBnZv7+opcTcQFZebYjWzi34vdm4Q=
@@ -521,8 +521,8 @@ github.com/ucwong/filecache v1.0.7 h1:2ingbpnDpTt5WoWT+vLWdiM3M5LQjpZFIYkkx3x86U
 github.com/ucwong/filecache v1.0.7/go.mod h1:ddwX+NCjMZPdpzcGh1fcEbNTUTCtKgt2hC2rqvmLKgA=
 github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb h1:dVZH3AH9f7zB3VBmsjn25B7lfcAyMP4QxdFYTrfj7tg=
 github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb/go.mod h1:3yswsBsVuwsOjDvFfC5Na9XSEf4HC7mj3W3g6jvSY/s=
-github.com/ucwong/golang-kv v1.0.24-0.20251009202044-97c17aef7186 h1:lCe4VKGggORGSl9mw/0YI8PFQd+MLjah8URMuRQDZLg=
-github.com/ucwong/golang-kv v1.0.24-0.20251009202044-97c17aef7186/go.mod h1:DvZ0J3mklal5ny5dx4vNh48cMloJaG4H2r96oNLEy6M=
+github.com/ucwong/golang-kv v1.0.24-0.20251012094715-3e5c407f0405 h1:qzKPjJ3NPdzMMgzR6jfljL8Uk98UweTv7XVZ/hvwENE=
+github.com/ucwong/golang-kv v1.0.24-0.20251012094715-3e5c407f0405/go.mod h1:zgLbsSNoVysDqux6SCvPOLLSysh/tOSHvbDro3ZIU7U=
 github.com/ucwong/shard v1.0.1-0.20250814204722-892131bad5ef h1:ixIxg1bqz3XPbhEyxtJ6KQDHpPpw5aqfKdNc/8zUbIg=
 github.com/ucwong/shard v1.0.1-0.20250814204722-892131bad5ef/go.mod h1:FaHa7/MpQ1evATHigwHM4oS12RWyCkNgIjNqb04VWG0=
 github.com/urfave/cli/v2 v2.27.7 h1:bH59vdhbjLv3LAvIu6gd0usJHgoTTPhCFib8qqOwXYU=
