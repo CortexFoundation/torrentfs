@@ -24,7 +24,7 @@ require (
 	github.com/prometheus/client_golang v1.23.2
 	github.com/ucwong/filecache v1.0.7
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
-	github.com/ucwong/golang-kv v1.0.24-0.20260105164003-b4b1b49dd6ba
+	github.com/ucwong/golang-kv v1.0.24-0.20260125010257-7688fbd338b5
 	github.com/ucwong/shard v1.0.1-0.20250814204722-892131bad5ef
 	github.com/urfave/cli/v2 v2.27.7
 	golang.org/x/sync v0.19.0
@@ -75,11 +75,11 @@ require (
 	github.com/cpuguy83/go-md2man/v2 v2.0.7 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.4.0 // indirect
 	github.com/dgraph-io/badger/v4 v4.9.0 // indirect
-	github.com/dgraph-io/ristretto/v2 v2.3.0 // indirect
+	github.com/dgraph-io/ristretto/v2 v2.4.0 // indirect
 	github.com/elliotchance/orderedmap v1.8.0 // indirect
 	github.com/felixge/fgprof v0.9.5 // indirect
 	github.com/garslo/gogen v0.0.0-20170306192744-1d203ffc1f61 // indirect
-	github.com/getsentry/sentry-go v0.40.0 // indirect
+	github.com/getsentry/sentry-go v0.41.0 // indirect
 	github.com/go-llsqlite/adapter v0.2.0 // indirect
 	github.com/go-llsqlite/crawshaw v0.6.0 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
@@ -100,7 +100,7 @@ require (
 	github.com/huandu/xstrings v1.5.0 // indirect
 	github.com/huin/goupnp v1.3.0 // indirect
 	github.com/jackpal/go-nat-pmp v1.0.2 // indirect
-	github.com/klauspost/compress v1.18.2 // indirect
+	github.com/klauspost/compress v1.18.3 // indirect
 	github.com/klauspost/cpuid/v2 v2.3.0 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/kr/text v0.2.0 // indirect
