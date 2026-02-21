@@ -12,7 +12,7 @@ require (
 	github.com/anacrolix/log v0.17.1-0.20251118025802-918f1157b7bb
 	github.com/anacrolix/missinggo/v2 v2.10.0
 	github.com/anacrolix/tagflag v1.4.0
-	github.com/anacrolix/torrent v1.61.1-0.20260205044246-b4fcea2871e5
+	github.com/anacrolix/torrent v1.61.1-0.20260219042458-62f28e32b549
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/deckarep/golang-set/v2 v2.8.0
 	github.com/dustin/go-humanize v1.0.1
@@ -24,7 +24,7 @@ require (
 	github.com/prometheus/client_golang v1.23.2
 	github.com/ucwong/filecache v1.0.7
 	github.com/ucwong/go-ttlmap v1.0.2-0.20221020173635-331e7ddde2bb
-	github.com/ucwong/golang-kv v1.0.24-0.20260216162146-a11963e81cd2
+	github.com/ucwong/golang-kv v1.0.24-0.20260220085251-4f792d4bd541
 	github.com/ucwong/shard v1.0.1-0.20250814204722-892131bad5ef
 	github.com/urfave/cli/v2 v2.27.7
 	golang.org/x/sync v0.19.0
@@ -165,7 +165,7 @@ require (
 	go.opentelemetry.io/otel/trace v1.40.0 // indirect
 	go.yaml.in/yaml/v2 v2.4.3 // indirect
 	golang.org/x/crypto v0.48.0 // indirect
-	golang.org/x/exp v0.0.0-20260212183809-81e46e3db34a // indirect
+	golang.org/x/exp v0.0.0-20260218203240-3dfff04db8fa // indirect
 	golang.org/x/mod v0.33.0 // indirect
 	golang.org/x/net v0.50.0 // indirect
 	golang.org/x/sys v0.41.0 // indirect
